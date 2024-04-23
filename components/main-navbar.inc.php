@@ -47,7 +47,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><img src="images/folder.svg" class="img-fluid" />  Documents</a>
+                        <a class="nav-link" href="documents.php"><img src="images/folder.svg" class="img-fluid" />  Documents</a>
                     </li>
                 </ul>
 
@@ -64,7 +64,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><img src="images/bell.svg" class="img-fluid" />  Notification</a>
+                        <a class="nav-link" href="notifications.php"><img src="images/bell.svg" class="img-fluid" />  Notifications</a>
                     </li>
 
                     <li class="nav-item">

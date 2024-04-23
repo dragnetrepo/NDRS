@@ -802,7 +802,7 @@
                                                                                             <th scope="col">Size</th>
                                                                                             <th scope="col">File Type</th>
                                                                                             <th scope="col">Last Modified</th>
-                                                                                            <th scope="col"></th>
+                                                                                            <th scope="col">Actions</th>
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody>

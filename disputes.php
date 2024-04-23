@@ -57,13 +57,13 @@
                                                                 </div>
 
                                                                 <div class="col-lg-6">
-                                                                    <div class="d-flex align-items-center justify-ccontent-between gap-15">
+                                                                    <div class="d-flex align-items-center justify-content-between gap-15">
 
                                                                         <a class="btn btn-size btn-outline-light text-medium px-4" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter"><img src="images/filter.svg" class="img-fluid me-2" /> Filters</a>
 
                                                                         <button class="btn btn-size btn-outline-light text-medium px-4"><img src="images/sort.svg" class="img-fluid me-2" /> Sort</button>
 
-                                                                        <button class="btn btn-size btn-main-outline-primary px-4 w-100">Create dispute</button>
+                                                                        <!-- <button class="btn btn-size btn-main-outline-primary px-4 w-100">Create dispute</button> -->
                                                                     </div>
                                                                 </div>
                                                             </div>

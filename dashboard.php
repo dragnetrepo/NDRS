@@ -110,76 +110,72 @@
 
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h4 class="mb-0 heading-4">Notifications</h4>
-                                        <a href="#" class="text-main-primary text-decoration-none text-medium">Show all</a>
+                                        <a href="notifications.php" class="text-main-primary text-decoration-none text-medium">Show all</a>
                                     </div>
                                     
                                     <div class="card p-lg-1 mb-5">
                                         <div class="card-body p-0">
-                                            <a href="#" class="text-decoration-none">
-                                                <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
-                                                    <div class="position-relative">
-                                                        <div class="avatar-sm flex-shrink-0">
-                                                            <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
-                                                        </div>
+                                            
+                                            <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
+                                                <div class="position-relative">
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
                                                     </div>
-                                                    <div class="ms-2 flex-grow-1">
-
-                                                        <div class="mb-2 d-flex align-items-center">
-                                                        <p class="mb-0"><strong>Atoyebi Damola (Ministry Admin)</strong> added you as <strong>Concilliator</strong> for <strong>Dispute Case 124</strong></p>
-                                                        </div>
-
-                                                        <div class="">
-                                                            <p class="mb-0">2 hours ago</p>
-                                                        </div>
-
-                                                    </div>
-                                                
                                                 </div>
-                                            </a>
+                                                <div class="ms-2 flex-grow-1">
 
-                                            <a href="#" class="text-decoration-none">
-                                                <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
-                                                    <div class="position-relative">
-                                                        <div class="avatar-sm flex-shrink-0">
-                                                            <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
-                                                        </div>
+                                                    <div class="mb-2 d-flex align-items-center">
+                                                    <p class="mb-0"><strong>Atoyebi Damola (Ministry Admin)</strong> added you as <strong>Concilliator</strong> for <strong>Dispute Case 124</strong></p>
                                                     </div>
-                                                    <div class="ms-2 flex-grow-1">
 
-                                                        <div class="mb-2 d-flex align-items-center">
-                                                        <p class="mb-0"><strong>John Balami</strong> (IAP/Tribunal) has given a <strong>Binding Decision</strong> for <strong>Dispute Case 124</strong></p>
-                                                        </div>
-
-                                                        <div class="">
-                                                            <p class="mb-0">2 hours ago</p>
-                                                        </div>
-
+                                                    <div class="">
+                                                        <p class="mb-0">2 hours ago</p>
                                                     </div>
-                                                
+
                                                 </div>
-                                            </a>
-
-                                            <a href="#" class="text-decoration-none">
-                                                <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
-                                                    <div class="position-relative">
-                                                        <div class="avatar-sm flex-shrink-0">
-                                                            <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
-                                                        </div>
+                                            
+                                            </div>
+                                            
+                                            <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
+                                                <div class="position-relative">
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
                                                     </div>
-                                                    <div class="ms-2 flex-grow-1">
-
-                                                        <div class="mb-2 d-flex align-items-center">
-                                                        <p class="mb-0"><strong>Atoyebi Damola (Ministry Admin)</strong> shared a document for <strong>Dispute Case 124</strong></p>
-                                                        </div>
-
-                                                        <div class="">
-                                                            <p class="mb-0">2 hours ago</p>
-                                                        </div>
-
-                                                    </div>
-                                                
                                                 </div>
-                                            </a>
+                                                <div class="ms-2 flex-grow-1">
+
+                                                    <div class="mb-2 d-flex align-items-center">
+                                                    <p class="mb-0"><strong>John Balami</strong> (IAP/Tribunal) has given a <strong>Binding Decision</strong> for <strong>Dispute Case 124</strong></p>
+                                                    </div>
+
+                                                    <div class="">
+                                                        <p class="mb-0">2 hours ago</p>
+                                                    </div>
+
+                                                </div>
+                                            
+                                            </div>
+                                            
+                                            <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
+                                                <div class="position-relative">
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
+                                                    </div>
+                                                </div>
+                                                <div class="ms-2 flex-grow-1">
+
+                                                    <div class="mb-2 d-flex align-items-center">
+                                                    <p class="mb-0"><strong>Atoyebi Damola (Ministry Admin)</strong> shared a document for <strong>Dispute Case 124</strong></p>
+                                                    </div>
+
+                                                    <div class="">
+                                                        <p class="mb-0">2 hours ago</p>
+                                                    </div>
+
+                                                </div>
+                                            
+                                            </div>
+                                           
                                         </div>
                                     </div>
 

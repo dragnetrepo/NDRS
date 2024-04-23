@@ -8,7 +8,7 @@
     <div class="auth-container d-flex align-items-center justify-content-center vh-100">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6 mx-auto">
+                <div class="col-lg-5 mx-auto">
                     <div class="card border-0 custom-card">
                         <div class="card-body">
                             <div class="text-center">

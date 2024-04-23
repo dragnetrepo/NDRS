@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="col-lg-5">
-                    <div class="d-flex align-items-center justify-ccontent-between gap-15">
+                    <div class="d-flex align-items-center justify-content-between gap-15">
 
                         <a class="btn btn-size btn-outline-light w-100 text-medium px-3" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter"><img src="images/filter.svg" class="img-fluid me-2" /> Filters</a>
 
