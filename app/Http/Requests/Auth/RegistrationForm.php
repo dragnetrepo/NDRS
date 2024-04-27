@@ -26,10 +26,10 @@ class RegistrationForm extends FormRequest
     public function rules(): array
     {
         return [
-            "phone" => "required|string|unique:users,phone",
             "first_name" => "required|string|min:3|max:191",
             "middle_name" => "nullable|string|min:3|max:191",
             "last_name" => "required|string|min:3|max:191",
+            "phone" => "required|string|unique:users,phone",
             "password" => ["required", Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised(), "confirmed"],
             "display_picture" => "nullable|mimes:png,jpg|max:2048",
             "union" => "required|integer",
