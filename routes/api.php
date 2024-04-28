@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::name("api.")->group(function () {
+Route::name("api.")->middleware(['cors'])->group(function () {
     Route::get("/verify-password-token", [AuthenticationController::class, "verify_password_token"])->name("verify-password-token");
     Route::post("/create-password", [AuthenticationController::class, "create_password"])->name("create-password");
 
@@ -40,11 +40,16 @@ Route::name("api.")->group(function () {
         });
 
         Route::name("union.")->group(function () {
+            Route::prefix("union")->group(function(){
+                Route::post('create', [UnionController::class, "create"])->name("create");
+                Route::post('send-invite', [UnionController::class, "send_invite"])->name("send-invite");
+            });
             Route::get("get-unions", [UnionController::class, "index"])->name("index");
             Route::get("get-union-branches/{union}", [UnionBranchController::class, "index"])->name("branches");
             Route::get("get-union-organizations/{branch}", [UnionSubBranchController::class, "index"])->name("sub-branches");
         });
 
+        Route::get('roles', [ProfileController::class, "get_roles"])->name("get-roles");
         Route::get("/logout", [AuthenticationController::class, "login"])->name("log-out");
     });
 });

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
 
 class ProfileController extends Controller
 {
@@ -69,7 +70,7 @@ class ProfileController extends Controller
             if ($request->hasFile("display_picture")) {
                 // This file
                 $file_name = sha1(time().$user->id).'.'.$request->file('display_picture')->getClientOriginalExtension();
-                $request->file('display_picture')->storeAs("display_picture", $file_name);
+                $request->file('display_picture')->storeAs("profile_photos", $file_name);
             }
 
             User::where("id", $user->id)->update([
@@ -84,6 +85,27 @@ class ProfileController extends Controller
             $this->response["status"] = Response::HTTP_OK;
             $this->response["message"] = "Profile information has been updated successfully!";
         }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function get_roles()
+    {
+        $roles = Role::get();
+        $data = [];
+
+        if ($roles->isNotEmpty()) {
+            foreach ($roles as $role) {
+                $data["roles"][] = [
+                    "role_id" => $role->id,
+                    "role_name" => $role->name,
+                ];
+            }
+        }
+
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["message"] = "Fetched all roles!";
+        $this->response["data"] = $data;
 
         return response()->json($this->response, $this->response["status"]);
     }

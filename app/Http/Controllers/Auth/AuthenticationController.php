@@ -109,7 +109,7 @@ class AuthenticationController extends Controller
             $message_body .= "<p>Cheers,</p>";
             $message_body .= "<p>".env("APP_NAME")." Team</p>";
 
-            $message_sent = $this->outgoing_messages->send_message(0, $request->email, "account verification", "email", $message_body);
+            $message_sent = $this->outgoing_messages->send_message(0, $request->email, "account verification", "email", "Verify your Email", $message_body);
 
             DB::commit();
 
@@ -164,7 +164,7 @@ class AuthenticationController extends Controller
             if ($request->hasFile("display_picture")) {
                 // This file
                 $file_name = sha1(time().$user->id).'.'.$request->file('display_picture')->getClientOriginalExtension();
-                $request->file('display_picture')->storeAs("display_picture", $file_name);
+                $request->file('display_picture')->storeAs("profile_photos", $file_name);
             }
 
             User::where("id", $user->id)->update([
@@ -278,7 +278,7 @@ class AuthenticationController extends Controller
                 $message_body .= "<p>Cheers,</p>";
                 $message_body .= "<p>".env("APP_NAME")." Team</p>";
 
-                $message_sent = $this->outgoing_messages->send_message($user->id, $user->email, "password reset", "email", $message_body);
+                $message_sent = $this->outgoing_messages->send_message($user->id, $user->email, "password reset", "email", "Reset your Password", $message_body);
 
                 DB::commit();
 
@@ -382,7 +382,7 @@ class AuthenticationController extends Controller
         $message_body .= "<p>Cheers,</p>";
         $message_body .= "<p>".env("APP_NAME")." Team</p>";
 
-        $message_sent = $this->outgoing_messages->send_message($user->id, $user->email, "two factor authentication", "email", $message_body);
+        $message_sent = $this->outgoing_messages->send_message($user->id, $user->email, "two factor authentication", "email", "Access your NDRS dashboard", $message_body);
 
         return $message_sent;
     }
