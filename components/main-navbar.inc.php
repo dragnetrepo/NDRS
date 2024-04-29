@@ -68,14 +68,14 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><img src="images/clipboard.svg" class="img-fluid" />  Reports</a>
+                        <a class="nav-link" href="reports.php"><img src="images/clipboard.svg" class="img-fluid" />  Reports</a>
                     </li>
                 </ul>
 
                 <div>
                     <ul class="navbar-nav flex-column sidebar-list py-3">
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="#"><img src="images/headphones.svg" class="img-fluid" />  Help & Support</a>
+                            <a class="nav-link" aria-current="page" href="help-support.php"><img src="images/headphones.svg" class="img-fluid" />  Help & Support</a>
                         </li>
                         
                         <li class="nav-item">

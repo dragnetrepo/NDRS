@@ -740,9 +740,9 @@ tr {
 }
 
 .chart-text{
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
-  line-height: 24px;
+  line-height: 28.8px;
   letter-spacing: -0.02em;
   text-align: left;
   color: #001A14;
@@ -837,6 +837,12 @@ tr {
   color: #015B20;
 }
 
+.heading-2{
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 23.2px;
+}
+
 .upload-box{
   border: 1.5px dashed #D0D5DD;
   border-radius: 16px;
@@ -865,6 +871,124 @@ tr {
   padding: 8px;
   border-radius: 4px;
   color: #101928;
+}
+
+.report-card-count{
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 38.4px;
+  letter-spacing: -0.02em;
+  text-align: left;
+  color: #1D2739;
+}
+
+.report-card-review{
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20.3px;
+  color: #1D2739;
+}
+
+.badge-custom {
+  width: 50px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50px;
+  gap: 8px;
+  text-align: center;
+}
+
+.badge-success{
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 17.4px;
+  letter-spacing: -0.005em;
+  background-color: #e8f7e6;
+  color: #0F7B05;
+}
+
+.badge-danger{
+  color: #D42620;
+  background-color: #fdeded;
+}
+
+.report-text-sub{
+  color: #98A2B3;
+}
+
+.active-date{
+  background-color: rgba(232, 247, 230, 1);
+  border: 1px solid rgba(19, 157, 6, 1);
+  padding: 6px 8px 6px 12px;
+  border-radius: 8px;
+}
+
+.progress-height-report{
+  height: 32px;
+  flex-grow: 1;
+}
+
+.progress-height-report .progress-bar{
+  text-align: left;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20.3px;
+  overflow: unset;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.progress-color-1{
+  background-color: #FBF1F1;
+  color: #344054;
+}
+
+.progress-color-2{
+  background-color: #E8F1FB;
+  color: #344054;
+}
+
+.progress-color-3{
+  background-color: #E7F6EC;
+  color: #344054;
+}
+
+.avatar-xs {
+  height: 25px;
+  width: 25px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 50px;
+}
+
+.justify-content-inherit{
+  justify-content: inherit;
+}
+
+.help-text{
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 26.1px;
+  text-align: left;
+  color: #344054 !important;
+}
+
+.help-text-sub{
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 26.1px;
+  text-align: left;
+  color: #98A2B3;
+}
+
+.card-hover:hover{
+  border: 1px solid #15AD07
+}
+
+.card-hover:hover h3{
+  color: var(--primary);
 }
 
 @media screen and (max-width: 768px) {

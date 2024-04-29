@@ -225,7 +225,176 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="tab-pane fade" id="pills-notification" role="tabpanel" aria-labelledby="pills-notification-tab" tabindex="0">...</div>
+                                            <div class="tab-pane fade" id="pills-notification" role="tabpanel" aria-labelledby="pills-notification-tab" tabindex="0">
+                                                <div class="mt-5">
+
+                                                    <div class="mb-4">
+                                                        <h4 class="text-medium">Notification settings</h4>
+                                                        <p class="mb-0 text-muted-3">We may still send you important notifcations about your account outside of your notification settings </p>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-lg-8">
+                                                            
+                                                            <div class="card card-box-view mb-4">
+                                                                <div class="card-body p-4">
+                                                                    <div class="d-flex justify-content-between align-items-center flex-lg-nowrap flex-wrap">
+                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                            <h4>Mentions</h4>
+                                                                            <p class="mb-0 text-muted-3">Notifications about any mentions in any discussions on the platform</p>
+                                                                        </div>
+
+                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">Email</label>
+                                                                            </div>
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">Whatsapp</label>
+                                                                            </div>
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">SMS</label>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="card card-box-view mb-4">
+                                                                <div class="card-body p-4">
+                                                                    <div class="d-flex justify-content-between align-items-center flex-lg-nowrap flex-wrap">
+                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                            <h4>Requests</h4>
+                                                                            <p class="mb-0 text-muted-3">Specific notifications about case verdicts requiring your review, polls etc</p>
+                                                                        </div>
+
+                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">Email</label>
+                                                                            </div>
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">Whatsapp</label>
+                                                                            </div>
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">SMS</label>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="card card-box-view mb-4">
+                                                                <div class="card-body p-4">
+                                                                    <div class="d-flex justify-content-between align-items-center flex-lg-nowrap flex-wrap">
+                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                            <h4>Case Updates</h4>
+                                                                            <p class="mb-0 text-muted-3">General updates about a case, like document updates and discussions</p>
+                                                                        </div>
+
+                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">Email</label>
+                                                                            </div>
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">Whatsapp</label>
+                                                                            </div>
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">SMS</label>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="card card-box-view mb-4">
+                                                                <div class="card-body p-4">
+                                                                    <div class="d-flex justify-content-between align-items-center flex-lg-nowrap flex-wrap">
+                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                            <h4>Invites</h4>
+                                                                            <p class="mb-0 text-muted-3">Notifications when you get invited to a new dispute case or branch</p>
+                                                                        </div>
+
+                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">Email</label>
+                                                                            </div>
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">Whatsapp</label>
+                                                                            </div>
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">SMS</label>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="card card-box-view mb-4">
+                                                                <div class="card-body p-4">
+                                                                    <div class="d-flex justify-content-between align-items-center flex-lg-nowrap flex-wrap">
+                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                            <h4>Password & Security</h4>
+                                                                            <p class="mb-0 text-muted-3">Receive a code on your registered email or phone number before you log in to confirm that it’s really you</p>
+                                                                        </div>
+
+                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">Email</label>
+                                                                            </div>
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">Whatsapp</label>
+                                                                            </div>
+
+                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked">SMS</label>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="tab-pane fade" id="pills-password" role="tabpanel" aria-labelledby="pills-password-tab" tabindex="0">
                                                 <div class="mt-5">
                                                     <div class="row">
