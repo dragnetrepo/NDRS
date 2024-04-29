@@ -83,6 +83,10 @@ h6 {
   color: #645d5d;
 }
 
+.text-muted-4{
+  color: #475367;
+}
+
 .form-label {
   font-size: 14px;
   font-weight: 500;
@@ -991,6 +995,9 @@ tr {
   color: var(--primary);
 }
 
+.accordion-button::after{
+  background-image: url(../images/chevron-down.svg);
+}
 @media screen and (max-width: 768px) {
   .custom-card {
     padding: 20px 16px 20px 16px;

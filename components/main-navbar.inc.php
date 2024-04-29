@@ -60,7 +60,7 @@
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><img src="images/branch.svg" class="img-fluid" />  Branches</a>
+                        <a class="nav-link" href="union-branches.php"><img src="images/branch.svg" class="img-fluid" />  Branches</a>
                     </li>
 
                     <li class="nav-item">

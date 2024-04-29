@@ -25,17 +25,17 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-lg-7">
-                                    <div class="d-flex align-items-center gap-20 mt-4 ">
-                                        <a href="help-support.php" class="text-muted-4 text-decoration-none"><i class="bi bi-arrow-left"></i> Go back</a>
+                                    <h4 class="mt-4 bold-text">How can we help you today?</h4>
 
-                                        <nav style="--bs-breadcrumb-divider: '/';" aria-label="breadcrumb">
-                                            <ol class="breadcrumb mb-0">
-                                                <li class="breadcrumb-item"><a href="help-support.php" class="text-main-primary text-decoration-none">Help & Support</a></li>
-                                                <li class="breadcrumb-item text-muted-3 active" aria-current="page">Discussions</li>
-                                            </ol>
-                                        </nav>
+                                    <div class="input-group mt-4">
+                                        <span class="input-group-text bg-transparent">
+                                            <img src="images/search.svg" class="img-fluid" alt="search">
+                                        </span>
+                                        <input type="search" class="form-control border-start-0 form-control-height" placeholder="Search for articles">
                                     </div>
-                                    
+
+                                    <p class="help-text mt-4">Search Results for: <strong>Creating Unions</strong></p>
+
                                     <div class="heading-card mt-4">
                                         <img src="images/help.svg" class="img-fluid mb-3" />
 

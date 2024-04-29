@@ -27,14 +27,17 @@
                                 <div class="col-lg-12">
                                     <div class="margin-top-negative">
                                         <ul class="nav custom-tab nav-underline mb-3" id="pills-tab" role="tablist">
+                                            
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link active" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button" role="tab" aria-controls="pills-all" aria-selected="true">All</button>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link" id="pills-pending-tab" data-bs-toggle="pill" data-bs-target="#pills-pending" type="button" role="tab" aria-controls="pills-pending" aria-selected="false">Pending</button>
                                             </li>
+
                                         </ul>
                                         <div class="tab-content" id="pills-tabContent">
+
                                             <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab" tabindex="0">
 
                                                 <div class="row mt-5">
@@ -217,13 +220,188 @@
                                                 </div>
 
                                             </div>
+
                                             <div class="tab-pane fade" id="pills-pending" role="tabpanel" aria-labelledby="pills-pending-tab" tabindex="0">
-                                                 <div class="row mt-5">
+                                                <div class="row mt-5">
+                                                    <div class="col-lg-4 mb-4">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text bg-transparent">
+                                                                <img src="images/search.svg" class="img-fluid" alt="search" />
+                                                            </span>
+                                                            <input type="search" class="form-control border-start-0 form-control-height" placeholder="Search disputes...">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-4 mb-4">
+                                                        <div class="d-flex align-items-center justify-content-between">
+
+                                                            <button class="btn btn-size btn-outline-light text-medium"><img src="images/sort.svg" class="img-fluid me-2" /> Most Recent</button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                                                            <label class="form-check-label" for="inlineRadio1">All</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                                                            <label class="form-check-label" for="inlineRadio2">Notifications</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+                                                            <label class="form-check-label" for="inlineRadio3">Case Activity</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mt-4">
+                                                    <div class="col-lg-12">
+                                                        <div class="d-flex align-items-center justify-content-between w-100">
+                                                            <div class="border-bottom w-100"></div>
+                                                            <div class="notification-badge text-medium">Today</div>
+                                                            <div class="border-bottom w-100"></div>
+                                                        <div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
                                                     <div class="col-lg-8">
+                                                        <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
+                                                            <div class="position-relative">
+                                                                <div class="avatar-sm flex-shrink-0">
+                                                                    <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
+                                                                </div>
+                                                            </div>
+                                                            <div class="ms-2 flex-grow-1">
+
+                                                                <div class="mb-2 d-flex align-items-center">
+                                                                <p class="mb-0"><strong>Atoyebi Damola (Ministry Admin)</strong> added you as <strong>Concilliator</strong> for <strong>Dispute Case 124</strong></p>
+                                                                </div>
+
+                                                                <div class="">
+                                                                    <p class="mb-0">2 hours ago</p>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                            
+                                                        <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
+                                                            <div class="position-relative">
+                                                                <div class="avatar-sm flex-shrink-0">
+                                                                    <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
+                                                                </div>
+                                                            </div>
+                                                            <div class="ms-2 flex-grow-1">
+
+                                                                <div class="mb-2 d-flex align-items-center">
+                                                                <p class="mb-0"><strong>John Balami</strong> (IAP/Tribunal) has given a <strong>Binding Decision</strong> for <strong>Dispute Case 124</strong></p>
+                                                                </div>
+
+                                                                <div class="">
+                                                                    <p class="mb-0">2 hours ago</p>
+                                                                </div>
+
+                                                            </div>
                                                         
+                                                        </div>
+                                                        
+                                                        <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
+                                                            <div class="position-relative">
+                                                                <div class="avatar-sm flex-shrink-0">
+                                                                    <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
+                                                                </div>
+                                                            </div>
+                                                            <div class="ms-2 flex-grow-1">
+
+                                                                <div class="mb-2 d-flex align-items-center">
+                                                                <p class="mb-0"><strong>Atoyebi Damola (Ministry Admin)</strong> shared a document for <strong>Dispute Case 124</strong></p>
+                                                                </div>
+
+                                                                <div class="">
+                                                                    <p class="mb-0">2 hours ago</p>
+                                                                </div>
+
+                                                            </div>
+                                                        
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mt-4">
+                                                    <div class="col-lg-12">
+                                                        <div class="d-flex align-items-center justify-content-between w-100">
+                                                            <div class="border-bottom w-100"></div>
+                                                            <div class="notification-badge text-medium">Yesterday</div>
+                                                            <div class="border-bottom w-100"></div>
+                                                        <div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                        <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
+                                                            <div class="position-relative">
+                                                                <div class="avatar-sm flex-shrink-0">
+                                                                    <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
+                                                                </div>
+                                                            </div>
+                                                            <div class="ms-2 flex-grow-1">
+
+                                                                <div class="mb-2 d-flex align-items-center">
+                                                                <p class="mb-0"><strong>Atoyebi Damola (Ministry Admin)</strong> added you as <strong>Concilliator</strong> for <strong>Dispute Case 124</strong></p>
+                                                                </div>
+
+                                                                <div class="">
+                                                                    <p class="mb-0">2 hours ago</p>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                            
+                                                        <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
+                                                            <div class="position-relative">
+                                                                <div class="avatar-sm flex-shrink-0">
+                                                                    <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
+                                                                </div>
+                                                            </div>
+                                                            <div class="ms-2 flex-grow-1">
+
+                                                                <div class="mb-2 d-flex align-items-center">
+                                                                <p class="mb-0"><strong>John Balami</strong> (IAP/Tribunal) has given a <strong>Binding Decision</strong> for <strong>Dispute Case 124</strong></p>
+                                                                </div>
+
+                                                                <div class="">
+                                                                    <p class="mb-0">2 hours ago</p>
+                                                                </div>
+
+                                                            </div>
+                                                        
+                                                        </div>
+                                                        
+                                                        <div class="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
+                                                            <div class="position-relative">
+                                                                <div class="avatar-sm flex-shrink-0">
+                                                                    <img src="images/ipman-logo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
+                                                                </div>
+                                                            </div>
+                                                            <div class="ms-2 flex-grow-1">
+
+                                                                <div class="mb-2 d-flex align-items-center">
+                                                                <p class="mb-0"><strong>Atoyebi Damola (Ministry Admin)</strong> shared a document for <strong>Dispute Case 124</strong></p>
+                                                                </div>
+
+                                                                <div class="">
+                                                                    <p class="mb-0">2 hours ago</p>
+                                                                </div>
+
+                                                            </div>
+                                                        
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
