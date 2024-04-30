@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Union;
+namespace App\Http\Requests\UnionBranch;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 
-class CreateUnionRequest extends FormRequest
+class CreateUnionBranchRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +25,9 @@ class CreateUnionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string|min:3|max:191",
+            "union" => "required|integer",
             "acronym" => "nullable|string|min:3|max:191",
             "industry" => "required|string|min:3",
-            "headquarters" => "required|string|min:3",
-            "phone" => "required|string|min:3",
             "about" => "required|string|min:3",
             "founded_in" => "required|string|min:3",
             "logo" => "required|file|mimes:png,jpg|max:2048",

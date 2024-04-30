@@ -46,11 +46,38 @@ class UnionController extends Controller
                 ];
             }
 
-            $this->response["message"] = "Retrieved comprehensive union list";
+            $this->response["message"] = "Retrieved Union list";
             $this->response["status"] = Response::HTTP_OK;
         }
 
         $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function read($union)
+    {
+        $union = Union::find($union);
+
+        if ($union) {
+            $this->response["data"] = [
+                "_id" => $union->id,
+                "name" => $union->name,
+                "acronym" => $union->acronym,
+                "description" => $union->description,
+                "phone" => $union->phone,
+                "industry" => $union->industry,
+                "headquarters" => $union->headquarters,
+                "founded_in" => $union->founded_in,
+                "logo" => $union->logo ? asset($union->logo) : '',
+            ];
+            $this->response["message"] = "Union Information Retrieved";
+            $this->response["status"] = Response::HTTP_OK;
+        }
+        else {
+            $this->response["message"] = "We could not locate the union you are looking for!";
+            $this->response["status"] = Response::HTTP_NOT_FOUND;
+        }
 
         return response()->json($this->response, $this->response["status"]);
     }
@@ -63,13 +90,16 @@ class UnionController extends Controller
             if ($request->hasFile("logo")) {
                 // This file
                 $file_name = sha1(time().$user->id).'.'.$request->file('logo')->getClientOriginalExtension();
-                $request->file('logo')->storeAs("profile_photos", $file_name);
+                $request->file('logo')->storeAs("union_logos", $file_name);
             }
 
             Union::create([
                 "name" => $request->name,
                 "acronym" => $request->acronym,
                 "founded_in" => $request->founded_in,
+                "phone" => $request->phone,
+                "headquarters" => $request->headquarters,
+                "industry" => $request->industry,
                 "description" => $request->about,
                 "logo" => $file_name,
             ]);
@@ -86,13 +116,64 @@ class UnionController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
-    public function send_invite(SendUnionInviteRequest $request)
+    public function edit(CreateUnionRequest $request, $union)
+    {
+        $user = $request->user();
+        $union = Union::find($union);
+
+        if ($union) {
+            $union->name = $request->name;
+            $union->acronym = $request->acronym;
+            $union->industry = $request->industry;
+            $union->headquarters = $request->headquarters;
+            $union->phone = $request->phone;
+            $union->about = $request->about;
+            $union->founded_in = $request->founded_in;
+            $file_name = $union->logo;
+            if ($request->hasFile("logo")) {
+                // This file
+                $file_name = sha1(time().$user->id).'.'.$request->file('logo')->getClientOriginalExtension();
+                $request->file('logo')->storeAs("union_logos", $file_name);
+            }
+
+            $union->logo = $file_name;
+            if ($union->save()) {
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["message"] = "Union has been edited successfully!";
+            }
+            else {
+                $this->response["message"] = "We could not complete your request at this time. Please try again!";
+            }
+        }
+        else {
+            $this->response["message"] = "The selected union does not match our records!";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function delete($union)
+    {
+        $union = Union::find($union);
+
+        if ($union->delete()) {
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["message"] = "Union has been deleted successfully!";
+        }
+        else {
+            $this->response["message"] = "We could not complete your request at this time. Please try again!";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function send_invite(SendUnionInviteRequest $request, $union)
     {
         try {
             // Check if user has an account to be added as an admin
             $user = User::where("email", $request->email)->first();
-            $role = Role::where("id", $request->role)->first();
-            $union = Union::where("id", $request->union)->first();
+            $role = Role::find($request->role);
+            $union = Union::find($union);
 
             if ($union) {
                 if ($role) {

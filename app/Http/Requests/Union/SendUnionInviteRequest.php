@@ -27,7 +27,6 @@ class SendUnionInviteRequest extends FormRequest
         return [
             "email" => "required|email",
             "role" => "required|integer",
-            "union" => "required|integer",
         ];
     }
 
