@@ -135,7 +135,7 @@
                                                                        
                                                                         <form>
                                                                             <div class="row mt-4">
-                                                                                <div class="col-lg-9 mx-auto">
+                                                                                <div class="col-lg-12">
                                                                                     <div class="mb-4">
                                                                                         <label class="form-label">User’s email</label>
                                                                                         <input type="email" class="form-control form-control-height" placeholder="Enter User’s email" value="Joshephmakinde@gmail.com">
@@ -259,7 +259,7 @@
                                                                                                 </div>
                                                                                             </td>
                                                                                             <td>
-                                                                                                <div class="d-flex align-items-center avatar-holder my-4">
+                                                                                                <div class="d-flex align-items-center avatar-holder">
                                                                                                     <div class="position-relative">
                                                                                                         <div class="avatar-sm flex-shrink-0">
                                                                                                             <img src="images/user-photo.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
@@ -1882,7 +1882,7 @@
     <div class="modal fade" id="disputeModal" tabindex="-1" aria-labelledby="disputeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content p-lg-4 border-0">
-                <div class="modal-header py-4">
+                <div class="modal-header">
                     <h1 class="modal-title fs-5">Refer to dispute case</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -2050,7 +2050,7 @@
     <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content p-lg-4 border-0">
-                <div class="modal-header py-4">
+                <div class="modal-header">
                     <h1 class="modal-title fs-5">Preview Sent Invites</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

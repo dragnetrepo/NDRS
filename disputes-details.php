@@ -1118,7 +1118,7 @@
     <div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content p-lg-4 border-0">
-                <div class="modal-header py-4">
+                <div class="modal-header">
                     <h1 class="modal-title fs-5">Send invites</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

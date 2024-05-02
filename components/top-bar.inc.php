@@ -27,11 +27,25 @@
 
         <div class="d-lg-flex align-items-center d-none" style="gap: 30px;">
 
-            <a href="#">
+            <a href="#" class="bell-box position-relative">
+                <img src="images/dott.svg" class="img-fluid indicator-red" alt="indicator" />
                 <img src="images/bell-green.svg" class="img-fluid" alt="bell" />
             </a>
 
-            <button class="btn btn-main-primary">Create new <i class="bi bi-plus"></i></button>
+            <!-- <button class="btn btn-main-primary">Create new <i class="bi bi-plus"></i></button> -->
+
+            <div class="d-flex avatar-holder">
+                <div class="position-relative">
+                    <img src="images/Avatar-online-indicator.svg" class="img-fluid indicator-avatar" alt="indicator" />
+                    <div class="avatar-sm flex-shrink-0">
+                        <img src="images/avatar-2.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+                    </div>
+                </div>
+                <div class="ms-2 flex-grow-1">
+                    <h5 class="mb-0">Simon Lalong</h5>
+                    <p class="mb-0 text-muted-3">slalong@ndrs.org</p>
+                </div>
+            </div>
 
         </div>
     </div>

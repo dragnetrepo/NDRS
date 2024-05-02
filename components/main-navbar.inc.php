@@ -81,27 +81,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="settings.php"><img src="images/settings.svg" class="img-fluid" />  Settings</a>
                         </li>
-                    </ul>
 
-                    <div class="d-flex justify-content-between align-items-center avatar-icon w-100">
-                        <div class="d-flex avatar-holder">
-                            <div class="position-relative">
-                                <img src="images/Avatar-online-indicator.svg" class="img-fluid indicator-avatar" alt="indicator" />
-                                <div class="avatar-sm flex-shrink-0">
-                                    <img src="images/avatar-2.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-                                </div>
-                            </div>
-                            <div class="ms-2 flex-grow-1">
-                                <h5 class="mb-0">Simon Lalong</h5>
-                                <p class="mb-0">slalong@ndrs.org</p>
-                            </div>
-                        </div>
-                        <div>
-                            <a href="">
-                                <img src="images/log-out.svg" class="img-fluid" alt="Logout" />
-                            </a>
-                        </div>
-                    </div>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.php"><img src="images/log-out.svg" class="img-fluid" />  Log out</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

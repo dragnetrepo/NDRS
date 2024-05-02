@@ -27,6 +27,10 @@ a{
   color: #001A14 !important;
 }
 
+.text-grey{
+  color: var(--grey-2) !important;
+}
+
 a:hover{
   color: var(--grey-2);
 }
@@ -281,14 +285,24 @@ h6 {
 }
 
 .sidebar-list .nav-link {
-  padding-top: 0px;
-  padding-bottom: 12px;
-  padding-left: 0px !important;
-  padding-right: 0px !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
   font-size: 14px;
   line-height: 20.3px;
   color: #547d74;
   font-weight: 500;
+}
+
+.sidebar-list .nav-link:hover{
+  background-color: #E8F7E6;
+  border-radius: 8px;
+}
+
+.sidebar-list .nav-link.nav-active{
+  background-color: #E8F7E6;
+  border-radius: 8px;
 }
 
 .text-underline {
@@ -855,11 +869,22 @@ tr {
 .upload-box.upload-box-success{
   border-color: #5FC381 !important;
   background-color: #FBFEFC;
-  ;
+}
+
+.indicator-red{
+  position: absolute;
+  right: 13px;
+  top: 12px;
+}
+
+.bell-box{
+  padding: 10px;
+  background-color: #F9F9F9;
+  border-radius: 8px;
 }
 
 .pager .active>.page-link, .pager .page-link.active{
-  background-color: #FFECE5;
+  background-color: #E8F7E6;
   color: #15AD07;
   border: 0;
   border-radius: 6px;
@@ -967,6 +992,15 @@ tr {
   border-radius: 50px;
 }
 
+.avatar-md {
+  height: 64px;
+  width: 64px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 50px;
+}
+
+
 .justify-content-inherit{
   justify-content: inherit;
 }
@@ -998,6 +1032,31 @@ tr {
 .accordion-button::after{
   background-image: url(../images/chevron-down.svg);
 }
+
+.accordion-expand .accordion-button{
+  height: 66px !important;
+}
+
+.accordion-expand .accordion-item{
+  border: 1px solid #E4E7EC;
+  box-shadow: 0px 2px 4px -2px #0000000A;
+  box-shadow: 0px 4px 8px -2px #00000014;
+}
+
+.accordion-expand .accordion-item:first-of-type {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.accordion-expand .accordion-item:last-of-type {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.accordion-expand .accordion-item:not(:first-of-type) {
+  border-top: 1px solid #dee2e6;
+}
+
 @media screen and (max-width: 768px) {
   .custom-card {
     padding: 20px 16px 20px 16px;
