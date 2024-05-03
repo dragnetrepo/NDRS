@@ -95,13 +95,13 @@ class UnionBranchController extends Controller
                 if ($request->hasFile("logo")) {
                     // This file
                     $file_name = sha1(time().$user->id).'.'.$request->file('logo')->getClientOriginalExtension();
-                    $request->file('logo')->storeAs("union_branch_logos", $file_name);
+                    $request->file('logo')->storeAs("", $file_name, ['disk' => 'union_branch_logos']);
                 }
 
                 UnionBranch::create([
                     "union_id" => $union->id,
                     "name" => $request->name,
-                    "acronym" => $request->acronym,
+                    "acronym" => $request->acronym ?? '',
                     "founded_in" => $request->founded_in,
                     "industry" => $request->industry,
                     "description" => $request->about,
@@ -109,7 +109,7 @@ class UnionBranchController extends Controller
                 ]);
 
                 $this->response["status"] = Response::HTTP_OK;
-                $this->response["message"] = "Union has been created successfully!";
+                $this->response["message"] = "Union Branch has been created successfully!";
             }
             else {
                 $this->response["status"] = Response::HTTP_UNAUTHORIZED;
@@ -135,15 +135,15 @@ class UnionBranchController extends Controller
 
         if ($union_branch) {
             $union_branch->name = $request->name;
-            $union_branch->acronym = $request->acronym;
+            $union_branch->acronym = $request->acronym ?? '';
             $union_branch->industry = $request->industry;
-            $union_branch->about = $request->about;
+            $union_branch->description = $request->about;
             $union_branch->founded_in = $request->founded_in;
             $file_name = $union_branch->logo;
             if ($request->hasFile("logo")) {
                 // This file
                 $file_name = sha1(time().$user->id).'.'.$request->file('logo')->getClientOriginalExtension();
-                $request->file('logo')->storeAs("union_branch_logos", $file_name);
+                $request->file('logo')->storeAs("", $file_name, ['disk' => 'union_branch_logos']);
             }
 
             $union_branch->logo = $file_name;
@@ -166,12 +166,17 @@ class UnionBranchController extends Controller
     {
         $union_branch = UnionBranch::find($branch);
 
-        if ($union_branch->delete()) {
-            $this->response["status"] = Response::HTTP_OK;
-            $this->response["message"] = "Union Branch has been deleted successfully!";
+        if ($union_branch) {
+            if ($union_branch->delete()) {
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["message"] = "Union Branch has been deleted successfully!";
+            }
+            else {
+                $this->response["message"] = "We could not complete your request at this time. Please try again!";
+            }
         }
         else {
-            $this->response["message"] = "We could not complete your request at this time. Please try again!";
+            $this->response["message"] = "You have made an invalid request. Please try again!";
         }
 
         return response()->json($this->response, $this->response["status"]);

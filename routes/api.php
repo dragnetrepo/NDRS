@@ -46,7 +46,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                     Route::post('create', "create")->name("create");
                     Route::post('edit/{union}', "edit")->name("edit");
                     Route::post('send-invite/{union}', "send_invite")->name("send-invite");
-                    Route::post('delete/{union}', "delete")->name("delete");
+                    Route::delete('delete/{union}', "delete")->name("delete");
                 });
 
                 Route::prefix("branch")->controller(UnionBranchController::class,)->name("branch.")->group(function(){
@@ -54,7 +54,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                     Route::post('create', "create")->name("create");
                     Route::post('edit/{branch}', "edit")->name("edit");
                     Route::post('{branch}/send-invite', "send_invite")->name("send-invite");
-                    Route::post('delete/{branch}', "delete")->name("delete");
+                    Route::delete('delete/{branch}', "delete")->name("delete");
                 });
 
                 Route::prefix("sub-branch")->controller(UnionSubBranchController::class)->name("branch.")->group(function(){
@@ -62,7 +62,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                     Route::post('create', "create")->name("create");
                     Route::post('edit/{sub_branch}', "edit")->name("edit");
                     Route::post('{sub_branch}/send-invite', "send_invite")->name("send-invite");
-                    Route::post('delete/{sub_branch}', "delete")->name("delete");
+                    Route::delete('delete/{sub_branch}', "delete")->name("delete");
                 });
             });
 

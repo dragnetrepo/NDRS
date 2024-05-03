@@ -55,6 +55,18 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+        'union_logos' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/union/logos',
+        ],
+        'union_branch_logos' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/union_branch/logos',
+        ],
+        'union_sub_branch_logos' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/union_sub_branch/logos',
+        ],
 
     ],
 

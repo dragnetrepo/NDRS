@@ -36,13 +36,26 @@ class UnionController extends Controller
         $unions = Union::get();
         $this->response["message"] = "No data found";
 
+        // $roles = [
+        //     "Ministry Admin",
+        //     "National Union Admin",
+        //     "Union Branch Admin",
+        //     "Union Members",
+        // ];
+
+        // foreach ($roles as $role) {
+        //     Role::create([
+        //         "name" => $role
+        //     ]);
+        // }
+
         if ($unions->isNotEmpty()) {
             foreach ($unions as $union) {
                 $data[] = [
                     "id" => $union->id,
                     "name" => $union->name,
                     "acronym" => $union->acronym,
-                    "logo" => $union->logo ? asset($union->logo) : '',
+                    "logo" => $union->logo ? asset('/union/logos/'.$union->logo) : '',
                 ];
             }
 
@@ -90,12 +103,12 @@ class UnionController extends Controller
             if ($request->hasFile("logo")) {
                 // This file
                 $file_name = sha1(time().$user->id).'.'.$request->file('logo')->getClientOriginalExtension();
-                $request->file('logo')->storeAs("union_logos", $file_name);
+                $request->file('logo')->storeAs("", $file_name, ['disk' => 'union_logos']);
             }
 
             Union::create([
                 "name" => $request->name,
-                "acronym" => $request->acronym,
+                "acronym" => $request->acronym ?? '',
                 "founded_in" => $request->founded_in,
                 "phone" => $request->phone,
                 "headquarters" => $request->headquarters,
@@ -123,17 +136,17 @@ class UnionController extends Controller
 
         if ($union) {
             $union->name = $request->name;
-            $union->acronym = $request->acronym;
+            $union->acronym = $request->acronym ?? '';
             $union->industry = $request->industry;
             $union->headquarters = $request->headquarters;
             $union->phone = $request->phone;
-            $union->about = $request->about;
+            $union->description = $request->about;
             $union->founded_in = $request->founded_in;
             $file_name = $union->logo;
             if ($request->hasFile("logo")) {
                 // This file
                 $file_name = sha1(time().$user->id).'.'.$request->file('logo')->getClientOriginalExtension();
-                $request->file('logo')->storeAs("union_logos", $file_name);
+                $request->file('logo')->storeAs("", $file_name, ['disk' => 'union_logos']);
             }
 
             $union->logo = $file_name;
@@ -156,12 +169,17 @@ class UnionController extends Controller
     {
         $union = Union::find($union);
 
-        if ($union->delete()) {
-            $this->response["status"] = Response::HTTP_OK;
-            $this->response["message"] = "Union has been deleted successfully!";
+        if ($union) {
+            if ($union->delete()) {
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["message"] = "Union has been deleted successfully!";
+            }
+            else {
+                $this->response["message"] = "We could not complete your request at this time. Please try again!";
+            }
         }
         else {
-            $this->response["message"] = "We could not complete your request at this time. Please try again!";
+            $this->response["message"] = "You have made an invalid request. Please try again!";
         }
 
         return response()->json($this->response, $this->response["status"]);

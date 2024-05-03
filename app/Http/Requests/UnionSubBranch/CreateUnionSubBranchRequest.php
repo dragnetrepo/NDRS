@@ -24,15 +24,24 @@ class CreateUnionSubBranchRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            "union" => "required|integer",
-            "branch" => "required|integer",
+        $rules =  [
+            "name" => "required|string|min:3|max:191",
             "acronym" => "nullable|string|min:3|max:191",
             "industry" => "required|string|min:3",
             "about" => "required|string|min:3",
             "founded_in" => "required|string|min:3",
-            "logo" => "required|file|mimes:png,jpg|max:2048",
         ];
+
+        if (!request("sub_branch")) {
+            $rules["union"] = "required|integer";
+            $rules["branch"] = "required|integer";
+            $rules["logo"] = "required|file|mimes:png,jpg|max:2048";
+        }
+        else {
+            $rules["logo"] = "nullable|file|mimes:png,jpg|max:2048";
+        }
+
+        return $rules;
     }
 
     public function failedValidation(Validator $validator)

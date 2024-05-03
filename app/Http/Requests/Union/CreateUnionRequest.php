@@ -24,7 +24,7 @@ class CreateUnionRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             "name" => "required|string|min:3|max:191",
             "acronym" => "nullable|string|min:3|max:191",
             "industry" => "required|string|min:3",
@@ -32,8 +32,16 @@ class CreateUnionRequest extends FormRequest
             "phone" => "required|string|min:3",
             "about" => "required|string|min:3",
             "founded_in" => "required|string|min:3",
-            "logo" => "required|file|mimes:png,jpg|max:2048",
         ];
+
+        if (!request("union")) {
+            $rules['logo'] = "required|file|mimes:png,jpg|max:2048";
+        }
+        else {
+            $rules['logo'] = "nullable|file|mimes:png,jpg|max:2048";
+        }
+
+        return $rules;
     }
 
     public function failedValidation(Validator $validator)
