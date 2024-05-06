@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Union\UnionSubBranchController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Auth\AuthenticationController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +19,17 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::get('clear-data', function(){
+    DB::statement('TRUNCATE users;');
+    DB::statement('TRUNCATE email_invitations;');
+    DB::statement('TRUNCATE email_validations;');
+    DB::statement('TRUNCATE outgoing_messages;');
+
+    return response()->json([
+        'message' => 'Cleared data'
+    ]);
+});
 
 Route::name("api.")->middleware(['cors'])->group(function () {
     Route::get("/verify-password-token", [AuthenticationController::class, "verify_password_token"])->name("verify-password-token");
@@ -72,7 +84,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
         });
 
         Route::get('roles', [ProfileController::class, "get_roles"])->name("get-roles");
-        Route::get("/logout", [AuthenticationController::class, "login"])->name("log-out");
+        Route::get("/logout", [AuthenticationController::class, "logout"])->name("log-out");
     });
 });
 

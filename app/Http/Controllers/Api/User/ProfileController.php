@@ -70,7 +70,7 @@ class ProfileController extends Controller
             if ($request->hasFile("display_picture")) {
                 // This file
                 $file_name = sha1(time().$user->id).'.'.$request->file('display_picture')->getClientOriginalExtension();
-                $request->file('display_picture')->storeAs("profile_photos", $file_name);
+                $request->file('display_picture')->storeAs("", $file_name, ['disk' => 'profile_photos']);
             }
 
             User::where("id", $user->id)->update([

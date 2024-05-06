@@ -61,31 +61,49 @@ class AuthenticationController extends Controller
 
     public function create_password(CreatePasswordRequest $request)
     {
-        $get_invite = EmailInvitations::where("token", $request->invite_token)->first();
+        if ($request->invite_token) {
+            $get_invite = EmailInvitations::where("token", $request->invite_token)->first();
 
-        if ($get_invite) {
-            // Register Account
-            $user = User::create([
-                "email" => $get_invite->email,
+            if ($get_invite) {
+                // Register Account
+                $user = User::updateOrCreate([
+                    "email" => $get_invite->email,
+                ],[
+                    "email" => $get_invite->email,
+                    "password" => Hash::make($request->password),
+                    "email_verified_at" => Carbon::now()
+                ]);
+
+                if ($user) {
+                    // Add user to their union/branch
+                    UnionUserRole::create([
+                        "user_id" => $user->id,
+                        "role_id" => $get_invite->role_id,
+                        "union_id" => $get_invite->union_id,
+                        "union_branch_id" => $get_invite->branch_id,
+                        "union_sub_branch_id" => $get_invite->sub_branch_id,
+                    ]);
+
+                    $this->response["status"] = Response::HTTP_OK;
+                    $this->response["data"] = [
+                        "token" => login_user_token($user)
+                    ];
+                }
+            }
+        }
+        elseif ($request->email) {
+            $user = User::updateOrCreate([
+                "email" => $request->email,
+            ],[
+                "email" => $request->email,
                 "password" => Hash::make($request->password),
                 "email_verified_at" => Carbon::now()
             ]);
 
-            if ($user) {
-                // Add user to their union/branch
-                UnionUserRole::create([
-                    "user_id" => $user->id,
-                    "role_id" => $get_invite->role_id,
-                    "union_id" => $get_invite->union_id,
-                    "union_branch_id" => $get_invite->branch_id,
-                    "union_sub_branch_id" => $get_invite->sub_branch_id,
-                ]);
-
-                $this->response["status"] = Response::HTTP_OK;
-                $this->response["data"] = [
-                    "token" => login_user_token($user)
-                ];
-            }
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["data"] = [
+                "token" => login_user_token($user)
+            ];
         }
 
         return response()->json($this->response, $this->response["status"]);
@@ -164,7 +182,7 @@ class AuthenticationController extends Controller
             if ($request->hasFile("display_picture")) {
                 // This file
                 $file_name = sha1(time().$user->id).'.'.$request->file('display_picture')->getClientOriginalExtension();
-                $request->file('display_picture')->storeAs("profile_photos", $file_name);
+                $request->file('display_picture')->storeAs("", $file_name, ['disk' => 'profile_photos']);
             }
 
             User::where("id", $user->id)->update([
@@ -174,7 +192,7 @@ class AuthenticationController extends Controller
                 "phone" => $request->phone,
                 "display_picture" => $file_name,
                 "email_verified_at" => Carbon::now(),
-                "password" => Hash::make($request->password),
+                // "password" => Hash::make($request->password),
             ]);
 
             // Get Member Role ID

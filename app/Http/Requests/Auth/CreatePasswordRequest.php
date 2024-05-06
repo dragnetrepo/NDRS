@@ -26,7 +26,8 @@ class CreatePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "invite_token" => "required|string",
+            "invite_token" => "required_without:email|string",
+            "email" => "required_without:invite_token|email|string",
             "password" => ["required", Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised(), "confirmed"],
         ];
     }
