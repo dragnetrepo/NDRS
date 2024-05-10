@@ -27,7 +27,7 @@
 
         <div class="d-lg-flex align-items-center d-none" style="gap: 30px;">
 
-            <a href="#" class="bell-box position-relative">
+            <a href="notifications.php" class="bell-box position-relative">
                 <img src="images/dott.svg" class="img-fluid indicator-red" alt="indicator" />
                 <img src="images/bell-green.svg" class="img-fluid" alt="bell" />
             </a>

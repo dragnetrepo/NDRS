@@ -419,7 +419,7 @@
                                                                                     <img src="images/dots-v.svg" class="img-fluid" alt="dot-v" />
                                                                                 </button>
                                                                                 <ul class="dropdown-menu border-radius action-menu-2">
-                                                                                    <li><a class="dropdown-item" href="union-branches-3.php">View Admin</a></li>
+                                                                                    <li><a class="dropdown-item" href="union-branches-3.php">View Details</a></li>
                                                                                 </ul>
                                                                             </div>
                                                                         </td>
@@ -743,7 +743,7 @@
                                                                                     <img src="images/dots-v.svg" class="img-fluid" alt="dot-v" />
                                                                                 </button>
                                                                                 <ul class="dropdown-menu border-radius action-menu-2">
-                                                                                    <li><a class="dropdown-item" href="union-branches-3.php">View Admin</a></li>
+                                                                                    <li><a class="dropdown-item" href="union-branches-3.php">View Details</a></li>
                                                                                 </ul>
                                                                             </div>
                                                                         </td>
