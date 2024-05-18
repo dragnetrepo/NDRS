@@ -30,7 +30,7 @@
                                         <div class="col-lg-4 mb-lg-0 mb-3">
                                             <a href="#" class="text-decoration-none">
                                                 <div class="card dash-card bg-custom-color-2 h-100 border-0">
-                                                    <div class="card-body">
+                                                    <div class="card-body d-flex flex-column">
                                                         <div class="d-flex avatar-holder align-items-center mb-3">
                                                             <div class="position-relative flex-shrink-0">
                                                                 <img src="images/dispute-icon.svg" class="img-fluid" />
@@ -39,7 +39,7 @@
                                                                 <h5 class="mb-0">View Pending Disputes (43)</h5>
                                                             </div>
                                                         </div>
-                                                        <p class="mb-2">View all pending dispute requests</p>
+                                                        <p class="mb-2 flex-grow-1">View all pending dispute requests</p>
 
                                                         <p class="action mb-0">View disputes</p>
                                                     </div>
@@ -50,7 +50,7 @@
                                         <div class="col-lg-4 mb-lg-0 mb-3">
                                             <a href="#" class="text-decoration-none">
                                                 <div class="card dash-card bg-custom-color-2 h-100 border-0">
-                                                    <div class="card-body">
+                                                    <div class="card-body d-flex flex-column">
                                                         <div class="d-flex avatar-holder align-items-center mb-3">
                                                             <div class="position-relative flex-shrink-0">
                                                                 <img src="images/union-icon.svg" class="img-fluid" />
@@ -59,7 +59,7 @@
                                                                 <h5 class="mb-0">Create Unions</h5>
                                                             </div>
                                                         </div>
-                                                        <p class="mb-2">Create Unions and invite their respective admins</p>
+                                                        <p class="mb-2 flex-grow-1">Create Unions and invite their respective admins</p>
 
                                                         <p class="action mb-0">Create Unions</p>
                                                     </div>
@@ -70,7 +70,7 @@
                                         <div class="col-lg-4 mb-lg-0 mb-3">
                                             <a href="#" class="text-decoration-none">
                                                 <div class="card dash-card bg-custom-color-2 h-100 border-0">
-                                                    <div class="card-body">
+                                                    <div class="card-body d-flex flex-column">
                                                         <div class="d-flex avatar-holder align-items-center mb-3">
                                                             <div class="position-relative flex-shrink-0">
                                                                 <img src="images/userz-icon.svg" class="img-fluid" />
@@ -79,7 +79,7 @@
                                                                 <h5 class="mb-0">Invite Users</h5>
                                                             </div>
                                                         </div>
-                                                        <p class="mb-2">Invite users individually or in bulk to NDRS</p>
+                                                        <p class="mb-2 flex-grow-1">Invite users individually or in bulk to NDRS</p>
 
                                                         <p class="action mb-0">Invite users</p>
                                                     </div>
@@ -102,7 +102,9 @@
                                                 </div>
 
                                                 <div class="col-lg-8">
-                                                    <img src="images/bar-chart.svg" class="img-fluid" alt="bar-chart" />
+                                                    <!-- <img src="images/bar-chart.svg" class="img-fluid" alt="bar-chart" /> -->
+
+                                                    <canvas id="myChart3"></canvas>
                                                 </div>
                                             </div>
                                         </div>

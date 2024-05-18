@@ -160,10 +160,10 @@
                                                                                         <input type="text" class="form-control form-control-height" placeholder="">
                                                                                     </div>
                                                                                     
-                                                                                    <div class="mb-4">
+                                                                                    <!-- <div class="mb-4">
                                                                                         <label class="form-label">Founded in</label>
                                                                                         <input type="text" class="form-control form-control-height" placeholder="">
-                                                                                    </div>
+                                                                                    </div> -->
 
                                                                                     <div class="mb-4">
                                                                                         <label class="form-label">About</label>

@@ -56,11 +56,11 @@
 
                 <ul class="navbar-nav flex-column sidebar-list list-unstyled py-3 flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="users.php"><img src="images/users.svg" class="img-fluid" />  Users</a>
+                        <a class="nav-link" aria-current="page" href="users.php"><img src="images/users.svg" class="img-fluid" />  Users & Groups</a>
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="union-branches.php"><img src="images/branch.svg" class="img-fluid" />  Branches</a>
+                        <a class="nav-link" href="union-branches.php"><img src="images/branch.svg" class="img-fluid" />  Unions & Branches</a>
                     </li>
 
                     <li class="nav-item">

@@ -433,6 +433,11 @@ h6 {
   /* overflow: hidden; */
 }
 
+.card-header:first-child{
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+}
+
 .admin-content {
   /* padding-bottom: 70px; */
 }
@@ -1055,6 +1060,22 @@ tr {
 
 .accordion-expand .accordion-item:not(:first-of-type) {
   border-top: 1px solid #dee2e6;
+}
+
+.custom-text{
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 28.8px;
+  letter-spacing: -0.02em;
+  color: #002B22;
+}
+
+.custom-text-2{
+ 
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 23.2px;
+  
 }
 
 @media screen and (max-width: 768px) {
