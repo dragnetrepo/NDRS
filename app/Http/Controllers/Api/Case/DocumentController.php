@@ -1,0 +1,156 @@
+<?php
+
+namespace App\Http\Controllers\Api\Case;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Case\VerifyUploadedDocumentsRequest;
+use App\Models\CaseDispute;
+use App\Models\CaseDocument;
+use App\Models\CaseFolder;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
+class DocumentController extends Controller
+{
+    protected $response;
+
+    public function __construct()
+    {
+        $this->response = [
+            'status' => Response::HTTP_FORBIDDEN,
+            'message' => 'We could not complete your request. Please try again!',
+            'error' => []
+        ];
+    }
+
+    public function index($case_id, $folder_id = 0)
+    {
+        $user_id = request()->user()->id;
+
+        $dispute = get_case_dispute($case_id, $user_id);
+
+        $data = [];
+
+        if ($dispute) {
+            $case_documents = CaseDocument::where("case_id", $dispute->id)->when(($folder_id > 0), function($query) use ($folder_id) {
+                $query->where("folder_id", $folder_id);
+            })->get();
+
+            if ($case_documents->isNotEmpty()) {
+                foreach ($case_documents as $document) {
+                    $data[] = [
+                        "_id" => $document->id,
+                        "name" => $document->doc_name,
+                        "size" => $document->doc_size,
+                        "type" => $document->doc_type,
+                        "last_modified" => Carbon::parse($document->updated_at)->format("jS F Y, h:ia"),
+                        "file_path" => asset('/case-documents/'.$document->doc_path),
+                    ];
+                }
+            }
+
+            $this->response["message"] = "Fetched case dispute documents";
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["data"] = $data;
+        }
+        else {
+            $this->response["message"] = "The case dispute requested does not exist in our records.";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function add_document(VerifyUploadedDocumentsRequest $request, $case_id)
+    {
+        $user_id = request()->user()->id;
+        $dispute = get_case_dispute($case_id, $user_id);
+
+        if ($dispute) {
+            $folder_name = date("Ym");
+
+            if ($request->folder_id) {
+                $document_folder = CaseFolder::where("id", $request->folder_id)->where("case_id", $case_id)->first();
+
+                if (!$document_folder) {
+                    return response()->json([
+                        'status' => Response::HTTP_UNAUTHORIZED,
+                        'message' => 'Validation errors',
+                        'error' => [
+                            'folder_id' => 'The folder you have selected does not exist in our records'
+                        ],
+                    ], Response::HTTP_UNAUTHORIZED);
+                }
+                else {
+                    $db_folder_name = strtolower($document_folder->folder_name);
+                    $db_folder_name = str_replace(" ", "-", $db_folder_name);
+                    $folder_name = $db_folder_name."/".date("Ym");
+                }
+            }
+
+            $documents = $request->file("documents");
+            $uplaoded_docs = [];
+
+            if ($request->hasFile('documents')) {
+                foreach ($documents as $document) {
+                    $oducment_original_name = strtolower($document->getClientOriginalName());
+                    $oducment_original_name = str_replace(" ", "-", $oducment_original_name);
+
+                    $document_file_name = time()."__".$oducment_original_name;
+                    $document->storeAs($folder_name, $document_file_name, ['disk' => 'case_documents']);
+
+                    $uplaoded_docs[] = [
+                        "path" => $folder_name."/".$document_file_name,
+                        "name" => $oducment_original_name,
+                        "size" => $document->getSize(),
+                        "type" => $document->getClientOriginalExtension()
+                    ];
+                }
+            }
+
+            if (count($uplaoded_docs)) {
+                foreach ($uplaoded_docs as $documentdata) {
+                    CaseDocument::create([
+                        "case_id" => $case_id,
+                        "folder_id" => $request->folder_id ?? 0,
+                        "doc_name" => $documentdata["name"],
+                        "doc_size" => $documentdata["size"],
+                        "doc_type" => $documentdata["type"],
+                        "doc_path" => $documentdata["path"],
+                    ]);
+                }
+
+                $this->response["message"] = "Documents have been uploaded successfully!";
+                $this->response["status"] = Response::HTTP_OK;
+            }
+        }
+        else {
+            $this->response["message"] = "The case dispute requested does not exist in our records.";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function delete_document(Request $request, $case_id)
+    {
+        $user_id = request()->user()->id;
+
+        $dispute = get_case_dispute($case_id, $user_id);
+
+        if ($dispute) {
+            $document = CaseDocument::where("id", $request->document_id)->where("case_id", $case_id)->first();
+
+            if ($document) {
+                if ($document->delete()) {
+                    $this->response["message"] = "Document has been deleted successfully!";
+                    $this->response["status"] = Response::HTTP_OK;
+                }
+            }
+        }
+        else {
+            $this->response["message"] = "The case dispute requested does not exist in our records.";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+}

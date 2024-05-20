@@ -4,6 +4,9 @@ use App\Http\Controllers\Api\Union\UnionBranchController;
 use App\Http\Controllers\Api\Union\UnionController;
 use App\Http\Controllers\Api\Union\UnionSubBranchController;
 use App\Http\Controllers\Api\User\ProfileController;
+use App\Http\Controllers\Api\Case\DisputesController;
+use App\Http\Controllers\Api\Case\DocumentController;
+use App\Http\Controllers\Api\Case\FolderController;
 use App\Http\Controllers\Auth\AuthenticationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -81,6 +84,38 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::get("get-unions", [UnionController::class, "index"])->name("index");
             Route::get("get-union-branches/{union}", [UnionBranchController::class, "index"])->name("branches");
             Route::get("get-union-organizations/{branch}", [UnionSubBranchController::class, "index"])->name("sub-branches");
+        });
+
+        Route::prefix("case")->name("case.")->group(function(){
+            Route::controller(DisputesController::class)->name("disputes.")->group(function(){
+                Route::get("disputes", "index")->name("index");
+                Route::get("roles", "roles")->name("roles");
+                Route::get("read/{case_id}", "read")->name("read");
+                Route::post("create", "create")->name("create");
+                Route::post("edit/{case_id}", "edit")->name("edit");
+                Route::get("involved-parties/{case_id}", "involved_parties")->name("involved-parties");
+                Route::post("invite-party/{case_id}", "invite_party")->name("invite-party");
+                Route::post("resend-invite/{case_id}", "invite_party")->name("resend-invite-party");
+                Route::post("suspend-invited-party/{case_id}", "suspend_invite_party")->name("suspend-invite");
+                Route::delete("delete-invited-party/{case_id}", "delete_invite_party")->name("delete-invite");
+                Route::post("invite-response/{case_id}", "invite_response")->name("invite-response");
+            });
+
+            Route::prefix("{case_id}")->group(function(){
+                Route::controller(DocumentController::class)->name("documents.")->group(function(){
+                    Route::get("documents", "index")->name("index");
+                    Route::post("add-document", "add_document")->name("add");
+                    Route::delete("delete-document", "delete_document")->name("delete");
+                    Route::get("folder-documents/{folder_id}", "index")->name("folder-documents");
+                });
+
+                Route::controller(FolderController::class)->name("folders.")->group(function(){
+                    Route::get("folders", "index")->name("index");
+                    Route::post("create-folder", "create_folder")->name("create");
+                    Route::post("rename-folder", "rename_folder")->name("rename");
+                    Route::delete("delete-folder", "delete_folder")->name("delete");
+                });
+            });
         });
 
         Route::get('roles', [ProfileController::class, "get_roles"])->name("get-roles");

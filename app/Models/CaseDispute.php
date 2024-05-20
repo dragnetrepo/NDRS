@@ -11,4 +11,19 @@ class CaseDispute extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    public function involved_parties()
+    {
+        return $this->hasMany(CaseUserRoles::class, 'case_id');
+    }
+
+    public function union_data()
+    {
+        return $this->belongsTo(Union::class, "union");
+    }
+
+    public function union_branch_data()
+    {
+        return $this->belongsTo(UnionBranch::class, "union_branch");
+    }
 }

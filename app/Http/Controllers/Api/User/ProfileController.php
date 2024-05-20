@@ -32,7 +32,7 @@ class ProfileController extends Controller
             "middle_name" => $user->middle_name,
             "email" => $user->email,
             "phone" => $user->phone,
-            "display_picture" => $user->display_picture ? asset($user->display_picture) : '',
+            "display_picture" => $user->display_picture ? asset('/user/images/'.$user->display_picture) : '',
             "contact_address" => $user->contact_address,
             "user_role" => get_user_roles($user)
         ];

@@ -11,4 +11,9 @@ class CaseFolder extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    public function documents()
+    {
+        return $this->hasMany(CaseDocument::class, "folder_id");
+    }
 }

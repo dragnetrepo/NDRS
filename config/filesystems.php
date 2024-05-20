@@ -67,9 +67,13 @@ return [
             'driver' => 'local',
             'root'   => public_path() . '/union_sub_branch/logos',
         ],
-        'profile_pictures' => [
+        'profile_photos' => [
             'driver' => 'local',
-            'root'   => public_path() . '/profile_picture/logos',
+            'root'   => public_path() . '/user/images',
+        ],
+        'case_documents' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/case-documents',
         ],
 
     ],

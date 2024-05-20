@@ -65,29 +65,44 @@ class AuthenticationController extends Controller
             $get_invite = EmailInvitations::where("token", $request->invite_token)->first();
 
             if ($get_invite) {
-                // Register Account
-                $user = User::updateOrCreate([
-                    "email" => $get_invite->email,
-                ],[
-                    "email" => $get_invite->email,
-                    "password" => Hash::make($request->password),
-                    "email_verified_at" => Carbon::now()
-                ]);
-
-                if ($user) {
-                    // Add user to their union/branch
-                    UnionUserRole::create([
-                        "user_id" => $user->id,
-                        "role_id" => $get_invite->role_id,
-                        "union_id" => $get_invite->union_id,
-                        "union_branch_id" => $get_invite->branch_id,
-                        "union_sub_branch_id" => $get_invite->sub_branch_id,
+                if ($get_invite->status == "pending") {
+                    // Register Account
+                    $user = User::updateOrCreate([
+                        "email" => $get_invite->email,
+                    ],[
+                        "email" => $get_invite->email,
+                        "password" => Hash::make($request->password),
+                        "email_verified_at" => Carbon::now()
                     ]);
 
-                    $this->response["status"] = Response::HTTP_OK;
-                    $this->response["data"] = [
-                        "token" => login_user_token($user)
-                    ];
+                    if ($user) {
+                        // Add user to their union/branch
+                        UnionUserRole::updateOrCreate([
+                            "user_id" => $user->id,
+                        ],[
+                            "user_id" => $user->id,
+                            "role_id" => $get_invite->role_id,
+                            "union_id" => $get_invite->union_id,
+                            "branch_id" => $get_invite->union_branch_id,
+                            "sub_branch_id" => $get_invite->union_sub_branch_id,
+                            "status" => "active"
+                        ]);
+
+                        $this->response["status"] = Response::HTTP_OK;
+                        $this->response["message"] = "Password has been created successfully!";
+                        $this->response["data"] = [
+                            "token" => login_user_token($user)
+                        ];
+
+                        $get_invite->status = "completed";
+                        $get_invite->save();
+                    }
+                }
+                elseif ($get_invite->status == "completed") {
+                    $this->response["message"] = "A password has already been set for this account. If you have forgotten your password, please use the reset password link!";
+                }
+                elseif ($get_invite->status == "expired") {
+                    $this->response["message"] = "This link has expired!";
                 }
             }
         }
@@ -203,8 +218,8 @@ class AuthenticationController extends Controller
                     "user_id" => $user->id,
                     "role_id" => $role->id,
                     "union_id" => $request->union,
-                    "union_branch_id" => $request->union_branch,
-                    "union_sub_branch_id" => $request->organization,
+                    "branch_id" => $request->union_branch,
+                    "sub_branch_id" => $request->organization,
                 ]);
             }
 
