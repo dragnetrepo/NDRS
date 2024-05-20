@@ -392,6 +392,31 @@ class DisputesController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function get_invites()
+    {
+        $user_email = request()->user()->email;
+
+        $case_dispute_invites = CaseUserRoles::where("status", "pending")->whereHas('dispute')->where("user_id", $user_email)->get();
+        $data = [];
+
+        if ($case_dispute_invites->isNotEmpty()) {
+            foreach ($case_dispute_invites as $invite) {
+                $data[] = [
+                    "case_id" => $invite->case_id,
+                    "title" => $invite->dispute->case_title,
+                ];
+            }
+
+        }
+
+        $this->response["message"] = "Fetched case dispute invites";
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["data"] = $data;
+
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function invite_response(InviteResponseRequest $request, $case_id)
     {
         $user_email = request()->user()->email;

@@ -98,6 +98,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                 Route::post("resend-invite/{case_id}", "invite_party")->name("resend-invite-party");
                 Route::post("suspend-invited-party/{case_id}", "suspend_invite_party")->name("suspend-invite");
                 Route::delete("delete-invited-party/{case_id}", "delete_invite_party")->name("delete-invite");
+                Route::get("get-invites", "get_invites")->name("get-invites");
                 Route::post("invite-response/{case_id}", "invite_response")->name("invite-response");
             });
 
