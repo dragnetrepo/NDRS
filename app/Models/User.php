@@ -31,6 +31,7 @@ class User extends Authenticatable
         'temp_password',
         'display_picture',
         'password_change',
+        'email_verified_at',
     ];
 
     /**

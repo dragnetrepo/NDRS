@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Case;
+namespace App\Http\Requests\General;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 
-class DisputeRequest extends FormRequest
+class CsvFileValidateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,15 +25,7 @@ class DisputeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => "required|string|min:3",
-            "type" => "required|string",
-            "summary" => "required|min:10",
-            "background_info" => "required|min:10",
-            "relief_sought" => "required|min:10",
-            "specific_claims" => "required|min:10",
-            "negotiation_terms" => "required|min:10",
-            "accused_union" => "required|integer",
-            "union" => "required|integer|different:accused_union",
+            "file" => "required|file|mimes:txt,csv"
         ];
     }
 

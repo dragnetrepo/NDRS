@@ -38,10 +38,9 @@ class DisputesController extends Controller
     public function index()
     {
         $user_id = request()->user()->id;
-        $disputes = CaseDispute::whereHas('involved_parties', function ($query) use ($user_id) {
+        $disputes = CaseDispute::whereHas('union_data.users', function ($query) use ($user_id) {
             $query->where("user_id", $user_id);
         })
-        ->whereHas('union_data')
         ->get();
 
         $data = [];
@@ -51,7 +50,7 @@ class DisputesController extends Controller
             foreach ($disputes as $dispute) {
                 $data[] = [
                     "_id" => $dispute->id,
-                    "case_no" => $dispute->case_id,
+                    "case_no" => $dispute->case_no,
                     "title" => $dispute->case_title,
                     "type" => $dispute->dispute_type,
                     "summary" => $dispute->summary_of_dispute,
@@ -60,12 +59,20 @@ class DisputesController extends Controller
                     "specific_claims" => $dispute->specific_claims,
                     "negotiation_terms" => $dispute->negotiation_terms,
                     "status" => $dispute->status,
-                    "union" => $dispute->union_data->name,
-                    "union_branch" => $dispute->union_branch_data ? $dispute->union_branch_data->name : '',
+                    "involved_parties" => [
+                        "claimant" => [
+                            "name" => $dispute->union_data->name,
+                            "logo" => $dispute->union_data->logo ? asset('/union/logos'.$dispute->union_data->logo) : ""
+                        ],
+                        "accused" => [
+                            "name" => $dispute->accused ? $dispute->accused->union->name : "",
+                            "logo" => $dispute->accused ? asset('/union/logos'.$dispute->accused->union->logo) : "",
+                        ],
+                    ]
                 ];
             }
 
-            $this->response["message"] = "Retrieved comprehensive dispute list";
+            $this->response["message"] = "Retrieved dispute list";
         }
 
         $this->response["status"] = Response::HTTP_OK;
@@ -87,7 +94,7 @@ class DisputesController extends Controller
 
         if ($dispute) {
             $data = [
-                "case_no" => $dispute->case_id,
+                "case_no" => $dispute->case_no,
                 "title" => $dispute->case_title,
                 "type" => $dispute->dispute_type,
                 "summary" => $dispute->summary_of_dispute,
@@ -117,80 +124,50 @@ class DisputesController extends Controller
         $form_error_msg = [];
 
         try {
-            $case_role = CaseRoles::where("name", "claimant")->first();
+            $user_role = request()->user()->member_role->where("role_id", "1")->first(); // Is ministry admin
 
-            if ($case_role) {
-                $user_role = request()->user()->member_role->where("role_id", "1")->first(); // Is ministry admin
+            $union = Union::where("id", $request->union)->whereHas('users', function ($query) use ($user_role) {
+                    $query->when((!$user_role), function($query){
+                        $query->where("user_id", request()->user()->id);
+                    });
+                })->first();
 
-                $union = Union::where("id", $request->union)->whereHas('users', function ($query) use ($user_role) {
-                        $query->when((!$user_role), function($query){
-                            $query->where("user_id", request()->user()->id);
-                        });
-                    })->first();
+            if ($union) {
+                $case_dispute = CaseDispute::create([
+                    "case_no" => "DS".$this->generateCaseID(),
+                    "case_title" => $request->title,
+                    "dispute_type" => $request->type,
+                    "summary_of_dispute" => $request->summary,
+                    "background_info" => $request->background_info,
+                    "relief_sought" => $request->relief_sought,
+                    "specific_claims" => $request->specific_claims,
+                    "negotiation_terms" => $request->negotiation_terms,
+                    "status" => "pending approval",
+                    "union" => $union->id,
+                    "created_by" => request()->user()->id,
+                ]);
 
-                if ($union) {
-                    $branch = true;
-                    if ($request->union_branch) {
-                        $branch = UnionBranch::where("id", $request->union_branch)->where("union_id", $union->id)->exists();
-                    }
-
-                    if ($branch) {
-                        $case_dispute = CaseDispute::create([
-                            "case_id" => "DS".$this->generateCaseID(),
-                            "case_title" => $request->title,
-                            "dispute_type" => $request->type,
-                            "summary_of_dispute" => $request->summary,
-                            "background_info" => $request->background_info,
-                            "relief_sought" => $request->relief_sought,
-                            "specific_claims" => $request->specific_claims,
-                            "negotiation_terms" => $request->negotiation_terms,
-                            "status" => "pending approval",
-                            "union" => $union->id,
-                            "union_branch" => $request->union_branch ?? 0,
+                if ($case_dispute) {
+                    if (Union::where("id", $request->accused_union)->exists()) {
+                        CaseAccusedUnion::create([
+                            "case_id"  => $case_dispute->id,
+                            "union_id" => $request->accused_union
                         ]);
-
-                        if ($case_dispute) {
-                            if ($request->accused_union) {
-                                if (is_array($request->accused_union) && count($request->accused_union))  {
-                                    foreach ($request->accused_union as $accused_union) {
-                                        if (Union::where("id", $accused_union)->exists()) {
-                                            CaseAccusedUnion::create([
-                                                "case_id"  => $case_dispute->id,
-                                                "union_id" => $accused_union
-                                            ]);
-                                        }
-                                    }
-                                }
-                            }
-
-                            CaseUserRoles::create([
-                                "case_id" => $case_dispute->id,
-                                "case_role_id" => $case_role->id,
-                                "user_id" => request()->user()->id,
-                                "status" => "active",
-                                "response_date" => Carbon::now(),
-                            ]);
-
-                            $this->response["status"] = Response::HTTP_OK;
-                            $this->response["message"] = "Dispute has been created successfully!";
-                        }
                     }
-                    else {
-                        $form_error_msg['union_branch'] = 'Union Branch does not match our records';
-                    }
+
+                    $this->response["status"] = Response::HTTP_OK;
+                    $this->response["message"] = "Dispute has been created successfully!";
                 }
-                else {
-                    $form_error_msg['union'] = 'Union does not exist in our records';
-                }
+            }
+            else {
+                $form_error_msg['union'] = ['Union does not exist in our records'];
             }
 
 
             if (!empty($form_error_msg)) {
                 $this->response["status"] = Response::HTTP_UNAUTHORIZED;
                 $this->response["message"] = 'Validation errors';
-                $this->response["error"] = [
-                    $form_error_msg
-                ];
+                $this->response["error"] = $form_error_msg;
             }
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
@@ -213,32 +190,13 @@ class DisputesController extends Controller
             $case_dispute->negotiation_terms = $request->negotiation_terms;
 
             if ($case_dispute->save()) {
-                $arrayOfAccusedUnions = [];
-
-                if ($request->accused_union) {
-                    if (is_array($request->accused_union) && count($request->accused_union))  {
-                        foreach ($request->accused_union as $accused_union) {
-                            if (Union::where("id", $accused_union)->exists()) {
-                                $arrayOfAccusedUnions[] = $accused_union;
-                            }
-                        }
-                    }
-                }
-
-                // Delete all unions that were selected before but are no longer a part of it
-                CaseAccusedUnion::where("case_id", $case_dispute->id)->whereNotIn("union_id", $arrayOfAccusedUnions)->delete();
-
                 // Add new unions added to this case
-                if (count($arrayOfAccusedUnions)) {
-                    foreach ($arrayOfAccusedUnions as $accused_union) {
-                        if (!CaseAccusedUnion::where("union_id", $accused_union)->where("case_id", $case_dispute->id)->exists()) {
-                            CaseAccusedUnion::create([
-                                "case_id"  => $case_dispute->id,
-                                "union_id" => $accused_union
-                            ]);
-                        }
-                    }
-                }
+                CaseAccusedUnion::updateorCreate([
+                    "case_id"  => $case_dispute->id,
+                ],[
+                    "case_id"  => $case_dispute->id,
+                    "union_id" => $request->accused_union
+                ]);
 
                 $this->response["status"] = Response::HTTP_OK;
                 $this->response["message"] = "Dispute has been modified successfully!";
@@ -314,13 +272,7 @@ class DisputesController extends Controller
     public function invite_party(InvitePartyRequest $request, $case_id)
     {
         try {
-            $user_id = request()->user()->id;
-            $dispute = CaseDispute::whereHas('involved_parties', function ($query) use ($user_id) {
-                $query->where("user_id", $user_id);
-            })
-            ->whereHas('union_data')
-            ->where("id", $case_id)
-            ->first();
+            $dispute = CaseDispute::where("id", $case_id)->first();
             $form_error_msg = [];
 
             if ($dispute) {
@@ -363,17 +315,17 @@ class DisputesController extends Controller
                             "email" => $invited_user_email,
                         ]);
 
-                        $this->sendOutCaseInvite($dispute->case_id, $invited_user_id, $invited_user_email, $case_role->name);
+                        $this->sendOutCaseInvite($dispute->case_no, $invited_user_id, $invited_user_email, $case_role->name);
 
                         $this->response["message"] = "Invite has been sent to this user successfully!";
                         $this->response["status"] = Response::HTTP_OK;
                     }
                     else {
-                        $form_error_msg["email"] = "User has already been invited to this case.";
+                        $form_error_msg["email"] = ["User has already been invited to this case."];
                     }
                 }
                 else {
-                    $form_error_msg["role"] = "Role submitted does not match our records";
+                    $form_error_msg["role"] = ["Role submitted does not match our records"];
                 }
 
             }
@@ -381,9 +333,7 @@ class DisputesController extends Controller
             if (!empty($form_error_msg)) {
                 $this->response["status"] = Response::HTTP_UNAUTHORIZED;
                 $this->response["message"] = 'Validation errors';
-                $this->response["error"] = [
-                    $form_error_msg
-                ];
+                $this->response["error"] = $form_error_msg;
             }
         } catch (\Throwable $th) {
             Log::error($th->getMessage());

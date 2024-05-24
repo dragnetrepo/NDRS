@@ -11,6 +11,7 @@ use App\Models\Union;
 use App\Models\UnionBranch;
 use App\Models\UnionUserRole;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -35,16 +36,31 @@ class UnionBranchController extends Controller
     public function index(Request $request, $union)
     {
         $data = [];
-        $unions = UnionBranch::where("union_id", $union)->get();
+        $union_branches = UnionBranch::where("union_id", $union)->get();
         $this->response["message"] = "No data found";
 
-        if ($unions->isNotEmpty()) {
-            foreach ($unions as $union) {
+        if ($union_branches->isNotEmpty()) {
+            foreach ($union_branches as $union_branch) {
+                $assigned_admins = [];
+
+                if ($union_branch->users->count()) {
+                    foreach ($union_branch->users as $assigned_user) {
+                        $user_deets = $assigned_user->user;
+                        if ($user_deets) {
+                            $assigned_admins = [
+                                "photo" => $user_deets->display_picture ? asset('/user/images/'.$user_deets->display_picture) : ''
+                            ];
+                        }
+                    }
+                }
+
                 $data[] = [
-                    "id" => $union->id,
-                    "name" => $union->name,
-                    "acronym" => $union->acronym,
-                    "logo" => $union->logo ? asset($union->logo) : '',
+                    "id" => $union_branch->id,
+                    "name" => $union_branch->name,
+                    "acronym" => $union_branch->acronym,
+                    "logo" => $union_branch->logo ? asset('/union_branch/logos/'.$union_branch->logo) : '',
+                    "assigned_admins" => $assigned_admins,
+                    "date_added" => $union_branch->created_at->format("M d Y"),
                 ];
             }
 
@@ -115,7 +131,7 @@ class UnionBranchController extends Controller
                 $this->response["status"] = Response::HTTP_UNAUTHORIZED;
                 $this->response["message"] = 'Validation errors';
                 $this->response["error"] = [
-                    'union' => 'Union does not exist in our records'
+                    'union' => ['Union does not exist in our records']
                 ];
             }
         } catch (\Throwable $th) {
@@ -194,7 +210,7 @@ class UnionBranchController extends Controller
                 if ($role) {
                     if ($user) {
                         // Check if user is alreaady associated with Union
-                        if (UnionUserRole::where("user_id", $user->id)->where("branch_id", $union_branch->id)->exists()){
+                        if (UnionUserRole::where("user_id", $user->id)->where("union_id", $union_branch->union_id)->exists()){
                             $this->response["message"] = "This user has already been added to this Union Branch!";
                         }
                         else {

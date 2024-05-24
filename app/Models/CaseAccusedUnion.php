@@ -11,4 +11,9 @@ class CaseAccusedUnion extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    public function union()
+    {
+        return $this->belongsTo(Union::class);
+    }
 }

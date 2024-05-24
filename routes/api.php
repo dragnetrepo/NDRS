@@ -59,8 +59,11 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                 Route::controller(UnionController::class)->group(function(){
                     Route::get('{union}', "read")->name("read-by-id");
                     Route::post('create', "create")->name("create");
+                    Route::post('bulk/create', "bulk_create")->name("bulk-create");
                     Route::post('edit/{union}', "edit")->name("edit");
                     Route::post('send-invite/{union}', "send_invite")->name("send-invite");
+                    Route::get('get-admins/{union}', "get_admins")->name("get-admins");
+                    Route::delete('remove-admin/{union}', "remove_admin")->name("delete-admin");
                     Route::delete('delete/{union}', "delete")->name("delete");
                 });
 

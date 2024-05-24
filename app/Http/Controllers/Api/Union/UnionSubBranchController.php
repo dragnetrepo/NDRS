@@ -36,16 +36,31 @@ class UnionSubBranchController extends Controller
     public function index(Request $request, $branch)
     {
         $data = [];
-        $unions = UnionSubBranch::where("branch_id", $branch)->get();
+        $union_sub_branches = UnionSubBranch::where("branch_id", $branch)->get();
         $this->response["message"] = "No data found";
 
-        if ($unions->isNotEmpty()) {
-            foreach ($unions as $union) {
+        if ($union_sub_branches->isNotEmpty()) {
+            foreach ($union_sub_branches as $union_sub_branch) {
+                $assigned_admins = [];
+
+                if ($union_sub_branch->users->count()) {
+                    foreach ($union_sub_branch->users as $assigned_user) {
+                        $user_deets = $assigned_user->user;
+                        if ($user_deets) {
+                            $assigned_admins = [
+                                "photo" => $user_deets->display_picture ? asset('/user/images/'.$user_deets->display_picture) : ''
+                            ];
+                        }
+                    }
+                }
+
                 $data[] = [
-                    "id" => $union->id,
-                    "name" => $union->name,
-                    "acronym" => $union->acronym,
-                    "logo" => $union->logo ? asset($union->logo) : '',
+                    "id" => $union_sub_branch->id,
+                    "name" => $union_sub_branch->name,
+                    "acronym" => $union_sub_branch->acronym,
+                    "logo" => $union_sub_branch->logo ? asset('/union_sub_branch/logos/'.$union_sub_branch->logo) : '',
+                    "assigned_admins" => $assigned_admins,
+                    "date_added" => $union_sub_branch->created_at->format("M d Y"),
                 ];
             }
 
@@ -127,7 +142,7 @@ class UnionSubBranchController extends Controller
             }
             else {
                 $this->response["error"] = [
-                    'union' => 'Union does not exist in our records'
+                    'union' => ['Union does not exist in our records']
                 ];
             }
         } catch (\Throwable $th) {

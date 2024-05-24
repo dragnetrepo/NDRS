@@ -11,4 +11,9 @@ class UnionBranch extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    public function users()
+    {
+        return $this->hasMany(UnionUserRole::class, 'branch_id');
+    }
 }

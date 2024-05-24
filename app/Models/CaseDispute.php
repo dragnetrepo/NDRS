@@ -17,6 +17,11 @@ class CaseDispute extends Model
         return $this->hasMany(CaseUserRoles::class, 'case_id');
     }
 
+    public function accused()
+    {
+        return $this->belongsTo(CaseAccusedUnion::class, 'id', 'case_id');
+    }
+
     public function union_data()
     {
         return $this->belongsTo(Union::class, "union");

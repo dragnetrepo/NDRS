@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Union;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\General\CsvFileValidateRequest;
 use App\Http\Requests\Union\CreateUnionRequest;
 use App\Http\Requests\Union\SendUnionInviteRequest;
 use App\Models\EmailInvitations;
@@ -10,6 +11,7 @@ use App\Models\OutgoingMessages;
 use App\Models\Union;
 use App\Models\UnionUserRole;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -51,11 +53,26 @@ class UnionController extends Controller
 
         if ($unions->isNotEmpty()) {
             foreach ($unions as $union) {
+                $assigned_admins = [];
+
+                if ($union->users->count()) {
+                    foreach ($union->users as $assigned_user) {
+                        $user_deets = $assigned_user->user;
+                        if ($user_deets) {
+                            $assigned_admins = [
+                                "photo" => $user_deets->display_picture ? asset('/user/images/'.$user_deets->display_picture) : ''
+                            ];
+                        }
+                    }
+                }
+
                 $data[] = [
                     "id" => $union->id,
                     "name" => $union->name,
                     "acronym" => $union->acronym,
                     "logo" => $union->logo ? asset('/union/logos/'.$union->logo) : '',
+                    "assigned_admins" => $assigned_admins,
+                    "date_added" => $union->created_at->format("M d Y"),
                 ];
             }
 
@@ -124,6 +141,78 @@ class UnionController extends Controller
             $this->response["message"] = "We are experiencing some troubles create this union at this time. Please try again or contact Tech Support for help";
             $this->response["exception"] = $th->getMessage();
             Log::error($th->getMessage());
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function bulk_create(CsvFileValidateRequest $request)
+    {
+        $csvFile = fopen($request->file("file"), 'r');
+        $line = fgetcsv($csvFile);
+        $error_msg = [];
+
+        if (count($line)) {
+            if (strtolower($line[0]) != "name") {
+                $error_msg[] = ["First column name must be name"];
+            }
+
+            if (strtolower($line[1]) != "acronym") {
+                $error_msg[] = ["Second column name must be acronym"];
+            }
+
+            if (strtolower($line[2]) != "industry") {
+                $error_msg[] = ["Third column name must be industry"];
+            }
+        }
+
+        if (count($error_msg)) {
+            $this->response["message"] = "Validation errors!";
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+            $this->response["error"] = $error_msg;
+        }
+        else {
+            $index = 1;
+            $data = [];
+
+            do {
+                if ($index > 1) {
+                    $union_name = $line[0];
+                    $union_acronym = $line[1];
+                    $union_industry = $line[2];
+
+                    if ($union_name) {
+                        $db_union = Union::where("name", $union_name)->first();
+
+                        if (!$db_union) {
+                            $db_union = Union::create([
+                                "name" => $union_name,
+                                "acronym" => $union_acronym ?? '',
+                                "founded_in" => "",
+                                "phone" => "",
+                                "headquarters" => "",
+                                "industry" => $union_industry,
+                                "description" => "",
+                                "logo" => "",
+                            ]);
+                        }
+
+                        if ($db_union) {
+                            $data[] = [
+                                "name" => $db_union->name,
+                                "acronym" => $db_union->acronym,
+                                "industry" => $db_union->industry,
+                                "date_added" => $db_union->created_at->format("M j Y"),
+                            ];
+                        }
+                    }
+                }
+                $index++;
+            } while ($line = fgetcsv($csvFile));
+
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["message"] = "Union has been created in bulk successfully!";
+            $this->response["data"] = $data;
         }
 
         return response()->json($this->response, $this->response["status"]);
@@ -247,6 +336,61 @@ class UnionController extends Controller
             $this->response["message"] = "We are experiencing some troubles create this union at this time. Please try again or contact Tech Support for help";
             $this->response["exception"] = $th->getMessage();
             Log::error($th->getMessage());
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function get_admins($union)
+    {
+        $union = Union::find($union);
+        $data = [];
+
+        if ($union) {
+            if ($union->users->count()) {
+                foreach ($union->users as $assigned_user) {
+                    $user_deets = $assigned_user->user;
+                    if ($user_deets) {
+                        $data[] = [
+                            "_id" => $assigned_user->id,
+                            "name" => trim($user_deets->last_name.' '.$user_deets->first_name),
+                            "role" => $assigned_user->role->name,
+                            "status" => $assigned_user->status,
+                            "date_joined" => $assigned_user->updated_at->format("j F Y"),
+                        ];
+                    }
+                }
+            }
+
+            $this->response["message"] = "Union Admins Retrieved";
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["data"] = $data;
+        }
+        else {
+            $this->response["message"] = "We could not locate the union you have requested its information";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function remove_admin(Request $request, $union)
+    {
+        $union = Union::find($union);
+        $data = [];
+
+        if ($union) {
+            if ($remove_admin = $union->users->where("id", $request->admin_id)->first()) {
+                if ($remove_admin->delete()) {
+                    $this->response["message"] = "Union Admin has been removed successfully!";
+                    $this->response["status"] = Response::HTTP_OK;
+                }
+            }
+            else {
+                $this->response["message"] = "We could not locate the admin you have made an attempted to delete.";
+            }
+        }
+        else {
+            $this->response["message"] = "We could not locate the union you have requested its information";
         }
 
         return response()->json($this->response, $this->response["status"]);
