@@ -1039,7 +1039,7 @@ tr {
 }
 
 .accordion-expand .accordion-button{
-  height: 66px !important;
+  height: 55px !important;
 }
 
 .accordion-expand .accordion-item{
@@ -1076,6 +1076,12 @@ tr {
   font-weight: 400;
   line-height: 23.2px;
   
+}
+
+.custom-text-3{
+  /* font-size: 1.2rem; */
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
 }
 
 @media screen and (max-width: 768px) {

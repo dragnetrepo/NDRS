@@ -54,7 +54,7 @@
                                     <div class="accordion accordion-expand" id="accordionUnion">
                                         <div class="accordion-item mb-3">
                                             <h2 class="accordion-header">
-                                                <button class="accordion-button heading-4 text-grey" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                <button class="accordion-button custom-text-3 text-grey" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                                     ASUU Lagos Sub branches
                                                 </button>
                                             </h2>
@@ -734,7 +734,7 @@
                                         </div>
                                         <div class="accordion-item mb-3">
                                             <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed heading-4 text-grey" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                <button class="accordion-button collapsed custom-text-3 text-grey" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                                     ASUU Lagos Profile
                                                 </button>
                                             </h2>
@@ -800,7 +800,7 @@
                                         </div>
                                         <div class="accordion-item mb-3">
                                             <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed heading-4 text-grey" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                <button class="accordion-button collapsed custom-text-3 text-grey" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                                     ASUU Lagos Admins
                                                 </button>
                                             </h2>
@@ -956,7 +956,7 @@
 
                                         <div class="accordion-item mb-3">
                                             <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed heading-4 text-grey" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                                <button class="accordion-button collapsed custom-text-3 text-grey" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                                     ASUU Lagos Disputes
                                                 </button>
                                             </h2>

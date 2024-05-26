@@ -39,6 +39,9 @@
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link" id="pills-settlement-tab" data-bs-toggle="pill" data-bs-target="#pills-settlement" type="button" role="tab" aria-controls="pills-settlement" aria-selected="false">Settlement Management Bodies</button>
                                             </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="pills-role-tab" data-bs-toggle="pill" data-bs-target="#pills-role" type="button" role="tab" aria-controls="pills-role" aria-selected="false">Roles & Permissions</button>
+                                            </li>
                                         </ul>
                                         <div class="tab-content" id="pills-tabContent">
 
@@ -2110,6 +2113,1832 @@
                                                 </div>
                                             </div>
 
+                                            <div class="tab-pane fade" id="pills-role" role="tabpanel" aria-labelledby="pills-role-tab" tabindex="0">
+                                                <div class="row mt-5">
+                                                   <div class="col-lg-5">
+                                                        <p>All NDRS roles and their permissions</p>
+
+                                                        <button class="btn btn-main-primary btn-size">Create custom role</button>
+                                                   </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-9">
+                                                        <div class="accordion accordion-expand mt-4" id="accordionHelp2">
+
+                                                            <div class="accordion-item mb-3">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button custom-text-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                                        Ministry Admin
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionHelp2">
+                                                                     <div class="mb-3 py-3 px-4 bg-light">
+                                                                        <a href="#" class="btn btn-size btn-outline-danger d-inline-flex">Restore default</a>
+                                                                    </div>
+                                                                    <div class="accordion-body">
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Disputes</h4>
+                                                                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Union & Branches</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Users & Groups</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Reports</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="accordion-item mb-3">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button custom-text-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                                        National Union Admin
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionHelp2">
+                                                                     <div class="mb-3 py-3 px-4 bg-light">
+                                                                        <a href="#" class="btn btn-size btn-outline-danger d-inline-flex">Restore default</a>
+                                                                    </div>
+                                                                    <div class="accordion-body">
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Disputes</h4>
+                                                                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Union & Branches</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Users & Groups</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Reports</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="accordion-item mb-3">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button custom-text-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                                        Employers (Organization Admins)
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionHelp2">
+                                                                     <div class="mb-3 py-3 px-4 bg-light">
+                                                                        <a href="#" class="btn btn-size btn-outline-danger d-inline-flex">Restore default</a>
+                                                                    </div>
+                                                                    <div class="accordion-body">
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Disputes</h4>
+                                                                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Union & Branches</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Users & Groups</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Reports</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="accordion-item mb-3">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button custom-text-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                                                       Staff (Union Members)
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionHelp2">
+                                                                     <div class="mb-3 py-3 px-4 bg-light">
+                                                                        <a href="#" class="btn btn-size btn-outline-danger d-inline-flex">Restore default</a>
+                                                                    </div>
+                                                                    <div class="accordion-body">
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Disputes</h4>
+                                                                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Union & Branches</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Users & Groups</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Reports</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="accordion-item mb-3">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button custom-text-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                                                       Non Union Claimants
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionHelp2">
+                                                                     <div class="mb-3 py-3 px-4 bg-light">
+                                                                        <a href="#" class="btn btn-size btn-outline-danger d-inline-flex">Restore default</a>
+                                                                    </div>
+                                                                    <div class="accordion-body">
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Disputes</h4>
+                                                                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Union & Branches</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Users & Groups</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Reports</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="accordion-item mb-3">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button custom-text-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                                                       Concilliators & Arbitrators
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionHelp2">
+                                                                     <div class="mb-3 py-3 px-4 bg-light">
+                                                                        <a href="#" class="btn btn-size btn-outline-danger d-inline-flex">Restore default</a>
+                                                                    </div>
+                                                                    <div class="accordion-body">
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Disputes</h4>
+                                                                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Union & Branches</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Users & Groups</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Reports</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="accordion-item mb-3">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button custom-text-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                                                       Mediators
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionHelp2">
+                                                                     <div class="mb-3 py-3 px-4 bg-light">
+                                                                        <a href="#" class="btn btn-size btn-outline-danger d-inline-flex">Restore default</a>
+                                                                    </div>
+                                                                    <div class="accordion-body">
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Disputes</h4>
+                                                                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Union & Branches</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Users & Groups</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Reports</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="accordion-item mb-3">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button custom-text-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                                                       Industrial Arbitration Panel (Tribunal)
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionHelp2">
+                                                                     <div class="mb-3 py-3 px-4 bg-light">
+                                                                        <a href="#" class="btn btn-size btn-outline-danger d-inline-flex">Restore default</a>
+                                                                    </div>
+                                                                    <div class="accordion-body">
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Disputes</h4>
+                                                                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Union & Branches</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Users & Groups</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Reports</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="accordion-item mb-3">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button custom-text-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                                                                       Board of Enquiry
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordionHelp2">
+                                                                     <div class="mb-3 py-3 px-4 bg-light">
+                                                                        <a href="#" class="btn btn-size btn-outline-danger d-inline-flex">Restore default</a>
+                                                                    </div>
+                                                                    <div class="accordion-body">
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Disputes</h4>
+                                                                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Union & Branches</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Users & Groups</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Reports</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="accordion-item mb-3">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button custom-text-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                                                                       National Industrial Courts
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="collapseTen" class="accordion-collapse collapse" data-bs-parent="#accordionHelp2">
+                                                                     <div class="mb-3 py-3 px-4 bg-light">
+                                                                        <a href="#" class="btn btn-size btn-outline-danger d-inline-flex">Restore default</a>
+                                                                    </div>
+                                                                    <div class="accordion-body">
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Disputes</h4>
+                                                                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Union & Branches</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Users & Groups</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                                                                            </div>
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="card card-box-view mb-4">
+                                                                            <div class="card-body p-4">
+                                                                                <div class="row align-items-center">
+
+                                                                                    <div class="col-lg-7">
+                                                                                        <div class="text-start mb-lg-0 mb-3">
+                                                                                            <h4>Reports</h4>
+                                                                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-5">
+                                                                                        <div class="d-flex flex-column gap-10">
+
+                                                                                            <div class="form-check d-flex align-items-center form-switch">
+                                                                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

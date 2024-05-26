@@ -17,7 +17,7 @@
 
                     <div class="header-box py-5">
                         <div class="container">
-                            <h2>Unions</h2>
+                            <h2>Branches</h2>
                         </div>
                     </div>
 
@@ -31,7 +31,7 @@
                                                 <button class="nav-link active" id="pills-folder-tab" data-bs-toggle="pill" data-bs-target="#pills-folder" type="button" role="tab" aria-controls="pills-folder" aria-selected="true">Create</button>
                                             </li>
                                             <li class="nav-item" role="presentation">
-                                                <button class="nav-link" id="pills-document-tab" data-bs-toggle="pill" data-bs-target="#pills-document" type="button" role="tab" aria-controls="pills-document" aria-selected="false">All Unions</button>
+                                                <button class="nav-link" id="pills-document-tab" data-bs-toggle="pill" data-bs-target="#pills-document" type="button" role="tab" aria-controls="pills-document" aria-selected="false">My Unions</button>
                                             </li>
                             
                                         </ul>
@@ -42,9 +42,9 @@
 
                                                         <div class="nav flex-column tab-item nav-pills gap-10" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 
-                                                            <button class="nav-link tab-v text-start active" id="v-pills-bulk-tab" data-bs-toggle="pill" data-bs-target="#v-pills-bulk" type="button" role="tab" aria-controls="v-pills-bulk" aria-selected="true">Bulk Union upload</button>
+                                                            <button class="nav-link tab-v text-start active" id="v-pills-bulk-tab" data-bs-toggle="pill" data-bs-target="#v-pills-bulk" type="button" role="tab" aria-controls="v-pills-bulk" aria-selected="true">Bulk Branch upload</button>
 
-                                                            <button class="nav-link tab-v text-start" id="v-pills-single-tab" data-bs-toggle="pill" data-bs-target="#v-pills-single" type="button" role="tab" aria-controls="v-pills-single" aria-selected="false">Single Union upload</button>
+                                                            <button class="nav-link tab-v text-start" id="v-pills-single-tab" data-bs-toggle="pill" data-bs-target="#v-pills-single" type="button" role="tab" aria-controls="v-pills-single" aria-selected="false">Single Branch upload</button>
 
 
                                                         </div>
@@ -124,7 +124,7 @@
                                                              <div class="tab-pane fade" id="v-pills-single" role="tabpanel" aria-labelledby="v-pills-single-tab" tabindex="0">
                                                                 <div class="card mb-4">
                                                                     <div class="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-                                                                        <h3 class="mb-lg-0 mb-3">Single Union upload</h3>
+                                                                        <h3 class="mb-lg-0 mb-3">Single Branch upload</h3>
 
                                                                         <a href="#" class="btn btn-size btn-main-primary">Complete Upload</a>
                                                                     </div>
@@ -133,8 +133,16 @@
                                                                         <form>
                                                                             <div class="row mt-4">
                                                                                 <div class="col-lg-12">
+                                                                                     <div class="mb-4">
+                                                                                        <label class="form-label">Union name</label>
+                                                                                        <input type="text" class="form-control form-control-height" value="Association Staff Union of Universities (ASUU)" disabled>
+                                                                                    </div>
                                                                                     <div class="mb-4">
-                                                                                        <label class="form-label d-block">Union Logo</label>
+                                                                                        <label class="form-label">Branch name</label>
+                                                                                        <input type="text" class="form-control form-control-height" placeholder="Enter branch name">
+                                                                                    </div>
+                                                                                    <div class="mb-4">
+                                                                                        <label class="form-label d-block">Branch display picture</label>
                                                                                         <label for="profile" class="position-relative">
                                                                                             <input type="file" id="profile" style="display: none;" />
 
@@ -146,19 +154,19 @@
                                                                                         </label>
                                                                                     </div>
                                                                                     <div class="mb-4">
-                                                                                        <label class="form-label">Union name</label>
-                                                                                        <input type="text" class="form-control form-control-height" placeholder="">
+                                                                                        <label class="form-label">Branch location</label>
+                                                                                        <input type="text" class="form-control form-control-height" placeholder="Enter branch location" value="G99R+GVJ, Dan Fodio St, Yaba, Lagos 101245, Lagos">
                                                                                     </div>
 
                                                                                     <div class="mb-4">
-                                                                                        <label class="form-label">Union Acronym (if applicable)</label>
-                                                                                        <input type="text" class="form-control form-control-height" placeholder="">
+                                                                                        <label class="form-label">Branch phone numbers</label>
+                                                                                        <input type="text" class="form-control form-control-height" placeholder="Enter branch phone numbers" value="08064583421, 08033445283">
                                                                                     </div>
                                                                                     
-                                                                                    <div class="mb-4">
+                                                                                    <!-- <div class="mb-4">
                                                                                         <label class="form-label">Founded in</label>
                                                                                         <input type="text" class="form-control form-control-height" placeholder="">
-                                                                                    </div>
+                                                                                    </div> -->
                                                                                     
                                                                                     <!-- <div class="mb-4">
                                                                                         <label class="form-label">Founded in</label>

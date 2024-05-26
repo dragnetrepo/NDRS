@@ -60,7 +60,11 @@
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="union-branches.php"><img src="images/branch.svg" class="img-fluid" />  Unions & Branches</a>
+                        <a class="nav-link" href="union-branches.php"><img src="images/branch.svg" class="img-fluid" />  Unions</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="branches.php"><img src="images/branch.svg" class="img-fluid" /> Branches</a>
                     </li>
 
                     <li class="nav-item">
