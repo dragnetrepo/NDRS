@@ -63,4 +63,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Settings::class);
     }
+
+    public function disputes()
+    {
+        return $this->hasMany(CaseUserRoles::class);
+    }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\Case\DisputesController;
 use App\Http\Controllers\Api\Case\DocumentController;
 use App\Http\Controllers\Api\Case\FolderController;
+use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Auth\AuthenticationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -120,6 +121,19 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                     Route::delete("delete-folder", "delete_folder")->name("delete");
                 });
             });
+        });
+
+        Route::prefix("users")->controller(UserController::class)->name("user.")->group(function(){
+            Route::get("/{role}", "index")->name("index");
+            Route::get("/admin-roles", "admin_roles")->name("admin-roles");
+            Route::get("/settlement-roles", "settlement_roles")->name("settlement-roles");
+            Route::post("/refer-case/{user}", "refer_case")->name("refer-case");
+            Route::post("/refer-case-to-body/{settlement}", "refer_case_to_body")->name("refer-case-to-body");
+            Route::get("/view-body-members/{settlement}", "body_members")->name("view-body-members");
+            Route::post("/create-board-of-enquiry", "create_board_enquiry")->name("create-board-of-enquiry");
+            Route::delete("/dissolve-board-of-enquiry/{settlement}", "dissolve_board_enquiry")->name("dissolve-board-of-enquiry");
+            Route::post("/invite-board-member/{settlement}", "invite_body_member")->name("invite-board-member");
+            Route::delete("/remove-board-member/{member}", "remove_body_member")->name("remove-board-member");
         });
 
         Route::get('roles', [ProfileController::class, "get_roles"])->name("get-roles");

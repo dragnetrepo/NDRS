@@ -3,6 +3,9 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Response;
 
 class ProfileUpdateRequest extends FormRequest
 {
@@ -30,5 +33,14 @@ class ProfileUpdateRequest extends FormRequest
             "contact_address" => "nullable|string|max:191",
             "display_picture" => "nullable|mimes:png,jpg|max:2048"
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'status' => Response::HTTP_UNAUTHORIZED,
+            'message' => 'Validation errors',
+            'error' => $validator->errors()
+        ], Response::HTTP_UNAUTHORIZED));
     }
 }

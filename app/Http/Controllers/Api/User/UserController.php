@@ -1,0 +1,335 @@
+<?php
+
+namespace App\Http\Controllers\Api\User;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\User\ReferCaseRequest;
+use App\Models\CaseUserRoles;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Models\OutgoingMessages;
+use App\Models\SettlementBody;
+use App\Models\SettlementBodyMember;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
+
+class UserController extends Controller
+{
+    protected $response;
+    protected $outgoing_messages;
+
+    public function __construct()
+    {
+        $this->response = [
+            'status' => Response::HTTP_FORBIDDEN,
+            'message' => 'We could not complete your request. Please try again!',
+            'error' => []
+        ];
+        $this->outgoing_messages = new OutgoingMessages();
+    }
+
+    public function index($role)
+    {
+        $users = User::whereHas('roles', function($query) use ($role) {
+            $query->where("name", $role);
+        })->get();
+
+        $data = [];
+        $this->response["message"] = "No data found";
+
+        if ($users->isNotEmpty()) {
+            foreach ($users as $user) {
+                $data[] = [
+                    "_id" => $user->id,
+                    "name" => trim($user->first_name.' '.$user->last_name),
+                    "status" => $user->status,
+                    "date_added" => $user->created_at->format("M d Y"),
+                    "assigned_cases" => $user->disputes->count()
+                ];
+            }
+
+            $this->response["message"] = "Users list retrieved!";
+        }
+
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function refer_case(ReferCaseRequest $request, $user)
+    {
+        $user = User::find($user);
+
+        if ($user) {
+            if ($user->status == "suspended") {
+                $this->response["message"] = "A case cannot be referred to a suspended user";
+            }
+            elseif ($user->status == "deactivated") {
+                $this->response["message"] = "This user's account is deactivated and thus cannot have a case referred to them.";
+            }
+            else {
+                try {
+                    if ($user_role = $user->roles->first()) {
+                        if ($request->cases) {
+                            if (is_array($request->cases)) {
+                                if (count($request->cases)) {
+                                    foreach ($request->cases as $case_id) {
+                                        $dispute = get_case_dispute($case_id);
+
+                                        if ($dispute) {
+                                            if (!CaseUserRoles::where("user_id", $user->id)->where("case_id", $case_id)->exists()) {
+                                                CaseUserRoles::create([
+                                                    "case_id" => $case_id,
+                                                    "case_role_id" => $user_role->id,
+                                                    "user_id" => $user->id,
+                                                    "email" => $user->email,
+                                                ]);
+
+                                                send_out_case_invitation($dispute->case_no, $user->id, $user->id, $user_role->name);
+                                            }
+                                        }
+                                    }
+
+
+                                    $this->response["status"] = Response::HTTP_OK;
+                                    $this->response["message"] = "User has been referred to selected cases successfully!";
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        $this->response["message"] = "No role has been assigned to this yet.";
+                    }
+                } catch (\Throwable $th) {
+                    Log::error($th->getMessage());
+                }
+            }
+
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function admin_roles()
+    {
+        $data = [];
+        $this->response["message"] = "No data found";
+
+        $roles = Role::where("type", "admin")->get();
+
+        if ($roles->isNotEmpty()) {
+            foreach ($roles as $role) {
+                $data[] = [
+                    "_id" => $role->id,
+                    "name" => $role->display_name,
+                ];
+            }
+
+            $this->response["message"] = "Admin roles retrieved!";
+        }
+
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function settlement_roles()
+    {
+        $data = [];
+        $this->response["message"] = "No data found";
+
+        $roles = Role::where("type", "settlement-body")->get();
+
+        if ($roles->isNotEmpty()) {
+            foreach ($roles as $role) {
+                $data[] = [
+                    "_id" => $role->id,
+                    "name" => $role->display_name,
+                ];
+            }
+
+            $this->response["message"] = "settlement bodies roles retrieved!";
+        }
+
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function create_board_enquiry(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "name" => "required|min:3",
+        ]);
+
+        if ($validator->fails()) {
+            $this->response["message"] = "Validation errors";
+            $this->response["error"] = $validator->errors();
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+        }
+        else {
+            $role = Role::where("name", "board of enquiry")->where("type", "settlement-body")->first();
+            if ($role) {
+                SettlementBody::create([
+                    "name" => $request->name,
+                    "role_id" => $role->id
+                ]);
+
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["message"] = "Board of enquiry has been created successfully!";
+            }
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function refer_case_to_body(ReferCaseRequest $request, $settlement)
+    {
+        $settlement = SettlementBody::find($settlement);
+
+        if ($settlement) {
+            if ($settlement->status == "dissolved") {
+                $this->response["message"] = "A case cannot be referred to a dissolved board";
+            }
+            else {
+                try {
+                    if ($settlement->role) {
+                        if ($request->cases) {
+                            if (is_array($request->cases)) {
+                                if (count($request->cases)) {
+                                    foreach ($request->cases as $case_id) {
+                                        $dispute = get_case_dispute($case_id);
+
+                                        if ($dispute) {
+                                            if (!CaseUserRoles::where("sb_id", $settlement->id)->where("case_id", $case_id)->exists()) {
+                                                CaseUserRoles::create([
+                                                    "case_id" => $case_id,
+                                                    "case_role_id" => $settlement->role->id,
+                                                    "sb_id" => $settlement->id,
+                                                ]);
+                                            }
+                                        }
+                                    }
+
+
+                                    $this->response["status"] = Response::HTTP_OK;
+                                    $this->response["message"] = "Board of enquiry has been referred to selected cases successfully!";
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        $this->response["message"] = "No role has been assigned to this yet.";
+                    }
+                } catch (\Throwable $th) {
+                    Log::error($th->getMessage());
+                }
+            }
+
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function body_members($settlement)
+    {
+        $settlement = SettlementBody::find($settlement);
+        $data = [];
+
+        if ($settlement) {
+            $members = SettlementBodyMember::where("sb_id", $settlement->id)->get();
+            $this->response["message"] = "No data found";
+
+            if ($members->isNotEmpty()) {
+                foreach ($members as $member) {
+                    $data[] = [
+                        "_id" => $member->id,
+                        "name" => $member->user ? trim($member->user->first_name.' '.$member->user->last_name) : "",
+                        "email" => $member->email,
+                        "status" => $member->status,
+                        "date_joined" => $member->created_at->format("M d Y"),
+                    ];
+                }
+                $this->response["message"] = "Members retrieved successfully!";
+                $this->response["data"] = $data;
+            }
+
+            $this->response["status"] = Response::HTTP_OK;
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function invite_body_member($settlement, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "email" => "required|email"
+        ]);
+
+        if ($validator->fails()) {
+            $this->response["message"] = "Validation errors";
+            $this->response["error"] = $validator->errors();
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+        }
+        else {
+            $settlement = SettlementBody::find($settlement);
+
+            if ($settlement) {
+                if (!SettlementBodyMember::where("sb_id", $settlement->id)->where("email", $request->email)->exists()) {
+                    SettlementBodyMember::create([
+                        "sb_id" => $settlement->id,
+                        "email" => $request->email,
+                    ]);
+
+                    send_out_board_member_invitation($settlement->name, 0, $request->email);
+
+                    $this->response["status"] = Response::HTTP_OK;
+                    $this->response["emssage"] = "Invite has been sent to member successfully!";
+                }
+                else {
+                    $this->response["message"] = "Validation errors";
+                    $this->response["error"] = [
+                        "email" => ["This user has already been invited to be a member to this board"]
+                    ];
+                    $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+                }
+            }
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function remove_body_member($member)
+    {
+        $settlement_member = SettlementBodyMember::find($member);
+
+        if ($settlement_member) {
+            if ($settlement_member->delete()) {
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["emssage"] = "Member has been removed successfully!!";
+            }
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function dissolve_board_enquiry($settlement)
+    {
+        $settlement = SettlementBody::find($settlement);
+
+        if ($settlement) {
+            $settlement->status = "dissolved";
+            if ($settlement->save()) {
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["emssage"] = "Board has been dissolved successfully!!";
+            }
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+}

@@ -126,7 +126,7 @@ class DisputesController extends Controller
         try {
             $user_role = request()->user()->member_role->where("role_id", "1")->first(); // Is ministry admin
 
-            $union = Union::where("id", $request->union)->whereHas('users', function ($query) use ($user_role) {
+            $union = Union::where("id", $request->initiating_party)->whereHas('users', function ($query) use ($user_role) {
                     $query->when((!$user_role), function($query){
                         $query->where("user_id", request()->user()->id);
                     });
@@ -148,10 +148,10 @@ class DisputesController extends Controller
                 ]);
 
                 if ($case_dispute) {
-                    if (Union::where("id", $request->accused_union)->exists()) {
+                    if (Union::where("id", $request->accused_party)->exists()) {
                         CaseAccusedUnion::create([
                             "case_id"  => $case_dispute->id,
-                            "union_id" => $request->accused_union
+                            "union_id" => $request->accused_party
                         ]);
                     }
 
@@ -195,7 +195,7 @@ class DisputesController extends Controller
                     "case_id"  => $case_dispute->id,
                 ],[
                     "case_id"  => $case_dispute->id,
-                    "union_id" => $request->accused_union
+                    "union_id" => $request->accused_party
                 ]);
 
                 $this->response["status"] = Response::HTTP_OK;
@@ -315,7 +315,7 @@ class DisputesController extends Controller
                             "email" => $invited_user_email,
                         ]);
 
-                        $this->sendOutCaseInvite($dispute->case_no, $invited_user_id, $invited_user_email, $case_role->name);
+                        send_out_case_invitation($dispute->case_no, $invited_user_id, $invited_user_email, $case_role->name);
 
                         $this->response["message"] = "Invite has been sent to this user successfully!";
                         $this->response["status"] = Response::HTTP_OK;
@@ -460,23 +460,5 @@ class DisputesController extends Controller
         }
 
         return "0001";
-    }
-
-    private function sendOutCaseInvite($case_id, $user_id, $user_email, $role_name)
-    {
-        $subject = "New Invite to contribute to CASE $case_id";
-        $message_body = "<p>Hello there,";
-        $message_body .= "<p>We hope this email finds you well.</p>";
-        $message_body .= "<p>You have been invited as a $role_name for CASE $case_id. Kindly login to your NDRS dashboard to accept this invite to be part of this dispute as a $role_name.</p>";
-        $message_body .= "<p>If you feel this was sent to you in error, kindly ignore this email or you can contact us at ".env("CONTACT_EMAIL")." for more information.</p>";
-        $message_body .= "<p>Cheers,</p>";
-        $message_body .= "<p>".env("APP_NAME")." Team</p>";
-
-        $message_sent = false;
-        if ($message_body) {
-            $message_sent = $this->outgoing_messages->send_message($user_id, $user_email, "case-dispute-role-invite", "email", $subject, $message_body);
-        }
-
-        return $message_sent;
     }
 }
