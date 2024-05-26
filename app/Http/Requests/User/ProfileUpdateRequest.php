@@ -31,7 +31,7 @@ class ProfileUpdateRequest extends FormRequest
             "email" => "required|string",
             "phone" => "required|string",
             "contact_address" => "nullable|string|max:191",
-            "display_picture" => "nullable|mimes:png,jpg|max:2048"
+            "display_picture" => "nullable|file|mimes:png,jpg|max:2048"
         ];
     }
 
