@@ -38,8 +38,10 @@ class DisputesController extends Controller
     public function index()
     {
         $user_id = request()->user()->id;
-        $disputes = CaseDispute::whereHas('union_data.users', function ($query) use ($user_id) {
-            $query->where("user_id", $user_id);
+        $disputes = CaseDispute::where(function($query) use ($user_id) {
+            $query->where("created_by", $user_id)->orWhereHas('union_data.users', function ($query) use ($user_id) {
+                $query->where("user_id", $user_id);
+            });
         })
         ->get();
 
@@ -62,11 +64,11 @@ class DisputesController extends Controller
                     "involved_parties" => [
                         "claimant" => [
                             "name" => $dispute->union_data->name,
-                            "logo" => $dispute->union_data->logo ? asset('/union/logos'.$dispute->union_data->logo) : ""
+                            "logo" => $dispute->union_data->logo ? asset('/union/'.$dispute->union_data->logo) : ""
                         ],
                         "accused" => [
                             "name" => $dispute->accused ? $dispute->accused->union->name : "",
-                            "logo" => $dispute->accused ? asset('/union/logos'.$dispute->accused->union->logo) : "",
+                            "logo" => $dispute->accused ? asset('/union/'.$dispute->accused->union->logo) : "",
                         ],
                     ]
                 ];
@@ -85,12 +87,7 @@ class DisputesController extends Controller
     {
         $user_id = request()->user()->id;
         $data = [];
-        $dispute = CaseDispute::whereHas('involved_parties', function ($query) use ($user_id) {
-            $query->where("user_id", $user_id);
-        })
-        ->whereHas('union_data')
-        ->where("id", $case_id)
-        ->first();
+        $dispute = get_case_dispute($case_id, $user_id);
 
         if ($dispute) {
             $data = [
@@ -124,13 +121,7 @@ class DisputesController extends Controller
         $form_error_msg = [];
 
         try {
-            $user_role = request()->user()->member_role->where("role_id", "1")->first(); // Is ministry admin
-
-            $union = Union::where("id", $request->initiating_party)->whereHas('users', function ($query) use ($user_role) {
-                    $query->when((!$user_role), function($query){
-                        $query->where("user_id", request()->user()->id);
-                    });
-                })->first();
+            $union = Union::where("id", $request->initiating_party)->first();
 
             if ($union) {
                 $case_dispute = CaseDispute::create([
@@ -234,12 +225,7 @@ class DisputesController extends Controller
     {
         $user_id = request()->user()->id;
         $data = [];
-        $dispute = CaseDispute::whereHas('involved_parties', function ($query) use ($user_id) {
-            $query->where("user_id", $user_id);
-        })
-        ->whereHas('union_data')
-        ->where("id", $case_id)
-        ->first();
+        $dispute = $dispute = get_case_dispute($case_id, $user_id);;
 
         if ($dispute) {
             if ($dispute->involved_parties->count()) {
@@ -253,7 +239,7 @@ class DisputesController extends Controller
                         "joined" => Carbon::parse(($involved_party->response_date ? $involved_party->response_date : $involved_party->created_at))->format("M d Y"),
                         "role" => $involved_party->role->name,
                         "status" => $involved_party->status,
-                        "display_picture" => ($user && $user->display_picture) ? asset('/user/images/'.$user->display_picture) : '',
+                        "display_picture" => ($user && $user->display_picture) ? asset('/user/'.$user->display_picture) : '',
                     ];
                 }
 

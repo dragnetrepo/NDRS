@@ -48,7 +48,7 @@ class UnionBranchController extends Controller
                         $user_deets = $assigned_user->user;
                         if ($user_deets) {
                             $assigned_admins = [
-                                "photo" => $user_deets->display_picture ? asset('/user/images/'.$user_deets->display_picture) : ''
+                                "photo" => $user_deets->display_picture ? asset('/user/'.$user_deets->display_picture) : ''
                             ];
                         }
                     }
@@ -58,7 +58,7 @@ class UnionBranchController extends Controller
                     "id" => $union_branch->id,
                     "name" => $union_branch->name,
                     "acronym" => $union_branch->acronym,
-                    "logo" => $union_branch->logo ? asset('/union_branch/logos/'.$union_branch->logo) : '',
+                    "logo" => $union_branch->logo ? asset('/union_branch/'.$union_branch->logo) : '',
                     "assigned_admins" => $assigned_admins,
                     "date_added" => $union_branch->created_at->format("M d Y"),
                 ];

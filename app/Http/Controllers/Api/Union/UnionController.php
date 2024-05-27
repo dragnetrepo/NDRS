@@ -60,7 +60,7 @@ class UnionController extends Controller
                         $user_deets = $assigned_user->user;
                         if ($user_deets) {
                             $assigned_admins = [
-                                "photo" => $user_deets->display_picture ? asset('/user/images/'.$user_deets->display_picture) : ''
+                                "photo" => $user_deets->display_picture ? asset('/user/'.$user_deets->display_picture) : ''
                             ];
                         }
                     }
@@ -71,7 +71,7 @@ class UnionController extends Controller
                     "name" => $union->name,
                     "industry" => $union->industry,
                     "acronym" => $union->acronym,
-                    "logo" => $union->logo ? asset('/union/logos/'.$union->logo) : '',
+                    "logo" => $union->logo ? asset('/union/'.$union->logo) : '',
                     "assigned_admins" => $assigned_admins,
                     "date_added" => $union->created_at->format("M d Y"),
                 ];

@@ -57,19 +57,19 @@ return [
         ],
         'union_logos' => [
             'driver' => 'local',
-            'root'   => public_path() . '/union/logos',
+            'root'   => public_path() . '/union',
         ],
         'union_branch_logos' => [
             'driver' => 'local',
-            'root'   => public_path() . '/union_branch/logos',
+            'root'   => public_path() . '/union_branch',
         ],
         'union_sub_branch_logos' => [
             'driver' => 'local',
-            'root'   => public_path() . '/union_sub_branch/logos',
+            'root'   => public_path() . '/union_sub_branch',
         ],
         'profile_photos' => [
             'driver' => 'local',
-            'root'   => public_path() . '/user/images',
+            'root'   => public_path() . '/user',
         ],
         'case_documents' => [
             'driver' => 'local',

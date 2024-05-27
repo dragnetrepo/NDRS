@@ -65,9 +65,9 @@ if (!function_exists("get_user_settings_value")) {
 if (!function_exists("get_case_dispute")) {
     function get_case_dispute($case_id, $user_id = 0) {
 
-        return CaseDispute::whereHas('involved_parties', function ($query) use ($user_id) {
-            $query->when(($user_id > 0), function($sub_query) use ($user_id) {
-                $sub_query->where("user_id", $user_id);
+        return CaseDispute::where(function($query) use ($user_id) {
+            $query->where("created_by", $user_id)->orWhereHas('union_data.users', function ($query) use ($user_id) {
+                $query->where("user_id", $user_id);
             });
         })
         ->whereHas('union_data')

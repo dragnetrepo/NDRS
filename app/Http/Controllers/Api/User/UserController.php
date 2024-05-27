@@ -61,7 +61,7 @@ class UserController extends Controller
                     "name" => trim($user->first_name.' '.$user->last_name),
                     "status" => $user->status,
                     "date_added" => $user->created_at->format("M d Y"),
-                    "photo" => $user->display_picture ? asset('/user/images/'.$user->display_picture) : "",
+                    "photo" => $user->display_picture ? asset('/user/'.$user->display_picture) : "",
                     "assigned_cases" => $user->disputes->count()
                 ];
             }
@@ -268,7 +268,7 @@ class UserController extends Controller
                     foreach ($board->members as $member) {
                         if ($user = $member->user) {
                             $assigned_members[] = [
-                                "photo" => $user->display_picture ? asset('/user/images/'.$user->display_picture) : ""
+                                "photo" => $user->display_picture ? asset('/user/'.$user->display_picture) : ""
                             ];
                         }
                     }
