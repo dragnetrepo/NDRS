@@ -2,6 +2,7 @@
 
 use App\Models\CaseDispute;
 use App\Models\OutgoingMessages;
+use Illuminate\Support\Facades\View;
 
 if (!function_exists("get_user_roles")) {
     function get_user_roles($user) {
@@ -111,6 +112,40 @@ if (!function_exists("send_out_board_member_invitation")) {
         $message_sent = false;
         if ($message_body) {
             $message_sent = $outgoing_messages->send_message($user_id, $user_email, "board-member-invite", "email", $subject, $message_body);
+        }
+
+        return $message_sent;
+    }
+}
+
+if (!function_exists("send_outgoing_email_invite")) {
+    function send_outgoing_email_invite($email, $type, $union_name, $role, $url_token="", $subject="") {
+        $message_body = "";
+        $purpose = "";
+        $outgoing_messages = new OutgoingMessages();
+        if (!$subject) {
+            $subject = "New Invite from $union_name";
+        }
+        $data = [
+            "union_name" => $union_name,
+            "role" => $role,
+            "type" => $type,
+            "email" => $email,
+            "url_token" => $url_token,
+        ];
+
+        if ($type == "simple-invite") {
+            $purpose = "Invite for Account Holder";
+            $message_body = (string) View::make('email-templates.simple-invite', $data);
+        }
+        elseif ($type == "invite-with-link") {
+            $purpose = "Invite for non Account Holder";
+            $message_body = (string) View::make('email-templates.invite-with-link', $data);
+        }
+
+        $message_sent = false;
+        if ($message_body) {
+            $message_sent = $outgoing_messages->send_message(0, $email, $purpose, "email", $subject, $message_body);
         }
 
         return $message_sent;

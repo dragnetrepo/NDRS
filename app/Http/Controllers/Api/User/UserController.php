@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\InviteUserRequest;
 use App\Http\Requests\User\ReferCaseRequest;
+use App\Models\CaseDispute;
 use App\Models\CaseUserRoles;
+use App\Models\EmailInvitations;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\OutgoingMessages;
@@ -30,10 +33,12 @@ class UserController extends Controller
         $this->outgoing_messages = new OutgoingMessages();
     }
 
-    public function index($role)
+    public function index($role="")
     {
         $users = User::whereHas('roles', function($query) use ($role) {
-            $query->where("name", $role);
+            $query->when($role, function($query) use ($role) {
+                $query->where("name", $role);
+            });
         })->get();
 
         $data = [];
@@ -41,11 +46,22 @@ class UserController extends Controller
 
         if ($users->isNotEmpty()) {
             foreach ($users as $user) {
-                $data[] = [
+                $role_name = "";
+                $role = $user->roles->first();
+
+                if ($role) {
+                    $role_name = $role->display_name;
+                    if ($role->name == "board of enquiry") {
+                        $role_name .= " Member";
+                    }
+                }
+
+                $data[$role_name][] = [
                     "_id" => $user->id,
                     "name" => trim($user->first_name.' '.$user->last_name),
                     "status" => $user->status,
                     "date_added" => $user->created_at->format("M d Y"),
+                    "photo" => $user->display_picture ? asset('/user/images/'.$user->display_picture) : "",
                     "assigned_cases" => $user->disputes->count()
                 ];
             }
@@ -55,6 +71,56 @@ class UserController extends Controller
 
         $this->response["status"] = Response::HTTP_OK;
         $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function send_invite(InviteUserRequest $request)
+    {
+        $form_error_msg = [];
+        if (!User::where("email", $request->email)->exists()) {
+            $case_id = $request->case_id ?? 0;
+            if ($request->case_id) {
+                if (!CaseDispute::where("id", $request->case_id)->exists()) {
+                    $case_id = -1;
+                    $form_error_msg["case_id"]= ["Case dispute does not exist in our records"];
+                }
+            }
+
+            if ($case_id >= 0) {
+                $role = Role::find($request->role);
+
+                $url_token = sha1(uniqid($request->email));
+                EmailInvitations::create([
+                    "email" => $request->email,
+                    "token" => $url_token,
+                    "role_id" => $request->role,
+                    "invited_by" => $request->user()->id,
+                ]);
+
+                if ($case_id > 0) {
+                    CaseUserRoles::create([
+                        "case_id" => $case_id,
+                        "case_role_id" => $request->role,
+                        "email" => $request->email,
+                    ]);
+                }
+
+                send_outgoing_email_invite($request->email, "simple-invite", "NDRS", $role->name, $url_token, "You have been invited by NDRS");
+
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["message"] = "Invite has been sent to this user successfully!";
+            }
+        }
+        else {
+            $form_error_msg["email"]= ["Email has already been registered on this platform"];
+        }
+
+        if (!empty($form_error_msg)) {
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+            $this->response["message"] = 'Validation errors';
+            $this->response["error"] = $form_error_msg;
+        }
 
         return response()->json($this->response, $this->response["status"]);
     }
@@ -113,6 +179,31 @@ class UserController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function change_status(Request $request, $user)
+    {
+        $validator = Validator::make($request->all(), [
+            "status" => "required|in:active,suspended,deactivated"
+        ]);
+
+        if ($validator->fails()) {
+            $this->response["message"] = "Validation errors";
+            $this->response["error"] = $validator->errors();
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+        }
+        else {
+            $user = User::find($user);
+            if ($user) {
+                $user->status = $request->status;
+                if ($user->save()) {
+                    $this->response["status"] = Response::HTTP_OK;
+                    $this->response["message"] = "User's status has been changed successfully!";
+                }
+            }
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function admin_roles()
     {
         $data = [];
@@ -153,6 +244,47 @@ class UserController extends Controller
             }
 
             $this->response["message"] = "settlement bodies roles retrieved!";
+        }
+
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function get_board_enquiry()
+    {
+        $board_of_enquiry = SettlementBody::whereHas('role', function($query){
+            $query->where("name", "board of enquiry");
+        })->get();
+
+        $data = [];
+        $this->response["message"] = "No data found";
+
+        if ($board_of_enquiry->isNotEmpty()) {
+            foreach ($board_of_enquiry as $board) {
+                $assigned_members = [];
+                if ($board->members->count()) {
+                    foreach ($board->members as $member) {
+                        if ($user = $member->user) {
+                            $assigned_members[] = [
+                                "photo" => $user->display_picture ? asset('/user/images/'.$user->display_picture) : ""
+                            ];
+                        }
+                    }
+                }
+
+                $data[] = [
+                    "_id" => $board->id,
+                    "name" => $board->name,
+                    "status" => $board->status,
+                    "date_added" => $board->created_at->format("M d Y"),
+                    "assigned_cases" => $board->disputes->count(),
+                    "assigned_members" => $assigned_members,
+                ];
+            }
+
+            $this->response["message"] = "Board of enquiry list retrieved!";
         }
 
         $this->response["status"] = Response::HTTP_OK;

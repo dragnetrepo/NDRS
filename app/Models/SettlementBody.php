@@ -17,4 +17,14 @@ class SettlementBody extends Model
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
+
+    public function disputes()
+    {
+        return $this->hasMany(CaseUserRoles::class, 'sb_id');
+    }
+
+    public function members()
+    {
+        return $this->hasMany(SettlementBodyMember::class, 'sb_id');
+    }
 }

@@ -222,10 +222,10 @@ class UnionBranchController extends Controller
                                 "status" => "active",
                             ]);
 
-                            $this->response["message"] = "User added to this Union successfully!";
+                            $this->response["message"] = "User has been added to this Union successfully!";
                             $this->response["status"] = Response::HTTP_OK;
 
-                            $this->sendOutgoingEmailInvites($request->email, "simple-invite", $union_branch->name, $role->name);
+                            send_outgoing_email_invite($request->email, "simple-invite", $union_branch->name, $role->name);
                         }
                     }
                     else {
@@ -246,7 +246,7 @@ class UnionBranchController extends Controller
                             $this->response["message"] = "An invite has been successfully sent to this user to join this Union Branch!";
                             $this->response["status"] = Response::HTTP_OK;
 
-                            $this->sendOutgoingEmailInvites($request->email, "invite-with-link", $union_branch->name, $role->name, $url_token);
+                            send_outgoing_email_invite($request->email, "invite-with-link", $union_branch->name, $role->name, $url_token);
                         }
                     }
                 }
@@ -265,40 +265,5 @@ class UnionBranchController extends Controller
         }
 
         return response()->json($this->response, $this->response["status"]);
-    }
-
-    private function sendOutgoingEmailInvites($email, $type, $union_name, $role, $url_token = "")
-    {
-        $message_body = "";
-        $purpose = "";
-        $subject = "New Invite from $union_name Branch";
-
-        $message_body = "<p>Hello, there";
-        $message_body .= "<p>We hope this email finds you well.</p>";
-
-        if ($type == "simple-invite") {
-            $message_body .= "<p>You have just been added as $role for $union_name Branch. Kindly login to your NDRS dashboard to have access to the Union Team</p>";
-
-            $purpose = "Invite for Account Holder";
-        }
-        elseif ($type == "invite-with-link") {
-            $email_invite_url = url('/union-invite/'.$url_token);
-            $message_body .= "<p>You have just received an invite to join their Union Team. Click on the URL below to create an account on NDRS and have access to the Union Team</p>";
-            $message_body .= "<p><a href='$email_invite_url'>$email_invite_url</a></p>";
-
-            $purpose = "Invite for non Account Holder";
-        }
-
-        $message_body .= "<p>If you feel this was sent to you in error, kindly ignore this email or you can contact us at ".env("CONTACT_EMAIL")." for more information.</p>";
-        $message_body .= "<p>Cheers,</p>";
-        $message_body .= "<p>".env("APP_NAME")." Team</p>";
-
-        $message_sent = false;
-
-        if ($message_body) {
-            $message_sent = $this->outgoing_messages->send_message(0, $email, $purpose, "email", $subject, $message_body);
-        }
-
-        return $message_sent;
     }
 }
