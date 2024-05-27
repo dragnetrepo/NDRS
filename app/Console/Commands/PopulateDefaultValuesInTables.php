@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -127,6 +129,7 @@ class PopulateDefaultValuesInTables extends Command
                     "display_name" => $role_details["display_name"],
                     "type" => $role_details["type"],
                     "guard_name" => "sanctum",
+                    "is_default" => "1",
                 ]);
             }
         }
@@ -135,13 +138,20 @@ class PopulateDefaultValuesInTables extends Command
             $group_description = $group_permissions["description"];
 
             foreach ($group_permissions["permissions"] as $permission_name => $permission_display_name) {
-                Permission::create([
-                    "name" => $permission_name,
-                    "display_name" => $permission_display_name,
-                    "group" => $group_name,
-                    "guard_name" => "sanctum",
-                    "group_desc" => $group_description,
-                ]);
+                $get_permission = Permission::where("name", $permission_name)->first();
+                if ($get_permission) {
+                    $get_permission->display_name = $permission_display_name;
+                    $get_permission->save();
+                }
+                else {
+                    Permission::create([
+                        "name" => $permission_name,
+                        "display_name" => $permission_display_name,
+                        "group" => $group_name,
+                        "guard_name" => "sanctum",
+                        "group_desc" => $group_description,
+                    ]);
+                }
 
 
                 foreach ($user_roles as $name => $display_name) {
@@ -152,6 +162,19 @@ class PopulateDefaultValuesInTables extends Command
                         }
                     }
                 }
+            }
+        }
+
+        if (!User::where("email", "admin@ndrs.com")->exists()) {
+            $get_role = Role::where("name", "ministry admin")->where("guard_name", "sanctum")->first();
+
+            if ($get_role) {
+                $user = User::create([
+                    "email" => "admin@ndrs.com",
+                    "password" => Hash::make("passndrs12word#")
+                ]);
+
+                $user->assignRole($get_role);
             }
         }
     }

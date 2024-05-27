@@ -234,6 +234,12 @@ class UnionSubBranchController extends Controller
                                 "status" => "active",
                             ]);
 
+                            if ($role) {
+                                if (!$user->hasRole($role->name)) {
+                                    $user->assignRole($role->name);
+                                }
+                            }
+
                             $this->response["message"] = "User added to this Union Sub Branch successfully!";
                             $this->response["status"] = Response::HTTP_OK;
 

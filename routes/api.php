@@ -128,6 +128,11 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::get("/{role}", "index")->name("per-role");
             Route::get("/admin-roles", "admin_roles")->name("admin-roles");
             Route::get("/settlement-roles", "settlement_roles")->name("settlement-roles");
+            Route::get("/permissions", "permissions")->name("permissions");
+            Route::post("/create-role", "create_role")->name("create-role");
+            Route::post("/restore-role-default", "restore_role_default")->name("restore-role-default");
+            Route::post("/add-permission", "add_role_permission")->name("add-role-permission");
+            Route::post("/revoke-permission", "revoke_role_permission")->name("revoke-role-permission");
 
             Route::post("/send-invite", "send_invite")->name("send-invite");
             Route::post("/bulk/send-invite", "bulk_send_invite")->name("bulk-send-invite");
@@ -138,7 +143,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::get("/get-board-of-enquiries", "get_board_enquiry")->name("view-body-members");
             Route::post("/create-board-of-enquiry", "create_board_enquiry")->name("create-board-of-enquiry");
             Route::post("/refer-case-to-body/{settlement}", "refer_case_to_body")->name("refer-case-to-body");
-            Route::get("/view-body-members/{settlement}", "body_members")->name("view-body-members");
+            Route::get("/view-board-members/{settlement}", "body_members")->name("view-body-members");
             Route::delete("/dissolve-board-of-enquiry/{settlement}", "dissolve_board_enquiry")->name("dissolve-board-of-enquiry");
             Route::post("/invite-board-member/{settlement}", "invite_body_member")->name("invite-board-member");
             Route::delete("/remove-board-member/{member}", "remove_body_member")->name("remove-board-member");
