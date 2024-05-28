@@ -121,18 +121,22 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                     Route::delete("delete-folder", "delete_folder")->name("delete");
                 });
             });
+
+            // Route::prefix("discussions")->name("discussion.")->group(function(){
+            //     Route::get("/", "index")->name("index");
+            // });
         });
 
         Route::prefix("users")->controller(UserController::class)->name("user.")->group(function(){
             Route::get("/all", "index")->name("index");
-            Route::get("/{role}", "index")->name("per-role");
+            Route::get("/role/{role}", "index")->name("per-role");
             Route::get("/admin-roles", "admin_roles")->name("admin-roles");
             Route::get("/settlement-roles", "settlement_roles")->name("settlement-roles");
             Route::get("/permissions", "permissions")->name("permissions");
             Route::post("/create-role", "create_role")->name("create-role");
             Route::post("/restore-role-default", "restore_role_default")->name("restore-role-default");
-            Route::post("/add-permission", "add_role_permission")->name("add-role-permission");
-            Route::post("/revoke-permission", "revoke_role_permission")->name("revoke-role-permission");
+            Route::get("/get-roles", "get_roles")->name("get-roles");
+            Route::post("/update-permission", "update_role_permission")->name("add-role-permission");
 
             Route::post("/send-invite", "send_invite")->name("send-invite");
             Route::post("/bulk/send-invite", "bulk_send_invite")->name("bulk-send-invite");
@@ -149,7 +153,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::delete("/remove-board-member/{member}", "remove_body_member")->name("remove-board-member");
         });
 
-        Route::get('roles', [ProfileController::class, "get_roles"])->name("get-roles");
+        // Route::get('roles', [ProfileController::class, "get_roles"])->name("get-roles");
         Route::get("/logout", [AuthenticationController::class, "logout"])->name("log-out");
     });
 });

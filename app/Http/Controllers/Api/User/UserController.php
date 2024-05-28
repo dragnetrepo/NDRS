@@ -39,7 +39,7 @@ class UserController extends Controller
     {
         $users = User::whereHas('roles', function($query) use ($role) {
             $query->when($role, function($query) use ($role) {
-                $query->where("name", $role);
+                $query->where("id", $role);
             });
         })->get();
 
@@ -346,7 +346,7 @@ class UserController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
-    public function add_role_permission(Request $request)
+    public function update_role_permission(Request $request)
     {
         $role = Role::where("id", $request->role_id)->first();
 
@@ -354,12 +354,15 @@ class UserController extends Controller
             $permission = Permission::where("id", $request->permission_id)->first();
 
             if ($permission) {
-                if (!$role->hasPermissionTo($permission->name)) {
+                if ($role->hasPermissionTo($permission->name)) {
+                    $role->revokePermissionTo($permission->name);
+                }
+                else {
                     $role->givePermissionTo($permission->name);
                 }
 
                 $this->response["status"] = Response::HTTP_OK;
-                $this->response["message"] = "Permission has been added to this role successfully!!";
+                $this->response["message"] = "Permission has been updated for this role successfully!!";
             }
             else {
                 $this->response["message"] = "We cannot find this permission in our records!";
@@ -372,28 +375,40 @@ class UserController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
-    public function revoke_role_permission(Request $request)
+    public function get_roles(Request $request)
     {
-        $role = Role::where("id", $request->role_id)->first();
+        $data = [];
+        $this->response["message"] = "No data found";
 
-        if ($role) {
-            $permission = Permission::where("id", $request->permission_id)->first();
+        $roles = Role::get();
 
-            if ($permission) {
-                if ($role->hasPermissionTo($permission->name)) {
-                    $role->revokePermissionTo($permission->name);
+        if ($roles->isNotEmpty()) {
+            $permissions = Permission::get();
+
+            foreach ($roles as $role) {
+                $role_permissions = [];
+
+                foreach ($permissions as $permission) {
+                    $role_permissions[$permission->group][] = [
+                        "_id" => $permission->id,
+                        "name" => $permission->display_name,
+                        "has_permission" => $role->hasPermissionTo($permission->name) ? 1 : 0,
+                        "group_description" => $permission->group_desc
+                    ];
                 }
 
-                $this->response["status"] = Response::HTTP_OK;
-                $this->response["message"] = "Permission has been revoked from this role successfully!!";
+                $data[] = [
+                    "_id" => $role->id,
+                    "name" => $role->display_name,
+                    "permissions" => $role_permissions
+                ];
             }
-            else {
-                $this->response["message"] = "We cannot find this permission in our records!";
-            }
+
+            $this->response["message"] = "Admin roles retrieved!";
         }
-        else {
-            $this->response["message"] = "The role selected does not match our records!";
-        }
+
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["data"] = $data;
 
         return response()->json($this->response, $this->response["status"]);
     }

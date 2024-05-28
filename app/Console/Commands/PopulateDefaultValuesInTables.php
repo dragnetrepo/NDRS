@@ -165,16 +165,21 @@ class PopulateDefaultValuesInTables extends Command
             }
         }
 
-        if (!User::where("email", "admin@ndrs.com")->exists()) {
-            $get_role = Role::where("name", "ministry admin")->where("guard_name", "sanctum")->first();
+        $get_role = Role::where("name", "ministry admin")->where("guard_name", "sanctum")->first();
 
-            if ($get_role) {
+        if ($get_role) {
+            if ($user = User::where("email", "admin@ndrs.com")->first()) {
+                if (!$user->hasRole($get_role->name)) {
+                    $user->assignRole($get_role->name);
+                }
+            }
+            else {
                 $user = User::create([
                     "email" => "admin@ndrs.com",
                     "password" => Hash::make("passndrs12word#")
                 ]);
 
-                $user->assignRole($get_role);
+                $user->assignRole($get_role->name);
             }
         }
     }
