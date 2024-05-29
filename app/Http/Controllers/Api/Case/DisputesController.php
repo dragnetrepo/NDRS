@@ -38,12 +38,7 @@ class DisputesController extends Controller
     public function index()
     {
         $user_id = request()->user()->id;
-        $disputes = CaseDispute::where(function($query) use ($user_id) {
-            $query->where("created_by", $user_id)->orWhereHas('union_data.users', function ($query) use ($user_id) {
-                $query->where("user_id", $user_id);
-            });
-        })
-        ->get();
+        $disputes = get_case_dispute(0, $user_id);
 
         $data = [];
         $this->response["message"] = "No data found";
@@ -64,11 +59,11 @@ class DisputesController extends Controller
                     "involved_parties" => [
                         "claimant" => [
                             "name" => $dispute->union_data->name,
-                            "logo" => $dispute->union_data->logo ? asset('/union/'.$dispute->union_data->logo) : ""
+                            "logo" => get_model_file_from_disk($dispute->union_data->logo, "union_logos"),
                         ],
                         "accused" => [
                             "name" => $dispute->accused ? $dispute->accused->union->name : "",
-                            "logo" => $dispute->accused ? asset('/union/'.$dispute->accused->union->logo) : "",
+                            "logo" =>get_model_file_from_disk($dispute->accused->logo, "union_logos"),
                         ],
                     ]
                 ];
@@ -122,36 +117,40 @@ class DisputesController extends Controller
 
         try {
             $union = Union::where("id", $request->initiating_party)->first();
+            $accussed_party = Union::where("id", $request->accused_party)->first();
 
-            if ($union) {
-                $case_dispute = CaseDispute::create([
-                    "case_no" => "DS".$this->generateCaseID(),
-                    "case_title" => $request->title,
-                    "dispute_type" => $request->type,
-                    "summary_of_dispute" => $request->summary,
-                    "background_info" => $request->background_info,
-                    "relief_sought" => $request->relief_sought,
-                    "specific_claims" => $request->specific_claims,
-                    "negotiation_terms" => $request->negotiation_terms,
-                    "status" => "pending approval",
-                    "union" => $union->id,
-                    "created_by" => request()->user()->id,
-                ]);
+            if ($accussed_party) {
+                if ($union) {
+                    $case_dispute = CaseDispute::create([
+                        "case_no" => "DS".$this->generateCaseID(),
+                        "case_title" => $request->title,
+                        "dispute_type" => $request->type,
+                        "summary_of_dispute" => $request->summary,
+                        "background_info" => $request->background_info,
+                        "relief_sought" => $request->relief_sought,
+                        "specific_claims" => $request->specific_claims,
+                        "negotiation_terms" => $request->negotiation_terms,
+                        "status" => "pending approval",
+                        "union" => $union->id,
+                        "created_by" => request()->user()->id,
+                    ]);
 
-                if ($case_dispute) {
-                    if (Union::where("id", $request->accused_party)->exists()) {
+                    if ($case_dispute) {
                         CaseAccusedUnion::create([
                             "case_id"  => $case_dispute->id,
                             "union_id" => $request->accused_party
                         ]);
-                    }
 
-                    $this->response["status"] = Response::HTTP_OK;
-                    $this->response["message"] = "Dispute has been created successfully!";
+                        $this->response["status"] = Response::HTTP_OK;
+                        $this->response["message"] = "Dispute has been created successfully!";
+                    }
+                }
+                else {
+                    $form_error_msg['initiating_party'] = ['Union does not exist in our records'];
                 }
             }
             else {
-                $form_error_msg['union'] = ['Union does not exist in our records'];
+                $form_error_msg['accused_party'] = ['Union does not exist in our records'];
             }
 
 
@@ -200,6 +199,46 @@ class DisputesController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function update_case_status(Request $request, $case_id)
+    {
+        $status = strtolower($request->status);
+        $form_error_msg = [];
+        $user_id = request()->user()->id;
+
+        $dispute = get_case_dispute($case_id, $user_id);
+
+        if ($dispute) {
+            if (in_array($status, CaseDispute::ARRAY_OF_CASE_STATUS)) {
+                $previous_status = $dispute->status;
+                $current_status = $status;
+
+                if ($previous_status == "pending approval") {
+                    create_dispute_group($dispute);
+                }
+
+                $dispute->status = $status;
+                $dispute->save();
+
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["message"] = "Case status has been updated successfully!";
+            }
+            else {
+                $form_error_msg["status"] = ["An invalid status has been selected"];
+            }
+        }
+        else {
+            $this->response["message"] = 'The case you are trying to edit does not exist in our records.';
+        }
+
+        if (!empty($form_error_msg)) {
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+            $this->response["message"] = 'Validation errors';
+            $this->response["error"] = $form_error_msg;
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function roles()
     {
         $roles = CaseRoles::get();
@@ -225,7 +264,7 @@ class DisputesController extends Controller
     {
         $user_id = request()->user()->id;
         $data = [];
-        $dispute = $dispute = get_case_dispute($case_id, $user_id);;
+        $dispute = $dispute = get_case_dispute($case_id, $user_id);
 
         if ($dispute) {
             if ($dispute->involved_parties->count()) {
@@ -239,7 +278,7 @@ class DisputesController extends Controller
                         "joined" => Carbon::parse(($involved_party->response_date ? $involved_party->response_date : $involved_party->created_at))->format("M d Y"),
                         "role" => $involved_party->role->name,
                         "status" => $involved_party->status,
-                        "display_picture" => ($user && $user->display_picture) ? asset('/user/'.$user->display_picture) : '',
+                        "display_picture" => get_model_file_from_disk($user->display_picture ?? "", "profile_photos"),
                     ];
                 }
 
@@ -258,7 +297,7 @@ class DisputesController extends Controller
     public function invite_party(InvitePartyRequest $request, $case_id)
     {
         try {
-            $dispute = CaseDispute::where("id", $case_id)->first();
+            $dispute = get_case_dispute($case_id);
             $form_error_msg = [];
 
             if ($dispute) {
@@ -313,7 +352,6 @@ class DisputesController extends Controller
                 else {
                     $form_error_msg["role"] = ["Role submitted does not match our records"];
                 }
-
             }
 
             if (!empty($form_error_msg)) {

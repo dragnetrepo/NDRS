@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('app:populate-default-values-in-tables')->everyMinute();
+        $schedule->command('app:send-outgoing-email-messages')->everyMinute();
     }
 
     /**

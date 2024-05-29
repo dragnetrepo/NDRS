@@ -12,6 +12,10 @@ class CaseDispute extends Model
 
     protected $guarded = [];
 
+    public const ARRAY_OF_CASE_STATUS = [
+        "internally resolved", "concilliation", "voting for panel", "resolved", "internal resolution", "pending approval", "arbitration", "court decision"
+    ];
+
     public function involved_parties()
     {
         return $this->hasMany(CaseUserRoles::class, 'case_id');

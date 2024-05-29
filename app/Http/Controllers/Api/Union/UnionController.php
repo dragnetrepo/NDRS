@@ -38,19 +38,6 @@ class UnionController extends Controller
         $unions = Union::get();
         $this->response["message"] = "No data found";
 
-        // $roles = [
-        //     "Ministry Admin",
-        //     "National Union Admin",
-        //     "Union Branch Admin",
-        //     "Union Members",
-        // ];
-
-        // foreach ($roles as $role) {
-        //     Role::create([
-        //         "name" => $role
-        //     ]);
-        // }
-
         if ($unions->isNotEmpty()) {
             foreach ($unions as $union) {
                 $assigned_admins = [];
@@ -60,7 +47,7 @@ class UnionController extends Controller
                         $user_deets = $assigned_user->user;
                         if ($user_deets) {
                             $assigned_admins = [
-                                "photo" => $user_deets->display_picture ? asset('/user/'.$user_deets->display_picture) : ''
+                                "photo" => get_model_file_from_disk($user_deets->display_picture, "profile_photos")
                             ];
                         }
                     }
@@ -71,7 +58,7 @@ class UnionController extends Controller
                     "name" => $union->name,
                     "industry" => $union->industry,
                     "acronym" => $union->acronym,
-                    "logo" => $union->logo ? asset('/union/'.$union->logo) : '',
+                    "logo" => get_model_file_from_disk($union->logo, "union_logos"),
                     "assigned_admins" => $assigned_admins,
                     "date_added" => $union->created_at->format("M d Y"),
                 ];
@@ -100,7 +87,7 @@ class UnionController extends Controller
                 "industry" => $union->industry,
                 "headquarters" => $union->headquarters,
                 "founded_in" => $union->founded_in,
-                "logo" => $union->logo ? asset($union->logo) : '',
+                "logo" => get_model_file_from_disk($union->logo, "union_logos"),
             ];
             $this->response["message"] = "Union Information Retrieved";
             $this->response["status"] = Response::HTTP_OK;
@@ -307,7 +294,7 @@ class UnionController extends Controller
                             $this->response["message"] = "User added to this Union successfully!";
                             $this->response["status"] = Response::HTTP_OK;
 
-                            send_outgoing_email_invite($request->email, "simple-invite", $union->name, $role->name);
+                            send_outgoing_email_invite($request->email, "simple-invite", $union->name, ($role->display_name ?? $role->name));
                         }
                     }
                     else {
@@ -327,7 +314,7 @@ class UnionController extends Controller
                             $this->response["message"] = "An invite has been successfully sent to this user to join this Union!";
                             $this->response["status"] = Response::HTTP_OK;
 
-                            send_outgoing_email_invite($request->email, "invite-with-link", $union->name, $role->name, $url_token);
+                            send_outgoing_email_invite($request->email, "invite-with-link", $union->name, ($role->display_name ?? $role->name), $url_token);
                         }
                     }
                 }

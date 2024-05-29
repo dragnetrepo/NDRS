@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Case\DiscussionController;
 use App\Http\Controllers\Api\Union\UnionBranchController;
 use App\Http\Controllers\Api\Union\UnionController;
 use App\Http\Controllers\Api\Union\UnionSubBranchController;
@@ -104,6 +105,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                 Route::delete("delete-invited-party/{case_id}", "delete_invite_party")->name("delete-invite");
                 Route::get("get-invites", "get_invites")->name("get-invites");
                 Route::post("invite-response/{case_id}", "invite_response")->name("invite-response");
+                Route::post("change-status/{case_id}", "update_case_status")->name("change-status");
             });
 
             Route::prefix("{case_id}")->group(function(){
@@ -122,9 +124,13 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                 });
             });
 
-            // Route::prefix("discussions")->name("discussion.")->group(function(){
-            //     Route::get("/", "index")->name("index");
-            // });
+            Route::prefix("discussions")->controller(DiscussionController::class)->name("discussion.")->group(function(){
+                Route::get("/", "index")->name("index");
+                Route::get("/{discussion}/messages", "get_messages")->name("index");
+                Route::post("/{discussion}/send-message", "send_message")->name("send-message");
+                Route::post("/{discussion}/vote-poll", "vote_on_poll")->name("poll-vote");
+                Route::post("/{discussion}/upload-document", "upload_document")->name("document-upload");
+            });
         });
 
         Route::prefix("users")->controller(UserController::class)->name("user.")->group(function(){

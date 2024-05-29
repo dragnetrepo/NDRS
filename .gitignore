@@ -20,3 +20,4 @@ yarn-error.log
 .DS_Store
 public/union*
 public/case*
+public/discussion*

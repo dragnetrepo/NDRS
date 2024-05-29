@@ -45,7 +45,7 @@ class DocumentController extends Controller
                         "size" => $document->doc_size,
                         "type" => $document->doc_type,
                         "last_modified" => Carbon::parse($document->updated_at)->format("jS F Y, h:ia"),
-                        "file_path" => asset('/case-documents/'.$document->doc_path),
+                        "file_path" => get_model_file_from_disk($document->doc_path, "case_documents"),
                     ];
                 }
             }

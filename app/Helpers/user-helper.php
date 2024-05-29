@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\CaseDiscussion;
 use App\Models\CaseDispute;
 use App\Models\OutgoingMessages;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Storage;
 
 if (!function_exists("get_user_roles")) {
     function get_user_roles($user) {
@@ -63,16 +66,46 @@ if (!function_exists("get_user_settings_value")) {
 }
 
 if (!function_exists("get_case_dispute")) {
-    function get_case_dispute($case_id, $user_id = 0) {
+    function get_case_dispute($case_id = 0, $user_id = 0) {
+        if ($user_id) {
+            $role = request()->user()->roles->first();
 
-        return CaseDispute::where(function($query) use ($user_id) {
-            $query->where("created_by", $user_id)->orWhereHas('union_data.users', function ($query) use ($user_id) {
-                $query->where("user_id", $user_id);
+            if ($role->hasPermissionTo("approve dispute")) {
+                $user_id = 0;
+            }
+        }
+
+        $disputes = CaseDispute::where(function($query) use ($user_id) {
+            $query->when($user_id, function($query) use ($user_id) {
+                $query->where("created_by", $user_id)->orWhereHas('union_data.users', function ($query) use ($user_id) {
+                    $query->where("user_id", $user_id);
+                });
             });
         })
-        ->whereHas('union_data')
-        ->where("id", $case_id)
-        ->first();
+        ->whereHas('union_data');
+
+        if ($case_id) {
+            $disputes = $disputes->where("id", $case_id)->first();
+        }
+        else {
+            $disputes = $disputes->get();
+        }
+
+        return $disputes;
+    }
+}
+
+if (!function_exists("create_dispute_group")) {
+    function create_dispute_group(CaseDispute $dispute) {
+        if (!CaseDiscussion::where("case_id", $dispute->id)->exists()) {
+            CaseDiscussion::create([
+                "case_id" => $dispute->id,
+                "title" => $dispute->case_no." Main Chat (".($dispute->union_data->acronym ?? $dispute->union_data->name)." vs ".($dispute->accused->union->acronym ?? $dispute->accused->union->name).")",
+                "type" => "group"
+            ]);
+        }
+
+        return true;
     }
 }
 
@@ -149,5 +182,35 @@ if (!function_exists("send_outgoing_email_invite")) {
         }
 
         return $message_sent;
+    }
+}
+
+if (!function_exists("user_has_permission")) {
+    function user_has_permission($permission_name) {
+        $role = request()->user()->roles->first();
+
+        return $role->hasPermissionTo($permission_name);
+    }
+}
+
+if (!function_exists("user_is_admin")) {
+    function user_is_admin() {
+        return request()->user()->roles->where("id", "1")->first();
+    }
+}
+
+if (!function_exists("get_model_file_from_disk")) {
+    function get_model_file_from_disk($file_path, $disk) {
+        if ($file_path) {
+            try {
+                if (Storage::disk($disk)->exists($file_path)) {
+                    return Storage::disk($disk)->url($file_path);
+                }
+            } catch (FileNotFoundException $e) {
+                return '';
+            }
+        }
+
+        return '';
     }
 }

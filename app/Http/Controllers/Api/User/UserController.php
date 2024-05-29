@@ -63,7 +63,7 @@ class UserController extends Controller
                     "name" => trim($user->first_name.' '.$user->last_name),
                     "status" => $user->status,
                     "date_added" => $user->created_at->format("M d Y"),
-                    "photo" => $user->display_picture ? asset('/user/'.$user->display_picture) : "",
+                    "photo" => get_model_file_from_disk($user->display_picture ?? "", "profile_photos"),
                     "assigned_cases" => $user->disputes->count()
                 ];
             }
@@ -108,7 +108,7 @@ class UserController extends Controller
                     ]);
                 }
 
-                send_outgoing_email_invite($request->email, "simple-invite", "NDRS", $role->name, $url_token, "You have been invited by NDRS");
+                send_outgoing_email_invite($request->email, "simple-invite", "NDRS", ($role->display_name ?? $role->name), $url_token, "You have been invited by NDRS");
 
                 $this->response["status"] = Response::HTTP_OK;
                 $this->response["message"] = "Invite has been sent to this user successfully!";
@@ -177,7 +177,7 @@ class UserController extends Controller
                                         "invited_by" => $request->user()->id,
                                     ]);
 
-                                    send_outgoing_email_invite($user_email, "simple-invite", "NDRS", $role->name, $url_token, "You have been invited by NDRS");
+                                    send_outgoing_email_invite($user_email, "simple-invite", "NDRS", ($role->display_name ?? $role->name), $url_token, "You have been invited by NDRS");
                                 }
                                 else {
                                     $message = "This role does not exist.";
@@ -503,7 +503,7 @@ class UserController extends Controller
                     foreach ($board->members as $member) {
                         if ($user = $member->user) {
                             $assigned_members[] = [
-                                "photo" => $user->display_picture ? asset('/user/'.$user->display_picture) : ""
+                                "photo" => get_model_file_from_disk($user->display_picture ?? "", "profile_photos")
                             ];
                         }
                     }

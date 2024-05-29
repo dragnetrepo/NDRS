@@ -48,7 +48,7 @@ class UnionBranchController extends Controller
                         $user_deets = $assigned_user->user;
                         if ($user_deets) {
                             $assigned_admins = [
-                                "photo" => $user_deets->display_picture ? asset('/user/'.$user_deets->display_picture) : ''
+                                "photo" => get_model_file_from_disk($user_deets->display_picture ?? "", "profile_photos")
                             ];
                         }
                     }
@@ -58,7 +58,7 @@ class UnionBranchController extends Controller
                     "id" => $union_branch->id,
                     "name" => $union_branch->name,
                     "acronym" => $union_branch->acronym,
-                    "logo" => $union_branch->logo ? asset('/union_branch/'.$union_branch->logo) : '',
+                    "logo" => get_model_file_from_disk($union_branch->logo ?? "", "union_branch_logos"),
                     "assigned_admins" => $assigned_admins,
                     "date_added" => $union_branch->created_at->format("M d Y"),
                 ];
@@ -88,7 +88,7 @@ class UnionBranchController extends Controller
                 "industry" => $union_branch->industry,
                 "headquarters" => $union_branch->headquarters,
                 "founded_in" => $union_branch->founded_in,
-                "logo" => $union_branch->logo ? asset($union_branch->logo) : '',
+                "logo" => get_model_file_from_disk($union_branch->logo ?? "", "union_branch_logos"),
             ];
             $this->response["message"] = "Union Branch Information Retrieved";
             $this->response["status"] = Response::HTTP_OK;
@@ -231,7 +231,7 @@ class UnionBranchController extends Controller
                             $this->response["message"] = "User has been added to this Union successfully!";
                             $this->response["status"] = Response::HTTP_OK;
 
-                            send_outgoing_email_invite($request->email, "simple-invite", $union_branch->name, $role->name);
+                            send_outgoing_email_invite($request->email, "simple-invite", $union_branch->name, ($role->display_name ?? $role->name));
                         }
                     }
                     else {
@@ -252,7 +252,7 @@ class UnionBranchController extends Controller
                             $this->response["message"] = "An invite has been successfully sent to this user to join this Union Branch!";
                             $this->response["status"] = Response::HTTP_OK;
 
-                            send_outgoing_email_invite($request->email, "invite-with-link", $union_branch->name, $role->name, $url_token);
+                            send_outgoing_email_invite($request->email, "invite-with-link", $union_branch->name, ($role->display_name ?? $role->name), $url_token);
                         }
                     }
                 }

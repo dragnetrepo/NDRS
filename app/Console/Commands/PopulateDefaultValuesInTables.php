@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
@@ -175,7 +176,11 @@ class PopulateDefaultValuesInTables extends Command
             }
             else {
                 $user = User::create([
+                    "first_name" => "NDRS",
+                    "last_name" => "Admin",
                     "email" => "admin@ndrs.com",
+                    "email_verified_at" => Carbon::now(),
+                    "status" => "active",
                     "password" => Hash::make("passndrs12word#")
                 ]);
 

@@ -64,7 +64,7 @@ class sendOutgoingEmailMessages extends Command
 
                     $mail->isHTML(true);                // Set email content format to HTML
 
-                    $mail->Subject = $$outgoing_message->subject;
+                    $mail->Subject = $outgoing_message->subject;
                     $mail->Body    = $outgoing_message->message_content;
 
                     // $mail->AltBody = plain text version of email body;
