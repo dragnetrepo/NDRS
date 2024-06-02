@@ -269,8 +269,17 @@ class UnionController extends Controller
             $user = User::where("email", $request->email)->first();
             $role = Role::find($request->role);
             $union = Union::find($union);
+            $curr_user_id = $request->user()->id;
 
             if ($union) {
+                $curr_user_role = UnionUserRole::where("user_id", $curr_user_id)->where("union_id", $union->id)->first();
+
+                $role_appended = "";
+
+                if ($curr_user_role) {
+                    $role_appended = "($curr_user_role->role->name)";
+                }
+
                 if ($role) {
                     if ($user) {
                         // Check if user is alreaady associated with Union
@@ -295,6 +304,8 @@ class UnionController extends Controller
                             $this->response["status"] = Response::HTTP_OK;
 
                             send_outgoing_email_invite($request->email, "simple-invite", $union->name, ($role->display_name ?? $role->name));
+                            $notification_message = trim($user->first_name.' '.$user->last_name)." ".$role_appended." added you as a $role->name to $union->name ";
+                            record_notification_for_users($notification_message, $user->id, "single", request()->user()->id);
                         }
                     }
                     else {
@@ -315,6 +326,9 @@ class UnionController extends Controller
                             $this->response["status"] = Response::HTTP_OK;
 
                             send_outgoing_email_invite($request->email, "invite-with-link", $union->name, ($role->display_name ?? $role->name), $url_token);
+                            $notification_message = trim($user->first_name.' '.$user->last_name)." ".$role_appended." added you as a $role->name to $union->name ";
+                            record_notification_for_users($notification_message, $request->email, "single", request()->user()->id);
+
                         }
                     }
                 }

@@ -2,7 +2,10 @@
 
 use App\Models\CaseDiscussion;
 use App\Models\CaseDispute;
+use App\Models\CaseUserRoles;
+use App\Models\Notification;
 use App\Models\OutgoingMessages;
+use App\Models\User;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Storage;
@@ -77,7 +80,10 @@ if (!function_exists("get_case_dispute")) {
 
         $disputes = CaseDispute::where(function($query) use ($user_id) {
             $query->when($user_id, function($query) use ($user_id) {
-                $query->where("created_by", $user_id)->orWhereHas('union_data.users', function ($query) use ($user_id) {
+                $query->where("created_by", $user_id)
+                ->orWhereHas('union_data.users', function ($query) use ($user_id) {
+                    $query->where("user_id", $user_id);
+                })->orWhereHas('involved_parties', function ($query) use ($user_id) {
                     $query->where("user_id", $user_id);
                 });
             });
@@ -212,5 +218,76 @@ if (!function_exists("get_model_file_from_disk")) {
         }
 
         return '';
+    }
+}
+
+if (!function_exists("record_notification_for_users")) {
+    function record_notification_for_users(string $message, string $action_id, string $action_type, int $triggered_by) {
+        if ($action_type == "case") {
+            // Notify all ministry admins
+            $admins = User::whereHas('roles', function($query){
+                $query->where("name", "ministry admin");
+            })->get();
+
+            if ($admins->isNotEmpty()) {
+                foreach ($admins as $admin) {
+                    Notification::create([
+                        "user_id" => $admin->id,
+                        "triggered_by" => $triggered_by,
+                        "message" => $message,
+                    ]);
+                }
+            }
+
+            // Get all involved in the case
+            $case_dispute = get_case_dispute($action_id);
+
+            if ($case_dispute) {
+                $users = $case_dispute->involved_parties;
+
+                if ($users->count()) {
+                    foreach ($users as $user) {
+                        Notification::create([
+                            "user_id" => $user->user_id,
+                            "email" => $user->email,
+                            "triggered_by" => $triggered_by,
+                            "message" => $message,
+                        ]);
+                    }
+                }
+            }
+        }
+        elseif ($action_type == "single") {
+            Notification::create([
+                "user_id" => (is_int($action_id)) ? $action_id : 0,
+                "email" => (!is_int($action_id)) ? $action_id : "",
+                "triggered_by" => $triggered_by,
+                "message" => $message,
+            ]);
+        }
+    }
+}
+
+if (!function_exists("get_user_notifications")) {
+    function get_user_notifications($all_cases = false, $is_read = "all", $case_id = 0, $perPage = 50) {
+        return Notification::where(function($query){
+            $query->where("user_id", request()->user()->id)->orwhere("email", request()->user()->email);
+        })
+        ->when(($case_id > 0), function($query) use ($case_id) {
+            $query->where("case_id", $case_id);
+        })
+        ->when($all_cases, function($query) {
+            $query->where("case_id", ">", 0);
+        })
+        ->when(($is_read != "all"), function($query) use ($is_read) {
+            if ($is_read == "pending") {
+                $query->where("is_read", false);
+            }
+            else {
+                $query->where("is_read", true);
+            }
+        })
+        ->orderBy("created_at", "desc")
+        ->paginate($perPage);
     }
 }

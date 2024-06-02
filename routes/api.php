@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\Case\DisputesController;
 use App\Http\Controllers\Api\Case\DocumentController;
 use App\Http\Controllers\Api\Case\FolderController;
+use App\Http\Controllers\Api\User\NotificationController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Auth\AuthenticationController;
 use Illuminate\Http\Request;
@@ -158,6 +159,13 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::delete("/dissolve-board-of-enquiry/{settlement}", "dissolve_board_enquiry")->name("dissolve-board-of-enquiry");
             Route::post("/invite-board-member/{settlement}", "invite_body_member")->name("invite-board-member");
             Route::delete("/remove-board-member/{member}", "remove_body_member")->name("remove-board-member");
+        });
+
+        Route::prefix("notifications")->controller(NotificationController::class)->name("notification.")->group(function() {
+            Route::get("/", "index")->name("index");
+            Route::get("/cases/{case}", "index")->name("cases");
+            Route::get("/status/{status}", "index")->name("status");
+            Route::post("/mark-as-read", "mark_as_read")->name("mark-as-read");
         });
 
         // Route::get('roles', [ProfileController::class, "get_roles"])->name("get-roles");
