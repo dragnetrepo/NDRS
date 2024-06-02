@@ -293,8 +293,9 @@
                                                                                                     </button>
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-                                                                                                        <li><a href="" class="dropdown-item">View Members</a></li>
-                                                                                                        <li><a href="" class="dropdown-item">Dissolve Board </a></li>
+                                                                                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
                                                                                                             <ul class="list-unstyled">
@@ -820,8 +821,9 @@
                                                                                                     </button>
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-                                                                                                        <li><a href="" class="dropdown-item">View Members</a></li>
-                                                                                                        <li><a href="" class="dropdown-item">Dissolve Board </a></li>
+                                                                                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
                                                                                                             <ul class="list-unstyled">
@@ -1214,8 +1216,9 @@
                                                                                                     </button>
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-                                                                                                        <li><a href="" class="dropdown-item">View Members</a></li>
-                                                                                                        <li><a href="" class="dropdown-item">Dissolve Board </a></li>
+                                                                                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
                                                                                                             <ul class="list-unstyled">
@@ -1608,8 +1611,9 @@
                                                                                                     </button>
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-                                                                                                        <li><a href="" class="dropdown-item">View Members</a></li>
-                                                                                                        <li><a href="" class="dropdown-item">Dissolve Board </a></li>
+                                                                                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
+                                                                                                         <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
                                                                                                             <ul class="list-unstyled">
@@ -2002,8 +2006,9 @@
                                                                                                     </button>
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-                                                                                                        <li><a href="" class="dropdown-item">View Members</a></li>
-                                                                                                        <li><a href="" class="dropdown-item">Dissolve Board </a></li>
+                                                                                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
                                                                                                             <ul class="list-unstyled">
@@ -4352,7 +4357,7 @@
         </div>
     </div>
 
-      <!-- Modal -->
+    <!-- Modal -->
     <div class="modal fade" id="permissionModal" tabindex="-1" aria-labelledby="permissionModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content p-lg-4 border-0">
@@ -4537,6 +4542,215 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+      <!-- Modal -->
+    <div class="modal fade" id="permissionModal2" tabindex="-1" aria-labelledby="permissionModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content p-lg-4 border-0">
+                <div class="modal-header justify-content-between">
+                    <div>
+                        <h1 class="modal-title fs-5">Edit permission level for Ministry Admin</h1>
+                        <p class="mb-0">maryblessing@gmail.com</p>
+                    </div>
+                   
+                    <div class="gap-10 d-flex align-items-center">
+                        <button class="btn btn btn-size btn-outline-danger px-3">Restore to default</button>
+
+                        <button class="btn btn-main-primary btn-size px-3">Save changes</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="card card-box-view mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+
+                                    <div class="col-lg-7">
+                                        <div class="text-start mb-lg-0 mb-3">
+                                            <h4>Disputes</h4>
+                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-5">
+                                        <div class="d-flex flex-column gap-10">
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-box-view mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+
+                                    <div class="col-lg-7">
+                                        <div class="text-start mb-lg-0 mb-3">
+                                            <h4>Union & Branches</h4>
+                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <div class="d-flex flex-column gap-10">
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-box-view mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+
+                                    <div class="col-lg-7">
+                                        <div class="text-start mb-lg-0 mb-3">
+                                            <h4>Users & Groups</h4>
+                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-5">
+                                        <div class="d-flex flex-column gap-10">
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-box-view mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+
+                                    <div class="col-lg-7">
+                                        <div class="text-start mb-lg-0 mb-3">
+                                            <h4>Reports</h4>
+                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <div class="d-flex flex-column gap-10">
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+      <!-- Modal -->
+    <div class="modal fade" id="dissolveModal" tabindex="-1" aria-labelledby="dissolveLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-lg-4 border-0">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="images/delete-icon.svg" class="img-fluid mb-3" alt="delete an account"> 
+                    </div>
+                    <p class="mb-4 modal-text text-center text-black custom-text">Are you sure you want to Remove Dorothy Ogenekaro (Board or Enquiry) from <span class="text-bold">Health issues in South South Board of enquiry </span></p> 
+                    
+                    <button class="btn btn-size btn-main-danger w-100 mb-3">Remove admin</button>
+
+                    <button class="btn btn btn-size w-100 btn-main-outline-primary px-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                 </div>
             </div>
         </div>
