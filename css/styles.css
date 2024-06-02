@@ -1062,6 +1062,12 @@ tr {
   border-top: 1px solid #dee2e6;
 }
 
+.accordion-button:not(.collapsed) {
+    color: var(--grey-2);
+    background-color: unset;
+    box-shadow: unset;
+}
+
 .custom-text{
   font-size: 24px;
   font-weight: 400;

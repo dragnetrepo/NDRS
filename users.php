@@ -2118,7 +2118,7 @@
                                                    <div class="col-lg-5">
                                                         <p>All NDRS roles and their permissions</p>
 
-                                                        <button class="btn btn-main-primary btn-size">Create custom role</button>
+                                                        <button class="btn btn-main-primary btn-size" data-bs-toggle="modal" data-bs-target="#customModal">Create custom role</button>
                                                    </div>
                                                 </div>
 
@@ -4319,6 +4319,220 @@
                                             <img src="images/no-found.svg" class="img-fluid" />
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Modal -->
+    <div class="modal fade" id="customModal" tabindex="-1" aria-labelledby="customModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content p-lg-4 border-0">
+                <div class="modal-header justify-content-between">
+                    <h1 class="modal-title fs-5">Create custom role & permissions</h1>
+                   
+                    <div class="gap-10 d-flex align-items-center">
+                        <button class="btn btn btn-size btn-main-outline-primary px-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+
+                        <button class="btn btn-main-primary btn-size px-3" data-bs-target="#permissionModal" data-bs-toggle="modal">Next</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <input type="text" class="form-control form-control-height" placeholder="Enter custom role">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+      <!-- Modal -->
+    <div class="modal fade" id="permissionModal" tabindex="-1" aria-labelledby="permissionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content p-lg-4 border-0">
+                <div class="modal-header justify-content-between">
+                    <div>
+                        <h1 class="modal-title fs-5">Create custom role & permissions</h1>
+                        <p>Ministry Liason</p>
+                    </div>
+                   
+                    <div class="gap-10 d-flex align-items-center">
+                        <button class="btn btn btn-size btn-main-outline-primary px-3" data-bs-target="#customModal" data-bs-toggle="modal">Back</button>
+
+                        <button class="btn btn-main-primary btn-size px-3">Finish</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="card card-box-view mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+
+                                    <div class="col-lg-7">
+                                        <div class="text-start mb-lg-0 mb-3">
+                                            <h4>Disputes</h4>
+                                            <p class="mb-0 text-muted-3">All permission relating to disputes</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-5">
+                                        <div class="d-flex flex-column gap-10">
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_1" checked>
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_1">Create dispute</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_2">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_2">Approve dispute</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_3">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_3">Invite dispute participants</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_4">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_4">Change dispute case status</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_5">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_5">Participate in resolution</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_6">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_6">View dispute notifications</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-box-view mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+
+                                    <div class="col-lg-7">
+                                        <div class="text-start mb-lg-0 mb-3">
+                                            <h4>Union & Branches</h4>
+                                            <p class="mb-0 text-muted-3">Permissions related to creating and editing unions, branches or sub branches</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <div class="d-flex flex-column gap-10">
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_7" checked>
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_7">Create unions</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_8">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_8">Create branches</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_9">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_9">Create sub branches</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_10">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_10">Edit unions</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_11">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_11">Edit branches</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_12">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_12">Edit sub branches</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-box-view mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+
+                                    <div class="col-lg-7">
+                                        <div class="text-start mb-lg-0 mb-3">
+                                            <h4>Users & Groups</h4>
+                                            <p class="mb-0 text-muted-3">Permissions related to users and groups</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-5">
+                                        <div class="d-flex flex-column gap-10">
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_13" checked>
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_13">Invite users</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_14">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_14">Edit users status</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_15">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_15">Assign users cases</label>
+                                            </div>
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_16">
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_16">Edit roles & permissions</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-box-view mb-4">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+
+                                    <div class="col-lg-7">
+                                        <div class="text-start mb-lg-0 mb-3">
+                                            <h4>Reports</h4>
+                                            <p class="mb-0 text-muted-3">Permissions regarding the reporting feature</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <div class="d-flex flex-column gap-10">
+
+                                            <div class="form-check d-flex align-items-center form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_17" checked>
+                                                <label class="form-check-label ms-4" for="flexSwitchCheckChecked_17">View & download reports</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
