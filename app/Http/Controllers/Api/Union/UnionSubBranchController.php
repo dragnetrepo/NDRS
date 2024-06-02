@@ -65,9 +65,9 @@ class UnionSubBranchController extends Controller
             }
 
             $this->response["message"] = "Retrieved comprehensive union list";
-            $this->response["status"] = Response::HTTP_OK;
         }
 
+        $this->response["status"] = Response::HTTP_OK;
         $this->response["data"] = $data;
 
         return response()->json($this->response, $this->response["status"]);
@@ -84,7 +84,7 @@ class UnionSubBranchController extends Controller
                 "branch_id" => $union_sub_branch->branch_id,
                 "name" => $union_sub_branch->name,
                 "acronym" => $union_sub_branch->acronym,
-                "description" => $union_sub_branch->description,
+                "about" => $union_sub_branch->description,
                 "phone" => $union_sub_branch->phone,
                 "industry" => $union_sub_branch->industry,
                 "headquarters" => $union_sub_branch->headquarters,

@@ -144,6 +144,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::get("/get-roles", "get_roles")->name("get-roles");
             Route::post("/update-permission", "update_role_permission")->name("add-role-permission");
 
+            Route::get("/sample-csv", "sample_csv_file")->name("sample-csv-file");
             Route::post("/send-invite", "send_invite")->name("send-invite");
             Route::post("/bulk/send-invite", "bulk_send_invite")->name("bulk-send-invite");
 

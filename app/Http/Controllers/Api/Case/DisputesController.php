@@ -48,6 +48,7 @@ class DisputesController extends Controller
                 $data[] = [
                     "_id" => $dispute->id,
                     "case_no" => $dispute->case_no,
+                    "filling_date" => $dispute->created_at->format("M d Y"),
                     "title" => $dispute->case_title,
                     "type" => $dispute->dispute_type,
                     "summary" => $dispute->summary_of_dispute,
@@ -59,11 +60,13 @@ class DisputesController extends Controller
                     "involved_parties" => [
                         "claimant" => [
                             "name" => $dispute->union_data->name,
+                            "acronym" => $dispute->union_data->acronym,
                             "logo" => get_model_file_from_disk($dispute->union_data->logo, "union_logos"),
                         ],
                         "accused" => [
                             "name" => $dispute->accused ? $dispute->accused->union->name : "",
-                            "logo" =>get_model_file_from_disk($dispute->accused->logo, "union_logos"),
+                            "acronym" => $dispute->accused ? $dispute->accused->union->acronym : "",
+                            "logo" => get_model_file_from_disk($dispute->accused->union->logo, "union_logos"),
                         ],
                     ]
                 ];
@@ -86,7 +89,9 @@ class DisputesController extends Controller
 
         if ($dispute) {
             $data = [
+                "_id" => $dispute->id,
                 "case_no" => $dispute->case_no,
+                "filling_date" => $dispute->created_at->format("M d Y"),
                 "title" => $dispute->case_title,
                 "type" => $dispute->dispute_type,
                 "summary" => $dispute->summary_of_dispute,
@@ -95,8 +100,18 @@ class DisputesController extends Controller
                 "specific_claims" => $dispute->specific_claims,
                 "negotiation_terms" => $dispute->negotiation_terms,
                 "status" => $dispute->status,
-                "union" => $dispute->union_data->name,
-                "union_branch" => $dispute->union_branch_data ? $dispute->union_branch_data->name : '',
+                "involved_parties" => [
+                    "claimant" => [
+                        "name" => $dispute->union_data->name,
+                        "acronym" => $dispute->union_data->acronym,
+                        "logo" => get_model_file_from_disk($dispute->union_data->logo, "union_logos"),
+                    ],
+                    "accused" => [
+                        "name" => $dispute->accused ? $dispute->accused->union->name : "",
+                        "acronym" => $dispute->accused ? $dispute->accused->union->acronym : "",
+                        "logo" => get_model_file_from_disk($dispute->accused->union->logo, "union_logos"),
+                    ],
+                ]
             ];
 
             $this->response["message"] = "Fetched case dispute data";

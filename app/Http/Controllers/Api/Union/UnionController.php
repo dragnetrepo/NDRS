@@ -82,7 +82,7 @@ class UnionController extends Controller
                 "_id" => $union->id,
                 "name" => $union->name,
                 "acronym" => $union->acronym,
-                "description" => $union->description,
+                "about" => $union->description,
                 "phone" => $union->phone,
                 "industry" => $union->industry,
                 "headquarters" => $union->headquarters,

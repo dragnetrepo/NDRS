@@ -72,7 +72,8 @@ class AuthenticationController extends Controller
                     ],[
                         "email" => $get_invite->email,
                         "password" => Hash::make($request->password),
-                        "email_verified_at" => Carbon::now()
+                        "email_verified_at" => Carbon::now(),
+                        "status" => "active"
                     ]);
 
                     if ($user) {

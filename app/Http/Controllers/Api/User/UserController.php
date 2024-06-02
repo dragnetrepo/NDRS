@@ -93,25 +93,31 @@ class UserController extends Controller
                 $role = Role::find($request->role);
 
                 $url_token = sha1(uniqid($request->email));
-                EmailInvitations::create([
-                    "email" => $request->email,
-                    "token" => $url_token,
-                    "role_id" => $request->role,
-                    "invited_by" => $request->user()->id,
-                ]);
 
-                if ($case_id > 0) {
-                    CaseUserRoles::create([
-                        "case_id" => $case_id,
-                        "case_role_id" => $request->role,
+                if (!EmailInvitations::where("email", $request->email)->exists()) {
+                    EmailInvitations::create([
                         "email" => $request->email,
+                        "token" => $url_token,
+                        "role_id" => $request->role,
+                        "invited_by" => $request->user()->id,
                     ]);
+
+                    if ($case_id > 0) {
+                        CaseUserRoles::create([
+                            "case_id" => $case_id,
+                            "case_role_id" => $request->role,
+                            "email" => $request->email,
+                        ]);
+                    }
+
+                    send_outgoing_email_invite($request->email, "invite-with-link", "NDRS", ($role->display_name ?? $role->name), $url_token, "You have been invited by NDRS");
+
+                    $this->response["status"] = Response::HTTP_OK;
+                    $this->response["message"] = "Invite has been sent to this user successfully!";
                 }
-
-                send_outgoing_email_invite($request->email, "simple-invite", "NDRS", ($role->display_name ?? $role->name), $url_token, "You have been invited by NDRS");
-
-                $this->response["status"] = Response::HTTP_OK;
-                $this->response["message"] = "Invite has been sent to this user successfully!";
+                else {
+                    $form_error_msg["email"]= ["Invite has already been sent to this user"];
+                }
             }
         }
         else {
@@ -146,6 +152,7 @@ class UserController extends Controller
         if (count($error_msg)) {
             $this->response["message"] = "Validation errors!";
             $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+            $this->response["exception"] = $line[0].' -> '.$line[1];
             $this->response["error"] = $error_msg;
         }
         else {
@@ -204,9 +211,20 @@ class UserController extends Controller
             } while ($line = fgetcsv($csvFile));
 
             $this->response["status"] = Response::HTTP_OK;
-            $this->response["message"] = "Union has been created in bulk successfully!";
+            $this->response["message"] = "Users has been invited in bulk successfully!";
             $this->response["data"] = $data;
         }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function sample_csv_file()
+    {
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["message"] = "Sample CSV file retrieved";
+        $this->response["data"] = [
+            "sample_csv" => asset("csv-templates/sample-user-invite-csv.csv")
+        ];
 
         return response()->json($this->response, $this->response["status"]);
     }
