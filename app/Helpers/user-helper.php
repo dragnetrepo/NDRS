@@ -259,8 +259,8 @@ if (!function_exists("record_notification_for_users")) {
         }
         elseif ($action_type == "single") {
             Notification::create([
-                "user_id" => (is_int($action_id)) ? $action_id : 0,
-                "email" => (!is_int($action_id)) ? $action_id : "",
+                "user_id" => (is_numeric($action_id)) ? $action_id : 0,
+                "email" => (!is_numeric($action_id)) ? $action_id : "",
                 "triggered_by" => $triggered_by,
                 "message" => $message,
             ]);
@@ -287,7 +287,7 @@ if (!function_exists("get_user_notifications")) {
                 $query->where("is_read", true);
             }
         })
-        ->orderBy("created_at", "desc")
+        ->orderBy("created_at", "asc")
         ->paginate($perPage);
     }
 }

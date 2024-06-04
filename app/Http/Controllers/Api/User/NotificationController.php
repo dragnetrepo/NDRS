@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -52,10 +53,12 @@ class NotificationController extends Controller
                     $notification_date = "Today";
                 }
 
-                $data[$notification_date] = [
+                $data[$notification_date][] = [
                     "_id" => $notification->id,
                     "message" => $notification->message,
                     "is_read" => $notification->is_read,
+                    "date" => Carbon::parse($notification->created_at)->diffForHumans(),
+                    "photo" => get_model_file_from_disk(($notification->user_triggered->display_picture ?? ""), "profile_photos"),
                 ];
             }
 

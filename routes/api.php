@@ -55,6 +55,8 @@ Route::name("api.")->middleware(['cors'])->group(function () {
         Route::name("profile.")->group(function () {
             Route::get("user-profile", [ProfileController::class, "index"])->name("index");
             Route::post("profile-update", [ProfileController::class, "update"])->name("update");
+            Route::post("change-password", [ProfileController::class, "change_password"])->name("change-password");
+            Route::delete("delete-account", [ProfileController::class, "destroy"])->name("delete");
         });
 
         Route::name("union.")->group(function () {

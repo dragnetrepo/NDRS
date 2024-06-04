@@ -277,7 +277,7 @@ class UnionController extends Controller
                 $role_appended = "";
 
                 if ($curr_user_role) {
-                    $role_appended = "($curr_user_role->role->name)";
+                    $role_appended = "(".$curr_user_role->role->name.")";
                 }
 
                 if ($role) {
@@ -304,7 +304,7 @@ class UnionController extends Controller
                             $this->response["status"] = Response::HTTP_OK;
 
                             send_outgoing_email_invite($request->email, "simple-invite", $union->name, ($role->display_name ?? $role->name));
-                            $notification_message = trim($user->first_name.' '.$user->last_name)." ".$role_appended." added you as a $role->name to $union->name ";
+                            $notification_message = trim($request->user()->first_name.' '.$request->user()->last_name)." ".$role_appended." added you as a $role->name to $union->name ";
                             record_notification_for_users($notification_message, $user->id, "single", request()->user()->id);
                         }
                     }
@@ -326,7 +326,7 @@ class UnionController extends Controller
                             $this->response["status"] = Response::HTTP_OK;
 
                             send_outgoing_email_invite($request->email, "invite-with-link", $union->name, ($role->display_name ?? $role->name), $url_token);
-                            $notification_message = trim($user->first_name.' '.$user->last_name)." ".$role_appended." added you as a $role->name to $union->name ";
+                            $notification_message = trim($request->user()->first_name.' '.$request->user()->last_name)." ".$role_appended." added you as a $role->name to $union->name ";
                             record_notification_for_users($notification_message, $request->email, "single", request()->user()->id);
 
                         }

@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\User\ProfileUpdateRequest;
+use App\Models\CaseUserRoles;
+use App\Models\EmailInvitations;
+use App\Models\SettlementBodyMember;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -106,6 +111,50 @@ class ProfileController extends Controller
         $this->response["status"] = Response::HTTP_OK;
         $this->response["message"] = "Fetched all roles!";
         $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function change_password(ChangePasswordRequest $request)
+    {
+        $user = $request->user();
+
+        if (Hash::check($request->old_password, $user->password)) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            $this->response["message"] = "Password has been updated successfully!";
+            $this->response["status"] = Response::HTTP_OK;
+        }
+        else {
+            $this->response["error"] = [
+                "old_password" => ["The password is incorrect"]
+            ];
+            $this->response["message"] = "Validation errors";
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function destroy(Request $request)
+    {
+        $user = $request->user();
+
+        if (Hash::check($request->password, $user->password)) {
+            EmailInvitations::where("email", $user->email)->delete();
+            CaseUserRoles::where("email", $user->email)->delete();
+            SettlementBodyMember::where("email", $user->email)->delete();
+
+            $user->tokens()->delete();
+            $user->delete();
+
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["message"] = "Account has been deleted successfully!";
+        }
+        else {
+            $this->response["message"] = "The password is incorrect";
+        }
 
         return response()->json($this->response, $this->response["status"]);
     }
