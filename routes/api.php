@@ -192,6 +192,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
         });
 
         Route::get("/settings/{auth}", [NotificationController::class, "settings"])->name("auth-settings");
+        Route::post("/send-message", [ProfileController::class, "send_message"])->name("send-message");
         // Route::get('roles', [ProfileController::class, "get_roles"])->name("get-roles");
         Route::get("/logout", [AuthenticationController::class, "logout"])->name("log-out");
     });
