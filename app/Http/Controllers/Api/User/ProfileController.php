@@ -147,6 +147,7 @@ class ProfileController extends Controller
             SettlementBodyMember::where("email", $user->email)->delete();
 
             $user->tokens()->delete();
+            $user->email = time().'__'.$user->email;
             $user->delete();
 
             $this->response["status"] = Response::HTTP_OK;

@@ -5,6 +5,7 @@ use App\Models\CaseDispute;
 use App\Models\CaseUserRoles;
 use App\Models\Notification;
 use App\Models\OutgoingMessages;
+use App\Models\Settings;
 use App\Models\User;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\View;
@@ -51,15 +52,113 @@ if (!function_exists("login_user_token")) {
 }
 
 if (!function_exists("get_user_settings_value")) {
-    function get_user_settings_value($user, $setting) {
+    function get_user_settings_value(User $user, string $setting, string $option = "email") {
         $settings = $user->settings;
 
         if ($settings) {
             if ($settings->value) {
                 $settings_record = $settings->value;
 
-                if (isset($settings_record[$setting])) {
-                    return $settings_record[$setting];
+                if ($setting == "2fa") {
+                    if (isset($settings_record[$setting])) {
+                        return $settings_record[$setting]["value"] ?? "0";
+                    }
+                }
+                else {
+                    if (isset($settings_record[$setting])) {
+                        return $settings_record[$setting]["settings"][$option] ?? "0";
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists("get_user_settings")) {
+    function get_user_settings(User $user) {
+        if ($user) {
+            $settings = Settings::where("user_id", $user->id)->first();
+
+            if ($settings) {
+                if ($settings->value) {
+                    return $settings->value;
+                }
+            }
+            else {
+                Settings::create([
+                    "user_id" => $user->id,
+                    "value" => Settings::ALL_SETTINGS,
+                ]);
+
+                return Settings::ALL_SETTINGS;
+            }
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists("reset_user_settings")) {
+    function reset_user_settings(User $user) {
+        if ($user) {
+            $settings = get_user_settings($user);
+            $all_settings = Settings::ALL_SETTINGS;
+
+            if ($settings) {
+                $settings_record = $settings;
+                foreach ($all_settings as $key => $information) {
+                    if (isset($settings_record[$key])) {
+                        $settings_record[$key]["name"] = $all_settings[$key]["name"];
+                        $settings_record[$key]["description"] = $all_settings[$key]["description"];
+
+                        if (isset($all_settings[$key]["settings"])) {
+                            foreach ($all_settings[$key]["settings"] as $option => $value) {
+                                if (!isset($settings_record[$key]["settings"][$option])) {
+                                    $settings_record[$key]["settings"][$option] = $value;
+                                }
+                            }
+
+                            foreach ($settings_record[$key]["settings"] as $option => $user_value) {
+                                if (!isset($all_settings[$key]["settings"][$option])) {
+                                    unset($settings_record[$key]["settings"][$option]);
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        $settings_record[$key] = $information;
+                    }
+                }
+
+                Settings::where("user_id", $user->id)->update([
+                    "value" => $settings_record
+                ]);
+            }
+        }
+    }
+}
+
+if (!function_exists("update_user_setting")) {
+    function update_user_setting(User $user, string $setting, string $option = "") {
+        if ($user) {
+            $settings = get_user_settings($user);
+
+            if ($settings) {
+                if (isset($settings[$setting])) {
+                    if (isset($settings[$setting]["settings"][$option])) {
+                        $settings[$setting]["settings"][$option] = $settings[$setting]["settings"][$option] ? "0" : "1";
+                    }
+                    elseif (isset($settings[$setting]["value"])) {
+                        $settings[$setting]["value"] = $settings[$setting]["value"] ? "0" : "1";
+                    }
+
+                    Settings::where("user_id", $user->id)->update([
+                        "value" => $settings
+                    ]);
+
+                    return true;
                 }
             }
         }

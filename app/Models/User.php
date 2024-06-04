@@ -63,7 +63,7 @@ class User extends Authenticatable
 
     public function settings()
     {
-        return $this->belongsTo(Settings::class);
+        return $this->belongsTo(Settings::class, 'id', 'user_id');
     }
 
     public function disputes()

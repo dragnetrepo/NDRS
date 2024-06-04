@@ -168,8 +168,11 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::get("/cases/{case}", "index")->name("cases");
             Route::get("/status/{status}", "index")->name("status");
             Route::post("/mark-as-read", "mark_as_read")->name("mark-as-read");
+            Route::get("/settings", "settings")->name("settings");
+            Route::post("/update-setting", "update_setting")->name("update-settings");
         });
 
+        Route::get("/settings/{auth}", [NotificationController::class, "settings"])->name("auth-settings");
         // Route::get('roles', [ProfileController::class, "get_roles"])->name("get-roles");
         Route::get("/logout", [AuthenticationController::class, "logout"])->name("log-out");
     });

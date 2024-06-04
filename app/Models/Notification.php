@@ -12,29 +12,6 @@ class Notification extends Model
 
     protected $guarded = [];
 
-    public const ALL_NOTIFICATIONS = [
-        "mentions" => [
-            "email" => "1",
-            "whatsapp" => "1",
-            "sms" => "1",
-        ],
-        "requests" => [
-            "email" => "1",
-            "whatsapp" => "1",
-            "sms" => "1",
-        ],
-        "case_updates" => [
-            "email" => "1",
-            "whatsapp" => "1",
-            "sms" => "1",
-        ],
-        "case_updates" => [
-            "email" => "1",
-            "whatsapp" => "1",
-            "sms" => "1",
-        ],
-    ];
-
     public function user()
     {
         return $this->belongsTo(User::class);
