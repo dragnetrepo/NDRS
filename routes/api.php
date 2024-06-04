@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\Case\DisputesController;
 use App\Http\Controllers\Api\Case\DocumentController;
 use App\Http\Controllers\Api\Case\FolderController;
+use App\Http\Controllers\Api\Post\PostCategoryController;
+use App\Http\Controllers\Api\Post\PostController;
 use App\Http\Controllers\Api\User\NotificationController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Auth\AuthenticationController;
@@ -170,6 +172,23 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::post("/mark-as-read", "mark_as_read")->name("mark-as-read");
             Route::get("/settings", "settings")->name("settings");
             Route::post("/update-setting", "update_setting")->name("update-settings");
+        });
+
+        Route::prefix("posts")->name("post.")->group(function(){
+            Route::prefix("categories")->controller(PostCategoryController::class)->group(function(){
+                Route::get("/", "index")->name("index");
+                Route::post("/create", "store")->name("create");
+                Route::post("/edit/{category_id}", "update")->name("edit");
+                Route::delete("/delete/{category_id}", "destroy")->name("delete");
+            });
+
+            Route::controller(PostController::class)->group(function(){
+                Route::get("/{category_id}", "index")->name("index");
+                Route::get("/post/{post_id}", "post")->name("index");
+                Route::post("/create", "store")->name("create");
+                Route::post("/edit/{post_id}", "update")->name("edit");
+                Route::delete("/delete/{post_id}", "destroy")->name("delete");
+            });
         });
 
         Route::get("/settings/{auth}", [NotificationController::class, "settings"])->name("auth-settings");
