@@ -308,10 +308,10 @@
 
      <!-- Modal -->
     <div class="modal fade" id="folderModal2" tabindex="-1" aria-labelledby="folderModal2Label" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content p-lg-4 border-0">
                 <div class="modal-header justify-content-between">
-                    <h1 class="modal-title fs-5">Upload  Documents</h1>
+                    <h1 class="modal-title fs-5">Upload Documents</h1>
                    
                     <div class="gap-10 d-flex align-items-center">
                         <button class="btn btn btn-size btn-main-outline-primary px-3" data-bs-dismiss="modal" aria-label="Close">Back</button>
