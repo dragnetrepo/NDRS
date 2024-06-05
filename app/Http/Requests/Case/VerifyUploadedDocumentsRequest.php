@@ -24,11 +24,17 @@ class VerifyUploadedDocumentsRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             "documents" => "required|array",
             "documents.*" => "required|file|max:102400",
             "folder_id" => "nullable|integer",
         ];
+
+        if (!request("case_id")) {
+            $rules["folder_id"] = "required|integer";
+        }
+
+        return $rules;
     }
 
     public function failedValidation(Validator $validator)

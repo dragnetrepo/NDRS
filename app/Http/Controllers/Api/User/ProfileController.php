@@ -164,37 +164,15 @@ class ProfileController extends Controller
 
     public function send_message(SendMessageRequest $request)
     {
-        $form_error_msg = [];
-        $user = $request->user();
-        // Confirm user has role
+        SupportMessage::create([
+            "user_id" => $request->user()->id,
+            "full_name" => $request->full_name,
+            "email" => $request->email,
+            "message" => $request->message,
+        ]);
 
-        $has_role = $user->roles->where("id", $request->role_id)->first();
-
-        if ($has_role) {
-            SupportMessage::create([
-                "user_id" => $request->user()->id,
-                "role_id" => $request->role_id,
-                "union_id" => $request->union_id ?? 0,
-                "union_branch" => $request->union_branch ?? 0,
-                "sub_branch" => $request->sub_branch ?? 0,
-                "full_name" => $request->full_name,
-                "email" => $request->email,
-                "message" => $request->message,
-            ]);
-
-            $this->response["status"] = Response::HTTP_OK;
-            $this->response["message"] = "Your message has been sent successfully!";
-        }
-        else {
-            $form_error_msg["role_id"] = ["You currently do have this role"];
-        }
-
-
-        if (!empty($form_error_msg)) {
-            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
-            $this->response["message"] = 'Validation errors';
-            $this->response["error"] = $form_error_msg;
-        }
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["message"] = "Your message has been sent successfully!";
 
         return response()->json($this->response, $this->response["status"]);
     }

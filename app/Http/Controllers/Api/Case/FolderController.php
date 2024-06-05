@@ -68,14 +68,22 @@ class FolderController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
-    public function create_folder(FoldersRequest $request, $case_id)
+    public function create_folder(FoldersRequest $request, $case_id = 0)
     {
         $user_id = request()->user()->id;
         $dispute = get_case_dispute($case_id, $user_id);
 
         if ($dispute) {
-            if (!CaseFolder::where("folder_name", $request->name)->where("case_id", $case_id)->exists()) {
+            if (!CaseFolder::where("folder_name", $request->name)->where(function($query) use ($case_id, $user_id) {
+                if ($case_id) {
+                    $query->where("case_id", $case_id);
+                }
+                else {
+                    $query->where("user_id", $user_id);
+                }
+            })->exists()) {
                 CaseFolder::create([
+                    "user_id" => $user_id,
                     "case_id" => $case_id,
                     "folder_name" => $request->name
                 ]);
@@ -125,7 +133,9 @@ class FolderController extends Controller
         $dispute = get_case_dispute($case_id, $user_id);
 
         if ($dispute) {
-            $folder = CaseFolder::where("id", $request->folder_id)->where("case_id", $case_id)->first();
+            $folder = CaseFolder::where("id", $request->folder_id)->when($case_id, function($query) use ($case_id) {
+                $query->where("case_id", $case_id);
+            })->first();
 
             if ($folder) {
                 if ($folder->delete()) {
@@ -138,6 +148,59 @@ class FolderController extends Controller
         else {
             $this->response["message"] = "The case dispute requested does not exist in our records.";
         }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function all_folders(Request $request)
+    {
+        $user_id = $request->user()->id;
+        $disputes = get_case_dispute(0, $user_id);
+        $data = $case_ids = [];
+
+        $this->response["message"] = "No data found";
+
+        if ($disputes->isNotEmpty()) {
+            foreach ($disputes as $dispute) {
+                create_dispute_folder($dispute);
+                $case_ids[] = $dispute->id;
+            }
+        }
+
+        // Case Folders in a case
+        $case_folders = CaseFolder::whereIn("case_id", $case_ids);
+
+        // Get folders that you created
+        $all_folders = CaseFolder::where("case_id", 0)->where("user_id", $user_id)->union($case_folders)->get();
+        if ($all_folders->isNotEmpty()) {
+            foreach ($all_folders as $folder) {
+                $last_modified = Carbon::parse($folder->updated_at)->format("jS F Y, h:ia");
+                $document_data = $folder->documents;
+
+                if ($document_data->count()) {
+                    $document = $document_data->last();
+
+                    if ($document) {
+                        $last_modified = Carbon::parse($document->updated_at)->format("jS F Y, h:ia");
+                    }
+                }
+
+                $data[] = [
+                    "_id" => $folder->id,
+                    "name" => $folder->folder_name,
+                    "number_of_files" => $document_data->count(),
+                    "size" => $document_data->sum('doc_size'),
+                    "last_modified" => $last_modified,
+                ];
+            }
+        }
+
+        if (count($data)) {
+            $this->response["message"] = "Folders list retrieved!";
+        }
+
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["data"] = $data;
 
         return response()->json($this->response, $this->response["status"]);
     }

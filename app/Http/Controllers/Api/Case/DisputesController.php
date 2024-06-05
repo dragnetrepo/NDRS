@@ -156,8 +156,13 @@ class DisputesController extends Controller
                             "union_id" => $request->accused_party
                         ]);
 
+                        create_dispute_folder($case_dispute);
+
                         $this->response["status"] = Response::HTTP_OK;
                         $this->response["message"] = "Dispute has been created successfully!";
+                        $this->response["data"] = [
+                            "_id" => $case_dispute->id
+                        ];
                     }
                 }
                 else {

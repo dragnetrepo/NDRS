@@ -47,9 +47,9 @@ Route::name("api.")->middleware(['cors'])->group(function () {
     Route::post("/confirm-email-code", [AuthenticationController::class, "confirm_email_code"])->name("confirm-email-validation");
 
     Route::post("/login", [AuthenticationController::class, "login"])->name("log-in");
-    Route::post("/two-factor-authentication", [AuthenticationController::class, "two_factor_authentication"])->name("log-in");
+    Route::post("/two-factor-authentication", [AuthenticationController::class, "two_factor_authentication"])->name("two-factor-auth");
     Route::post("/reset-password", [AuthenticationController::class, "reset_password"])->name("reset-password");
-    Route::get("/rvalidate-password-reset-token", [AuthenticationController::class, "validate_password_reset_token"])->name("validate-reset-password-token");
+    Route::get("/validate-password-reset-token", [AuthenticationController::class, "validate_password_reset_token"])->name("validate-reset-password-token");
     Route::post("/confirm-reset-password", [AuthenticationController::class, "confirm_password_reset"])->name("reset-password");
 
     Route::middleware(["auth:sanctum"])->group(function () {
@@ -191,9 +191,20 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             });
         });
 
+        Route::prefix("documents")->name("document")->group(function(){
+            Route::controller(FolderController::class)->group(function(){
+                Route::get("folders", "all_folders");
+                Route::post("create-folder", "create_folder")->name("create");
+            });
+
+            Route::controller(DocumentController::class)->group(function(){
+                Route::get("/all/{folder_id}", "index")->name("index");
+                Route::post("add", "add_document")->name("add");
+            });
+        });
+
         Route::get("/settings/{auth}", [NotificationController::class, "settings"])->name("auth-settings");
         Route::post("/send-message", [ProfileController::class, "send_message"])->name("send-message");
-        // Route::get('roles', [ProfileController::class, "get_roles"])->name("get-roles");
         Route::get("/logout", [AuthenticationController::class, "logout"])->name("log-out");
     });
 });

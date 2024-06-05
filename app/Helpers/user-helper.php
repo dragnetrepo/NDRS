@@ -2,6 +2,7 @@
 
 use App\Models\CaseDiscussion;
 use App\Models\CaseDispute;
+use App\Models\CaseFolder;
 use App\Models\CaseUserRoles;
 use App\Models\Notification;
 use App\Models\OutgoingMessages;
@@ -211,6 +212,33 @@ if (!function_exists("create_dispute_group")) {
         }
 
         return true;
+    }
+}
+
+if (!function_exists("create_dispute_folder")) {
+    function create_dispute_folder(CaseDispute $dispute) {
+        if (!CaseFolder::where("case_id", $dispute->id)->where("is_default", true)->exists()) {
+            CaseFolder::create([
+                "case_id" => $dispute->id,
+                "folder_name" => $dispute->case_no." ".$dispute->case_title,
+                "is_default" => true,
+            ]);
+        }
+
+        return true;
+    }
+}
+
+if (!function_exists("get_dispute_folder")) {
+    function get_dispute_folder(CaseDispute $dispute) {
+        $folder = CaseFolder::where("case_id", $dispute->id)->where("is_default", true)->first();
+        if (!$folder) {
+            create_dispute_folder($dispute);
+
+            return get_dispute_folder($dispute);
+        }
+
+        return $folder;
     }
 }
 

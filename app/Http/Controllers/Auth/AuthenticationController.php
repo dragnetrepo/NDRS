@@ -263,13 +263,17 @@ class AuthenticationController extends Controller
 
                 if (get_user_settings_value($user, "2fa")) {
                     $data["page"] = "two-factor-auth";
+                    $data["email"] = $request->email;
                     $this->send_2fa_email($user);
                     $this->response["message"] = "An email containing a six digit code has been sent to your email to continue your login process.";
                 }
                 else {
                     $this->response["message"] = "You are successfully logged in!";
-                    $this->response["data"] = $this->determine_user_login($user);
+                    $data["token"] = $this->determine_user_login($user);
+                    $data["page"] = "dashboard";
                 }
+
+                $this->response["data"] = $data;
             }
         }
 
@@ -413,7 +417,7 @@ class AuthenticationController extends Controller
 
     private function send_2fa_email(User $user)
     {
-        $email_code = rand(000000, 999999);
+        $email_code = rand(100000, 999999);
 
         EmailValidation::create([
             "email" => $user->email,

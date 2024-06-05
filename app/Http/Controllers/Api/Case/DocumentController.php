@@ -24,17 +24,23 @@ class DocumentController extends Controller
         ];
     }
 
-    public function index($case_id, $folder_id = 0)
+    public function index()
     {
         $user_id = request()->user()->id;
-
-        $dispute = get_case_dispute($case_id, $user_id);
-
         $data = [];
+        $dispute = true;
+        $folder_id = request()->folder_id ?? 0;
+        $case_id = request()->case_id ?? 0;
+
+        if ($case_id) {
+            $dispute = get_case_dispute($case_id, $user_id);
+        }
 
         if ($dispute) {
-            $case_documents = CaseDocument::where("case_id", $dispute->id)->when(($folder_id > 0), function($query) use ($folder_id) {
+            $case_documents = CaseDocument::when(($folder_id > 0), function($query) use ($folder_id) {
                 $query->where("folder_id", $folder_id);
+            })->when(($case_id > 0), function($query) use ($case_id) {
+                $query->where("case_id", $case_id);
             })->get();
 
             if ($case_documents->isNotEmpty()) {
@@ -61,7 +67,7 @@ class DocumentController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
-    public function add_document(VerifyUploadedDocumentsRequest $request, $case_id)
+    public function add_document(VerifyUploadedDocumentsRequest $request, $case_id = 0)
     {
         $user_id = request()->user()->id;
         $dispute = get_case_dispute($case_id, $user_id);
@@ -70,7 +76,11 @@ class DocumentController extends Controller
             $folder_name = date("Ym");
 
             if ($request->folder_id) {
-                $document_folder = CaseFolder::where("id", $request->folder_id)->where("case_id", $case_id)->first();
+                $document_folder = CaseFolder::where("id", $request->folder_id)->where(function($query) use ($case_id) {
+                    if ($case_id) {
+                        $query->where("case_id", $case_id);
+                    }
+                })->first();
 
                 if (!$document_folder) {
                     return response()->json([
@@ -85,11 +95,29 @@ class DocumentController extends Controller
                     $db_folder_name = strtolower($document_folder->folder_name);
                     $db_folder_name = str_replace(" ", "-", $db_folder_name);
                     $folder_name = $db_folder_name."/".date("Ym");
+                    $case_id = $document_folder->case_id;
                 }
+            }
+            elseif (!$case_id) {
+                return response()->json([
+                    'status' => Response::HTTP_UNAUTHORIZED,
+                    'message' => 'Validation errors',
+                    'error' => [
+                        'documents' => 'Documents uploaded must be linked to a case or a folder'
+                    ],
+                ], Response::HTTP_UNAUTHORIZED);
             }
 
             $documents = $request->file("documents");
             $uplaoded_docs = [];
+
+            $folder_id = $request->folder_id;
+
+            if (!$folder_id) {
+                $case_folder = get_dispute_folder($dispute);
+
+                $folder_id = $case_folder->id;
+            }
 
             if ($request->hasFile('documents')) {
                 foreach ($documents as $document) {
@@ -111,8 +139,9 @@ class DocumentController extends Controller
             if (count($uplaoded_docs)) {
                 foreach ($uplaoded_docs as $documentdata) {
                     CaseDocument::create([
+                        "user_id" => $user_id,
                         "case_id" => $case_id,
-                        "folder_id" => $request->folder_id ?? 0,
+                        "folder_id" => $folder_id ?? 0,
                         "doc_name" => $documentdata["name"],
                         "doc_size" => $documentdata["size"],
                         "doc_type" => $documentdata["type"],
@@ -131,14 +160,16 @@ class DocumentController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
-    public function delete_document(Request $request, $case_id)
+    public function delete_document(Request $request, $case_id = 0)
     {
         $user_id = request()->user()->id;
 
         $dispute = get_case_dispute($case_id, $user_id);
 
         if ($dispute) {
-            $document = CaseDocument::where("id", $request->document_id)->where("case_id", $case_id)->first();
+            $document = CaseDocument::where("id", $request->document_id)->when($case_id, function($query)  use ($case_id) {
+                $query("case_id", $case_id);
+            })->first();
 
             if ($document) {
                 if ($document->delete()) {

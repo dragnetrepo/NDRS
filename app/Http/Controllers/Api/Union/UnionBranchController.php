@@ -55,9 +55,15 @@ class UnionBranchController extends Controller
                 }
 
                 $data[] = [
-                    "id" => $union_branch->id,
+                    "_id" => $union_branch->id,
+                    "union_id" => $union_branch->union_id,
                     "name" => $union_branch->name,
                     "acronym" => $union_branch->acronym,
+                    "about" => $union_branch->description,
+                    "phone" => $union_branch->phone,
+                    "industry" => $union_branch->industry,
+                    "headquarters" => $union_branch->headquarters,
+                    "founded_in" => $union_branch->founded_in,
                     "logo" => get_model_file_from_disk($union_branch->logo ?? "", "union_branch_logos"),
                     "assigned_admins" => $assigned_admins,
                     "date_added" => $union_branch->created_at->format("M d Y"),
@@ -89,6 +95,7 @@ class UnionBranchController extends Controller
                 "headquarters" => $union_branch->headquarters,
                 "founded_in" => $union_branch->founded_in,
                 "logo" => get_model_file_from_disk($union_branch->logo ?? "", "union_branch_logos"),
+                "date_added" => $union_branch->created_at->format("M d Y"),
             ];
             $this->response["message"] = "Union Branch Information Retrieved";
             $this->response["status"] = Response::HTTP_OK;

@@ -55,9 +55,16 @@ class UnionSubBranchController extends Controller
                 }
 
                 $data[] = [
-                    "id" => $union_sub_branch->id,
+                    "_id" => $union_sub_branch->id,
+                    "union_id" => $union_sub_branch->union_id,
+                    "branch_id" => $union_sub_branch->branch_id,
                     "name" => $union_sub_branch->name,
                     "acronym" => $union_sub_branch->acronym,
+                    "about" => $union_sub_branch->description,
+                    "phone" => $union_sub_branch->phone,
+                    "industry" => $union_sub_branch->industry,
+                    "headquarters" => $union_sub_branch->headquarters,
+                    "founded_in" => $union_sub_branch->founded_in,
                     "logo" => get_model_file_from_disk($union_sub_branch->logo ?? "", "union_sub_branch_logos"),
                     "assigned_admins" => $assigned_admins,
                     "date_added" => $union_sub_branch->created_at->format("M d Y"),

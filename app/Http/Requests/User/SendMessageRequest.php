@@ -28,10 +28,6 @@ class SendMessageRequest extends FormRequest
             "full_name" => "required|string|min:2",
             "email" => "required|email",
             "message" => "required|string",
-            "role_id" => "required|integer",
-            "union_id" => "required|integer",
-            "union_branch" => "required|integer",
-            "sub_branch" => "required|integer",
         ];
     }
 
