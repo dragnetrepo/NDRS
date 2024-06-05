@@ -54,10 +54,14 @@ class UnionController extends Controller
                 }
 
                 $data[] = [
-                    "id" => $union->id,
+                    "_id" => $union->id,
                     "name" => $union->name,
-                    "industry" => $union->industry,
                     "acronym" => $union->acronym,
+                    "about" => $union->description,
+                    "phone" => $union->phone,
+                    "industry" => $union->industry,
+                    "headquarters" => $union->headquarters,
+                    "founded_in" => $union->founded_in,
                     "logo" => get_model_file_from_disk($union->logo, "union_logos"),
                     "assigned_admins" => $assigned_admins,
                     "date_added" => $union->created_at->format("M d Y"),
@@ -94,7 +98,6 @@ class UnionController extends Controller
         }
         else {
             $this->response["message"] = "We could not locate the union you are looking for!";
-            $this->response["status"] = Response::HTTP_NOT_FOUND;
         }
 
         return response()->json($this->response, $this->response["status"]);

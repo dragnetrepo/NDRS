@@ -52,7 +52,6 @@ class AuthenticationController extends Controller
             $this->response["message"] = "Valid URL invite token";
         }
         else {
-            $this->response["status"] = Response::HTTP_NOT_FOUND;
             $this->response["message"] = "Invalid URL invite token";
         }
 
@@ -357,7 +356,6 @@ class AuthenticationController extends Controller
             $this->response["message"] = "Valid password token!";
         }
         else {
-            $this->response["status"] = Response::HTTP_NOT_FOUND;
             $this->response["message"] = "invalid password token!";
         }
 
@@ -382,7 +380,6 @@ class AuthenticationController extends Controller
             }
         }
         else {
-            $this->response["status"] = Response::HTTP_NOT_FOUND;
             $this->response["message"] = "We could not complete your request at this time. Please refresh and try again!";
         }
 

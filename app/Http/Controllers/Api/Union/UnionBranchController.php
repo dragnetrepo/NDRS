@@ -57,6 +57,7 @@ class UnionBranchController extends Controller
                 $data[] = [
                     "_id" => $union_branch->id,
                     "union_id" => $union_branch->union_id,
+                    "union_name" => $union_branch->union->name,
                     "name" => $union_branch->name,
                     "acronym" => $union_branch->acronym,
                     "about" => $union_branch->description,
@@ -87,6 +88,7 @@ class UnionBranchController extends Controller
             $this->response["data"] = [
                 "_id" => $union_branch->id,
                 "union_id" => $union_branch->union_id,
+                "union_name" => $union_branch->union->name,
                 "name" => $union_branch->name,
                 "acronym" => $union_branch->acronym,
                 "about" => $union_branch->description,
@@ -102,7 +104,6 @@ class UnionBranchController extends Controller
         }
         else {
             $this->response["message"] = "We could not locate the union you are looking for!";
-            $this->response["status"] = Response::HTTP_NOT_FOUND;
         }
 
         return response()->json($this->response, $this->response["status"]);

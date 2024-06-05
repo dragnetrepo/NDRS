@@ -35,6 +35,8 @@ class DiscussionController extends Controller
         $discussions = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
+            })->orWhereHas('dispute', function($sub_query) use ($user_id) {
+                $sub_query->where("created_by", $user_id);
             });
         })
         ->get();
