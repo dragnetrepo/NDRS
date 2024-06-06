@@ -6,19 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Union extends Model
+class CaseDisputeStatusHistory extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 
-    public function users()
+    public function dispute()
     {
-        return $this->hasMany(UnionUserRole::class);
+        return $this->belongsTo(CaseDispute::class, 'case_id');
     }
 
-    public function industry()
+    public function user()
     {
-        return $this->belongsTo(Industry::class, 'industry_id');
+        return $this->belongsTo(User::class);
     }
 }

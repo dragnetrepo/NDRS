@@ -16,4 +16,19 @@ class UnionSubBranch extends Model
     {
         return $this->hasMany(UnionUserRole::class, 'branch_id');
     }
+
+    public function union()
+    {
+        return $this->belongsTo(Union::class);
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(UnionBranch::class, 'branch_id');
+    }
+
+    public function industry()
+    {
+        return $this->belongsTo(Industry::class, 'industry_id');
+    }
 }

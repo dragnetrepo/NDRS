@@ -84,6 +84,7 @@ class ProfileController extends Controller
                 "first_name" => $request->first_name,
                 "middle_name" => $request->middle_name ?? '',
                 "last_name" => $request->last_name,
+                "name" => trim($request->first_name.' '.($request->middle_name ?? "").' '.$request->last_name),
                 "phone" => $request->phone,
                 "email" => $request->email,
                 "display_picture" => $file_name,

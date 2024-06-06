@@ -169,7 +169,7 @@ if (!function_exists("update_user_setting")) {
 }
 
 if (!function_exists("get_case_dispute")) {
-    function get_case_dispute($case_id = 0, $user_id = 0) {
+    function get_case_dispute($case_id = 0, $user_id = 0, $status = "") {
         if ($user_id) {
             $role = request()->user()->roles->first();
 
@@ -187,6 +187,9 @@ if (!function_exists("get_case_dispute")) {
                     $query->where("user_id", $user_id);
                 });
             });
+        })
+        ->when($status, function($query) use ($status) {
+            $query->where("status", $status);
         })
         ->whereHas('union_data');
 

@@ -21,4 +21,9 @@ class UnionBranch extends Model
     {
         return $this->belongsTo(Union::class);
     }
+
+    public function industry()
+    {
+        return $this->belongsTo(Industry::class, 'industry_id');
+    }
 }

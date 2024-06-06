@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Industry;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -118,6 +119,19 @@ class PopulateDefaultValuesInTables extends Command
             ],
         ];
 
+        $industries = [
+            "Agriculture Industry",
+            "Real Estate/Construction",
+            "Consumer Goods",
+            "Healthcare",
+            "Industrial Goods",
+            "Information And Communications Technology ICT",
+            "Natural Resources",
+            "Oil And Gas",
+            "Services",
+            "Utilities",
+        ];
+
         foreach ($user_roles as $name => $role_details) {
             $get_role = Role::where("name", $name)->first();
             if ($get_role) {
@@ -166,6 +180,14 @@ class PopulateDefaultValuesInTables extends Command
             }
         }
 
+        foreach ($industries as $industry) {
+            if (!Industry::where("name", $industry)->exists()) {
+                Industry::create([
+                    "name" => $industry
+                ]);
+            }
+        }
+
         $get_role = Role::where("name", "ministry admin")->where("guard_name", "sanctum")->first();
 
         if ($get_role) {
@@ -178,6 +200,7 @@ class PopulateDefaultValuesInTables extends Command
                 $user = User::create([
                     "first_name" => "NDRS",
                     "last_name" => "Admin",
+                    "name" => "NDRS Admin",
                     "email" => "admin@ndrs.com",
                     "email_verified_at" => Carbon::now(),
                     "status" => "active",

@@ -59,7 +59,7 @@ class UnionController extends Controller
                     "acronym" => $union->acronym,
                     "about" => $union->description,
                     "phone" => $union->phone,
-                    "industry" => $union->industry,
+                    "industry" => $union->industry->name ?? "",
                     "headquarters" => $union->headquarters,
                     "founded_in" => $union->founded_in,
                     "logo" => get_model_file_from_disk($union->logo, "union_logos"),
@@ -88,7 +88,7 @@ class UnionController extends Controller
                 "acronym" => $union->acronym,
                 "about" => $union->description,
                 "phone" => $union->phone,
-                "industry" => $union->industry,
+                "industry" => $union->industry->name ?? "",
                 "headquarters" => $union->headquarters,
                 "founded_in" => $union->founded_in,
                 "logo" => get_model_file_from_disk($union->logo, "union_logos"),
@@ -365,6 +365,7 @@ class UnionController extends Controller
                         $data[] = [
                             "_id" => $assigned_user->id,
                             "name" => trim($user_deets->last_name.' '.$user_deets->first_name),
+                            "photo" => get_model_file_from_disk($user_deets->display_picture, "profile_photos"),
                             "role" => $assigned_user->role->name,
                             "status" => $assigned_user->status,
                             "date_joined" => $assigned_user->updated_at->format("j F Y"),
@@ -397,7 +398,7 @@ class UnionController extends Controller
                 }
             }
             else {
-                $this->response["message"] = "We could not locate the admin you have made an attempted to delete.";
+                $this->response["message"] = "We could not locate the admin you have made an attempt to delete.";
             }
         }
         else {

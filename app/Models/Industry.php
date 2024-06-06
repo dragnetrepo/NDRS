@@ -6,19 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Union extends Model
+class Industry extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
-
-    public function users()
-    {
-        return $this->hasMany(UnionUserRole::class);
-    }
-
-    public function industry()
-    {
-        return $this->belongsTo(Industry::class, 'industry_id');
-    }
 }

@@ -25,21 +25,35 @@ class DiscussionController extends Controller
         ];
     }
 
-    public function index()
+    public function index($case_id = 0)
     {
         $data = [];
         $this->response["message"] = "No data found";
         $admin_user = user_is_admin();
         $user_id = request()->user()->id;
 
-        $discussions = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
+        $group_discussions = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
             })->orWhereHas('dispute', function($sub_query) use ($user_id) {
                 $sub_query->where("created_by", $user_id);
             });
         })
-        ->get();
+        ->when($case_id, function($query) use ($case_id) {
+            $query->where("case_id", $case_id);
+        });
+
+        $private_discussions = CaseDiscussion::when($admin_user, function($query) use ($user_id) {
+            $query->where("sender_id", $user_id);
+        })
+        ->when(!$admin_user, function($query) use ($user_id) {
+            $query->where("receiver_id", $user_id);
+        })
+        ->when($case_id, function($query) use ($case_id) {
+            $query->where("case_id", $case_id);
+        });
+
+        $discussions = $group_discussions->union($private_discussions)->get();
 
         if ($discussions->isNotEmpty()) {
             foreach ($discussions as $discussion) {

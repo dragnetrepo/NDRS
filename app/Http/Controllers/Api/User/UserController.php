@@ -9,6 +9,7 @@ use App\Http\Requests\User\ReferCaseRequest;
 use App\Models\CaseDispute;
 use App\Models\CaseUserRoles;
 use App\Models\EmailInvitations;
+use App\Models\Industry;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\OutgoingMessages;
@@ -58,10 +59,11 @@ class UserController extends Controller
                     }
                 }
 
-                $data[$role_name][] = [
+                $data[] = [
                     "_id" => $user->id,
                     "name" => trim($user->first_name.' '.$user->last_name),
                     "status" => $user->status,
+                    "role" => $role_name,
                     "date_added" => $user->created_at->format("M d Y"),
                     "photo" => get_model_file_from_disk($user->display_picture ?? "", "profile_photos"),
                     "assigned_cases" => $user->disputes->count()
@@ -492,8 +494,8 @@ class UserController extends Controller
         }
         else {
             Role::create([
-                "name" => $request->name,
-                "display_name" => $request->display_name,
+                "name" => strtolower($request->name),
+                "display_name" => ucwords($request->name),
                 "is_default" => 0,
                 "type" => "admin"
             ]);
@@ -714,6 +716,30 @@ class UserController extends Controller
                 $this->response["emssage"] = "Board has been dissolved successfully!!";
             }
         }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function industries()
+    {
+        $data = [];
+        $this->response["message"] = "No data found";
+
+        $industries = Industry::all();
+
+        if ($industries->isNotEmpty()) {
+            foreach ($industries as $industry) {
+                $data[] = [
+                    "_id" => $industry->id,
+                    "name" => $industry->name,
+                ];
+            }
+
+            $this->response["message"] = "Comprehensive industry list retrieved";
+        }
+
+        $this->response["data"] = $data;
+        $this->response["status"] = Response::HTTP_OK;
 
         return response()->json($this->response, $this->response["status"]);
     }

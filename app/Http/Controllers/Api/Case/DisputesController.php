@@ -8,6 +8,7 @@ use App\Http\Requests\Case\InvitePartyRequest;
 use App\Http\Requests\Case\InviteResponseRequest;
 use App\Models\CaseAccusedUnion;
 use App\Models\CaseDispute;
+use App\Models\CaseDisputeStatusHistory;
 use App\Models\CaseRoles;
 use App\Models\CaseUserRoles;
 use App\Models\OutgoingMessages;
@@ -35,10 +36,14 @@ class DisputesController extends Controller
         $this->outgoing_messages = new OutgoingMessages();
     }
 
-    public function index()
+    public function index($status = "")
     {
+        if ($status == "pending") {
+            $status = "pending approval";
+        }
+
         $user_id = request()->user()->id;
-        $disputes = get_case_dispute(0, $user_id);
+        $disputes = get_case_dispute(0, $user_id, $status);
 
         $data = [];
         $this->response["message"] = "No data found";
@@ -238,6 +243,13 @@ class DisputesController extends Controller
 
                 $dispute->status = $status;
                 $dispute->save();
+
+                CaseDisputeStatusHistory::create([
+                    "case_id" => $dispute->id,
+                    "user_id" => $user_id,
+                    "previous_status" => $previous_status,
+                    "current_status" => $current_status,
+                ]);
 
                 $this->response["status"] = Response::HTTP_OK;
                 $this->response["message"] = "Case status has been updated successfully!";

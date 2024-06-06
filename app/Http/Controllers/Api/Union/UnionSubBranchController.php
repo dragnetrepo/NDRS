@@ -62,7 +62,7 @@ class UnionSubBranchController extends Controller
                     "acronym" => $union_sub_branch->acronym,
                     "about" => $union_sub_branch->description,
                     "phone" => $union_sub_branch->phone,
-                    "industry" => $union_sub_branch->industry,
+                    "industry" => $union_sub_branch->industry->name ?? "",
                     "headquarters" => $union_sub_branch->headquarters,
                     "founded_in" => $union_sub_branch->founded_in,
                     "logo" => get_model_file_from_disk($union_sub_branch->logo ?? "", "union_sub_branch_logos"),
@@ -93,7 +93,7 @@ class UnionSubBranchController extends Controller
                 "acronym" => $union_sub_branch->acronym,
                 "about" => $union_sub_branch->description,
                 "phone" => $union_sub_branch->phone,
-                "industry" => $union_sub_branch->industry,
+                "industry" => $union_sub_branch->industry->name ?? "",
                 "headquarters" => $union_sub_branch->headquarters,
                 "founded_in" => $union_sub_branch->founded_in,
                 "logo" => get_model_file_from_disk($union_sub_branch->logo ?? "", "union_sub_branch_logos"),
@@ -287,6 +287,98 @@ class UnionSubBranchController extends Controller
             $this->response["message"] = "We are experiencing some troubles create this union at this time. Please try again or contact Tech Support for help";
             $this->response["exception"] = $th->getMessage();
             Log::error($th->getMessage());
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function get_admins($sub_branch)
+    {
+        $union_sub_branch = UnionSubBranch::find($sub_branch);
+        $data = [];
+
+        if ($union_sub_branch) {
+            if ($union_sub_branch->users->count()) {
+                foreach ($union_sub_branch->users as $assigned_user) {
+                    $user_deets = $assigned_user->user;
+                    if ($user_deets) {
+                        $data[] = [
+                            "_id" => $assigned_user->id,
+                            "name" => trim($user_deets->last_name.' '.$user_deets->first_name),
+                            "photo" => get_model_file_from_disk($user_deets->display_picture, "profile_photos"),
+                            "role" => $assigned_user->role->name,
+                            "status" => $assigned_user->status,
+                            "date_joined" => $assigned_user->updated_at->format("j F Y"),
+                        ];
+                    }
+                }
+            }
+
+            $this->response["message"] = "Union Branch Admins Retrieved";
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["data"] = $data;
+        }
+        else {
+            $this->response["message"] = "We could not locate the union sub branch you have requested its information";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function read_admin(Request $request, $sub_branch)
+    {
+        $union_sub_branch = UnionSubBranch::find($sub_branch);
+        $data = [];
+
+        if ($union_sub_branch) {
+            if ($assigned_user = $union_sub_branch->users->where("id", $request->admin_id)->first()) {
+                $user_deets = $assigned_user->user;
+                if ($user_deets) {
+                    $data[] = [
+                        "_id" => $assigned_user->id,
+                        "first_name" => $user_deets->first_name,
+                        "last_name" => $user_deets->last_name,
+                        "email" => $user_deets->email,
+                        "phone" => $user_deets->phone,
+                        "photo" => get_model_file_from_disk($user_deets->display_picture, "profile_photos"),
+                        "role" => $assigned_user->role->name,
+                        "status" => $assigned_user->status,
+                        "union" => $union_sub_branch->union->name ?? "",
+                        "branch" => $union_sub_branch->branch->name ?? "",
+                        "sub_branch" => $union_sub_branch->name,
+                        "date_joined" => $assigned_user->updated_at->format("j F Y"),
+                    ];
+                }
+
+                $this->response["message"] = "Union Branch Admin Information Retrieved";
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["data"] = $data;
+            }
+        }
+        else {
+            $this->response["message"] = "We could not locate the union sub branch you have requested its information";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function remove_admin(Request $request, $sub_branch)
+    {
+        $union_sub_branch = UnionSubBranch::find($sub_branch);
+
+        if ($union_sub_branch) {
+            if ($remove_admin = $union_sub_branch->users->where("id", $request->admin_id)->first()) {
+                if ($remove_admin->delete()) {
+                    $this->response["message"] = "Union Branch Admin has been removed successfully!";
+                    $this->response["status"] = Response::HTTP_OK;
+                }
+            }
+            else {
+                $this->response["message"] = "We could not locate the admin you have made an attempt to delete.";
+            }
+        }
+        else {
+            $this->response["message"] = "We could not locate the union you have requested its information";
         }
 
         return response()->json($this->response, $this->response["status"]);

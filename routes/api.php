@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Case\FolderController;
 use App\Http\Controllers\Api\Post\PostCategoryController;
 use App\Http\Controllers\Api\Post\PostController;
 use App\Http\Controllers\Api\User\NotificationController;
+use App\Http\Controllers\Api\User\SearchController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Auth\AuthenticationController;
 use Illuminate\Http\Request;
@@ -79,6 +80,8 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                     Route::post('create', "create")->name("create");
                     Route::post('edit/{branch}', "edit")->name("edit");
                     Route::post('{branch}/send-invite', "send_invite")->name("send-invite");
+                    Route::get('get-admins/{branch}', "get_admins")->name("get-admins");
+                    Route::delete('remove-admin/{branch}', "remove_admin")->name("delete-admin");
                     Route::delete('delete/{branch}', "delete")->name("delete");
                 });
 
@@ -87,18 +90,21 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                     Route::post('create', "create")->name("create");
                     Route::post('edit/{sub_branch}', "edit")->name("edit");
                     Route::post('{sub_branch}/send-invite', "send_invite")->name("send-invite");
+                    Route::get('get-admins/{sub_branch}', "get_admins")->name("get-admins");
+                    Route::get('get-single-admin/{sub_branch}', "read_admin")->name("get-single-admin");
+                    Route::delete('remove-admin/{sub_branch}', "remove_admin")->name("delete-admin");
                     Route::delete('delete/{sub_branch}', "delete")->name("delete");
                 });
             });
 
-            Route::get("get-unions", [UnionController::class, "index"])->name("index");
+            Route::get("get-unions", [UnionController::class, "index"])->name("all");
             Route::get("get-union-branches/{union}", [UnionBranchController::class, "index"])->name("branches");
             Route::get("get-union-organizations/{branch}", [UnionSubBranchController::class, "index"])->name("sub-branches");
         });
 
         Route::prefix("case")->name("case.")->group(function(){
             Route::controller(DisputesController::class)->name("disputes.")->group(function(){
-                Route::get("disputes", "index")->name("index");
+                Route::get("disputes/{status?}", "index")->name("index");
                 Route::get("roles", "roles")->name("roles");
                 Route::get("read/{case_id}", "read")->name("read");
                 Route::post("create", "create")->name("create");
@@ -130,7 +136,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             });
 
             Route::prefix("discussions")->controller(DiscussionController::class)->name("discussion.")->group(function(){
-                Route::get("/", "index")->name("index");
+                Route::get("/{case_id?}", "index")->name("index");
                 Route::get("/{discussion}/messages", "get_messages")->name("index");
                 Route::post("/{discussion}/send-message", "send_message")->name("send-message");
                 Route::post("/{discussion}/vote-poll", "vote_on_poll")->name("poll-vote");
@@ -203,6 +209,8 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             });
         });
 
+        Route::get("search", [SearchController::class, "search"])->name("industries");
+        Route::get("get-industries", [UserController::class, "industries"])->name("industries");
         Route::get("/settings/{auth}", [NotificationController::class, "settings"])->name("auth-settings");
         Route::post("/send-message", [ProfileController::class, "send_message"])->name("send-message");
         Route::get("/logout", [AuthenticationController::class, "logout"])->name("log-out");
