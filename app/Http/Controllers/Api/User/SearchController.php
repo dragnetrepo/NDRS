@@ -62,7 +62,7 @@ class SearchController extends Controller
         $order_by = in_array($request->order_by, ["asc", "desc"]) ? $request->order_by : "desc";
 
         // Search database for keyword
-        if ($search_keyword || $document_type || $case_status || $start_date || $end_date || $request->order_by) {
+        if ($search_keyword || $case_status || $start_date || $end_date || $request->order_by) {
             $disputes = CaseDispute::when($search_keyword, function($query) use ($search_keyword) {
                 $query->where("case_title", "LIKE", "%$search_keyword%");
             })
@@ -89,7 +89,9 @@ class SearchController extends Controller
                     ];
                 }
             }
+        }
 
+        if ($search_keyword || $document_type || $start_date || $end_date || $request->order_by) {
             $documents = CaseDocument::when($search_keyword, function($query) use ($search_keyword) {
                 $query->where("doc_name", "LIKE", "%$search_keyword%");
             })
@@ -111,11 +113,14 @@ class SearchController extends Controller
                     $data["documents"]["data"][] = [
                         "_id" => $document->id,
                         "document_name" => $document->doc_name,
+                        "document_path" => get_model_file_from_disk($document->doc_path, "case_documents"),
                         "date_added" => $document->created_at->diffForHumans(),
                     ];
                 }
             }
+        }
 
+        if ($search_keyword || $start_date || $end_date || $request->order_by) {
             $users = User::when($search_keyword, function($query) use ($search_keyword) {
                 $query->where("name", "LIKE", "%$search_keyword%");
             })

@@ -190,7 +190,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
 
             Route::controller(PostController::class)->group(function(){
                 Route::get("/{category_id}", "index")->name("index");
-                Route::get("/post/{post_id}", "post")->name("index");
+                Route::get("/read/{post_id}", "post")->name("index");
                 Route::post("/create", "store")->name("create");
                 Route::post("/edit/{post_id}", "update")->name("edit");
                 Route::delete("/delete/{post_id}", "destroy")->name("delete");
@@ -204,7 +204,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             });
 
             Route::controller(DocumentController::class)->group(function(){
-                Route::get("/all/{folder_id}", "index")->name("index");
+                Route::get("/all/{folder_id?}", "index")->name("index");
                 Route::post("add", "add_document")->name("add");
             });
         });
