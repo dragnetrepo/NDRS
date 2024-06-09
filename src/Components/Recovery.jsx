@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../App";
 
 const Recovery = () => {
@@ -94,6 +94,15 @@ const Recovery = () => {
                       </button>
                     </div>
                   </form>
+                  <p className="mt-4 text-center text-muted-3 mb-0">
+                    Already have an account?{" "}
+                    <Link
+                      to="/"
+                      className="text-main-primary text-medium text-decoration-none"
+                    >
+                      Login
+                    </Link>
+                  </p>
                 </div>
               </div>
             </div>
