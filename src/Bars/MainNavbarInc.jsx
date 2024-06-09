@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const MainNavbarInc = () => {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ const MainNavbarInc = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       // If token is not available, navigate back to the login page
-      navigate("/login");
+      navigate("/");
     }
     // Fetch profile data using the token or perform any other actions
   }, [navigate]);
@@ -86,13 +86,13 @@ const MainNavbarInc = () => {
         >
           <div className="offcanvas-header">
             <div className="offcanvas-title flex-grow-1">
-              <a className="navbar-brand me-0 text-bold" href="index.php">
+              <Link className="navbar-brand me-0 text-bold" to="/">
                 <img
                   src="/images/NDRS-Logo.svg"
                   className="img-fluid"
                   alt="Logo"
                 />
-              </a>
+              </Link>
             </div>
 
             <i
@@ -105,35 +105,34 @@ const MainNavbarInc = () => {
           <div className="offcanvas-body flex-column custom-offcanvas-h">
             <ul className="navbar-nav flex-column sidebar-list border-bottom py-3">
               <li className="nav-item">
-                <a
+                <Link
                   className="nav-link nav-active"
                   aria-current="page"
-                  href="/dashboard"
+                  to="/dashboard"
                 >
                   <img src="/images/home.svg" className="img-fluid" /> Dashboard
-                </a>
+                </Link>
               </li>
 
               <li className="nav-item">
-                {/* <a className="nav-link" href="disputes.php"><img src="/images/suitcase.svg" className="img-fluid" />  Disputes</a> */}
-                <a className="nav-link" href="/Disputes">
+                <Link className="nav-link" to="/Disputes">
                   <img src="/images/suitcase.svg" className="img-fluid" />{" "}
                   Disputes
-                </a>
+                </Link>
               </li>
 
               <li className="nav-item">
-                <a className="nav-link" href="/discussions">
+                <Link className="nav-link" to="/discussions">
                   <img src="/images/chats.svg" className="img-fluid" />{" "}
                   Discussions
-                </a>
+                </Link>
               </li>
 
               <li className="nav-item">
-                <a className="nav-link" href="/documents">
+                <Link className="nav-link" to="/documents">
                   <img src="/images/folder.svg" className="img-fluid" />{" "}
                   Documents
-                </a>
+                </Link>
               </li>
             </ul>
 
@@ -141,67 +140,58 @@ const MainNavbarInc = () => {
 
             <ul className="navbar-nav flex-column sidebar-list list-unstyled py-3 flex-grow-1">
               <li className="nav-item">
-                <a className="nav-link" aria-current="page" href="/users">
+                <Link className="nav-link" aria-current="page" to="/users">
                   <img src="/images/users.svg" className="img-fluid" /> Users &
                   Groups
-                </a>
+                </Link>
               </li>
 
               <li className="nav-item">
-                {/* <a className="nav-link" href="union-branches.php"><img src="/images/branch.svg" className="img-fluid" />  Branches</a> */}
-                <a className="nav-link" href="/UnionBranches">
+                <Link className="nav-link" to="/Unions">
                   <img src="/images/branch.svg" className="img-fluid" /> Unions
-                </a>
+                </Link>
               </li>
-              {/* 
-              <li className="nav-item">
-                <a className="nav-link" href="/Branches">
-                  <img src="/images/branch.svg" className="img-fluid" />{" "}
-                  Branches
-                </a>
-              </li> */}
 
               <li className="nav-item">
-                <a className="nav-link" href="/notifications">
+                <Link className="nav-link" to="/notifications">
                   <img src="/images/bell.svg" className="img-fluid" />{" "}
                   Notifications
-                </a>
+                </Link>
               </li>
 
               <li className="nav-item">
-                <a className="nav-link" href="/reports">
+                <Link className="nav-link" to="/reports">
                   <img src="/images/clipboard.svg" className="img-fluid" />{" "}
                   Reports
-                </a>
+                </Link>
               </li>
             </ul>
 
             <div>
               <ul className="navbar-nav flex-column sidebar-list py-3">
                 <li className="nav-item">
-                  <a
+                  <Link
                     className="nav-link"
                     aria-current="page"
-                    href="/helpSupport"
+                    to="/helpSupport"
                   >
                     <img src="/images/headphones.svg" className="img-fluid" />{" "}
                     Help & Support
-                  </a>
+                  </Link>
                 </li>
 
                 <li className="nav-item">
-                  <a className="nav-link" href="/settings">
+                  <Link className="nav-link" to="/settings">
                     <img src="/images/settings.svg" className="img-fluid" />{" "}
                     Settings
-                  </a>
+                  </Link>
                 </li>
 
                 <li className="nav-item" onClick={handleClick}>
-                  <a className="nav-link" href="/">
+                  <Link className="nav-link" to="/">
                     <img src="/images/log-out.svg" className="img-fluid" /> Log
                     out
-                  </a>
-                  {/* <a className="nav-link" href=""><img src="/images/log-out.svg" className="img-fluid"/>  Log out</a> */}
+                  </Link>
                 </li>
               </ul>
             </div>

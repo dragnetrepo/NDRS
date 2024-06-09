@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { AppContext } from "../App";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 
@@ -125,12 +125,12 @@ function Login() {
 
                   <p className="mt-4 text-center text-muted-3 mb-0">
                     Are you new here?{" "}
-                    <a
-                      href="/createAccount"
+                    <Link
+                      to="/createAccount"
                       className="text-main-primary text-medium text-decoration-none"
                     >
                       Create account
-                    </a>
+                    </Link>
                   </p>
                 </div>
               </div>

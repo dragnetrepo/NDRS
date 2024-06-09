@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const TopBarInc = () => {
   const [user, setuser] = useState({});
@@ -73,7 +74,7 @@ const TopBarInc = () => {
             className="d-lg-flex align-items-center d-none"
             style={{ gap: "30px" }}
           >
-            <a href="/notifications" className="bell-box position-relative">
+            <Link to="/notifications" className="bell-box position-relative">
               <img
                 src="/images/dott.svg"
                 className="img-fluid indicator-red"
@@ -84,7 +85,7 @@ const TopBarInc = () => {
                 className="img-fluid"
                 alt="bell"
               />
-            </a>
+            </Link>
 
             {/* <button className="btn btn-main-primary">Create new <i className="bi bi-plus"></i></button> */}
 
@@ -104,7 +105,7 @@ const TopBarInc = () => {
                     />
                   ) : (
                     <img
-                      src="/images/avatar-2.svg"
+                      src="/images/download.png"
                       className="img-fluid object-position-center object-fit-cover w-100 h-100"
                       alt="Default Avatar"
                     />

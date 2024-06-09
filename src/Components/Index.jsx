@@ -14,32 +14,32 @@ const Index = () => {
     console.log(twoFactorAuth);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    //   try {
-    //     const baseUrl = 'https://phpstack-1245936-4460801.cloudwaysapps.com/dev'
-    //      const response = await fetch( baseUrl + '/api/two-factor-authentication', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(twoFactorAuth)
-    //   });
+  //   //   try {
+  //   //     const baseUrl = 'https://phpstack-1245936-4460801.cloudwaysapps.com/dev'
+  //   //      const response = await fetch( baseUrl + '/api/two-factor-authentication', {
+  //   //     method: 'POST',
+  //   //     headers: {
+  //   //       'Content-Type': 'application/json'
+  //   //     },
+  //   //     body: JSON.stringify(twoFactorAuth)
+  //   //   });
 
-    //   if (!response.ok) {
-    //     throw new Error('two-factor-authentification-failed');
-    //   }
+  //   //   if (!response.ok) {
+  //   //     throw new Error('two-factor-authentification-failed');
+  //   //   }
 
-    //   // Assuming the response contains a JSON object with a token
-    //   const data = await response.json();
-    //   console.log(data);
-    //   navigate('/Verification2')
-    // } catch (error) {
-    //   console.error('Error logging in:', error);
-    // }
-    navigate("/LoginPassword");
-  };
+  //   //   // Assuming the response contains a JSON object with a token
+  //   //   const data = await response.json();
+  //   //   console.log(data);
+  //   //   navigate('/Verification2')
+  //   // } catch (error) {
+  //   //   console.error('Error logging in:', error);
+  //   // }
+  //   navigate("/LoginPassword");
+  // };
   return (
     <>
       <div className="auth-container d-flex align-items-center justify-content-center vh-100">
@@ -63,7 +63,7 @@ const Index = () => {
                     number for verification.
                   </p>
 
-                  <form action="" method="post" onSubmit={handleSubmit}>
+                  <form action="" method="post">
                     <div className="mb-3">
                       <label className="form-label">
                         Email or Mobile number

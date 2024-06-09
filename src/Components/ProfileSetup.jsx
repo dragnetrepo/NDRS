@@ -9,10 +9,10 @@ import { AppContext } from "../App";
 import { useNavigate } from "react-router-dom";
 
 const ProfileSetup = () => {
-	const user_avatar = "/images/user-avatar.svg";
-	const [avatarImage, setAvatarImage] = useState(user_avatar);
-	const { profile, setProfile } = useContext(AppContext);
-	const navigate = useNavigate();
+  const user_avatar = "/images/download.png";
+  const [avatarImage, setAvatarImage] = useState(user_avatar);
+  const { profile, setProfile } = useContext(AppContext);
+  const navigate = useNavigate();
 
 	const handleAvatarChange = (e) => {
 		const file = e.target.files[0];
