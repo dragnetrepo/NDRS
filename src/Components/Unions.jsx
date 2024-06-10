@@ -514,20 +514,20 @@ const Unions = () => {
 																										<i className="bi bi-plus"></i>
 																									</a>
 																								</div>
-
-																								<table className="table table-list">
-																									<thead className="table-light">
-																										<tr>
-																											<th scope="col">Name</th>
-																											<th scope="col">
-																												Joined
-																											</th>
-																											<th scope="col">Role</th>
-																											<th scope="col"></th>
-																										</tr>
-																									</thead>
-																									<tbody>
-																										{/* <tr>
+																								<div className="table-responsive">
+																									<table className="table table-list">
+																										<thead className="table-light">
+																											<tr>
+																												<th scope="col">Name</th>
+																												<th scope="col">
+																													Joined
+																												</th>
+																												<th scope="col">Role</th>
+																												<th scope="col"></th>
+																											</tr>
+																										</thead>
+																										<tbody>
+																											{/* <tr>
 																											<td scope="row">
 																												<div className="d-flex avatar-holder">
 																													<div className="position-relative">
@@ -573,10 +573,12 @@ const Unions = () => {
 																												</button>
 																											</td>
 																										</tr> */}
-																										<p className="m-3">No admin has been invited</p>
+																											<p className="m-3">No admin has been invited</p>
 
-																									</tbody>
-																								</table>
+																										</tbody>
+																									</table>
+																								</div>
+
 																							</div>
 																						</div>
 																					</div>
@@ -597,7 +599,7 @@ const Unions = () => {
 														tabIndex="0"
 													>
 														<div className="row my-4">
-															<div className="col-lg-5">
+															<div className="col-lg-5 mb-lg-0 mb-3">
 																<div className="input-group">
 																	<span className="input-group-text bg-transparent">
 																		<img
@@ -616,7 +618,7 @@ const Unions = () => {
 
 															<div className="col-lg-7">
 																<div className="d-flex align-items-center justify-content-between gap-15">
-																	<div className="d-flex">
+																	<div className="d-flex gap-10">
 																		<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
 																			<img
 																				src="/images/filter.svg"
