@@ -86,7 +86,7 @@ const Verification = () => {
                   <h1 className="heading text-center mb-1">
                     Input the 6 digit code sent to
                   </h1>
-                  <p className="mb-4 text-detail">balamihu@gmail.com</p>
+                  <p className="mb-4 text-detail">{verifyEmail.email}</p>
 
                   <form
                     action="verification-success.php"

@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../App";
+import toast from "react-hot-toast";
 
 const Recovery = () => {
   const { recovery, setRecovery } = useContext(AppContext);
@@ -33,6 +34,7 @@ const Recovery = () => {
       navigate("/PasswordSet2");
     } catch (error) {
       console.error("Error logging in:", error);
+      toast.error('Please enter a valid email or Phone number !')
     }
   };
 

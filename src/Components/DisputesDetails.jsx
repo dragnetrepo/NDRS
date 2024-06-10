@@ -50,7 +50,7 @@ const DisputesDetails = () => {
 		try {
 			const res = await fetch(baseUrl + "/api/users/get-roles", {
 				headers: {
-				Authorization: `Bearer ${localStorage.getItem("token")}`,
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
 				},
 			});
 
@@ -75,7 +75,7 @@ const DisputesDetails = () => {
 		try {
 			const res = await fetch(baseUrl + `/api/case/read/${id}`, {
 				headers: {
-				Authorization: `Bearer ${localStorage.getItem("token")}`,
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
 				},
 			});
 
@@ -179,6 +179,10 @@ const DisputesDetails = () => {
 
 			const data = await res.json();
 			console.log(data);
+			setUsers({
+				email: '',
+				role: ''
+			})
 			toast.success(data.message);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
@@ -196,9 +200,9 @@ const DisputesDetails = () => {
 			const response = await fetch(baseUrl + `/api/case/${id}/create-folder`, {
 				method: "POST",
 				headers: {
-				"Content-Type": "application/json",
-				Accept: "application/json",
-				Authorization: `Bearer ${localStorage.getItem("token")}`,
+					"Content-Type": "application/json",
+					Accept: "application/json",
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
 				},
 				body: JSON.stringify(caseFolder),
 			});
@@ -225,8 +229,8 @@ const DisputesDetails = () => {
 		// setAvatarImage(image);
 
 		setDocumentsUpload((prevFormData) => ({
-		...prevFormData,
-		documents: file,
+			...prevFormData,
+			documents: file,
 		}));
 		console.log(formData, image, file);
 	};
@@ -237,9 +241,9 @@ const DisputesDetails = () => {
 			const response = await fetch(baseUrl + `/api/case/${id}/add-document`, {
 				method: "POST",
 				headers: {
-				"Content-Type": "application/json",
-				Accept: "application/json",
-				Authorization: `Bearer ${localStorage.getItem("token")}`,
+					"Content-Type": "application/json",
+					Accept: "application/json",
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
 				},
 				body: JSON.stringify(documentsUpload),
 			});
@@ -338,143 +342,143 @@ const DisputesDetails = () => {
 																				<form>
 																					<div class="">
 																						<div class="mb-4">
-																						<label class="form-label">
-																							Case ID
-																						</label>
-																						<input
-																							type="text"
-																							class="form-control form-control-height"
-																							value={getDisputes.case_no}
-																							disabled
-																						/>
-																						</div>
-																						<div class="mb-4">
-																						<label class="form-label">
-																							Case title
-																						</label>
-																						<input
-																							type="text"
-																							class="form-control form-control-height"
-																							value={getDisputes.title}
-																							disabled
-																						/>
-																						</div>
-																						<div class="mb-4">
-																						<label class="form-label">
-																							Dispute type
-																						</label>
-																						<input
-																							type="text"
-																							class="form-control form-control-height"
-																							value={getDisputes.type}
-																							disabled
-																						/>
-																						</div>
-																						<div class="mb-4">
-																						<label class="form-label">
-																							Dispute status
-																						</label>
-																						<div>
-																							<span class="text-muted-3">
-																							Ongoing
-																							</span>{" "}
-																							<img
-																							src="/images/conc.svg"
-																							class="img-fluid"
+																							<label class="form-label">
+																								Case ID
+																							</label>
+																							<input
+																								type="text"
+																								class="form-control form-control-height"
+																								value={getDisputes.case_no}
+																								disabled
 																							/>
 																						</div>
+																						<div class="mb-4">
+																							<label class="form-label">
+																								Case title
+																							</label>
+																							<input
+																								type="text"
+																								class="form-control form-control-height"
+																								value={getDisputes.title}
+																								disabled
+																							/>
 																						</div>
 																						<div class="mb-4">
-																						<label class="form-label">
-																							Filing date
-																						</label>
-																						<input
-																							type="text"
-																							class="form-control form-control-height"
-																							value={getDisputes.filling_date}
-																							disabled
-																						/>
+																							<label class="form-label">
+																								Dispute type
+																							</label>
+																							<input
+																								type="text"
+																								class="form-control form-control-height"
+																								value={getDisputes.type}
+																								disabled
+																							/>
 																						</div>
 																						<div class="mb-4">
-																						<label class="form-label">
-																							Cause of dispute
-																						</label>
-																						<textarea
-																							class="form-control"
-																							rows="4"
-																							value={getDisputes.summary}
-																							disabled
-																						>
-																							The University of Lagos,
-																							popularly known as UNILAG, is a
-																							public research university
-																							located in Lagos, Nigeria and
-																							was founded in 1962. UNILAG is
-																							one of the first generation
-																							universities in Nigeria and is
-																							ranked among the top
-																							universities in the country in
-																							major education publications.
-																						</textarea>
+																							<label class="form-label">
+																								Dispute status
+																							</label>
+																							<div>
+																								<span class="text-muted-3">
+																									Ongoing
+																								</span>{" "}
+																								<img
+																									src="/images/conc.svg"
+																									class="img-fluid"
+																								/>
+																							</div>
 																						</div>
 																						<div class="mb-4">
-																						<label class="form-label">
-																							Relief Sought
-																						</label>
-																						<textarea
-																							class="form-control"
-																							rows="4"
-																							value={
-																							getDisputes.relief_sought
-																							}
-																							disabled
-																						>
-																							1. Declare a specific measure
-																							(e.g., import ban) violates
-																							trade rules.2. Withdraw the
-																							measure or bring it into
-																							compliance with agreements.3.
-																							Compensate for damages caused by
-																							the measure.
-																						</textarea>
+																							<label class="form-label">
+																								Filing date
+																							</label>
+																							<input
+																								type="text"
+																								class="form-control form-control-height"
+																								value={getDisputes.filling_date}
+																								disabled
+																							/>
 																						</div>
 																						<div class="mb-4">
-																						<label class="form-label">
-																							Settlement Offers
-																						</label>
-																						<textarea
-																							class="form-control"
-																							rows="4"
-																							value=""
-																							disabled
-																						>
-																							{" "}
-																							1. Declare a specific measure
-																							(e.g., import ban) violates
-																							trade rules.2. Withdraw the
-																							measure or bring it into
-																							compliance with agreements.3.
-																							Compensate for damages caused by
-																							the measure.
-																						</textarea>
+																							<label class="form-label">
+																								Cause of dispute
+																							</label>
+																							<textarea
+																								class="form-control"
+																								rows="4"
+																								value={getDisputes.summary}
+																								disabled
+																							>
+																								The University of Lagos,
+																								popularly known as UNILAG, is a
+																								public research university
+																								located in Lagos, Nigeria and
+																								was founded in 1962. UNILAG is
+																								one of the first generation
+																								universities in Nigeria and is
+																								ranked among the top
+																								universities in the country in
+																								major education publications.
+																							</textarea>
 																						</div>
 																						<div class="mb-4">
-																						<label class="form-label">
-																							Awards & Rulings
-																						</label>
-																						<textarea
-																							class="form-control"
-																							rows="4"
-																							value=""
-																							disabled
-																						>
-																							{" "}
-																							1. Declare a specific measure
-																							(e.g., import ban) violates
-																							trade rules.2. Withdraw the
-																							measure or bring it into
-																							compliance with agreements.
-																						</textarea>
+																							<label class="form-label">
+																								Relief Sought
+																							</label>
+																							<textarea
+																								class="form-control"
+																								rows="4"
+																								value={
+																									getDisputes.relief_sought
+																								}
+																								disabled
+																							>
+																								1. Declare a specific measure
+																								(e.g., import ban) violates
+																								trade rules.2. Withdraw the
+																								measure or bring it into
+																								compliance with agreements.3.
+																								Compensate for damages caused by
+																								the measure.
+																							</textarea>
+																						</div>
+																						<div class="mb-4">
+																							<label class="form-label">
+																								Settlement Offers
+																							</label>
+																							<textarea
+																								class="form-control"
+																								rows="4"
+																								value=""
+																								disabled
+																							>
+																								{" "}
+																								1. Declare a specific measure
+																								(e.g., import ban) violates
+																								trade rules.2. Withdraw the
+																								measure or bring it into
+																								compliance with agreements.3.
+																								Compensate for damages caused by
+																								the measure.
+																							</textarea>
+																						</div>
+																						<div class="mb-4">
+																							<label class="form-label">
+																								Awards & Rulings
+																							</label>
+																							<textarea
+																								class="form-control"
+																								rows="4"
+																								value=""
+																								disabled
+																							>
+																								{" "}
+																								1. Declare a specific measure
+																								(e.g., import ban) violates
+																								trade rules.2. Withdraw the
+																								measure or bring it into
+																								compliance with agreements.
+																							</textarea>
 																						</div>
 																					</div>
 																				</form>
@@ -503,58 +507,58 @@ const DisputesDetails = () => {
 
 																						<table class="table table-list">
 																							<thead class="table-light">
-																							<tr>
-																								<th scope="col">Name</th>
-																								<th scope="col">Joined</th>
-																								<th scope="col">Role</th>
-																								<th scope="col"></th>
-																							</tr>
+																								<tr>
+																									<th scope="col">Name</th>
+																									<th scope="col">Joined</th>
+																									<th scope="col">Role</th>
+																									<th scope="col"></th>
+																								</tr>
 																							</thead>
 																							<tbody>
-																							{item.invited_users.map((user, index) => (
-																								<tr>
-																									<td scope="row">
-																										<div class="d-flex avatar-holder">
-																											<div class="position-relative">
-																												<div class="avatar-sm flex-shrink-0">
-																													{user.display_picture ? (
-																														<img src={user.display_picture} class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																													) : (
-																														<img src="/images/default-avatar-image.png" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																													)}
+																								{item.invited_users.map((user, index) => (
+																									<tr>
+																										<td scope="row">
+																											<div class="d-flex avatar-holder">
+																												<div class="position-relative">
+																													<div class="avatar-sm flex-shrink-0">
+																														{user.display_picture ? (
+																															<img src={user.display_picture} class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																														) : (
+																															<img src="/images/default-avatar-image.png" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																														)}
+																													</div>
+																												</div>
+																												<div class="ms-2 flex-grow-1">
+																													<h5 class="mb-0">
+																														{user.name}
+																													</h5>
+																													<p class="mb-0 text-muted-3">
+																														{user.email}
+																													</p>
 																												</div>
 																											</div>
-																											<div class="ms-2 flex-grow-1">
-																												<h5 class="mb-0">
-																													{user.name}
-																												</h5>
-																												<p class="mb-0 text-muted-3">
-																													{user.email}
-																												</p>
-																											</div>
-																										</div>
-																									</td>
-																									<td>{user.status == "pending" ? "Pending" : user.joined}</td>
-																									<td>
-																										<h6 className="text-muted">{item.role_name}</h6>
-																									</td>
+																										</td>
+																										<td>{user.status == "pending" ? "Pending" : user.joined}</td>
+																										<td>
+																											<h6 className="text-muted">{item.role_name}</h6>
+																										</td>
 
-																									<td>
-																										<div class="dropdown">
-																											<button class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" >
-																												<img src="/images/dots-v.svg" class="img-fluid" alt="dot-v" />
-																											</button>
-																											<ul class="dropdown-menu border-radius action-menu-2">
-																												<li>
-																													<a class="dropdown-item" href="javascript:void(0);" >
-																														View details
-																													</a>
-																												</li>
-																											</ul>
-																										</div>	
-																									</td>
-																								</tr>
-																							))}
+																										<td>
+																											<div class="dropdown">
+																												<button class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" >
+																													<img src="/images/dots-v.svg" class="img-fluid" alt="dot-v" />
+																												</button>
+																												<ul class="dropdown-menu border-radius action-menu-2">
+																													<li>
+																														<a class="dropdown-item" href="javascript:void(0);" >
+																															View details
+																														</a>
+																													</li>
+																												</ul>
+																											</div>
+																										</td>
+																									</tr>
+																								))}
 																							</tbody>
 																						</table>
 																					</div>
@@ -628,7 +632,7 @@ const DisputesDetails = () => {
 																					<span class="input-group-text bg-transparent">
 																						<img src="/images/search.svg" class="img-fluid" alt="search" />
 																					</span>
-																					<input type="search" class="form-control border-start-0 form-control-height" placeholder="Search here..."/>
+																					<input type="search" class="form-control border-start-0 form-control-height" placeholder="Search here..." />
 																				</div>
 																			</div>
 
@@ -652,13 +656,13 @@ const DisputesDetails = () => {
 																						<tr>
 																							<th scope="col">
 																								<div>
-																								<input
-																									class="form-check-input"
-																									type="checkbox"
-																									id="checkboxNoLabel"
-																									value=""
-																									aria-label="..."
-																								/>
+																									<input
+																										class="form-check-input"
+																										type="checkbox"
+																										id="checkboxNoLabel"
+																										value=""
+																										aria-label="..."
+																									/>
 																								</div>
 																							</th>
 																							<th scope="col">Name</th>
@@ -672,72 +676,72 @@ const DisputesDetails = () => {
 																					</thead>
 																					<tbody>
 																						{getCaseDocuments.length ? getCaseDocuments.map(item => (
-																						<tr>
-																							<td>
-																								<div>
-																								<input
-																									class="form-check-input"
-																									type="checkbox"
-																									id="checkboxNoLabel"
-																									value=""
-																									aria-label="..."
-																								/>
-																								</div>
-																							</td>
-																							<td>
-																								<div
-																								title="Shalom Winner - Solar Sales Receipt Installation"
-																								class="text-truncate max-200"
-																								>
-																								{item.name}
-																								</div>
-																							</td>
-																							<td>{item.size}</td>
-																							<td>{item.type}</td>
-																							<td>{item.last_modified}</td>
-																							<td>
-																								<div class="dropdown">
-																								<button
-																									class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																									type="button"
-																									data-bs-toggle="dropdown"
-																									aria-expanded="false"
-																								>
-																									<img
-																									src="/images/dots-v.svg"
-																									class="img-fluid"
-																									alt="dots"
-																									/>
-																								</button>
-																								<ul class="dropdown-menu border-radius action-menu-2">
-																									<li>
-																									<a
-																										class="dropdown-item"
-																										href="#"
+																							<tr>
+																								<td>
+																									<div>
+																										<input
+																											class="form-check-input"
+																											type="checkbox"
+																											id="checkboxNoLabel"
+																											value=""
+																											aria-label="..."
+																										/>
+																									</div>
+																								</td>
+																								<td>
+																									<div
+																										title="Shalom Winner - Solar Sales Receipt Installation"
+																										class="text-truncate max-200"
 																									>
-																										Download
-																									</a>
-																									</li>
-																									<li>
-																									<a
-																										class="dropdown-item"
-																										href="#"
-																									>
-																										Copy
-																									</a>
-																									</li>
-																									<li>
-																									<a
-																										class="dropdown-item"
-																										href="#"
-																									>
-																										Delete
-																									</a>
-																									</li>
-																								</ul>
-																								</div>
-																							</td>
-																						</tr>
+																										{item.name}
+																									</div>
+																								</td>
+																								<td>{item.size}</td>
+																								<td>{item.type}</td>
+																								<td>{item.last_modified}</td>
+																								<td>
+																									<div class="dropdown">
+																										<button
+																											class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+																											type="button"
+																											data-bs-toggle="dropdown"
+																											aria-expanded="false"
+																										>
+																											<img
+																												src="/images/dots-v.svg"
+																												class="img-fluid"
+																												alt="dots"
+																											/>
+																										</button>
+																										<ul class="dropdown-menu border-radius action-menu-2">
+																											<li>
+																												<a
+																													class="dropdown-item"
+																													href="#"
+																												>
+																													Download
+																												</a>
+																											</li>
+																											<li>
+																												<a
+																													class="dropdown-item"
+																													href="#"
+																												>
+																													Copy
+																												</a>
+																											</li>
+																											<li>
+																												<a
+																													class="dropdown-item"
+																													href="#"
+																												>
+																													Delete
+																												</a>
+																											</li>
+																										</ul>
+																									</div>
+																								</td>
+																							</tr>
 																						)) : (
 																							<tr>
 																								<td id="document-not-found" colSpan={6} className={`text-center d-none`}>
@@ -783,13 +787,13 @@ const DisputesDetails = () => {
 				<div class="modal-dialog modal-dialog-centered modal-lg">
 					<div class="modal-content p-lg-4 border-0">
 						<div class="modal-header">
-						<h1 class="modal-title fs-5">Send invites</h1>
-						<button
-							type="button"
-							class="btn-close"
-							data-bs-dismiss="modal"
-							aria-label="Close"
-						></button>
+							<h1 class="modal-title fs-5">Send invites</h1>
+							<button
+								type="button"
+								class="btn-close"
+								data-bs-dismiss="modal"
+								aria-label="Close"
+							></button>
 						</div>
 						<div class="modal-body">
 							<div class="row my-4">
@@ -798,21 +802,22 @@ const DisputesDetails = () => {
 										<span class="input-group-text bg-transparent">
 											<img src="/images/search.svg" class="img-fluid" alt="search" />
 										</span>
-										<input type="search" class="form-control border-start-0 form-control-height" placeholder="Type an email to send an invite" name="email" onChange={onHandleChangeUser} />
+										<input type="search" class="form-control border-start-0 form-control-height" placeholder="Type an email to send an invite" name="email" onChange={onHandleChangeUser}
+											value={users.email} />
 									</div>
 								</div>
-								
+
 								<div class="col-lg-5">
 									<div class="d-flex align-items-center justify-content-between gap-15">
 										<select class="form-control form-control-height w-50" name="role" onChange={onHandleChangeUser}>
-											<option value="" disabled selected hidden>Select role</option>
+											<option value={users.role} disabled selected hidden>Select role</option>
 											{roles.map((role) => (
 												<option key={role._id} value={role._id}>{role.name}</option>
 											))}
 										</select>
 
 										<a href="javascript:void(0);" class="btn btn-size btn-main-primary" onClick={(e) => handleInviteParty(e, id, roles, setRoles, users, setUsers)}
-											>Send Invite
+										>Send Invite
 										</a>
 									</div>
 								</div>
@@ -839,179 +844,179 @@ const DisputesDetails = () => {
 						</div>
 
 						<div className="card-body p-4">
-						<label for="add_doc">
-							<input
-							type="file"
-							name="add_doc"
-							id="add_doc"
-							className="d-none"
-							// name="documents"
-							// onChange={handleDocument}
-							/>
-							<div className="mb-4">
-							<div className="btn-flat text-main-primary text-decoration-none cursor-pointer">
-								Add document{" "}
-								<img
-								src="/images/button-icon-1.svg"
-								className="img-fluid"
-								alt="add-icon"
+							<label for="add_doc">
+								<input
+									type="file"
+									name="add_doc"
+									id="add_doc"
+									className="d-none"
+								// name="documents"
+								// onChange={handleDocument}
 								/>
-							</div>
-							</div>
-						</label>
+								<div className="mb-4">
+									<div className="btn-flat text-main-primary text-decoration-none cursor-pointer">
+										Add document{" "}
+										<img
+											src="/images/button-icon-1.svg"
+											className="img-fluid"
+											alt="add-icon"
+										/>
+									</div>
+								</div>
+							</label>
 
-						<div className="d-flex align-items-center justify-content-between mb-4">
-							<div className="d-flex align-items-center">
-							<div className="text-center me-2 flex-shrink-0">
-								<img
-								src="/images/file_upload_states.svg"
-								className="img-fluid"
-								style={{ height: "40px" }}
-								/>
-							</div>
-							<div>
-								<p className="text-bold mb-1">Document Name</p>
-								<p className="font-sm text-muted mb-0">
-								Doc format . Max. 5MB
-								</p>
-							</div>
-							</div>
+							<div className="d-flex align-items-center justify-content-between mb-4">
+								<div className="d-flex align-items-center">
+									<div className="text-center me-2 flex-shrink-0">
+										<img
+											src="/images/file_upload_states.svg"
+											className="img-fluid"
+											style={{ height: "40px" }}
+										/>
+									</div>
+									<div>
+										<p className="text-bold mb-1">Document Name</p>
+										<p className="font-sm text-muted mb-0">
+											Doc format . Max. 5MB
+										</p>
+									</div>
+								</div>
 
-							<div>
-							<button className="btn btn-main-primary btn-size">
-								Upload
-							</button>
-							</div>
-						</div>
-
-						<div className="d-flex align-items-center justify-content-between mb-4">
-							<div className="d-flex align-items-center">
-							<div className="text-center me-2 flex-shrink-0">
-								<img src="/images/pdf-icon.svg" className="img-fluid" />
-							</div>
-							<div>
-								<p className="text-bold mb-1">Submission Letter.pdf</p>
-								<p className="font-sm text-muted mb-0">
-								11 Sep, 2023 | 12:24pm . 13MB
-								</p>
-							</div>
+								<div>
+									<button className="btn btn-main-primary btn-size">
+										Upload
+									</button>
+								</div>
 							</div>
 
-							<div className="d-flex align-items-center gap-10">
-							<div
-								className="spinner-border text-main-primary"
-								role="status"
-							>
-								<span className="visually-hidden">Loading...</span>
+							<div className="d-flex align-items-center justify-content-between mb-4">
+								<div className="d-flex align-items-center">
+									<div className="text-center me-2 flex-shrink-0">
+										<img src="/images/pdf-icon.svg" className="img-fluid" />
+									</div>
+									<div>
+										<p className="text-bold mb-1">Submission Letter.pdf</p>
+										<p className="font-sm text-muted mb-0">
+											11 Sep, 2023 | 12:24pm . 13MB
+										</p>
+									</div>
+								</div>
+
+								<div className="d-flex align-items-center gap-10">
+									<div
+										className="spinner-border text-main-primary"
+										role="status"
+									>
+										<span className="visually-hidden">Loading...</span>
+									</div>
+
+									<a href="#">
+										<img
+											src="/images/multiply_2.svg"
+											className="img-fluid"
+											alt="close"
+										/>
+									</a>
+								</div>
 							</div>
 
-							<a href="#">
-								<img
-								src="/images/multiply_2.svg"
-								className="img-fluid"
-								alt="close"
-								/>
-							</a>
-							</div>
-						</div>
+							<div className="d-flex align-items-center justify-content-between mb-4">
+								<div className="d-flex align-items-center">
+									<div className="text-center me-2 flex-shrink-0">
+										<img src="/images/pdf-icon.svg" className="img-fluid" />
+									</div>
+									<div>
+										<p className="text-bold mb-1">Submission Letter.pdf</p>
+										<p className="font-sm text-muted mb-0">
+											11 Sep, 2023 | 12:24pm . 13MB
+										</p>
+									</div>
+								</div>
 
-						<div className="d-flex align-items-center justify-content-between mb-4">
-							<div className="d-flex align-items-center">
-							<div className="text-center me-2 flex-shrink-0">
-								<img src="/images/pdf-icon.svg" className="img-fluid" />
-							</div>
-							<div>
-								<p className="text-bold mb-1">Submission Letter.pdf</p>
-								<p className="font-sm text-muted mb-0">
-								11 Sep, 2023 | 12:24pm . 13MB
-								</p>
-							</div>
-							</div>
+								<div className="d-flex align-items-center gap-10">
+									<div
+										className="spinner-border text-main-primary"
+										role="status"
+									>
+										<span className="visually-hidden">Loading...</span>
+									</div>
 
-							<div className="d-flex align-items-center gap-10">
-							<div
-								className="spinner-border text-main-primary"
-								role="status"
-							>
-								<span className="visually-hidden">Loading...</span>
-							</div>
-
-							<a href="#">
-								<img
-								src="/images/multiply_2.svg"
-								className="img-fluid"
-								alt="close"
-								/>
-							</a>
-							</div>
-						</div>
-
-						<div className="d-flex align-items-center justify-content-between mb-4">
-							<div className="d-flex align-items-center">
-							<div className="text-center me-2 flex-shrink-0">
-								<img src="/images/pdf-icon.svg" className="img-fluid" />
-							</div>
-							<div>
-								<p className="text-bold mb-1">Submission Letter.pdf</p>
-								<p className="font-sm text-muted mb-0">
-								11 Sep, 2023 | 12:24pm . 13MB
-								</p>
-							</div>
+									<a href="#">
+										<img
+											src="/images/multiply_2.svg"
+											className="img-fluid"
+											alt="close"
+										/>
+									</a>
+								</div>
 							</div>
 
-							<div className="d-flex align-items-center gap-10">
-							<div
-								className="spinner-border text-main-primary"
-								role="status"
-							>
-								<span className="visually-hidden">Loading...</span>
+							<div className="d-flex align-items-center justify-content-between mb-4">
+								<div className="d-flex align-items-center">
+									<div className="text-center me-2 flex-shrink-0">
+										<img src="/images/pdf-icon.svg" className="img-fluid" />
+									</div>
+									<div>
+										<p className="text-bold mb-1">Submission Letter.pdf</p>
+										<p className="font-sm text-muted mb-0">
+											11 Sep, 2023 | 12:24pm . 13MB
+										</p>
+									</div>
+								</div>
+
+								<div className="d-flex align-items-center gap-10">
+									<div
+										className="spinner-border text-main-primary"
+										role="status"
+									>
+										<span className="visually-hidden">Loading...</span>
+									</div>
+
+									<a href="#">
+										<img
+											src="/images/multiply_2.svg"
+											className="img-fluid"
+											alt="close"
+										/>
+									</a>
+								</div>
 							</div>
 
-							<a href="#">
-								<img
-								src="/images/multiply_2.svg"
-								className="img-fluid"
-								alt="close"
-								/>
-							</a>
-							</div>
-						</div>
+							<div className="d-flex align-items-center justify-content-between mb-4">
+								<div className="d-flex align-items-center">
+									<div className="text-center me-2 flex-shrink-0">
+										<img
+											src="/images/file_upload_states_1.svg"
+											className="img-fluid"
+											style={{ height: "40px" }}
+										/>
+									</div>
+									<div>
+										<p className="text-bold mb-1">Submission Letter.pdf</p>
+										<p className="font-sm text-muted mb-0">
+											11 Sep, 2023 | 12:24pm . 13MB
+										</p>
+									</div>
+								</div>
 
-						<div className="d-flex align-items-center justify-content-between mb-4">
-							<div className="d-flex align-items-center">
-							<div className="text-center me-2 flex-shrink-0">
-								<img
-								src="/images/file_upload_states_1.svg"
-								className="img-fluid"
-								style={{ height: "40px" }}
-								/>
-							</div>
-							<div>
-								<p className="text-bold mb-1">Submission Letter.pdf</p>
-								<p className="font-sm text-muted mb-0">
-								11 Sep, 2023 | 12:24pm . 13MB
-								</p>
-							</div>
-							</div>
+								<div className="d-flex align-items-center gap-10">
+									<a href="#">
+										<img
+											src="/images/bin_3.svg"
+											className="img-fluid"
+											alt="bin"
+										/>
+									</a>
 
-							<div className="d-flex align-items-center gap-10">
-							<a href="#">
-								<img
-								src="/images/bin_3.svg"
-								className="img-fluid"
-								alt="bin"
-								/>
-							</a>
-
-							<a href="#">
-								<img
-								src="/images/download_2.svg"
-								className="img-fluid"
-								alt="download"
-								/>
-							</a>
+									<a href="#">
+										<img
+											src="/images/download_2.svg"
+											className="img-fluid"
+											alt="download"
+										/>
+									</a>
+								</div>
 							</div>
-						</div>
 						</div>
 					</div>
 				</div>
@@ -1026,21 +1031,21 @@ const DisputesDetails = () => {
 
 							<div class="gap-10 d-flex align-items-center">
 								<button
-								class="btn btn btn-size btn-main-outline-primary px-3"
-								data-bs-dismiss="modal"
-								aria-label="Close"
+									class="btn btn btn-size btn-main-outline-primary px-3"
+									data-bs-dismiss="modal"
+									aria-label="Close"
 								>
-								Cancel
+									Cancel
 								</button>
 
 								<a
-								href=""
-								class="btn btn-main-primary btn-size px-3"
-								onClick={(e) =>
-									handleSubmitFolder(e, id, getDisputes, setGetDisputes)
-								}
+									href=""
+									class="btn btn-main-primary btn-size px-3"
+									onClick={(e) =>
+										handleSubmitFolder(e, id, getDisputes, setGetDisputes)
+									}
 								>
-								Save Folder
+									Save Folder
 								</a>
 							</div>
 						</div>

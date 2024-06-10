@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 const Branches = () => {
   const { id } = useParams();
-  const user_avatar = "/images/unilag.svg";
+  const user_avatar = "/images/download.png";
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const [unions, setunions] = useState([]);
   const [branches, setbranches] = useState([]);
@@ -1411,7 +1411,7 @@ const Branches = () => {
                                             </button>
                                             <ul
                                               className="dropdown-menu border-radius action-menu-2"
-                                              // onClick={onUniones3}
+                                            // onClick={onUniones3}
                                             >
                                               <li>
                                                 <a

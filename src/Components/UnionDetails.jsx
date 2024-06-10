@@ -410,7 +410,7 @@ const UnionDetails = () => {
                                           </td>
 
                                           <td>
-                                            <div className="avatars">
+                                            {/* <div className="avatars">
                                               <div className="dropdown">
                                                 <a
                                                   href="#"
@@ -1026,7 +1026,7 @@ const UnionDetails = () => {
                                                   </div>
                                                 </ul>
                                               </div>
-                                            </div>
+                                            </div> */}<p>no admin has been invited</p>
                                           </td>
 
                                           <td>{branch.industry}</td>
@@ -1048,7 +1048,7 @@ const UnionDetails = () => {
                                               </button>
                                               <ul
                                                 className="dropdown-menu border-radius action-menu-2"
-                                                // onClick={onUnionBranches3}
+                                              // onClick={onUnionBranches3}
                                               >
                                                 <li>
                                                   <Link

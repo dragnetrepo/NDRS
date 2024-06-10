@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 const SubBranch = () => {
   const { id } = useParams();
-  const user_avatar = "/images/unilag.svg";
+  const user_avatar = "/images/download.png";
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const [unions, setunions] = useState([]);
   const [branch, setbranch] = useState([]);
@@ -819,7 +819,7 @@ const SubBranch = () => {
                                         </td>
 
                                         <td>
-                                          <div className="avatars">
+                                          {/* <div className="avatars">
                                             <div className="dropdown">
                                               <a
                                                 href="#"
@@ -1435,7 +1435,7 @@ const SubBranch = () => {
                                                 </div>
                                               </ul>
                                             </div>
-                                          </div>
+                                          </div> */}<p>No admin has been invited</p>
                                         </td>
 
                                         <td>{item.industry}</td>
@@ -1457,7 +1457,7 @@ const SubBranch = () => {
                                             </button>
                                             <ul
                                               className="dropdown-menu border-radius action-menu-2"
-                                              // onClick={onUniones3}
+                                            // onClick={onUniones3}
                                             >
                                               <li>
                                                 <a

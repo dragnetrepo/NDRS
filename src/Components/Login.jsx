@@ -107,12 +107,12 @@ function Login() {
                       </div>
                       <p className="mb-0 mt-2 text-muted-3">
                         Forgot password?{" "}
-                        <a
-                          href="/recovery"
+                        <Link
+                          to="/recovery"
                           className="text-main-primary text-medium text-decoration-none"
                         >
                           Recover it
-                        </a>
+                        </Link>
                       </p>
                     </div>
 

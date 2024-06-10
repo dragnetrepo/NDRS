@@ -7,10 +7,11 @@ import toast from "react-hot-toast";
 
 const Unions = () => {
 	const navigate = useNavigate();
-	const user_avatar = "/images/unilag.svg";
+	const user_avatar = "/images/download.png";
 	const [avatarImage, setAvatarImage] = useState(user_avatar);
 	const { unions, setUnions } = useContext(AppContext);
 	const [unionsList, setUnionsList] = useState([]);
+	const [industries, setIndustries] = useState([])
 	const [unionInvite, seUnionInvite] = useState({
 		email: "",
 		role: "",
@@ -19,7 +20,10 @@ const Unions = () => {
 
 	useEffect(() => {
 		fetchdata();
+		fetchIndustries()
 	}, []);
+
+
 
 	const fetchdata = async () => {
 		try {
@@ -42,6 +46,33 @@ const Unions = () => {
 
 			const data = await res.json();
 			setUnionsList(data.data);
+			console.log(data);
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+	};
+
+	const fetchIndustries = async () => {
+		try {
+			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + "/api/get-industries", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			setIndustries(data.data);
 			console.log(data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
@@ -287,7 +318,7 @@ const Unions = () => {
 																								</button>
 																							</div>
 																						</div>
-																						<div className="upload-box upload-box-success text-center px-3 py-4">
+																						{/* <div className="upload-box upload-box-success text-center px-3 py-4">
 																							<div className="text-center mb-2">
 																								<img
 																									src="/images/uploaded.svg"
@@ -328,7 +359,7 @@ const Unions = () => {
 																									Clear Upload
 																								</a>
 																							</p>
-																						</div>
+																						</div> */}
 																					</div>
 																				</div>
 																			</div>
@@ -421,16 +452,13 @@ const Unions = () => {
 																							</div>
 
 																							<div className="mb-4">
-																								<label className="form-label">
-																									Industry
-																								</label>
-																								<input
-																									type="text"
-																									className="form-control form-control-height"
-																									placeholder=""
-																									name="industry"
-																									onChange={onHandleChange}
-																								/>
+																								<label className="form-label">Industry</label>
+																								<select className="form-control form-control-height" id="industriy" name="industry" onChange={onHandleChange}>
+																									<option value="" disabled selected>--Choose--</option>
+																									{industries.map((item) =>
+																										<option value={item._id} key={item._id}>{item.name}</option>
+																									)}
+																								</select>
 																							</div>
 
 																							<div className="mb-4">
@@ -499,7 +527,7 @@ const Unions = () => {
 																										</tr>
 																									</thead>
 																									<tbody>
-																										<tr>
+																										{/* <tr>
 																											<td scope="row">
 																												<div className="d-flex avatar-holder">
 																													<div className="position-relative">
@@ -544,54 +572,9 @@ const Unions = () => {
 																													/>
 																												</button>
 																											</td>
-																										</tr>
+																										</tr> */}
+																										<p className="m-3">No admin has been invited</p>
 
-																										<tr>
-																											<td scope="row">
-																												<div className="d-flex avatar-holder">
-																													<div className="position-relative">
-																														<div className="avatar-sm flex-shrink-0">
-																															<img
-																																src="/images/avatar-2.svg"
-																																className="img-fluid object-position-center object-fit-cover w-100 h-100"
-																																alt="Avatar"
-																															/>
-																														</div>
-																													</div>
-																													<div className="ms-2 flex-grow-1">
-																														<h5 className="mb-0">
-																															Salim Mustapha
-																														</h5>
-																														<p className="mb-0 text-muted-3">
-																															salimmusty@gmail.com
-																														</p>
-																													</div>
-																												</div>
-																											</td>
-																											<td>Feb 4 2023</td>
-																											<td>
-																												<img
-																													src="/images/claimant.svg"
-																													className="img-fluid"
-																													alt="claimant"
-																												/>
-																											</td>
-
-																											<td>
-																												<button
-																													className="btn btn-size btn-outline-light text-medium no-caret"
-																													type="button"
-																													data-bs-toggle="modal"
-																													data-bs-target="#removeModal"
-																												>
-																													<img
-																														src="/images/bin_2.svg"
-																														className="img-fluid"
-																														alt="dot-v"
-																													/>
-																												</button>
-																											</td>
-																										</tr>
 																									</tbody>
 																								</table>
 																							</div>
@@ -720,7 +703,7 @@ const Unions = () => {
 																				</td>
 
 																				<td>
-																					<div className="avatars">
+																					{/* <div className="avatars">
 																						<div className="dropdown">
 																							<a
 																								href="#"
@@ -1336,7 +1319,7 @@ const Unions = () => {
 																								</div>
 																							</ul>
 																						</div>
-																					</div>
+																					</div> */}<p>No admin added</p>
 																				</td>
 
 																				<td>{union.industry}</td>

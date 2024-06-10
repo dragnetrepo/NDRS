@@ -386,23 +386,28 @@ const Disputes = () => {
 																					<div className="mb-4">
 																						<label className="form-label">Summary of Dispute</label>
 																						<textarea className="form-control" rows="3" name="summary" onChange={onHandleChange}></textarea>
+																						<p className="text-danger">Input must be at least 10 characters</p>
 																					</div>
 																					<div className="mb-4">
 																						<label className="form-label">Background Information</label>
 																						<textarea className="form-control" rows="3" name="background_info" onChange={onHandleChange}></textarea>
+																						<p className="text-danger">Input must be at least 10 characters</p>
 																					</div>
 																					<div className="mb-4">
 																						<label className="form-label">Relief sought</label>
 																						<textarea className="form-control" rows="3" name="relief_sought" onChange={onHandleChange}></textarea>
+																						<p className="text-danger">Input must be at least 10 characters</p>
 																					</div>
 																					<div className="mb-4">
 																						<label className="form-label">Specific concerns</label>
 																						<textarea className="form-control" rows="3" name="specific_claims" onChange={onHandleChange}></textarea>
+																						<p className="text-danger">Input must be at least 10 characters</p>
 																					</div>
 
 																					<div className="mb-4">
 																						<label className="form-label">Negotiation terms</label>
 																						<textarea className="form-control" rows="3" name="negotiation_terms" onChange={onHandleChange}></textarea>
+																						<p className="text-danger">Input must be at least 10 characters</p>
 																					</div>
 																				</div>
 																			</div>

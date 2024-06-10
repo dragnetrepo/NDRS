@@ -51,7 +51,7 @@ const PasswordSet2 = () => {
               <div className="text-center">
                 <h1 className="heading">Password Reset Link has been sent</h1>
                 <p className="text-muted-2">
-                  We’ve sent a reset link to bala***********
+                  We’ve sent a reset link to {recovery.email}
                 </p>
               </div>
             </div>
