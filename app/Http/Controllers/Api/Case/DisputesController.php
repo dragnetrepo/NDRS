@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
 
 class DisputesController extends Controller
 {
@@ -273,7 +274,7 @@ class DisputesController extends Controller
 
     public function roles()
     {
-        $roles = CaseRoles::get();
+        $roles = Role::get();
         $data = [];
 
         if ($roles->isNotEmpty()) {
@@ -295,7 +296,7 @@ class DisputesController extends Controller
     public function involved_parties($case_id)
     {
         $user_id = request()->user()->id;
-        $data = [];
+        $data = $role_data_= [];
         $dispute = $dispute = get_case_dispute($case_id, $user_id);
 
         if ($dispute) {
@@ -303,14 +304,23 @@ class DisputesController extends Controller
                 foreach ($dispute->involved_parties as $involved_party) {
                     $user = $involved_party->user;
 
-                    $data[$involved_party->role->name][] = [
+                    $role_name = ($involved_party->role->display_name ?? ucwords($involved_party->role->name));
+
+                    $role_data_[$role_name][] = [
                         "_id" => $involved_party->id,
                         "name" => $user ? trim($user->last_name.' '.$user->first_name) : '',
                         "email" => $user ? $user->email : $involved_party->email,
                         "joined" => Carbon::parse(($involved_party->response_date ? $involved_party->response_date : $involved_party->created_at))->format("M d Y"),
-                        "role" => $involved_party->role->name,
+                        "role" => $role_name,
                         "status" => $involved_party->status,
                         "display_picture" => get_model_file_from_disk($user->display_picture ?? "", "profile_photos"),
+                    ];
+                }
+
+                foreach ($role_data_ as $role_name => $invited_users) {
+                    $data[] = [
+                        "role_name" => $role_name,
+                        "invited_users" => $invited_users
                     ];
                 }
 
@@ -334,7 +344,7 @@ class DisputesController extends Controller
 
             if ($dispute) {
                 $send_invite = false;
-                $case_role = CaseRoles::where('id', $request->role)->first();
+                $case_role = Role::where('id', $request->role)->first();
 
                 if ($case_role) {
                     $invited_user_id = 0;

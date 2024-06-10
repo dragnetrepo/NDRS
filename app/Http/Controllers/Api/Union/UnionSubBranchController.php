@@ -132,7 +132,7 @@ class UnionSubBranchController extends Controller
                         "name" => $request->name,
                         "acronym" => $request->acronym ?? '',
                         "founded_in" => $request->founded_in,
-                        "industry" => $request->industry,
+                        "industry_id" => $request->industry,
                         "description" => $request->about,
                         "logo" => $file_name,
                     ]);
@@ -169,7 +169,7 @@ class UnionSubBranchController extends Controller
         if ($union_sub_branch) {
             $union_sub_branch->name = $request->name;
             $union_sub_branch->acronym = $request->acronym ?? '';
-            $union_sub_branch->industry = $request->industry;
+            $union_sub_branch->industry_id = $request->industry;
             $union_sub_branch->description = $request->about;
             $union_sub_branch->founded_in = $request->founded_in;
             $file_name = $union_sub_branch->logo;

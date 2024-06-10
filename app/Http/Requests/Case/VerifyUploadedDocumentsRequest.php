@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Case;
 
+use App\Rules\NoSqlFile;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -26,7 +27,7 @@ class VerifyUploadedDocumentsRequest extends FormRequest
     {
         $rules = [
             "documents" => "required|array",
-            "documents.*" => "required|file|max:102400",
+            "documents.*" => ["required", "file", "max:102400", "mimes:png,jpg,pdf,mov,mkv,mp4,ogg,txt,csv,xlsx,xls,jpeg", new NoSqlFile()],
             "folder_id" => "nullable|integer",
         ];
 

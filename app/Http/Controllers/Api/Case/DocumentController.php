@@ -48,7 +48,7 @@ class DocumentController extends Controller
                     $data[] = [
                         "_id" => $document->id,
                         "name" => $document->doc_name,
-                        "size" => $document->doc_size,
+                        "size" => format_bytes($document->doc_size),
                         "type" => $document->doc_type,
                         "last_modified" => Carbon::parse($document->updated_at)->format("jS F Y, h:ia"),
                         "file_path" => get_model_file_from_disk($document->doc_path, "case_documents"),

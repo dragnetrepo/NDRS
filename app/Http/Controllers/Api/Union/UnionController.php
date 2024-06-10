@@ -7,6 +7,7 @@ use App\Http\Requests\General\CsvFileValidateRequest;
 use App\Http\Requests\Union\CreateUnionRequest;
 use App\Http\Requests\Union\SendUnionInviteRequest;
 use App\Models\EmailInvitations;
+use App\Models\Industry;
 use App\Models\OutgoingMessages;
 use App\Models\Union;
 use App\Models\UnionUserRole;
@@ -120,7 +121,7 @@ class UnionController extends Controller
                 "founded_in" => $request->founded_in,
                 "phone" => $request->phone,
                 "headquarters" => $request->headquarters,
-                "industry" => $request->industry,
+                "industry_id" => $request->industry,
                 "description" => $request->about,
                 "logo" => $file_name,
             ]);
@@ -170,7 +171,7 @@ class UnionController extends Controller
                 if ($index > 1) {
                     $union_name = $line[0];
                     $union_acronym = $line[1];
-                    $union_industry = $line[2];
+                    $union_industry = Industry::where("name", $line[2])->first();
 
                     if ($union_name) {
                         $db_union = Union::where("name", $union_name)->first();
@@ -182,7 +183,7 @@ class UnionController extends Controller
                                 "founded_in" => "",
                                 "phone" => "",
                                 "headquarters" => "",
-                                "industry" => $union_industry,
+                                "industry_id" => $union_industry->name ?? "",
                                 "description" => "",
                                 "logo" => "",
                             ]);
@@ -217,7 +218,7 @@ class UnionController extends Controller
         if ($union) {
             $union->name = $request->name;
             $union->acronym = $request->acronym ?? '';
-            $union->industry = $request->industry;
+            $union->industry_id = $request->industry;
             $union->headquarters = $request->headquarters;
             $union->phone = $request->phone;
             $union->description = $request->about;

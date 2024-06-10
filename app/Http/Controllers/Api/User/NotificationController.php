@@ -103,7 +103,8 @@ class NotificationController extends Controller
             else {
                 foreach ($settings as $key => $value) {
                     if ($key != "2fa") {
-                        $data[$key] = $value;
+                        $value['key'] = $key;
+                        $data[] = $value;
                     }
                 }
             }

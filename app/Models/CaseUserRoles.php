@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Models\Role;
 
 class CaseUserRoles extends Model
 {
@@ -24,6 +25,6 @@ class CaseUserRoles extends Model
 
     public function role()
     {
-        return $this->belongsTo(CaseRoles::class, 'case_role_id');
+        return $this->belongsTo(Role::class, 'case_role_id');
     }
 }
