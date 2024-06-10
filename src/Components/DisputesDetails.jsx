@@ -329,39 +329,9 @@ const DisputesDetails = () => {
 																			<div class="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
 																				<h3 class="mb-lg-0 mb-3">Overview</h3>
 																				<div class="d-flex align-items-center gap-15">
-																				<a
-																					href="#"
-																					class="btn btn-size btn-main-primary"
-																					onClick={(e) =>
-																					handlechangeStatus(e, id)
-																					}
-																					// disabled
-																				>
-																					Approved case
-																				</a>
-
-																				<button
-																					class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																					type="button"
-																					data-bs-toggle="dropdown"
-																					aria-expanded="false"
-																				>
-																					<img
-																					src="/images/dots-v.svg"
-																					class="img-fluid"
-																					alt="dot-v"
-																					/>
-																				</button>
-																				<ul class="dropdown-menu border-radius action-menu-2">
-																					<li>
-																					<a
-																						class="dropdown-item"
-																						href="disputes-details.php"
-																					>
-																						View details
+																					<a href="#" class="btn btn-size btn-main-primary" onClick={(e) => handlechangeStatus(e, id)}>
+																						Approved case
 																					</a>
-																					</li>
-																				</ul>
 																				</div>
 																			</div>
 																			<div class="card-body p-4">
@@ -522,17 +492,6 @@ const DisputesDetails = () => {
 																					<a href="#" class="btn btn-size btn-main-primary" data-bs-toggle="modal" data-bs-target="#inviteModal">
 																						Invite users
 																					</a>
-
-																					<button class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" >
-																						<img src="/images/dots-v.svg" class="img-fluid" alt="dot-v"/>
-																					</button>
-																					<ul class="dropdown-menu border-radius action-menu-2">
-																						<li>
-																							<a class="dropdown-item" href="disputes-details.php" >
-																								View details
-																							</a>
-																						</li>
-																					</ul>
 																				</div>
 																			</div>
 																			<div class="card-body p-4">
@@ -625,512 +584,171 @@ const DisputesDetails = () => {
 													</div>
 
 													<div class="tab-pane fade" id="pills-document" role="tabpanel" aria-labelledby="pills-document-tab" tabindex="0" >
-														<div class="row mt-5">
-															<div class="col-lg-2">
-																<div class="nav flex-column tab-item nav-pills gap-10" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-																	<button class="nav-link tab-v text-start active" id="v-pills-doc-tab" data-bs-toggle="pill" data-bs-target="#v-pills-doc" type="button" role="tab" aria-controls="v-pills-doc" aria-selected="true" >
-																		{getDisputes.case_no}{" "} Documents
-																	</button>
-
-																	<button class="nav-link tab-v text-start" id="v-pills-folder-tab" data-bs-toggle="pill" data-bs-target="#v-pills-folder" type="button" role="tab" aria-controls="v-pills-folder" aria-selected="false" >
-																		All Folders
-																	</button>
-																</div>
-															</div>
-
-															<div class="col-lg-9">
-																<div class="tab-content" id="v-pills-tabContent">
-																	<div class="tab-pane fade show active" id="v-pills-doc" role="tabpanel" aria-labelledby="v-pills-doc-tab" tabindex="0">
-																		<div class="card mb-4">
-																			<div class="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-																				<h3 class="mb-lg-0 mb-3">
-																					{getDisputes.case_no} Documents
-																				</h3>
-																				<div className="d-flex align-items-center gap-15">
-																					<Link to={`/disputes2/${id}`} style={{ textDecoration: "none" }}>
-																						<button className="btn btn-size btn-main-primary" type="button">
-																							Create Document
-																						</button>
-																					</Link>
-																					<div className="dropdown">
-																						<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																							<img src="/images/dots-v.svg" className="img-fluid" alt="dot-v" />
-																						</button>
-																						<ul className="dropdown-menu border-radius action-menu-2">
-																							<li>
-																								<Link className="dropdown-item" to="#">
-																									A-Z
-																								</Link>
-																							</li>
-																							<li>
-																								<Link className="dropdown-item" to="#">
-																									Most Recent
-																								</Link>
-																							</li>
-																							<li>
-																								<Link className="dropdown-item" to="#">
-																									Oldest
-																								</Link>
-																							</li>
-																						</ul>
-																					</div>
-																				</div>
-																			</div>
-																			<div class="card-body p-4">
-																				<div class="row mt-2 mb-4">
-																					<div class="col-lg-6">
-																						<div class="input-group">
-																							<span class="input-group-text bg-transparent">
-																								<img src="/images/search.svg" class="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" class="form-control border-start-0 form-control-height" placeholder="Search here..."/>
-																						</div>
-																					</div>
-
-																					<div class="col-lg-6">
-																						<div class="d-flex align-items-center justify-content-between gap-15">
-																							<a class="btn btn-size btn-outline-light text-medium px-3">
-																								<img src="/images/filter.svg" class="img-fluid me-2" />{" "}
-																								A-Z
-																							</a>
-																							<p class="text-end mb-0 file-count">
-																								Files: {getCaseDocuments.length}
-																							</p>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div class="row">
-																					<div class="col-lg-12">
-																						<table class="table table-list">
-																							<thead class="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																										<input
-																											class="form-check-input"
-																											type="checkbox"
-																											id="checkboxNoLabel"
-																											value=""
-																											aria-label="..."
-																										/>
-																										</div>
-																									</th>
-																									<th scope="col">Name</th>
-																									<th scope="col">Size</th>
-																									<th scope="col">File Type</th>
-																									<th scope="col">
-																										Last Modified
-																									</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-																								{getCaseDocuments.length ? getCaseDocuments.mpac(item => (
-																								<tr>
-																									<td>
-																										<div>
-																										<input
-																											class="form-check-input"
-																											type="checkbox"
-																											id="checkboxNoLabel"
-																											value=""
-																											aria-label="..."
-																										/>
-																										</div>
-																									</td>
-																									<td>
-																										<div
-																										title="Shalom Winner - Solar Sales Receipt Installation"
-																										class="text-truncate max-200"
-																										>
-																										Shalom Winner - Solar
-																										Sales Receipt Installation
-																										</div>
-																									</td>
-																									<td>1.2 MB</td>
-																									<td>PDF</td>
-																									<td>12/07/23</td>
-																									<td>
-																										<div class="dropdown">
-																										<button
-																											class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																											type="button"
-																											data-bs-toggle="dropdown"
-																											aria-expanded="false"
-																										>
-																											<img
-																											src="/images/dots-v.svg"
-																											class="img-fluid"
-																											alt="dots"
-																											/>
-																										</button>
-																										<ul class="dropdown-menu border-radius action-menu-2">
-																											<li>
-																											<a
-																												class="dropdown-item"
-																												href="#"
-																											>
-																												Download
-																											</a>
-																											</li>
-																											<li>
-																											<a
-																												class="dropdown-item"
-																												href="#"
-																											>
-																												Copy
-																											</a>
-																											</li>
-																											<li>
-																											<a
-																												class="dropdown-item"
-																												href="#"
-																											>
-																												Delete
-																											</a>
-																											</li>
-																										</ul>
-																										</div>
-																									</td>
-																								</tr>
-																								)) : (
-																									<tr>
-																										<td id="document-not-found" colSpan={6} className={`text-center d-none`}>
-																											<p><i className="fa fa-triangle-exclamation fa-2x text-warning"></i></p>
-																											<p className="h5">No document found</p>
-																										</td>
-																									</tr>
-																								)}
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
+														<div className="row mt-5">
+															<div className="col-lg-10">
+																<div class="card mb-4">
+																	<div class="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
+																		<h3 class="mb-lg-0 mb-3">
+																			{getDisputes.case_no} Documents
+																		</h3>
+																		<div className="d-flex align-items-center gap-15">
+																			{/* <Link to={`/disputes2/${id}`} style={{ textDecoration: "none" }}>
+																				<button className="btn btn-size btn-main-primary" type="button">
+																					Create Document
+																				</button>
+																			</Link> */}
+																			<div className="dropdown">
+																				<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+																					<img src="/images/dots-v.svg" className="img-fluid" alt="dot-v" />
+																				</button>
+																				<ul className="dropdown-menu border-radius action-menu-2">
+																					<li>
+																						<Link className="dropdown-item" to="#">
+																							A-Z
+																						</Link>
+																					</li>
+																					<li>
+																						<Link className="dropdown-item" to="#">
+																							Most Recent
+																						</Link>
+																					</li>
+																					<li>
+																						<Link className="dropdown-item" to="#">
+																							Oldest
+																						</Link>
+																					</li>
+																				</ul>
 																			</div>
 																		</div>
 																	</div>
-
-																	<div class="tab-pane fade" id="v-pills-folder" role="tabpanel" aria-labelledby="v-pills-folder-tab" tabindex="0" >
-																		<div class="card mb-4">
-																		<div class="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-																			<div class="mb-lg-0 mb-3">
-																			<h3>Folders</h3>
-																			<p class="mb-0 text-muted-3">
-																				Each dispute case automatically
-																				creates a new folder
-																			</p>
-																			</div>
-
-																			<div class="d-flex align-items-center gap-15">
-																			<a
-																				href=""
-																				class="btn btn-size btn-main-primary"
-																				data-bs-toggle="modal"
-																				data-bs-target="#folderModal"
-																			>
-																				Create Folder
-																			</a>
-
-																			<button
-																				class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																				type="button"
-																				data-bs-toggle="dropdown"
-																				aria-expanded="false"
-																			>
-																				<img
-																				src="/images/dots-v.svg"
-																				class="img-fluid"
-																				alt="dot-v"
-																				/>
-																			</button>
-																			<ul class="dropdown-menu border-radius action-menu-2">
-																				<li>
-																				<a class="dropdown-item" href="#">
-																					A-Z
-																				</a>
-																				</li>
-																				<li>
-																				<a class="dropdown-item" href="#">
-																					Most Recent
-																				</a>
-																				</li>
-																				<li>
-																				<a class="dropdown-item" href="#">
-																					Oldest
-																				</a>
-																				</li>
-																			</ul>
-																			</div>
-																		</div>
-																		<div class="card-body p-4">
-																			<div class="row mt-2 mb-4">
+																	<div class="card-body p-4">
+																		<div class="row mt-2 mb-4">
 																			<div class="col-lg-6">
 																				<div class="input-group">
-																				<span class="input-group-text bg-transparent">
-																					<img
-																					src="/images/search.svg"
-																					class="img-fluid"
-																					alt="search"
-																					/>
-																				</span>
-																				<input
-																					type="search"
-																					class="form-control border-start-0 form-control-height"
-																					placeholder="Search here..."
-																				/>
+																					<span class="input-group-text bg-transparent">
+																						<img src="/images/search.svg" class="img-fluid" alt="search" />
+																					</span>
+																					<input type="search" class="form-control border-start-0 form-control-height" placeholder="Search here..."/>
 																				</div>
 																			</div>
 
 																			<div class="col-lg-6">
 																				<div class="d-flex align-items-center justify-content-between gap-15">
-																				<a class="btn btn-size btn-outline-light text-medium px-3">
-																					<img
-																					src="/images/filter.svg"
-																					class="img-fluid me-2"
-																					/>{" "}
-																					A-Z
-																				</a>
-
-																				<p class="text-end mb-0 file-count">
-																					Folders: 927
-																				</p>
+																					<a class="btn btn-size btn-outline-light text-medium px-3">
+																						<img src="/images/filter.svg" class="img-fluid me-2" />{" "}
+																						A-Z
+																					</a>
+																					<p class="text-end mb-0 file-count">
+																						Files: {getCaseDocuments.length}
+																					</p>
 																				</div>
 																			</div>
-																			</div>
+																		</div>
 
-																			<div class="row">
+																		<div class="row">
 																			<div class="col-lg-12">
 																				<table class="table table-list">
-																				<thead class="table-light">
-																					<tr>
-																					<th scope="col">
-																						<div>
-																						<input
-																							class="form-check-input"
-																							type="checkbox"
-																							id="checkboxNoLabel"
-																							value=""
-																							aria-label="..."
-																						/>
-																						</div>
-																					</th>
-																					<th scope="col">Name</th>
-																					<th scope="col">Size</th>
-																					<th scope="col">
-																						No of Docs
-																					</th>
-																					<th scope="col">
-																						Last Modified
-																					</th>
-																					<th scope="col"></th>
-																					</tr>
-																				</thead>
-																				<tbody>
-																					<tr>
-																					<td>
-																						<div>
-																						<input
-																							class="form-check-input"
-																							type="checkbox"
-																							id="checkboxNoLabel"
-																							value=""
-																							aria-label="..."
-																						/>
-																						</div>
-																					</td>
-																					<td>
-																						<div
-																						title="DS138"
-																						class="text-truncate max-200"
-																						>
-																						DS138
-																						</div>
-																					</td>
-																					<td>1.2 MB</td>
-																					<td>12</td>
-																					<td>12/07/23</td>
-																					<td>
-																						<div class="dropdown">
-																						<button
-																							class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																							type="button"
-																							data-bs-toggle="dropdown"
-																							aria-expanded="false"
-																						>
-																							<img
-																							src="/images/dots-v.svg"
-																							class="img-fluid"
-																							alt="dots"
-																							/>
-																						</button>
-																						<ul class="dropdown-menu border-radius action-menu-2">
-																							<li>
-																							<a
-																								class="dropdown-item"
-																								href="#"
-																							>
-																								Download
-																							</a>
-																							</li>
-																							<li>
-																							<a
-																								class="dropdown-item"
-																								href="#"
-																							>
-																								Copy
-																							</a>
-																							</li>
-																							<li>
-																							<a
-																								class="dropdown-item"
-																								href="#"
-																							>
-																								Delete
-																							</a>
-																							</li>
-																						</ul>
-																						</div>
-																					</td>
-																					</tr>
-
-																					<tr>
-																					<td>
-																						<div>
-																						<input
-																							class="form-check-input"
-																							type="checkbox"
-																							id="checkboxNoLabel"
-																							value=""
-																							aria-label="..."
-																						/>
-																						</div>
-																					</td>
-																					<td>
-																						<div
-																						title="DS138"
-																						class="text-truncate max-200"
-																						>
-																						DS138
-																						</div>
-																					</td>
-																					<td>1.2 MB</td>
-																					<td>12</td>
-																					<td>12/07/23</td>
-																					<td>
-																						<div class="dropdown">
-																						<button
-																							class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																							type="button"
-																							data-bs-toggle="dropdown"
-																							aria-expanded="false"
-																						>
-																							<img
-																							src="/images/dots-v.svg"
-																							class="img-fluid"
-																							alt="dots"
-																							/>
-																						</button>
-																						<ul class="dropdown-menu border-radius action-menu-2">
-																							<li>
-																							<a
-																								class="dropdown-item"
-																								href="#"
-																							>
-																								Download
-																							</a>
-																							</li>
-																							<li>
-																							<a
-																								class="dropdown-item"
-																								href="#"
-																							>
-																								Copy
-																							</a>
-																							</li>
-																							<li>
-																							<a
-																								class="dropdown-item"
-																								href="#"
-																							>
-																								Delete
-																							</a>
-																							</li>
-																						</ul>
-																						</div>
-																					</td>
-																					</tr>
-
-																					<tr>
-																					<td>
-																						<div>
-																						<input
-																							class="form-check-input"
-																							type="checkbox"
-																							id="checkboxNoLabel"
-																							value=""
-																							aria-label="..."
-																						/>
-																						</div>
-																					</td>
-																					<td>
-																						<div
-																						title="DS138"
-																						class="text-truncate max-200"
-																						>
-																						DS138
-																						</div>
-																					</td>
-																					<td>1.2 MB</td>
-																					<td>12</td>
-																					<td>12/07/23</td>
-																					<td>
-																						<div class="dropdown">
-																						<button
-																							class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																							type="button"
-																							data-bs-toggle="dropdown"
-																							aria-expanded="false"
-																						>
-																							<img
-																							src="/images/dots-v.svg"
-																							class="img-fluid"
-																							alt="dots"
-																							/>
-																						</button>
-																						<ul class="dropdown-menu border-radius action-menu-2">
-																							<li>
-																							<a
-																								class="dropdown-item"
-																								href="#"
-																							>
-																								Download
-																							</a>
-																							</li>
-																							<li>
-																							<a
-																								class="dropdown-item"
-																								href="#"
-																							>
-																								Copy
-																							</a>
-																							</li>
-																							<li>
-																							<a
-																								class="dropdown-item"
-																								href="#"
-																							>
-																								Delete
-																							</a>
-																							</li>
-																						</ul>
-																						</div>
-																					</td>
-																					</tr>
-																				</tbody>
+																					<thead class="table-light">
+																						<tr>
+																							<th scope="col">
+																								<div>
+																								<input
+																									class="form-check-input"
+																									type="checkbox"
+																									id="checkboxNoLabel"
+																									value=""
+																									aria-label="..."
+																								/>
+																								</div>
+																							</th>
+																							<th scope="col">Name</th>
+																							<th scope="col">Size</th>
+																							<th scope="col">File Type</th>
+																							<th scope="col">
+																								Last Modified
+																							</th>
+																							<th scope="col">Actions</th>
+																						</tr>
+																					</thead>
+																					<tbody>
+																						{getCaseDocuments.length ? getCaseDocuments.map(item => (
+																						<tr>
+																							<td>
+																								<div>
+																								<input
+																									class="form-check-input"
+																									type="checkbox"
+																									id="checkboxNoLabel"
+																									value=""
+																									aria-label="..."
+																								/>
+																								</div>
+																							</td>
+																							<td>
+																								<div
+																								title="Shalom Winner - Solar Sales Receipt Installation"
+																								class="text-truncate max-200"
+																								>
+																								{item.name}
+																								</div>
+																							</td>
+																							<td>{item.size}</td>
+																							<td>{item.type}</td>
+																							<td>{item.last_modified}</td>
+																							<td>
+																								<div class="dropdown">
+																								<button
+																									class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+																									type="button"
+																									data-bs-toggle="dropdown"
+																									aria-expanded="false"
+																								>
+																									<img
+																									src="/images/dots-v.svg"
+																									class="img-fluid"
+																									alt="dots"
+																									/>
+																								</button>
+																								<ul class="dropdown-menu border-radius action-menu-2">
+																									<li>
+																									<a
+																										class="dropdown-item"
+																										href="#"
+																									>
+																										Download
+																									</a>
+																									</li>
+																									<li>
+																									<a
+																										class="dropdown-item"
+																										href="#"
+																									>
+																										Copy
+																									</a>
+																									</li>
+																									<li>
+																									<a
+																										class="dropdown-item"
+																										href="#"
+																									>
+																										Delete
+																									</a>
+																									</li>
+																								</ul>
+																								</div>
+																							</td>
+																						</tr>
+																						)) : (
+																							<tr>
+																								<td id="document-not-found" colSpan={6} className={`text-center d-none`}>
+																									<p><i className="fa fa-triangle-exclamation fa-2x text-warning"></i></p>
+																									<p className="h5">No document found</p>
+																								</td>
+																							</tr>
+																						)}
+																					</tbody>
 																				</table>
 																			</div>
-																			</div>
-																		</div>
 																		</div>
 																	</div>
 																</div>

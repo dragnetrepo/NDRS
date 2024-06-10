@@ -13,6 +13,8 @@ const Disputes = () => {
 	const [unionsList, setUnionsList] = useState([]);
 	const [getDisputes, setGetDisputes] = useState([]);
 	const [getPendingDisputes, setGetPendingDisputes] = useState([]);
+	const documentsArray = [];
+	var array_key_val = 0, dispute_id = 0;
 
 	useEffect(() => {
 		fetchdata();
@@ -21,70 +23,147 @@ const Disputes = () => {
 	}, []);
 
 	const fetchdata = async () => {
-	try {
-		const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-		const token = localStorage.getItem("token");
+		try {
+			const token = localStorage.getItem("token");
 
-		if (!token) {
-		throw new Error("User is not logged in."); // Handle case where user is not logged in
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + "/api/get-unions", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			setUnionsList(data.data);
+			console.log(data);
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
 		}
-
-		const res = await fetch(baseUrl + "/api/get-unions", {
-		headers: {
-			Authorization: `Bearer ${token}`,
-		},
-		});
-
-		if (!res.ok) {
-		throw new Error("Failed to fetch data."); // Handle failed request
-		}
-
-		const data = await res.json();
-		setUnionsList(data.data);
-		console.log(data);
-	} catch (error) {
-		console.error("Error fetching data:", error.message);
-	}
 	};
 
 	const onHandleChange = (e) => {
-	setDisputes({ ...disputes, [e.target.name]: e.target.value });
+		setDisputes({ ...disputes, [e.target.name]: e.target.value });
+	};
+
+	const onHandleFileUpload = (e) => {
+		const file = e.target.files[0];
+		array_key_val += 1;
+
+		documentsArray[array_key_val] = e.target.files[0];
+
+		document.getElementById("documents-uploaded").innerHTML += (`
+			<div class="d-flex align-items-center justify-content-between mb-4 document-housing" id="housing-${array_key_val}">
+				<div class="d-flex align-items-center">
+					<div class="text-center me-2 flex-shrink-0">
+						<img src="images/file_upload_states.svg" class="img-fluid" style={{ height: "40px" }} />
+					</div>
+					<div>
+						<p class="text-bold mb-1">${file.name}</p>
+						<p class="font-sm text-muted mb-0">${file.type} format . Max. ${convertBytes(file.size)}</p>
+					</div>
+				</div>
+
+				<div class="d-flex align-items-center gap-10">
+					<button class="btn btn-main-primary btn-size upload-doc" id="${array_key_val}">Upload</button>
+
+					<a href="javascript:void(0);" class="remove-doc" remove-id="${array_key_val}">
+						<img src="images/multiply_2.svg" class="img-fluid" alt="close" />
+					</a>
+				</div>
+			</div>
+		`);
+
+		handleDocsEventListeners();
+		e.target.value = ``;
+	};
+
+	const handleDocumentUpload = async (id, file) => {
+		if (dispute_id) {
+			document.getElementById(id).closest("div").innerHTML = `<div class="spinner-border text-main-primary" id="${id}" role="status"><span class="visually-hidden">Loading...</span></div>`;
+
+			if (file) {
+				var formData = new FormData();
+				formData.append("documents[]", file);
+				console.log(file);
+				try {
+					const response = await fetch(baseUrl + `/api/case/${dispute_id}/add-document`, {
+						method: "POST",
+						headers: {
+							// "Content-Type": "application/json",
+							// Accept: "application/json",
+							Authorization: `Bearer ${localStorage.getItem("token")}`,
+						},
+						body: formData, // Pass FormData object as the body
+					});
+
+					if (!response.ok) {
+						throw new Error("Network response was not ok");
+					}
+
+					const data = await response.json();
+					console.log(data);
+					document.getElementById(`housing-${id}`).getElementsByTagName("img")[0].setAttribute("src", "images/file_upload_states_1.svg");
+					document.getElementById(id).closest("div").outerHTML = ``;
+					toast.success(data.message);
+				} catch (error) {
+					document.getElementById(id).closest("div").outerHTML = `
+						<button class="btn btn-danger btn-size" disabled>Failed</button>
+					`;
+					console.error("Error fetching data:", error);
+				}
+			}
+		}
 	};
 
 	const handleSubmit = async (e) => {
-	e.preventDefault();
-	try {
-		const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-		// const token = localStorage.getItem('token');
+		e.preventDefault();
+		try {
+			const response = await fetch(baseUrl + "/api/case/create", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+				body: JSON.stringify(disputes),
+			});
 
-		// if (!token) {
-		//     throw new Error('User is not logged in.'); // Handle case where user is not logged in
-		// }
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
 
-		const response = await fetch(baseUrl + "/api/case/create", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			Accept: "application/json",
-			Authorization: `Bearer ${localStorage.getItem("token")}`,
-		},
-		body: JSON.stringify(disputes),
-		});
+			const data = await response.json();
+			console.log(data);
+			dispute_id = data.data._id;
 
-		if (!response.ok) {
-		throw new Error("Network response was not ok");
+			if (dispute_id) {
+				toast.success("Dispute has been created successfully!");
+				document.getElementById("create-dispute-div").classList.add("d-none");
+				document.getElementById("submit-next-docs").classList.remove("d-none");
+			}
+			// navigate("/Disputes2");
+			// window.location.reload();
+		} catch (error) {
+			console.error("Error fetching data:", error);
 		}
-
-		const data = await response.json();
-		console.log(data);
-		toast.success("Dispute has been created successfully!");
-		// navigate("/Disputes2");
-		window.location.reload();
-	} catch (error) {
-		console.error("Error fetching data:", error);
-	}
-	console.log(disputes);
+		console.log(disputes);
 	};
+
+	const finishCreateDispute = () => {
+		if (dispute_id > 0) {
+			navigate(`/disputesDetails/${dispute_id}`);
+		}
+		else {
+			window.location.reload();
+		}
+	}
 
 	const fetchDisputes = async () => {
 		try {
@@ -108,7 +187,7 @@ const Disputes = () => {
 			let results = data.data;
 			setGetDisputes(results);
 
-			document.querySelectorAll('.fetching-data').forEach(function(el) {
+			document.querySelectorAll('.fetching-data').forEach(function (el) {
 				el.style.display = 'none';
 			});
 
@@ -144,7 +223,7 @@ const Disputes = () => {
 			let results = data.data;
 			setGetPendingDisputes(results);
 
-			document.querySelectorAll('.fetching-data').forEach(function(el) {
+			document.querySelectorAll('.fetching-data').forEach(function (el) {
 				el.style.display = 'none';
 			});
 
@@ -156,6 +235,48 @@ const Disputes = () => {
 		}
 	};
 
+	const convertBytes = (bytes) => {
+		if (typeof bytes !== 'number' || isNaN(bytes)) {
+			throw new Error('Input must be a number');
+		}
+
+		const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+		if (bytes === '') return ' Bytes';
+
+		const i = Math.floor(Math.log(bytes) / Math.log(1024));
+		const convertedValue = bytes / Math.pow(1024, i);
+
+		return `${convertedValue.toFixed(2)} ${sizes[i]}`;
+	}
+
+	const handleDocsEventListeners = () => {
+		document.querySelectorAll('.upload-doc').forEach(el => el.removeEventListener('click', event => {
+			console.log("removed!");
+		}));
+
+		document.querySelectorAll('.upload-doc').forEach(el => el.addEventListener('click', event => {
+			let document_clicked = el.getAttribute("id");
+			handleDocumentUpload(document_clicked, documentsArray[document_clicked]);
+		}));
+
+		document.querySelectorAll('.remove-doc').forEach(el => el.addEventListener('click', event => {
+			let document_clicked = el.getAttribute("remove-id");
+
+			console.log(documentsArray);
+
+			if (documentsArray[document_clicked]) {
+				delete documentsArray[document_clicked];
+			}
+
+			console.log(document.getElementById(`housing-${document_clicked}`));
+			document.getElementById(`housing-${document_clicked}`).remove();
+		}));
+	}
+
+	document.querySelectorAll('.create-dispute-other-btn').forEach(el => el.addEventListener('click', event => {
+		document.getElementById("pills-create-tab").click();
+	}));
+
 	return (
 		<>
 			<div className="main-admin-container bg-light dark-mode-active">
@@ -164,7 +285,7 @@ const Disputes = () => {
 
 					<div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
 						<TopBarInc />
-						
+
 						<main className="admin-content">
 							<div className="header-box py-5">
 								<div className="container">
@@ -193,180 +314,122 @@ const Disputes = () => {
 															Pending Disputes
 														</button>
 													</li>
-													<li className="nav-item" role="presentation">
-														<button className="nav-link" id="pills-internal-tab" data-bs-toggle="pill" data-bs-target="#pills-internal" type="button" role="tab" aria-controls="pills-internal" aria-selected="false" >
-															Internal Disputes
-														</button>
-													</li>
 												</ul>
 
 												<div className="tab-content" id="pills-tabContent">
 													<div className="tab-pane fade" id="pills-create" role="tabpanel" aria-labelledby="pills-create-tab" tabIndex="0">
 														<div className="row mt-5">
 															<div className="col-lg-7">
-																<div className="card mb-4">
+																<div className="card d-block mb-4" id="create-dispute-div">
 																	<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
 																		<h3 className="mb-lg-0 mb-3">
 																			Create Dispute Case
 																		</h3>
 																		<div className="d-flex align-items-center gap-15">
 																			<a className="btn btn-size btn-main-primary px-3" onClick={handleSubmit}>
-																				Next
+																				Save
 																			</a>
 																		</div>
 																	</div>
+
 																	<div className="card-body p-4">
 																		<form>
 																			<div className="row mt-4">
 																				<div className="col-lg-12">
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Dispute ID
-																						</label>
-																						<input
-																						type="text"
-																						className="form-control form-control-height"
-																						placeholder="Automatically generated by the system"
-																						value=""
-																						disabled
-																						/>
+																						<label className="form-label">Dispute ID</label>
+																						<input type="text" className="form-control form-control-height" placeholder="Automatically generated by the system" value="" disabled />
 																					</div>
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Filing date
-																						</label>
-																						<input
-																						type="text"
-																						className="form-control form-control-height"
-																						placeholder="Automatically generated by the system"
-																						value=""
-																						disabled
-																						/>
+																						<label className="form-label">Filing date</label>
+																						<input type="text" className="form-control form-control-height" placeholder="Automatically generated by the system" value="" disabled />
 																					</div>
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Case title
-																						</label>
-																						<input
-																						type="text"
-																						className="form-control form-control-height"
-																						name="title"
-																						placeholder="Enter Case title"
-																						onChange={onHandleChange}
-																						/>
+																						<label className="form-label">Case title</label>
+																						<input type="text" className="form-control form-control-height" name="title" placeholder="Enter Case title" onChange={onHandleChange} />
 																					</div>
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Dispute type
-																						</label>
-																						<select
-																						className="form-select form-control-height"
-																						name="type"
-																						onChange={onHandleChange}
-																						>
-																						<option>--Choose--</option>
-																						<option>Wages & Salaries</option>
+																						<label className="form-label">Dispute type</label>
+																						<select className="form-select form-control-height" name="type" onChange={onHandleChange}>
+																							<option>--Choose--</option>
+																							<option>Wages & Salaries</option>
 																						</select>
 																					</div>
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Initiating party (Claimant)
-																						</label>
-																						<select
-																						className="form-select form-control-height"
-																						name="initiating_party"
-																						onChange={onHandleChange}
-																						>
-																						<option>--Choose--</option>
-																						{unionsList.map((union) => (
-																							<option
-																							key={union._id}
-																							value={union._id}
-																							>
-																							{union.name}
-																							</option>
-																						))}
+																						<label className="form-label">Initiating party (Claimant)</label>
+																						<select className="form-select form-control-height" name="initiating_party" onChange={onHandleChange}>
+																							<option value="" disabled selected>--Choose--</option>
+																							{unionsList.map((union) => (
+																								<option
+																									key={union._id}
+																									value={union._id}
+																								>
+																									{union.name}
+																								</option>
+																							))}
 																						</select>
 																					</div>
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Accused party (Respondents)
-																						</label>
-																						<select
-																						className="form-select form-control-height"
-																						name="accused_party"
-																						onChange={onHandleChange}
-																						>
-																						<option>--Choose--</option>
-																						{unionsList.map((union) => (
-																							<option
-																							key={union._id}
-																							value={union._id}
-																							>
-																							{union.name}
-																							</option>
-																						))}
+																						<label className="form-label">Accused party (Respondents)</label>
+																						<select className="form-select form-control-height" name="accused_party" onChange={onHandleChange}>
+																							<option value="" disabled selected>--Choose--</option>
+																							{unionsList.map((union) => (
+																								<option
+																									key={union._id}
+																									value={union._id}
+																								>
+																									{union.name}
+																								</option>
+																							))}
 																						</select>
 																					</div>
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Summary of Dispute
-																						</label>
-																						<textarea
-																						className="form-control"
-																						rows="3"
-																						name="summary"
-																						onChange={onHandleChange}
-																						></textarea>
+																						<label className="form-label">Summary of Dispute</label>
+																						<textarea className="form-control" rows="3" name="summary" onChange={onHandleChange}></textarea>
 																					</div>
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Background Information
-																						</label>
-																						<textarea
-																						className="form-control"
-																						rows="3"
-																						name="background_info"
-																						onChange={onHandleChange}
-																						></textarea>
+																						<label className="form-label">Background Information</label>
+																						<textarea className="form-control" rows="3" name="background_info" onChange={onHandleChange}></textarea>
 																					</div>
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Relief sought
-																						</label>
-																						<textarea
-																						className="form-control"
-																						rows="3"
-																						name="relief_sought"
-																						onChange={onHandleChange}
-																						></textarea>
+																						<label className="form-label">Relief sought</label>
+																						<textarea className="form-control" rows="3" name="relief_sought" onChange={onHandleChange}></textarea>
 																					</div>
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Specific concerns
-																						</label>
-																						<textarea
-																						className="form-control"
-																						rows="3"
-																						name="specific_claims"
-																						onChange={onHandleChange}
-																						></textarea>
+																						<label className="form-label">Specific concerns</label>
+																						<textarea className="form-control" rows="3" name="specific_claims" onChange={onHandleChange}></textarea>
 																					</div>
 
 																					<div className="mb-4">
-																						<label className="form-label">
-																						Negotiation terms
-																						</label>
-																						<textarea
-																						className="form-control"
-																						rows="3"
-																						name="negotiation_terms"
-																						onChange={onHandleChange}
-																						></textarea>
+																						<label className="form-label">Negotiation terms</label>
+																						<textarea className="form-control" rows="3" name="negotiation_terms" onChange={onHandleChange}></textarea>
 																					</div>
 																				</div>
 																			</div>
 																		</form>
+																	</div>
+																</div>
+
+																<div className="card mb-4 d-none" id="submit-next-docs">
+																	<div class="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
+																		<h3 class="mb-lg-0 mb-3">Upload Supporting Documents</h3>
+																		<div class="d-flex align-items-center gap-15">
+																			{/* <a href="disputes.php" class="btn-flat text-main-primary">Back</a> */}
+																			<button class="btn btn-size btn-main-primary submit-dispute" onClick={finishCreateDispute}>
+																				Finish
+																			</button>
+																		</div>
+																	</div>
+
+																	<div class="card-body p-4">
+																		<label for="add_doc">
+																			<input type="file" name="documents[]" id="add_doc" class="d-none" onChange={onHandleFileUpload} />
+																			<div class="mb-4">
+																				<div class="btn-flat text-main-primary text-decoration-none cursor-pointer">Add document <img src="images/button-icon-1.svg" class="img-fluid" alt="add-icon" /></div>
+																			</div>
+																		</label>
+
+																		<div id="documents-uploaded"></div>
 																	</div>
 																</div>
 															</div>
@@ -397,7 +460,7 @@ const Disputes = () => {
 																					<img src="/images/sort.svg" className="img-fluid me-2" />{" "} Sort
 																				</button>
 
-																				<button className="btn btn-size btn-main-outline-primary px-4 w-100">
+																				<button className="btn btn-size btn-main-outline-primary px-4 w-100 create-dispute-other-btn">
 																					Create dispute
 																				</button>
 																			</div>
@@ -413,10 +476,7 @@ const Disputes = () => {
 																			<th scope="col">Filing Date</th>
 																			<th scope="col">Case Number</th>
 																			<th scope="col">Involved Parties</th>
-																			<th
-																				scope="col"
-																				style={{ width: "200px" }}
-																			>
+																			<th scope="col" style={{ width: "200px" }}>
 																				Case Title
 																			</th>
 																			<th scope="col">Case Status</th>
@@ -440,7 +500,7 @@ const Disputes = () => {
 																						<div className="d-flex align-items-center avatar-holder">
 																							<div className="position-relative">
 																								<div className="avatar-sm flex-shrink-0">
-																									<img src={dispute.involved_parties.accused.logo} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar"/>
+																									<img src={dispute.involved_parties.accused.logo} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
 																								</div>
 																							</div>
 																							<div className="ms-2 d-flex flex-grow-1 text-muted-3">
@@ -476,7 +536,7 @@ const Disputes = () => {
 																				<td>
 																					<div className="dropdown">
 																						<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																							<img src="/images/dots-v.svg" className="img-fluid" alt="dot-v"/>
+																							<img src="/images/dots-v.svg" className="img-fluid" alt="dot-v" />
 																						</button>
 																						<ul className="dropdown-menu border-radius action-menu-2">
 																							<li>
@@ -526,7 +586,7 @@ const Disputes = () => {
 																					<img src="/images/sort.svg" className="img-fluid me-2" />{" "} Sort
 																				</button>
 
-																				<button className="btn btn-size btn-main-outline-primary px-4 w-100">
+																				<button className="btn btn-size btn-main-outline-primary px-4 w-100 create-dispute-other-btn">
 																					Create dispute
 																				</button>
 																			</div>
@@ -569,7 +629,7 @@ const Disputes = () => {
 																						<div className="d-flex align-items-center avatar-holder">
 																							<div className="position-relative">
 																								<div className="avatar-sm flex-shrink-0">
-																									<img src={dispute.involved_parties.accused.logo} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar"/>
+																									<img src={dispute.involved_parties.accused.logo} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
 																								</div>
 																							</div>
 																							<div className="ms-2 d-flex flex-grow-1 text-muted-3">
@@ -605,7 +665,7 @@ const Disputes = () => {
 																				<td>
 																					<div className="dropdown">
 																						<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																							<img src="/images/dots-v.svg" className="img-fluid" alt="dot-v"/>
+																							<img src="/images/dots-v.svg" className="img-fluid" alt="dot-v" />
 																						</button>
 																						<ul className="dropdown-menu border-radius action-menu-2">
 																							<li>
