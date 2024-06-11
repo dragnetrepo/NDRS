@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\General\CsvFileValidateRequest;
 use App\Http\Requests\User\InviteUserRequest;
 use App\Http\Requests\User\ReferCaseRequest;
+use App\Imports\User\BulkCreate;
 use App\Models\CaseDispute;
 use App\Models\CaseUserRoles;
 use App\Models\EmailInvitations;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -137,85 +139,16 @@ class UserController extends Controller
 
     public function bulk_send_invite(CsvFileValidateRequest $request)
     {
-        $csvFile = fopen($request->file("file"), 'r');
-        $line = fgetcsv($csvFile);
-        $error_msg = [];
+        $bulk_create = new BulkCreate;
 
-        if (count($line)) {
-            if (strtolower($line[0]) != "email") {
-                $error_msg[] = ["First column name must be email"];
-            }
+        Excel::import($bulk_create, $request->file('file')->store('temp'));
 
-            if (strtolower($line[1]) != "role") {
-                $error_msg[] = ["Second column name must be role"];
-            }
-        }
+        $response = $bulk_create->response;
 
-        if (count($error_msg)) {
-            $this->response["message"] = "Validation errors!";
-            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
-            $this->response["exception"] = $line[0].' -> '.$line[1];
-            $this->response["error"] = $error_msg;
-        }
-        else {
-            $index = 1;
-            $data = [];
-
-            do {
-                if ($index > 1) {
-                    $user_email = $line[0];
-                    $user_role = $line[1];
-                    $message = "";
-
-                    if ($user_email) {
-                        $db_user = User::where("name", $user_email)->first();
-
-                        if (!$db_user) {
-                            $db_user = EmailInvitations::where("email", $user_email)->first();
-
-                            if (!$db_user) {
-                                $role = Role::where("name", $user_role)->first();
-
-                                if ($role) {
-                                    $url_token = sha1(uniqid($request->email));
-
-                                    $db_user = EmailInvitations::create([
-                                        "email" => $user_email,
-                                        "token" => $url_token,
-                                        "role_id" => $role->id,
-                                        "invited_by" => $request->user()->id,
-                                    ]);
-
-                                    send_outgoing_email_invite($user_email, "simple-invite", "NDRS", ($role->display_name ?? $role->name), $url_token, "You have been invited by NDRS");
-                                }
-                                else {
-                                    $message = "This role does not exist.";
-                                }
-                            }
-                            else {
-                                $message = "User has already been invited to create an NDRS account";
-                            }
-                        }
-                        else {
-                            $message = "User already has an NDRS account";
-                        }
-
-                        if ($db_user) {
-                            $data[] = [
-                                "email" => $db_user->email,
-                                "role" => $user_role,
-                                "message" => $message,
-                            ];
-                        }
-                    }
-                }
-                $index++;
-            } while ($line = fgetcsv($csvFile));
-
-            $this->response["status"] = Response::HTTP_OK;
-            $this->response["message"] = "Users has been invited in bulk successfully!";
-            $this->response["data"] = $data;
-        }
+        $this->response["status"] = count($response["error"]) ? Response::HTTP_UNAUTHORIZED : Response::HTTP_OK;
+        $this->response["message"] = count($response["error"]) ? "Validation errors" : "Users has been invited in bulk successfully!";
+        $this->response["data"] = $response["data"];
+        $this->response["error"] = $response["error"];
 
         return response()->json($this->response, $this->response["status"]);
     }

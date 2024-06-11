@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\General\CsvFileValidateRequest;
 use App\Http\Requests\Union\CreateUnionRequest;
 use App\Http\Requests\Union\SendUnionInviteRequest;
+use App\Imports\Union\BulkCreate;
 use App\Models\EmailInvitations;
 use App\Models\Industry;
 use App\Models\OutgoingMessages;
@@ -17,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UnionController extends Controller
 {
@@ -140,72 +142,16 @@ class UnionController extends Controller
 
     public function bulk_create(CsvFileValidateRequest $request)
     {
-        $csvFile = fopen($request->file("file"), 'r');
-        $line = fgetcsv($csvFile);
-        $error_msg = [];
+        $bulk_create = new BulkCreate;
 
-        if (count($line)) {
-            if (strtolower($line[0]) != "name") {
-                $error_msg[] = ["First column name must be name"];
-            }
+        Excel::import($bulk_create, $request->file('file')->store('temp'));
 
-            if (strtolower($line[1]) != "acronym") {
-                $error_msg[] = ["Second column name must be acronym"];
-            }
+        $response = $bulk_create->response;
 
-            if (strtolower($line[2]) != "industry") {
-                $error_msg[] = ["Third column name must be industry"];
-            }
-        }
-
-        if (count($error_msg)) {
-            $this->response["message"] = "Validation errors!";
-            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
-            $this->response["error"] = $error_msg;
-        }
-        else {
-            $index = 1;
-            $data = [];
-
-            do {
-                if ($index > 1) {
-                    $union_name = $line[0];
-                    $union_acronym = $line[1];
-                    $union_industry = Industry::where("name", $line[2])->first();
-
-                    if ($union_name) {
-                        $db_union = Union::where("name", $union_name)->first();
-
-                        if (!$db_union) {
-                            $db_union = Union::create([
-                                "name" => $union_name,
-                                "acronym" => $union_acronym ?? '',
-                                "founded_in" => "",
-                                "phone" => "",
-                                "headquarters" => "",
-                                "industry_id" => $union_industry->name ?? "",
-                                "description" => "",
-                                "logo" => "",
-                            ]);
-                        }
-
-                        if ($db_union) {
-                            $data[] = [
-                                "name" => $db_union->name,
-                                "acronym" => $db_union->acronym,
-                                "industry" => $db_union->industry,
-                                "date_added" => $db_union->created_at->format("M j Y"),
-                            ];
-                        }
-                    }
-                }
-                $index++;
-            } while ($line = fgetcsv($csvFile));
-
-            $this->response["status"] = Response::HTTP_OK;
-            $this->response["message"] = "Union has been created in bulk successfully!";
-            $this->response["data"] = $data;
-        }
+        $this->response["status"] = count($response["error"]) ? Response::HTTP_UNAUTHORIZED : Response::HTTP_OK;
+        $this->response["message"] = count($response["error"]) ? "Validation errors" : "Union has been created in bulk successfully!";
+        $this->response["data"] = $response["data"];
+        $this->response["error"] = $response["error"];
 
         return response()->json($this->response, $this->response["status"]);
     }
