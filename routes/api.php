@@ -183,6 +183,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
         Route::prefix("posts")->name("post.")->group(function(){
             Route::prefix("categories")->controller(PostCategoryController::class)->group(function(){
                 Route::get("/", "index")->name("index");
+                Route::get("/{category_id}", "read")->name("index");
                 Route::post("/create", "store")->name("create");
                 Route::post("/edit/{category_id}", "update")->name("edit");
                 Route::delete("/delete/{category_id}", "destroy")->name("delete");

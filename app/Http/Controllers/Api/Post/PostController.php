@@ -35,6 +35,7 @@ class PostController extends Controller
                     "_id" => $post->id,
                     "category" => $post->category->title,
                     "title" => $post->title,
+                    "content" => $post->content,
                 ];
             }
         }

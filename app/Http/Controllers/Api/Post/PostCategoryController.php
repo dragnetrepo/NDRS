@@ -34,6 +34,7 @@ class PostCategoryController extends Controller
                     "_id" => $category->id,
                     "title" => $category->title,
                     "description" => $category->description,
+                    "no_of_posts" => $category->posts->count(),
                 ];
             }
         }
@@ -41,6 +42,27 @@ class PostCategoryController extends Controller
         $this->response["status"] = Response::HTTP_OK;
         $this->response["message"] = "Post categories retrieved successfully!";
         $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function read($category_id)
+    {
+        $data =[];
+        $category = PostCategory::find($category_id);
+
+        if ($category) {
+            $data = [
+                "_id" => $category->id,
+                "title" => $category->title,
+                "description" => $category->description,
+                "no_of_posts" => $category->posts->count(),
+            ];
+
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["message"] = "Post category retrieved successfully!";
+            $this->response["data"] = $data;
+        }
 
         return response()->json($this->response, $this->response["status"]);
     }

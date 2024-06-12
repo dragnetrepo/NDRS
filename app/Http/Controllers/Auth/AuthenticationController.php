@@ -268,8 +268,7 @@ class AuthenticationController extends Controller
                 }
                 else {
                     $this->response["message"] = "You are successfully logged in!";
-                    $data["token"] = $this->determine_user_login($user);
-                    $data["page"] = "dashboard";
+                    $data = $this->determine_user_login($user);
                 }
 
                 $this->response["data"] = $data;
