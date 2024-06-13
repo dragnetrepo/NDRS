@@ -133,33 +133,33 @@ const Branches = () => {
 
   return (
     <>
-      <div class="main-admin-container bg-light dark-mode-active">
-        <div class="d-flex flex-column flex-lg-row h-lg-100">
+      <div className="main-admin-container bg-light dark-mode-active">
+        <div className="d-flex flex-column flex-lg-row h-lg-100">
           {/* <?php include "./components/main-navbar.inc.php"; ?> */}
           <MainNavbarInc />
-          <div class="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
+          <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
             {/* <?php include "./components/top-bar.inc.php"; ?> */}
             <TopBarInc />
-            <main class="admin-content">
-              <div class="header-box py-5">
-                <div class="container">
+            <main className="admin-content">
+              <div className="header-box py-5">
+                <div className="container">
                   <h2>Branches</h2>
                 </div>
               </div>
 
-              <div class="content-main">
-                <div class="container">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="margin-top-negative">
+              <div className="content-main">
+                <div className="container">
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <div className="margin-top-negative">
                         <ul
-                          class="nav custom-tab nav-underline mb-3"
+                          className="nav custom-tab nav-underline mb-3"
                           id="pills-tab"
                           role="tablist"
                         >
-                          <li class="nav-item" role="presentation">
+                          <li className="nav-item" role="presentation">
                             <button
-                              class="nav-link active"
+                              className="nav-link active"
                               id="pills-folder-tab"
                               data-bs-toggle="pill"
                               data-bs-target="#pills-folder"
@@ -171,9 +171,9 @@ const Branches = () => {
                               Create
                             </button>
                           </li>
-                          <li class="nav-item" role="presentation">
+                          <li className="nav-item" role="presentation">
                             <button
-                              class="nav-link"
+                              className="nav-link"
                               id="pills-document-tab"
                               data-bs-toggle="pill"
                               data-bs-target="#pills-document"
@@ -186,24 +186,24 @@ const Branches = () => {
                             </button>
                           </li>
                         </ul>
-                        <div class="tab-content" id="pills-tabContent">
+                        <div className="tab-content" id="pills-tabContent">
                           <div
-                            class="tab-pane fade show active"
+                            className="tab-pane fade show active"
                             id="pills-folder"
                             role="tabpanel"
                             aria-labelledby="pills-folder-tab"
-                            tabindex="0"
+                            tabIndex="0"
                           >
-                            <div class="row my-4">
-                              <div class="col-lg-3">
+                            <div className="row my-4">
+                              <div className="col-lg-3">
                                 <div
-                                  class="nav flex-column tab-item nav-pills gap-10"
+                                  className="nav flex-column tab-item nav-pills gap-10"
                                   id="v-pills-tab"
                                   role="tablist"
                                   aria-orientation="vertical"
                                 >
                                   <button
-                                    class="nav-link tab-v text-start active"
+                                    className="nav-link tab-v text-start active"
                                     id="v-pills-bulk-tab"
                                     data-bs-toggle="pill"
                                     data-bs-target="#v-pills-bulk"
@@ -216,7 +216,7 @@ const Branches = () => {
                                   </button>
 
                                   <button
-                                    class="nav-link tab-v text-start"
+                                    className="nav-link tab-v text-start"
                                     id="v-pills-single-tab"
                                     data-bs-toggle="pill"
                                     data-bs-target="#v-pills-single"
@@ -230,127 +230,127 @@ const Branches = () => {
                                 </div>
                               </div>
 
-                              <div class="col-lg-9">
+                              <div className="col-lg-9">
                                 <div
-                                  class="tab-content"
+                                  className="tab-content"
                                   id="v-pills-tabContent"
                                 >
                                   <div
-                                    class="tab-pane fade show active"
+                                    className="tab-pane fade show active"
                                     id="v-pills-bulk"
                                     role="tabpanel"
                                     aria-labelledby="v-pills-bulk-tab"
-                                    tabindex="0"
+                                    tabIndex="0"
                                   >
-                                    <div class="card mb-4">
-                                      <div class="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-                                        <h3 class="mb-lg-0 mb-3">
+                                    <div className="card mb-4">
+                                      <div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
+                                        <h3 className="mb-lg-0 mb-3">
                                           Bulk Invites
                                         </h3>
                                       </div>
-                                      <div class="card-body p-4">
-                                        <div class="row mb-4">
-                                          <div class="col-lg-5 mb-lg-0 mb-3">
-                                            <h6 class="step-text">Step 1.</h6>
-                                            <p class="text-muted-3">
+                                      <div className="card-body p-4">
+                                        <div className="row mb-4">
+                                          <div className="col-lg-5 mb-lg-0 mb-3">
+                                            <h6 className="step-text">Step 1.</h6>
+                                            <p className="text-muted-3">
                                               Download the CSV template for any
                                               user type or settlement bodies
                                             </p>
                                           </div>
-                                          <div class="col-lg-5 offset-lg-2">
-                                            <button class="btn btn-main-outline-primary btn-size">
+                                          <div className="col-lg-5 offset-lg-2">
+                                            <button className="btn btn-main-outline-primary btn-size">
                                               Download CSV template
                                             </button>
                                           </div>
                                         </div>
 
-                                        <div class="row mb-4">
-                                          <div class="col-lg-5 mb-lg-0 mb-3">
-                                            <h6 class="step-text">Step 2.</h6>
-                                            <p class="text-muted-3">
+                                        <div className="row mb-4">
+                                          <div className="col-lg-5 mb-lg-0 mb-3">
+                                            <h6 className="step-text">Step 2.</h6>
+                                            <p className="text-muted-3">
                                               Fill in the users details into the
                                               CSV file
                                             </p>
                                           </div>
-                                          <div class="col-lg-5 offset-lg-2">
+                                          <div className="col-lg-5 offset-lg-2">
                                             <img
                                               src="/images/csv.png"
-                                              class="img-fluid"
+                                              className="img-fluid"
                                             />
                                           </div>
                                         </div>
 
-                                        <div class="row mb-4">
-                                          <div class="col-lg-5 mb-lg-0 mb-3">
-                                            <h6 class="step-text">Step 3.</h6>
-                                            <p class="text-muted-3">
+                                        <div className="row mb-4">
+                                          <div className="col-lg-5 mb-lg-0 mb-3">
+                                            <h6 className="step-text">Step 3.</h6>
+                                            <p className="text-muted-3">
                                               Upload the filled CSV file
                                             </p>
                                           </div>
-                                          <div class="col-lg-5 offset-lg-2">
-                                            <div class="upload-box text-center px-3 py-4">
-                                              <div class="text-center mb-2">
+                                          <div className="col-lg-5 offset-lg-2">
+                                            <div className="upload-box text-center px-3 py-4">
+                                              <div className="text-center mb-2">
                                                 <img
                                                   src="/images/file_upload_states.svg"
-                                                  class="img-fluid"
+                                                  className="img-fluid"
                                                 />
                                               </div>
-                                              <p class="text-muted-3 mb-1">
+                                              <p className="text-muted-3 mb-1">
                                                 Drag and drop to upload
                                               </p>
-                                              <p class="font-sm text-muted">
+                                              <p className="font-sm text-muted">
                                                 CSV (max. 50mb)
                                               </p>
 
                                               <img
                                                 src="/images/or-line.svg"
-                                                class="img-fluid"
+                                                className="img-fluid"
                                               />
 
-                                              <div class="mt-3">
-                                                <button class="btn btn-main-primary btn-size mx-auto">
-                                                  <i class="bi bi-upload me-2"></i>{" "}
+                                              <div className="mt-3">
+                                                <button className="btn btn-main-primary btn-size mx-auto">
+                                                  <i className="bi bi-upload me-2"></i>{" "}
                                                   Upload filled CSV
                                                 </button>
                                               </div>
                                             </div>
-                                            <div class="upload-box upload-box-success text-center px-3 py-4">
-                                              <div class="text-center mb-2">
+                                            <div className="upload-box upload-box-success text-center px-3 py-4">
+                                              <div className="text-center mb-2">
                                                 <img
                                                   src="/images/uploaded.svg"
-                                                  class="img-fluid"
+                                                  className="img-fluid"
                                                 />
                                               </div>
-                                              <p class="text-dark text-medium mb-1">
+                                              <p className="text-dark text-medium mb-1">
                                                 Ministry Admins
                                               </p>
-                                              <p class="font-sm text-muted">
+                                              <p className="font-sm text-muted">
                                                 CSV 2.63mb
                                               </p>
 
-                                              <p class="text-medium">
+                                              <p className="text-medium">
                                                 <a
                                                   href="#"
                                                   data-bs-toggle="modal"
                                                   data-bs-target="#previewModal"
-                                                  class="text-decoration-none text-main-primary"
+                                                  className="text-decoration-none text-main-primary"
                                                 >
                                                   <img
                                                     src="/images/eyes.svg"
-                                                    class="img-fluid"
+                                                    className="img-fluid"
                                                   />{" "}
                                                   Preview Sent Invites
                                                 </a>
                                               </p>
 
-                                              <p class="text-medium">
+                                              <p className="text-medium">
                                                 <a
                                                   href="#"
-                                                  class="text-decoration-none text-muted-3"
+                                                  className="text-decoration-none text-muted-3"
                                                 >
                                                   <img
                                                     src="/images/trash-bin.svg"
-                                                    class="img-fluid"
+                                                    className="img-fluid"
                                                   />{" "}
                                                   Clear Upload
                                                 </a>
@@ -363,62 +363,62 @@ const Branches = () => {
                                   </div>
 
                                   <div
-                                    class="tab-pane fade"
+                                    className="tab-pane fade"
                                     id="v-pills-single"
                                     role="tabpanel"
                                     aria-labelledby="v-pills-single-tab"
-                                    tabindex="0"
+                                    tabIndex="0"
                                   >
-                                    <div class="card mb-4">
-                                      <div class="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-                                        <h3 class="mb-lg-0 mb-3">
+                                    <div className="card mb-4">
+                                      <div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
+                                        <h3 className="mb-lg-0 mb-3">
                                           Single Branch upload
                                         </h3>
 
                                         <a
                                           href=""
-                                          class="btn btn-size btn-main-primary"
+                                          className="btn btn-size btn-main-primary"
                                           onClick={handleSubmit}
                                         >
                                           Save
                                         </a>
                                       </div>
-                                      <div class="card-body p-4">
+                                      <div className="card-body p-4">
                                         <form>
-                                          <div class="row mt-4">
-                                            <div class="col-lg-12">
-                                              <div class="mb-4">
-                                                <label class="form-label">
+                                          <div className="row mt-4">
+                                            <div className="col-lg-12">
+                                              <div className="mb-4">
+                                                <label className="form-label">
                                                   Union name
                                                 </label>
                                                 <input
                                                   type="text"
-                                                  class="form-control form-control-height"
+                                                  className="form-control form-control-height"
                                                   name="union"
                                                   key={unions._id}
                                                   value={unions.name}
                                                   disabled
                                                 />
                                               </div>
-                                              <div class="mb-4">
-                                                <label class="form-label">
+                                              <div className="mb-4">
+                                                <label className="form-label">
                                                   Branch name
                                                 </label>
                                                 <input
                                                   type="text"
-                                                  class="form-control form-control-height"
+                                                  className="form-control form-control-height"
                                                   placeholder="Enter branch name"
                                                   name="name"
                                                   onChange={onHandleChange}
                                                 />
                                               </div>
-                                              <div class="mb-4">
-                                                <label class="form-label d-block">
+                                              <div className="mb-4">
+                                                <label className="form-label d-block">
                                                   Branch display picture
                                                 </label>
                                                 <label
-                                                  for="profile"
-                                                  class="position-relative"
+                                                  htmlFor="profile"
+                                                  className="position-relative"
                                                 >
                                                   <input
                                                     type="file"
@@ -430,55 +430,55 @@ const Branches = () => {
                                                     name="logo"
                                                   />
 
-                                                  <div class="main-avatar mx-auto">
+                                                  <div className="main-avatar mx-auto">
                                                     <img
                                                       src={avatarImage}
-                                                      class="img-fluid object-fit-cover object-position-center w-100 h-100"
+                                                      className="img-fluid object-fit-cover object-position-center w-100 h-100"
                                                     />
                                                   </div>
 
                                                   <img
                                                     src="/images/close-x.svg"
-                                                    class="img-fluid remove-profile cursor-pointer"
+                                                    className="img-fluid remove-profile cursor-pointer"
                                                   />
                                                 </label>
                                               </div>
-                                              <div class="mb-4">
-                                                <label class="form-label">
+                                              <div className="mb-4">
+                                                <label className="form-label">
                                                   Union Acronym (if applicable)
                                                 </label>
                                                 <input
                                                   type="text"
-                                                  class="form-control form-control-height"
+                                                  className="form-control form-control-height"
                                                   placeholder="Enter branch location"
                                                   name="acronym"
                                                   onChange={onHandleChange}
                                                 />
                                               </div>
 
-                                              <div class="mb-4">
-                                                <label class="form-label">
+                                              <div className="mb-4">
+                                                <label className="form-label">
                                                   Founded in
                                                 </label>
                                                 <input
                                                   type="text"
-                                                  class="form-control form-control-height"
+                                                  className="form-control form-control-height"
                                                   placeholder="Enter branch phone numbers"
                                                   name="founded_in"
                                                   onChange={onHandleChange}
                                                 />
                                               </div>
 
-                                              <div class="mb-4">
-                                                <label class="form-label">
+                                              <div className="mb-4">
+                                                <label className="form-label">
                                                   Industry
                                                 </label>
                                                 <input
                                                   type="text"
-                                                  class="form-control form-control-height"
+                                                  className="form-control form-control-height"
                                                   placeholder=""
                                                   name="industry"
-                                                  y
+
                                                   onChange={onHandleChange}
                                                 />
                                               </div>
@@ -509,36 +509,36 @@ const Branches = () => {
                                                 />
                                               </div>
 
-                                              <div class="mb-4">
-                                                <label class="form-label">
+                                              <div className="mb-4">
+                                                <label className="form-label">
                                                   About
                                                 </label>
                                                 <textarea
-                                                  class="form-control"
+                                                  className="form-control"
                                                   rows="4"
                                                   name="about"
                                                   onChange={onHandleChange}
                                                 ></textarea>
                                               </div>
 
-                                              <div class="mb-4">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                  <label class="form-label">
+                                              <div className="mb-4">
+                                                <div className="d-flex justify-content-between align-items-center">
+                                                  <label className="form-label">
                                                     Unions Admins
                                                   </label>
                                                   <a
                                                     href="#"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#inviteModal"
-                                                    class="text-main-primary text-medium text-decoration-none"
+                                                    className="text-main-primary text-medium text-decoration-none"
                                                   >
                                                     Add Admin{" "}
-                                                    <i class="bi bi-plus"></i>
+                                                    <i className="bi bi-plus"></i>
                                                   </a>
                                                 </div>
 
-                                                <table class="table table-list">
-                                                  <thead class="table-light">
+                                                <table className="table table-list">
+                                                  <thead className="table-light">
                                                     <tr>
                                                       <th scope="col">Name</th>
                                                       <th scope="col">
@@ -551,21 +551,21 @@ const Branches = () => {
                                                   <tbody>
                                                     <tr>
                                                       <td scope="row">
-                                                        <div class="d-flex avatar-holder">
-                                                          <div class="position-relative">
-                                                            <div class="avatar-sm flex-shrink-0">
+                                                        <div className="d-flex avatar-holder">
+                                                          <div className="position-relative">
+                                                            <div className="avatar-sm flex-shrink-0">
                                                               <img
                                                                 src="/images/avatar-2.svg"
-                                                                class="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                                className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                                                 alt="Avatar"
                                                               />
                                                             </div>
                                                           </div>
-                                                          <div class="ms-2 flex-grow-1">
-                                                            <h5 class="mb-0">
+                                                          <div className="ms-2 flex-grow-1">
+                                                            <h5 className="mb-0">
                                                               Salim Mustapha
                                                             </h5>
-                                                            <p class="mb-0 text-muted-3">
+                                                            <p className="mb-0 text-muted-3">
                                                               salimmusty@gmail.com
                                                             </p>
                                                           </div>
@@ -575,21 +575,21 @@ const Branches = () => {
                                                       <td>
                                                         <img
                                                           src="/images/claimant.svg"
-                                                          class="img-fluid"
+                                                          className="img-fluid"
                                                           alt="claimant"
                                                         />
                                                       </td>
 
                                                       <td>
                                                         <button
-                                                          class="btn btn-size btn-outline-light text-medium no-caret"
+                                                          className="btn btn-size btn-outline-light text-medium no-caret"
                                                           type="button"
                                                           data-bs-toggle="modal"
                                                           data-bs-target="#removeModal"
                                                         >
                                                           <img
                                                             src="/images/bin_2.svg"
-                                                            class="img-fluid"
+                                                            className="img-fluid"
                                                             alt="dot-v"
                                                           />
                                                         </button>
@@ -598,21 +598,21 @@ const Branches = () => {
 
                                                     <tr>
                                                       <td scope="row">
-                                                        <div class="d-flex avatar-holder">
-                                                          <div class="position-relative">
-                                                            <div class="avatar-sm flex-shrink-0">
+                                                        <div className="d-flex avatar-holder">
+                                                          <div className="position-relative">
+                                                            <div className="avatar-sm flex-shrink-0">
                                                               <img
                                                                 src="/images/avatar-2.svg"
-                                                                class="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                                className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                                                 alt="Avatar"
                                                               />
                                                             </div>
                                                           </div>
-                                                          <div class="ms-2 flex-grow-1">
-                                                            <h5 class="mb-0">
+                                                          <div className="ms-2 flex-grow-1">
+                                                            <h5 className="mb-0">
                                                               Salim Mustapha
                                                             </h5>
-                                                            <p class="mb-0 text-muted-3">
+                                                            <p className="mb-0 text-muted-3">
                                                               salimmusty@gmail.com
                                                             </p>
                                                           </div>
@@ -622,21 +622,21 @@ const Branches = () => {
                                                       <td>
                                                         <img
                                                           src="/images/claimant.svg"
-                                                          class="img-fluid"
+                                                          className="img-fluid"
                                                           alt="claimant"
                                                         />
                                                       </td>
 
                                                       <td>
                                                         <button
-                                                          class="btn btn-size btn-outline-light text-medium no-caret"
+                                                          className="btn btn-size btn-outline-light text-medium no-caret"
                                                           type="button"
                                                           data-bs-toggle="modal"
                                                           data-bs-target="#removeModal"
                                                         >
                                                           <img
                                                             src="/images/bin_2.svg"
-                                                            class="img-fluid"
+                                                            className="img-fluid"
                                                             alt="dot-v"
                                                           />
                                                         </button>
@@ -657,63 +657,63 @@ const Branches = () => {
                           </div>
 
                           <div
-                            class="tab-pane fade"
+                            className="tab-pane fade"
                             id="pills-document"
                             role="tabpanel"
                             aria-labelledby="pills-document-tab"
-                            tabindex="0"
+                            tabIndex="0"
                           >
-                            <div class="row my-4">
-                              <div class="col-lg-5">
-                                <div class="input-group">
-                                  <span class="input-group-text bg-transparent">
+                            <div className="row my-4">
+                              <div className="col-lg-5">
+                                <div className="input-group">
+                                  <span className="input-group-text bg-transparent">
                                     <img
                                       src="/images/search.svg"
-                                      class="img-fluid"
+                                      className="img-fluid"
                                       alt="search"
                                     />
                                   </span>
                                   <input
                                     type="search"
-                                    class="form-control border-start-0 form-control-height"
+                                    className="form-control border-start-0 form-control-height"
                                     placeholder="Search here..."
                                   />
                                 </div>
                               </div>
 
-                              <div class="col-lg-7">
-                                <div class="d-flex align-items-center justify-content-between gap-15">
-                                  <div class="d-flex">
-                                    <a class="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+                              <div className="col-lg-7">
+                                <div className="d-flex align-items-center justify-content-between gap-15">
+                                  <div className="d-flex">
+                                    <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
                                       <img
                                         src="/images/filter.svg"
-                                        class="img-fluid"
+                                        className="img-fluid"
                                       />{" "}
                                       A-Z
                                     </a>
 
-                                    <button class="btn btn-size btn-main-outline-primary px-3">
-                                      <i class="bi bi-cloud-download me-2"></i>{" "}
+                                    <button className="btn btn-size btn-main-outline-primary px-3">
+                                      <i className="bi bi-cloud-download me-2"></i>{" "}
                                       Export CSV
                                     </button>
                                   </div>
 
-                                  <p class="text-end mb-0 file-count">
+                                  <p className="text-end mb-0 file-count">
                                     Unions: 64
                                   </p>
                                 </div>
                               </div>
                             </div>
 
-                            <div class="row">
-                              <div class="col-lg-12">
-                                <table class="table table-list">
-                                  <thead class="table-light">
+                            <div className="row">
+                              <div className="col-lg-12">
+                                <table className="table table-list">
+                                  <thead className="table-light">
                                     <tr>
                                       <th scope="col">
                                         <div>
                                           <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id="checkboxNoLabel"
                                             value=""
@@ -730,7 +730,7 @@ const Branches = () => {
                                   </thead>
                                   <tbody>
                                     {branches.map((item) => (
-                                      <tr>
+                                      <tr key={item._id}>
                                         <td>
                                           <div>
                                             <input
@@ -772,7 +772,7 @@ const Branches = () => {
                                           </div>
                                         </td>
 
-                                        <td>
+                                        {/* <td>
                                           <div className="avatars">
                                             <div className="dropdown">
                                               <a
@@ -1390,6 +1390,9 @@ const Branches = () => {
                                               </ul>
                                             </div>
                                           </div>
+                                        </td> */}
+                                        <td>
+                                          <p className="">No admin added</p>
                                         </td>
 
                                         <td>{item.industry}</td>
@@ -1440,9 +1443,9 @@ const Branches = () => {
             </main>
 
             <footer>
-              <div class="container">
-                <div class="row">
-                  <div class="col-lg-12"></div>
+              <div className="container">
+                <div className="row">
+                  <div className="col-lg-12"></div>
                 </div>
               </div>
             </footer>
@@ -1452,75 +1455,76 @@ const Branches = () => {
 
       {/* <!-- Modal --> */}
       <div
-        class="modal fade"
+        className="modal fade"
         id="inviteModal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="inviteModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-          <div class="modal-content p-lg-4 border-0">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5">Send invites</h1>
+        <div className="modal-dialog modal-dialog-centered modal-lg">
+          <div className="modal-content p-lg-4 border-0">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5">Send invites</h1>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
-              <div class="row my-4">
-                <div class="col-lg-7">
-                  <div class="input-group">
-                    <span class="input-group-text bg-transparent">
+            <div className="modal-body">
+              <div className="row my-4">
+                <div className="col-lg-7">
+                  <div className="input-group">
+                    <span className="input-group-text bg-transparent">
                       <img
                         src="/images/search.svg"
-                        class="img-fluid"
+                        className="img-fluid"
                         alt="search"
                       />
                     </span>
                     <input
                       type="search"
-                      class="form-control border-start-0 form-control-height"
+                      className="form-control border-start-0 form-control-height"
                       placeholder="Type an email to send an invite"
                     />
                   </div>
                 </div>
 
-                <div class="col-lg-5">
-                  <div class="d-flex align-items-center justify-content-between gap-15">
-                    <select class="form-control form-control-height w-50">
-                      <option selected hidden>
+                <div className="col-lg-5">
+                  <div className="d-flex align-items-center justify-content-between gap-15">
+                    <select className="form-control form-control-height w-50" defaultValue="">
+                      <option value="" disabled hidden>
                         Select role
                       </option>
-                      <option>Claimants</option>
-                      <option>Respondents</option>
-                      <option>Minsitry Admin</option>
-                      <option>National Union Admin</option>
-                      <option>Union Branch Admin</option>
-                      <option>Employers (Companies & Organizations) </option>
-                      <option>Staff (Union Members) </option>
-                      <option>Conciliators & Arbitrators</option>
-                      <option>Mediators</option>
-                      <option>Industrial Arbitration Panel (Tribunal)</option>
-                      <option>Board of Enquiry</option>
-                      <option>National Industrial Courts</option>
+                      <option value="Claimants">Claimants</option>
+                      <option value="Respondents">Respondents</option>
+                      <option value="Ministry Admin">Ministry Admin</option>
+                      <option value="National Union Admin">National Union Admin</option>
+                      <option value="Union Branch Admin">Union Branch Admin</option>
+                      <option value="Employers">Employers (Companies & Organizations)</option>
+                      <option value="Staff">Staff (Union Members)</option>
+                      <option value="Conciliators & Arbitrators">Conciliators & Arbitrators</option>
+                      <option value="Mediators">Mediators</option>
+                      <option value="Industrial Arbitration Panel">Industrial Arbitration Panel (Tribunal)</option>
+                      <option value="Board of Enquiry">Board of Enquiry</option>
+                      <option value="National Industrial Courts">National Industrial Courts</option>
                     </select>
 
-                    <a href="#" class="btn btn-size btn-main-primary" disabled>
+
+                    <a href="#" className="btn btn-size btn-main-primary" disabled>
                       Send Invite
                     </a>
                   </div>
                 </div>
               </div>
 
-              <p class="text-medium">Union Admins</p>
+              <p className="text-medium">Union Admins</p>
 
-              <div class="row">
-                <div class="col-lg-12">
-                  <table class="table table-list">
-                    <thead class="table-light">
+              <div className="row">
+                <div className="col-lg-12">
+                  <table className="table table-list">
+                    <thead className="table-light">
                       <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Date added</th>
@@ -1531,19 +1535,19 @@ const Branches = () => {
                     <tbody>
                       <tr>
                         <td scope="row">
-                          <div class="d-flex avatar-holder">
-                            <div class="position-relative">
-                              <div class="avatar-sm flex-shrink-0">
+                          <div className="d-flex avatar-holder">
+                            <div className="position-relative">
+                              <div className="avatar-sm flex-shrink-0">
                                 <img
                                   src="/images/avatar-2.svg"
-                                  class="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                   alt="Avatar"
                                 />
                               </div>
                             </div>
-                            <div class="ms-2 flex-grow-1">
-                              <h5 class="mb-0">Salim Mustapha</h5>
-                              <p class="mb-0 text-muted-3">
+                            <div className="ms-2 flex-grow-1">
+                              <h5 className="mb-0">Salim Mustapha</h5>
+                              <p className="mb-0 text-muted-3">
                                 salimmusty@gmail.com
                               </p>
                             </div>
@@ -1553,28 +1557,28 @@ const Branches = () => {
                         <td>
                           <img
                             src="/images/claimant.svg"
-                            class="img-fluid"
+                            className="img-fluid"
                             alt="claimant"
                           />
                         </td>
 
                         <td>
-                          <div class="dropdown">
+                          <div className="dropdown">
                             <button
-                              class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                              className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
                               type="button"
                               data-bs-toggle="dropdown"
                               aria-expanded="false"
                             >
                               <img
                                 src="/images/bin.svg"
-                                class="img-fluid"
+                                className="img-fluid"
                                 alt="bin"
                               />
                             </button>
-                            <ul class="dropdown-menu border-radius action-menu-2">
+                            <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a class="dropdown-item" href="disputesDetails">
+                                <a className="dropdown-item" href="disputesDetails">
                                   View details
                                 </a>
                               </li>
@@ -1585,19 +1589,19 @@ const Branches = () => {
 
                       <tr>
                         <td scope="row">
-                          <div class="d-flex avatar-holder">
-                            <div class="position-relative">
-                              <div class="avatar-sm flex-shrink-0">
+                          <div className="d-flex avatar-holder">
+                            <div className="position-relative">
+                              <div className="avatar-sm flex-shrink-0">
                                 <img
                                   src="/images/avatar-2.svg"
-                                  class="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                   alt="Avatar"
                                 />
                               </div>
                             </div>
-                            <div class="ms-2 flex-grow-1">
-                              <h5 class="mb-0">Salim Mustapha</h5>
-                              <p class="mb-0 text-muted-3">
+                            <div className="ms-2 flex-grow-1">
+                              <h5 className="mb-0">Salim Mustapha</h5>
+                              <p className="mb-0 text-muted-3">
                                 salimmusty@gmail.com
                               </p>
                             </div>
@@ -1607,28 +1611,28 @@ const Branches = () => {
                         <td>
                           <img
                             src="/images/claimant.svg"
-                            class="img-fluid"
+                            className="img-fluid"
                             alt="claimant"
                           />
                         </td>
 
                         <td>
-                          <div class="dropdown">
+                          <div className="dropdown">
                             <button
-                              class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                              className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
                               type="button"
                               data-bs-toggle="dropdown"
                               aria-expanded="false"
                             >
                               <img
                                 src="/images/bin.svg"
-                                class="img-fluid"
+                                className="img-fluid"
                                 alt="bin"
                               />
                             </button>
-                            <ul class="dropdown-menu border-radius action-menu-2">
+                            <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a class="dropdown-item" href="disputesDetails">
+                                <a className="dropdown-item" href="disputesDetails">
                                   View details
                                 </a>
                               </li>
@@ -1639,19 +1643,19 @@ const Branches = () => {
 
                       <tr>
                         <td scope="row">
-                          <div class="d-flex avatar-holder">
-                            <div class="position-relative">
-                              <div class="avatar-sm flex-shrink-0">
+                          <div className="d-flex avatar-holder">
+                            <div className="position-relative">
+                              <div className="avatar-sm flex-shrink-0">
                                 <img
                                   src="/images/avatar-2.svg"
-                                  class="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                   alt="Avatar"
                                 />
                               </div>
                             </div>
-                            <div class="ms-2 flex-grow-1">
-                              <h5 class="mb-0">Salim Mustapha</h5>
-                              <p class="mb-0 text-muted-3">
+                            <div className="ms-2 flex-grow-1">
+                              <h5 className="mb-0">Salim Mustapha</h5>
+                              <p className="mb-0 text-muted-3">
                                 salimmusty@gmail.com
                               </p>
                             </div>
@@ -1661,28 +1665,28 @@ const Branches = () => {
                         <td>
                           <img
                             src="/images/claimant.svg"
-                            class="img-fluid"
+                            className="img-fluid"
                             alt="claimant"
                           />
                         </td>
 
                         <td>
-                          <div class="dropdown">
+                          <div className="dropdown">
                             <button
-                              class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                              className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
                               type="button"
                               data-bs-toggle="dropdown"
                               aria-expanded="false"
                             >
                               <img
                                 src="/images/bin.svg"
-                                class="img-fluid"
+                                className="img-fluid"
                                 alt="bin"
                               />
                             </button>
-                            <ul class="dropdown-menu border-radius action-menu-2">
+                            <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a class="dropdown-item" href="disputesDetails">
+                                <a className="dropdown-item" href="disputesDetails">
                                   View details
                                 </a>
                               </li>
@@ -1693,19 +1697,19 @@ const Branches = () => {
 
                       <tr>
                         <td scope="row">
-                          <div class="d-flex avatar-holder">
-                            <div class="position-relative">
-                              <div class="avatar-sm flex-shrink-0">
+                          <div className="d-flex avatar-holder">
+                            <div className="position-relative">
+                              <div className="avatar-sm flex-shrink-0">
                                 <img
                                   src="/images/avatar-2.svg"
-                                  class="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                   alt="Avatar"
                                 />
                               </div>
                             </div>
-                            <div class="ms-2 flex-grow-1">
-                              <h5 class="mb-0">Salim Mustapha</h5>
-                              <p class="mb-0 text-muted-3">
+                            <div className="ms-2 flex-grow-1">
+                              <h5 className="mb-0">Salim Mustapha</h5>
+                              <p className="mb-0 text-muted-3">
                                 salimmusty@gmail.com
                               </p>
                             </div>
@@ -1715,28 +1719,28 @@ const Branches = () => {
                         <td>
                           <img
                             src="/images/claimant.svg"
-                            class="img-fluid"
+                            className="img-fluid"
                             alt="claimant"
                           />
                         </td>
 
                         <td>
-                          <div class="dropdown">
+                          <div className="dropdown">
                             <button
-                              class="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                              className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
                               type="button"
                               data-bs-toggle="dropdown"
                               aria-expanded="false"
                             >
                               <img
                                 src="/images/bin.svg"
-                                class="img-fluid"
+                                className="img-fluid"
                                 alt="bin"
                               />
                             </button>
-                            <ul class="dropdown-menu border-radius action-menu-2">
+                            <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a class="dropdown-item" href="disputesDetails">
+                                <a className="dropdown-item" href="disputesDetails">
                                   View details
                                 </a>
                               </li>
@@ -1746,8 +1750,8 @@ const Branches = () => {
                       </tr>
                     </tbody>
                   </table>
-                  <table class="table table-list">
-                    <thead class="table-light">
+                  <table className="table table-list">
+                    <thead className="table-light">
                       <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Date added</th>
@@ -1756,17 +1760,17 @@ const Branches = () => {
                       </tr>
                     </thead>
                   </table>
-                  <div class="card no-admin-card rounded-0">
-                    <div class="card-body d-flex align-items-center justify-content-center">
-                      <div class="text-center">
-                        <h4 class="">No admins found</h4>
+                  <div className="card no-admin-card rounded-0">
+                    <div className="card-body d-flex align-items-center justify-content-center">
+                      <div className="text-center">
+                        <h4 className="">No admins found</h4>
 
-                        <p class="text-muted-3">
+                        <p className="text-muted-3">
                           Enter an admins email and role to send invite
                         </p>
 
-                        <div class="text-center">
-                          <img src="/images/no-found.svg" class="img-fluid" />
+                        <div className="text-center">
+                          <img src="/images/no-found.svg" className="img-fluid" />
                         </div>
                       </div>
                     </div>
@@ -1780,42 +1784,42 @@ const Branches = () => {
 
       {/* <!-- Modal --> */}
       <div
-        class="modal fade"
+        className="modal fade"
         id="removeModal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="removeModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content border-0 p-lg-4 p-3">
-            <div class="text-end">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-0 p-lg-4 p-3">
+            <div className="text-end">
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
-              <div class="text-center">
+            <div className="modal-body">
+              <div className="text-center">
                 <img
                   src="/images/delete-icon.svg"
-                  class="img-fluid mb-3"
+                  className="img-fluid mb-3"
                   alt="delete an account"
                 />
               </div>
-              <h1 class="heading modal-heading text-center mb-3">
+              <h1 className="heading modal-heading text-center mb-3">
                 Are you sure you want send an invite to
               </h1>
-              <p class="mb-4 modal-text text-center">
+              <p className="mb-4 modal-text text-center">
                 jamesomogiafo@gmail.com{" "}
-                <span class="text-bold text-darken">
+                <span className="text-bold text-darken">
                   as Union Branch Admin for
                 </span>{" "}
                 University of Lagos{" "}
               </p>
 
-              <button class="btn btn-size btn-main-danger w-100">
+              <button className="btn btn-size btn-main-danger w-100">
                 Yes, Remove Admin
               </button>
             </div>
@@ -1825,34 +1829,34 @@ const Branches = () => {
 
       {/* <!-- Modal --> */}
       <div
-        class="modal fade"
+        className="modal fade"
         id="previewModal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="previewModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-          <div class="modal-content p-lg-4 border-0">
-            <div class="modal-header">
+        <div className="modal-dialog modal-dialog-centered modal-xl">
+          <div className="modal-content p-lg-4 border-0">
+            <div className="modal-header">
               <div>
-                <h1 class="modal-title mb-1 fs-5">Preview Uploaded Unions</h1>
-                <p class="text-muted-3">Unions: 43</p>
+                <h1 className="modal-title mb-1 fs-5">Preview Uploaded Unions</h1>
+                <p className="text-muted-3">Unions: 43</p>
               </div>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
-              <table class="table table-list">
-                <thead class="table-light">
+            <div className="modal-body">
+              <table className="table table-list">
+                <thead className="table-light">
                   <tr>
                     <th scope="col">
                       <div>
                         <input
-                          class="form-check-input"
+                          className="form-check-input"
                           type="checkbox"
                           id="checkboxNoLabel"
                           value=""
@@ -1870,7 +1874,7 @@ const Branches = () => {
                     <td>
                       <div>
                         <input
-                          class="form-check-input"
+                          className="form-check-input"
                           type="checkbox"
                           id="checkboxNoLabel"
                           value=""
@@ -1879,21 +1883,21 @@ const Branches = () => {
                       </div>
                     </td>
                     <td>
-                      <div class="d-flex align-items-center avatar-holder">
-                        <div class="position-relative">
-                          <div class="avatar-sm flex-shrink-0">
+                      <div className="d-flex align-items-center avatar-holder">
+                        <div className="position-relative">
+                          <div className="avatar-sm flex-shrink-0">
                             <img
                               src="/images/ipman.svg"
-                              class="img-fluid object-position-center object-fit-cover w-100 h-100"
+                              className="img-fluid object-position-center object-fit-cover w-100 h-100"
                               alt="Avatar"
                             />
                           </div>
                         </div>
-                        <div class="ms-2 text-muted-3">
-                          <p class="text-darken mb-0">
+                        <div className="ms-2 text-muted-3">
+                          <p className="text-darken mb-0">
                             Nigeria Union of Petroleum and Natural Gas Workers
                           </p>
-                          <span class="text-muted-3">(NUPENG)</span>
+                          <span className="text-muted-3">(NUPENG)</span>
                         </div>
                       </div>
                     </td>
@@ -1903,33 +1907,33 @@ const Branches = () => {
                 </tbody>
               </table>
             </div>
-            <div class="modal-footer d-flex justify-content-between align-items-center">
-              <p class="mb-0 text-muted">Page 1 of 30</p>
+            <div className="modal-footer d-flex justify-content-between align-items-center">
+              <p className="mb-0 text-muted">Page 1 of 30</p>
 
               <nav aria-label="...">
-                <ul class="pagination pager mb-0">
-                  <li class="page-item active" aria-current="page">
-                    <span class="page-link">1</span>
+                <ul className="pagination pager mb-0">
+                  <li className="page-item active" aria-current="page">
+                    <span className="page-link">1</span>
                   </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">
+                  <li className="page-item">
+                    <a className="page-link" href="#">
                       2
                     </a>
                   </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">
+                  <li className="page-item">
+                    <a className="page-link" href="#">
                       3
                     </a>
                   </li>
                 </ul>
               </nav>
 
-              <div class="d-flex align-items-center gap-10">
-                <button class="btn btn-outline-light text-medium">
-                  <img src="/images/prev.svg" class="img-fluid" /> Previous
+              <div className="d-flex align-items-center gap-10">
+                <button className="btn btn-outline-light text-medium">
+                  <img src="/images/prev.svg" className="img-fluid" /> Previous
                 </button>
-                <button class="btn btn-outline-light text-medium">
-                  Next <img src="/images/next.svg" class="img-fluid" />
+                <button className="btn btn-outline-light text-medium">
+                  Next <img src="/images/next.svg" className="img-fluid" />
                 </button>
               </div>
             </div>

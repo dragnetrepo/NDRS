@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 
 const Documents = () => {
   const navigate = useNavigate();
 
+  const [folders, setFolders] = useState([])
+  const [documents, setDocuments] = useState([])
   const [caseFolder, setcaseFolder] = useState({
     name: "",
   });
@@ -23,8 +27,8 @@ const Documents = () => {
   });
 
   useEffect(() => {
-    // fetchDisputes();
-    // fetchSingleDispute(getDisputes);
+    fetchFolder()
+    fetchDocuments()
   }, []);
 
   const onHandleChange = (e) => {
@@ -32,60 +36,59 @@ const Documents = () => {
     console.log(caseFolder);
   };
 
-  // const fetchDisputes = async (id, getDisputes, setGetDisputes) => {
-  //   try {
-  //     const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-  //     const token = localStorage.getItem("token");
+  const fetchFolder = async () => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
 
-  //     if (!token) {
-  //       throw new Error("User is not logged in."); // Handle case where user is not logged in
-  //     }
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
 
-  //     const res = await fetch(baseUrl + "/api/case/disputes", {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
+      const res = await fetch(baseUrl + "/api/documents/folders", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  //     if (!res.ok) {
-  //       throw new Error("Failed to fetch data."); // Handle failed request
-  //     }
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
 
-  //     const data = await res.json();
-  //     setGetDisputes(data.data);
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error.message);
-  //   }
-  // };
+      const data = await res.json();
+      setFolders(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
 
-  // const fetchSingleDispute = async (id, getDisputes, setGetDisputes) => {
-  //   try {
-  //     const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-  //     const token = localStorage.getItem("token");
-  //     console.log(id);
+  const fetchDocuments = async () => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
 
-  //     if (!token) {
-  //       throw new Error("User is not logged in."); // Handle case where user is not logged in
-  //     }
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
 
-  //     const res = await fetch(baseUrl + `/api/case/read/${id}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
+      const res = await fetch(baseUrl + "/api/documents/all", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  //     if (!res.ok) {
-  //       throw new Error("Failed to fetch data."); // Handle failed request
-  //     }
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
 
-  //     const data = await res.json();
-  //     setGetDisputes(data.data);
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error.message);
-  //   }
-  // };
+      const data = await res.json();
+      setDocuments(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
 
   const handleSubmit = async (
     e,
@@ -119,6 +122,50 @@ const Documents = () => {
       console.error("Error fetching data:", error);
     }
     console.log(caseFolder);
+  };
+
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const response = await fetch(baseUrl + `/api/case/${id}/delete-document`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          document_id: ''
+        })
+
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log(data);
+      setDocuments((prevUnionsList) =>
+        prevUnionsList.filter((document) => document.id !== id)
+      );
+      toast.success('document has been deleted!')
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleDownload = async (e, url) => {
+    e.preventDefault()
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = url; // Specify the file name
+    document.body.appendChild(a);
+    a.click();
+    a.remove(); // Clean up and remove the element
+
+
   };
 
   return (
@@ -234,7 +281,7 @@ const Documents = () => {
                                           </a>
 
                                           <p className="text-end mb-0 file-count">
-                                            Folders: 134
+                                            Folders: {folders.length}
                                           </p>
                                         </div>
                                       </div>
@@ -263,57 +310,33 @@ const Documents = () => {
                                             </tr>
                                           </thead>
                                           <tbody>
-                                            <tr>
-                                              <td>
-                                                <div>
-                                                  <input
-                                                    className="form-check-input"
-                                                    type="checkbox"
-                                                    id="checkboxNoLabel"
-                                                    value=""
-                                                    aria-label="..."
-                                                  />
-                                                </div>
-                                              </td>
-                                              <td>
-                                                <div
-                                                  title="Shalom Winner - Solar Sales Receipt Installation"
-                                                  className="text-truncate max-200"
-                                                >
-                                                  Shalom Winner - Solar Sales
-                                                  Receipt Installation
-                                                </div>
-                                              </td>
-                                              <td>1.2 MB</td>
-                                              <td>12</td>
-                                              <td>Feb 4 2019</td>
-                                            </tr>
-
-                                            <tr>
-                                              <td>
-                                                <div>
-                                                  <input
-                                                    className="form-check-input"
-                                                    type="checkbox"
-                                                    id="checkboxNoLabel"
-                                                    value=""
-                                                    aria-label="..."
-                                                  />
-                                                </div>
-                                              </td>
-                                              <td>
-                                                <div
-                                                  title="Shalom Winner - Solar Sales Receipt Installation"
-                                                  className="text-truncate max-200"
-                                                >
-                                                  Shalom Winner - Solar Sales
-                                                  Receipt Installation
-                                                </div>
-                                              </td>
-                                              <td>1.2 MB</td>
-                                              <td>12</td>
-                                              <td>Feb 4 2019</td>
-                                            </tr>
+                                            {folders.map((item) =>
+                                              <tr key={item._id}>
+                                                <td>
+                                                  <div>
+                                                    <input
+                                                      className="form-check-input"
+                                                      type="checkbox"
+                                                      id="checkboxNoLabel"
+                                                      value=""
+                                                      aria-label="..."
+                                                    />
+                                                  </div>
+                                                </td>
+                                                <td>
+                                                  <div
+                                                    title="Shalom Winner - Solar Sales Receipt Installation"
+                                                    className="text-truncate max-200"
+                                                  >
+                                                    {item.name}
+                                                  </div>
+                                                </td>
+                                                <td>{item.size}</td>
+                                                <td>{item.number_of_files}</td>
+                                                {/* <td>Feb 4 2019</td> */}
+                                                <td>{item.last_modified}</td>
+                                              </tr>
+                                            )}
                                           </tbody>
                                         </table>
                                       </div>
@@ -367,7 +390,7 @@ const Documents = () => {
                                           </a>
 
                                           <p className="text-end mb-0 file-count">
-                                            Files: 134
+                                            Files: {documents.length}
                                           </p>
                                         </div>
                                       </div>
@@ -397,141 +420,77 @@ const Documents = () => {
                                             </tr>
                                           </thead>
                                           <tbody>
-                                            <tr>
-                                              <td>
-                                                <div>
-                                                  <input
-                                                    className="form-check-input"
-                                                    type="checkbox"
-                                                    id="checkboxNoLabel"
-                                                    value=""
-                                                    aria-label="..."
-                                                  />
-                                                </div>
-                                              </td>
-                                              <td>
-                                                <div
-                                                  title="Shalom Winner - Solar Sales Receipt Installation"
-                                                  className="text-truncate max-200"
-                                                >
-                                                  Shalom Winner - Solar Sales
-                                                  Receipt Installation
-                                                </div>
-                                              </td>
-                                              <td>1.2 MB</td>
-                                              <td>PDF</td>
-                                              <td>Feb 4 2019</td>
-                                              <td>
-                                                <div className="dropdown">
-                                                  <button
-                                                    className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-                                                    type="button"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false"
-                                                  >
-                                                    <img
-                                                      src="/images/dots-v.svg"
-                                                      className="img-fluid"
-                                                      alt="dots"
+                                            {documents.map((item) =>
+                                              <tr key={item._id}>
+                                                <td>
+                                                  <div>
+                                                    <input
+                                                      className="form-check-input"
+                                                      type="checkbox"
+                                                      id="checkboxNoLabel"
+                                                      value=""
+                                                      aria-label="..."
                                                     />
-                                                  </button>
-                                                  <ul className="dropdown-menu border-radius action-menu-2">
-                                                    <li>
-                                                      <a
-                                                        className="dropdown-item"
-                                                        href="#"
-                                                      >
-                                                        Download
-                                                      </a>
-                                                    </li>
-                                                    <li>
-                                                      <a
-                                                        className="dropdown-item"
-                                                        href="#"
-                                                      >
-                                                        Copy
-                                                      </a>
-                                                    </li>
-                                                    <li>
-                                                      <a
-                                                        className="dropdown-item"
-                                                        href="#"
-                                                      >
-                                                        Delete
-                                                      </a>
-                                                    </li>
-                                                  </ul>
-                                                </div>
-                                              </td>
-                                            </tr>
+                                                  </div>
+                                                </td>
+                                                <td>
+                                                  <div
+                                                    title="Shalom Winner - Solar Sales Receipt Installation"
+                                                    className="text-truncate max-200"
+                                                  >
+                                                    {item.name}
+                                                  </div>
+                                                </td>
+                                                <td>{item.size}</td>
+                                                <td>{item.type}</td>
+                                                {/* <td>{item.last_modified}</td> */}
+                                                <td>Feb 4 2019</td>
+                                                <td>
+                                                  <div className="dropdown">
+                                                    <button
+                                                      className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                                                      type="button"
+                                                      data-bs-toggle="dropdown"
+                                                      aria-expanded="false"
+                                                    >
+                                                      <img
+                                                        src="/images/dots-v.svg"
+                                                        className="img-fluid"
+                                                        alt="dots"
+                                                      />
+                                                    </button>
+                                                    <ul className="dropdown-menu border-radius action-menu-2">
+                                                      <li>
+                                                        <a
+                                                          className="dropdown-item"
+                                                          href=""
+                                                        >
+                                                          View
+                                                        </a>
+                                                      </li>
+                                                      <li>
+                                                        <button
+                                                          className="dropdown-item"
 
-                                            <tr>
-                                              <td>
-                                                <div>
-                                                  <input
-                                                    className="form-check-input"
-                                                    type="checkbox"
-                                                    id="checkboxNoLabel"
-                                                    value=""
-                                                    aria-label="..."
-                                                  />
-                                                </div>
-                                              </td>
-                                              <td>
-                                                <div
-                                                  title="Shalom Winner - Solar Sales Receipt Installation"
-                                                  className="text-truncate max-200"
-                                                >
-                                                  Shalom Winner - Solar Sales
-                                                  Receipt Installation
-                                                </div>
-                                              </td>
-                                              <td>1.2 MB</td>
-                                              <td>JPEG</td>
-                                              <td>Feb 4 2019</td>
-                                              <td>
-                                                <div className="dropdown">
-                                                  <button
-                                                    className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-                                                    type="button"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false"
-                                                  >
-                                                    <img
-                                                      src="/images/dots-v.svg"
-                                                      className="img-fluid"
-                                                      alt="dots"
-                                                    />
-                                                  </button>
-                                                  <ul className="dropdown-menu border-radius action-menu-2">
-                                                    <li>
-                                                      <a
-                                                        className="dropdown-item"
-                                                        href="#"
-                                                      >
-                                                        Download
-                                                      </a>
-                                                    </li>
-                                                    <li>
-                                                      <a
-                                                        className="dropdown-item"
-                                                        href="#"
-                                                      >
-                                                        Copy
-                                                      </a>
-                                                    </li>
-                                                    <li>
-                                                      <a
-                                                        className="dropdown-item"
-                                                        href="#"
-                                                      >
-                                                        Delete
-                                                      </a>
-                                                    </li>
-                                                  </ul>
-                                                </div>
-                                              </td>
-                                            </tr>
+                                                          onClick={(e) => handleDownload(e, item.file_path)}
+                                                        >
+                                                          Download
+                                                        </button>
+                                                      </li>
+                                                      <li>
+                                                        <a
+                                                          className="dropdown-item"
+                                                          href=""
+                                                        // onClick={(e) => handleDelete(e, item._id)}
+                                                        >
+                                                          Print
+                                                        </a>
+                                                      </li>
+                                                    </ul>
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                            )}
                                           </tbody>
                                         </table>
                                       </div>

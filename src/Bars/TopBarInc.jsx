@@ -2,14 +2,27 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const TopBarInc = () => {
-  const [user, setuser] = useState({});
+  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const [user, setuser] = useState([]);
+  const [search, setsearch] = useState([]);
+  const [query, setQuery] = useState('')
+  const [docType, setDocType] = useState('');
+  const [caseStatus, setCaseStatus] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [orderBy, setOrderBy] = useState('');
+  const [error, setError] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     fetchdata();
+
+    fetchSearch()
+
   }, []);
   const fetchdata = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -34,7 +47,41 @@ const TopBarInc = () => {
     }
   };
 
-  // fetchdata()
+  const fetchSearch = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const searchParams = new URLSearchParams();
+      if (query) searchParams.append('q', query);
+      if (docType) searchParams.append('doc_type[]', docType);
+      if (caseStatus) searchParams.append('case_status', caseStatus);
+      if (startDate) searchParams.append('start_date', startDate);
+      if (endDate) searchParams.append('end_date', endDate);
+      if (orderBy) searchParams.append('order_by', orderBy);
+
+      const res = await fetch(`${baseUrl}/api/search?${searchParams.toString()}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setsearch(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+
   return (
     <div>
       <div className="bg-white d-lg-block d-none py-3">
@@ -158,6 +205,8 @@ const TopBarInc = () => {
                       type="search"
                       className="form-control border-start-0 form-control-height"
                       placeholder="Search disputes..."
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
                     />
                   </div>
                 </div>
@@ -175,16 +224,27 @@ const TopBarInc = () => {
                       <img
                         src="/images/filter.svg"
                         className="img-fluid me-2"
-                      />{" "}
+                      />{' '}
                       Filters
                     </a>
 
                     <button className="btn btn-size btn-outline-light w-100 text-medium px-3">
-                      <img src="/images/sort.svg" className="img-fluid me-2" />{" "}
+                      <img src="/images/sort.svg" className="img-fluid me-2" />{' '}
                       Sort
                     </button>
 
-                    <button className="btn btn-size btn-link w-100 text-main-primary text-medium text-decoration-none px-3">
+                    <button
+                      className="btn btn-size btn-link w-100 text-main-primary text-medium text-decoration-none px-3"
+                      onClick={() => {
+                        setQuery('');
+                        setDocType('');
+                        setCaseStatus('');
+                        setStartDate('');
+                        setEndDate('');
+                        setOrderBy('');
+                        setSearchResults([]);
+                      }}
+                    >
                       Clear all
                     </button>
                   </div>
@@ -199,23 +259,23 @@ const TopBarInc = () => {
                         <div className="col-lg-4">
                           <p className="text-underline">Document type</p>
                           <ul className="list-unstyled filter-list">
-                            <li>All</li>
-                            <li>PNG</li>
-                            <li className="text-main-primary">PDF</li>
-                            <li>XLS</li>
-                            <li className="text-main-primary">JPEG</li>
-                            <li>MP3</li>
-                            <li>GIF</li>
+                            <li onClick={() => setDocType('')}>All</li>
+                            <li onClick={() => setDocType('PNG')}>PNG</li>
+                            <li onClick={() => setDocType('PDF')} className="text-main-primary">PDF</li>
+                            <li onClick={() => setDocType('XLS')}>XLS</li>
+                            <li onClick={() => setDocType('JPEG')} className="text-main-primary">JPEG</li>
+                            <li onClick={() => setDocType('MP3')}>MP3</li>
+                            <li onClick={() => setDocType('GIF')}>GIF</li>
                           </ul>
                         </div>
 
                         <div className="col-lg-4">
                           <p className="text-underline">Case status</p>
                           <ul className="list-unstyled filter-list">
-                            <li className="text-main-primary">All</li>
-                            <li>Open</li>
-                            <li>On Hold</li>
-                            <li>Closed</li>
+                            <li onClick={() => setCaseStatus('')} className="text-main-primary">All</li>
+                            <li onClick={() => setCaseStatus('Open')}>Open</li>
+                            <li onClick={() => setCaseStatus('On Hold')}>On Hold</li>
+                            <li onClick={() => setCaseStatus('Closed')}>Closed</li>
                           </ul>
                         </div>
 
@@ -229,7 +289,8 @@ const TopBarInc = () => {
                               <input
                                 type="date"
                                 className="form-control form-control-height"
-                                placeholder=""
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
                               />
                             </div>
                             <div className="mb-3">
@@ -239,7 +300,8 @@ const TopBarInc = () => {
                               <input
                                 type="date"
                                 className="form-control form-control-height"
-                                placeholder=""
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
                               />
                             </div>
                           </form>
@@ -251,22 +313,39 @@ const TopBarInc = () => {
               </div>
 
               <div className="filter-selected d-flex align-items-center gap-15 mb-4">
-                <button className="btn btn-size btn-outline-light text-medium text-muted-3 px-3">
-                  AAWUN <img src="/images/x.svg" className="img-fluid ms-2" />
-                </button>
-
-                <button className="btn btn-size btn-outline-light text-medium text-muted-3 px-3">
-                  PDF <img src="/images/x.svg" className="img-fluid ms-2" />
-                </button>
-
-                <button className="btn btn-size btn-outline-light text-medium text-muted-3 px-3">
-                  JPEG <img src="/images/x.svg" className="img-fluid ms-2" />
-                </button>
-
-                <button className="btn btn-size btn-outline-light text-medium text-muted-3 px-3">
-                  1 Jan 2024 - 20 Mar 2024{" "}
-                  <img src="/images/x.svg" className="img-fluid ms-2" />
-                </button>
+                {query && (
+                  <button
+                    className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
+                    onClick={() => setQuery('')}
+                  >
+                    {query} <img src="/images/x.svg" className="img-fluid ms-2" />
+                  </button>
+                )}
+                {docType && (
+                  <button
+                    className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
+                    onClick={() => setDocType('')}
+                  >
+                    {docType} <img src="/images/x.svg" className="img-fluid ms-2" />
+                  </button>
+                )}
+                {caseStatus && (
+                  <button
+                    className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
+                    onClick={() => setCaseStatus('')}
+                  >
+                    {caseStatus} <img src="/images/x.svg" className="img-fluid ms-2" />
+                  </button>
+                )}
+                {(startDate || endDate) && (
+                  <button
+                    className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
+                    onClick={() => { setStartDate(''); setEndDate(''); }}
+                  >
+                    {startDate} - {endDate}{' '}
+                    <img src="/images/x.svg" className="img-fluid ms-2" />
+                  </button>
+                )}
               </div>
 
               <ul
@@ -285,273 +364,120 @@ const TopBarInc = () => {
                     aria-controls="pills-all"
                     aria-selected="true"
                   >
-                    All{" "}
-                    <span className="badge badge-main rounded-pill">24</span>
+                    All (100)
                   </button>
                 </li>
                 <li className="nav-item" role="presentation">
                   <button
                     className="nav-link"
-                    id="pills-disputes-tab"
+                    id="pills-pdf-tab"
                     data-bs-toggle="pill"
-                    data-bs-target="#pills-disputes"
+                    data-bs-target="#pills-pdf"
                     type="button"
                     role="tab"
-                    aria-controls="pills-disputes"
+                    aria-controls="pills-pdf"
                     aria-selected="false"
                   >
-                    Disputes{" "}
-                    <span className="badge badge-main rounded-pill">6</span>
+                    PDF (23)
                   </button>
                 </li>
                 <li className="nav-item" role="presentation">
                   <button
                     className="nav-link"
-                    id="pills-doc-tab"
+                    id="pills-png-tab"
                     data-bs-toggle="pill"
-                    data-bs-target="#pills-doc"
+                    data-bs-target="#pills-png"
                     type="button"
                     role="tab"
-                    aria-controls="pills-doc"
+                    aria-controls="pills-png"
                     aria-selected="false"
                   >
-                    Documents{" "}
-                    <span className="badge badge-main rounded-pill">4</span>
+                    PNG (43)
                   </button>
                 </li>
                 <li className="nav-item" role="presentation">
                   <button
                     className="nav-link"
-                    id="pills-users-tab"
+                    id="pills-xls-tab"
                     data-bs-toggle="pill"
-                    data-bs-target="#pills-users"
+                    data-bs-target="#pills-xls"
                     type="button"
                     role="tab"
-                    aria-controls="pills-users"
+                    aria-controls="pills-xls"
                     aria-selected="false"
                   >
-                    Users{" "}
-                    <span className="badge badge-main rounded-pill">2</span>
-                  </button>
-                </li>
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="nav-link"
-                    id="pills-union-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-union"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-union"
-                    aria-selected="false"
-                  >
-                    Unions{" "}
-                    <span className="badge badge-main rounded-pill">2</span>
-                  </button>
-                </li>
-                <li className="nav-item" role="presentation">
-                  <button
-                    className="nav-link"
-                    id="pills-companies-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-companies"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-companies"
-                    aria-selected="false"
-                  >
-                    Companies{" "}
-                    <span className="badge badge-main rounded-pill">2</span>
+                    XLS (12)
                   </button>
                 </li>
               </ul>
+
               <div className="tab-content" id="pills-tabContent">
                 <div
                   className="tab-pane fade show active"
                   id="pills-all"
                   role="tabpanel"
                   aria-labelledby="pills-all-tab"
-                  tabIndex="0"
                 >
-                  <div
-                    className="mt-4 overflow-auto"
-                    style={{ height: "300px" }}
-                  >
-                    <div className="d-flex avatar-holder py-4 border-bottom">
-                      <div className="position-relative">
-                        <img
-                          src="/images/Avatar-online-indicator.svg"
-                          className="img-fluid indicator-avatar"
-                          alt="indicator"
-                        />
-                        <div className="avatar-sm flex-shrink-0">
-                          <img
-                            src="/images/avatar-2.svg"
-                            className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                            alt="Avatar"
-                          />
+                  <div className="row g-4">
+                    {/* Iterate through searchResults and display them here */}
+                    {searchResults.map((result, index) => (
+                      <div key={index} className="col-lg-4">
+                        <div className="card">
+                          <div className="card-body">
+                            <h5 className="card-title">{result.title}</h5>
+                            <p className="card-text">{result.description}</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="ms-2 flex-grow-1">
-                        <h5 className="mb-0">AAWUN</h5>
-                        <p className="mb-0 text-muted-3">
-                          in Unions & Branches / AAWUN{" "}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="d-flex avatar-holder py-4 border-bottom">
-                      <div className="position-relative">
-                        <img
-                          src="/images/offline-icon.svg"
-                          className="img-fluid indicator-avatar"
-                          alt="indicator"
-                        />
-                        <div className="avatar-sm flex-shrink-0">
-                          <img
-                            src="/images/avatar-2.svg"
-                            className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                            alt="Avatar"
-                          />
-                        </div>
-                      </div>
-                      <div className="ms-2 flex-grow-1">
-                        <h5 className="mb-0">Agro Allied International</h5>
-                        <p className="mb-0 text-muted-3">
-                          in Unions & Branches / AAWUN / Lagos / Companies
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="d-flex avatar-holder py-4 border-bottom">
-                      <div className="position-relative">
-                        <img
-                          src="/images/Avatar-online-indicator.svg"
-                          className="img-fluid indicator-avatar"
-                          alt="indicator"
-                        />
-                        <div className="avatar-sm flex-shrink-0">
-                          <img
-                            src="/images/avatar-2.svg"
-                            className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                            alt="Avatar"
-                          />
-                        </div>
-                      </div>
-                      <div className="ms-2 flex-grow-1">
-                        <h5 className="mb-0">
-                          DS231 - Anti land pollution measures{" "}
-                        </h5>
-                        <p className="mb-0 text-muted-3">
-                          in Disputes / Agro Alllied International /{" "}
-                          <img
-                            src="/images/resolved.svg"
-                            className="img-fluid"
-                            alt="resolved"
-                          />
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="d-flex avatar-holder py-4 border-bottom">
-                      <div className="position-relative">
-                        <img
-                          src="/images/Avatar-online-indicator.svg"
-                          className="img-fluid indicator-avatar"
-                          alt="indicator"
-                        />
-                        <div className="avatar-sm flex-shrink-0">
-                          <img
-                            src="/images/avatar-2.svg"
-                            className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                            alt="Avatar"
-                          />
-                        </div>
-                      </div>
-                      <div className="ms-2 flex-grow-1">
-                        <h5 className="mb-0">
-                          Form TD3 for DS231 - Agricultural products for relief
-                          fund
-                        </h5>
-                        <p className="mb-0 text-muted-3">
-                          in Documents / DS231 / Edited 2wks ago{" "}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="d-flex avatar-holder py-4 border-bottom">
-                      <div className="position-relative">
-                        <img
-                          src="/images/offline-icon.svg"
-                          className="img-fluid indicator-avatar"
-                          alt="indicator"
-                        />
-                        <div className="avatar-sm flex-shrink-0">
-                          <img
-                            src="/images/avatar-2.svg"
-                            className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                            alt="Avatar"
-                          />
-                        </div>
-                      </div>
-                      <div className="ms-2 flex-grow-1">
-                        <h5 className="mb-0">Agnes Chinagorom</h5>
-                        <p className="mb-0 text-muted-3">Active</p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
-
                 <div
                   className="tab-pane fade"
-                  id="pills-disputes"
+                  id="pills-pdf"
                   role="tabpanel"
-                  aria-labelledby="pills-disputes-tab"
-                  tabIndex="0"
+                  aria-labelledby="pills-pdf-tab"
                 >
-                  ...
+                  <div className="row g-4">
+                    {/* Filter and display PDF results here */}
+                  </div>
                 </div>
-
                 <div
                   className="tab-pane fade"
-                  id="pills-doc"
+                  id="pills-png"
                   role="tabpanel"
-                  aria-labelledby="pills-doc-tab"
-                  tabIndex="0"
+                  aria-labelledby="pills-png-tab"
                 >
-                  ...
+                  <div className="row g-4">
+                    {/* Filter and display PNG results here */}
+                  </div>
                 </div>
-
                 <div
                   className="tab-pane fade"
-                  id="pills-users"
+                  id="pills-xls"
                   role="tabpanel"
-                  aria-labelledby="pills-users-tab"
-                  tabIndex="0"
+                  aria-labelledby="pills-xls-tab"
                 >
-                  ...
-                </div>
-
-                <div
-                  className="tab-pane fade"
-                  id="pills-union"
-                  role="tabpanel"
-                  aria-labelledby="pills-union-tab"
-                  tabIndex="0"
-                >
-                  ...
-                </div>
-
-                <div
-                  className="tab-pane fade"
-                  id="pills-companies"
-                  role="tabpanel"
-                  aria-labelledby="pills-companies-tab"
-                  tabIndex="0"
-                >
-                  ...
+                  <div className="row g-4">
+                    {/* Filter and display XLS results here */}
+                  </div>
                 </div>
               </div>
+
+              <div className="text-end mt-4">
+                <button
+                  className="btn btn-main-primary"
+                  onClick={fetchSearch}
+                >
+                  Search
+                </button>
+              </div>
+
+              {error && (
+                <div className="alert alert-danger mt-4" role="alert">
+                  {error}
+                </div>
+              )}
             </div>
           </div>
         </div>

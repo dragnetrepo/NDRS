@@ -59,22 +59,22 @@ const Disputes = () => {
 		documentsArray[array_key_val] = e.target.files[0];
 
 		document.getElementById("documents-uploaded").innerHTML += (`
-			<div class="d-flex align-items-center justify-content-between mb-4 document-housing" id="housing-${array_key_val}">
-				<div class="d-flex align-items-center">
-					<div class="text-center me-2 flex-shrink-0">
-						<img src="images/file_upload_states.svg" class="img-fluid" style={{ height: "40px" }} />
+			<div className="d-flex align-items-center justify-content-between mb-4 document-housing" id="housing-${array_key_val}">
+				<div className="d-flex align-items-center">
+					<div className="text-center me-2 flex-shrink-0">
+						<img src="images/file_upload_states.svg" className="img-fluid" style={{ height: "40px" }} />
 					</div>
 					<div>
-						<p class="text-bold mb-1">${file.name}</p>
-						<p class="font-sm text-muted mb-0">${file.type} format . Max. ${convertBytes(file.size)}</p>
+						<p className="text-bold mb-1">${file.name}</p>
+						<p className="font-sm text-muted mb-0">${file.type} format . Max. ${convertBytes(file.size)}</p>
 					</div>
 				</div>
 
-				<div class="d-flex align-items-center gap-10">
-					<button class="btn btn-main-primary btn-size upload-doc" id="${array_key_val}">Upload</button>
+				<div className="d-flex align-items-center gap-10">
+					<button className="btn btn-main-primary btn-size upload-doc" id="${array_key_val}">Upload</button>
 
-					<a href="javascript:void(0);" class="remove-doc" remove-id="${array_key_val}">
-						<img src="images/multiply_2.svg" class="img-fluid" alt="close" />
+					<a href="javascript:void(0);" className="remove-doc" remove-id="${array_key_val}">
+						<img src="images/multiply_2.svg" className="img-fluid" alt="close" />
 					</a>
 				</div>
 			</div>
@@ -86,7 +86,7 @@ const Disputes = () => {
 
 	const handleDocumentUpload = async (id, file) => {
 		if (dispute_id) {
-			document.getElementById(id).closest("div").innerHTML = `<div class="spinner-border text-main-primary" id="${id}" role="status"><span class="visually-hidden">Loading...</span></div>`;
+			document.getElementById(id).closest("div").innerHTML = `<div className="spinner-border text-main-primary" id="${id}" role="status"><span className="visually-hidden">Loading...</span></div>`;
 
 			if (file) {
 				var formData = new FormData();
@@ -114,7 +114,7 @@ const Disputes = () => {
 					toast.success(data.message);
 				} catch (error) {
 					document.getElementById(id).closest("div").outerHTML = `
-						<button class="btn btn-danger btn-size" disabled>Failed</button>
+						<button className="btn btn-danger btn-size" disabled>Failed</button>
 					`;
 					console.error("Error fetching data:", error);
 				}
@@ -416,21 +416,21 @@ const Disputes = () => {
 																</div>
 
 																<div className="card mb-4 d-none" id="submit-next-docs">
-																	<div class="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-																		<h3 class="mb-lg-0 mb-3">Upload Supporting Documents</h3>
-																		<div class="d-flex align-items-center gap-15">
-																			{/* <a href="disputes.php" class="btn-flat text-main-primary">Back</a> */}
-																			<button class="btn btn-size btn-main-primary submit-dispute" onClick={finishCreateDispute}>
+																	<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
+																		<h3 className="mb-lg-0 mb-3">Upload Supporting Documents</h3>
+																		<div className="d-flex align-items-center gap-15">
+																			{/* <a href="disputes.php" className="btn-flat text-main-primary">Back</a> */}
+																			<button className="btn btn-size btn-main-primary submit-dispute" onClick={finishCreateDispute}>
 																				Finish
 																			</button>
 																		</div>
 																	</div>
 
-																	<div class="card-body p-4">
-																		<label for="add_doc">
-																			<input type="file" name="documents[]" id="add_doc" class="d-none" onChange={onHandleFileUpload} />
-																			<div class="mb-4">
-																				<div class="btn-flat text-main-primary text-decoration-none cursor-pointer">Add document <img src="images/button-icon-1.svg" class="img-fluid" alt="add-icon" /></div>
+																	<div className="card-body p-4">
+																		<label htmlFor="add_doc">
+																			<input type="file" name="documents[]" id="add_doc" className="d-none" onChange={onHandleFileUpload} />
+																			<div className="mb-4">
+																				<div className="btn-flat text-main-primary text-decoration-none cursor-pointer">Add document <img src="images/button-icon-1.svg" className="img-fluid" alt="add-icon" /></div>
 																			</div>
 																		</label>
 

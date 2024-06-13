@@ -1,16 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
 import { AppContext } from "../App";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
+
 const Unions = () => {
 	const navigate = useNavigate();
 	const user_avatar = "/images/download.png";
+	const fileInputRef = useRef(null);
 	const [avatarImage, setAvatarImage] = useState(user_avatar);
 	const { unions, setUnions } = useContext(AppContext);
+	const [roles, setRoles] = useState([]);
 	const [unionsList, setUnionsList] = useState([]);
+	const [uploadStatus, setUploadStatus] = useState(null);
 	const [industries, setIndustries] = useState([])
 	const [unionInvite, seUnionInvite] = useState({
 		email: "",
@@ -21,9 +25,31 @@ const Unions = () => {
 	useEffect(() => {
 		fetchdata();
 		fetchIndustries()
+		fetchRoles()
 	}, []);
 
 
+	const fetchRoles = async () => {
+		try {
+			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+
+			const res = await fetch(baseUrl + "/api/users/get-roles", {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			setRoles(data.data);
+			console.log(data.data);
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+	};
 
 	const fetchdata = async () => {
 		try {
@@ -185,6 +211,49 @@ const Unions = () => {
 			console.error("Error fetching data:", error);
 		}
 	};
+
+	const handleButtonClick = () => {
+		fileInputRef.current.click();
+	};
+
+	const handleFileChange = async (event) => {
+		const file = event.target.files[0];
+		if (file && file.type === "text/csv") {
+			const formData = new FormData();
+			formData.append("file", file);
+
+			try {
+				const baseUrl =
+					"https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+				const response = await fetch(baseUrl + "/api/union/bulk/create", {
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+					method: "POST",
+					body: formData,
+				});
+
+				if (response.ok) {
+					setUploadStatus("Upload successful!");
+					const result = await response.json();
+					toast.success("unions have been uploaded succesfully!");
+					console.log("Server response:", result);
+				} else {
+					setUploadStatus("Upload failed.");
+					toast.error("Failed to upload unions!");
+					console.error("Upload error:", response.statusText);
+				}
+			} catch (error) {
+				setUploadStatus("Upload failed.");
+
+				console.error("Upload error:", error);
+			}
+
+			fileInputRef.current.value = "";
+		} else {
+			alert("Please upload a valid CSV file.");
+		}
+	};
 	// handleUpdate();
 
 	return (
@@ -258,7 +327,8 @@ const Unions = () => {
 																						</p>
 																					</div>
 																					<div className="col-lg-5 offset-lg-2">
-																						<button className="btn btn-main-outline-primary btn-size">
+																						<button className="btn btn-main-outline-primary btn-size"
+																						>
 																							Download CSV template
 																						</button>
 																					</div>
@@ -310,9 +380,21 @@ const Unions = () => {
 																								src="/images/or-line.svg"
 																								className="img-fluid"
 																							/>
-
 																							<div className="mt-3">
-																								<button className="btn btn-main-primary btn-size mx-auto">
+																								<input
+																									type="file"
+																									id="profile"
+																									ref={fileInputRef}
+																									style={{
+																										visibility: "hidden",
+																										height: "0",
+																									}}
+																									onChange={handleFileChange}
+																								/>
+																								<button
+																									className="btn btn-main-primary btn-size mx-auto"
+																									onClick={handleButtonClick}
+																								>
 																									<i className="bi bi-upload me-2"></i>{" "}
 																									Upload filled CSV
 																								</button>
@@ -454,7 +536,7 @@ const Unions = () => {
 																							<div className="mb-4">
 																								<label className="form-label">Industry</label>
 																								<select className="form-control form-control-height" id="industriy" name="industry" onChange={onHandleChange}>
-																									<option value="" disabled selected>--Choose--</option>
+																									<option value="default" disabled >--Choose--</option>
 																									{industries.map((item) =>
 																										<option value={item._id} key={item._id}>{item.name}</option>
 																									)}
@@ -505,7 +587,7 @@ const Unions = () => {
 																										Unions Admins
 																									</label>
 																									<a
-																										href="#"
+																										href=""
 																										data-bs-toggle="modal"
 																										data-bs-target="#inviteModal"
 																										className="text-main-primary text-medium text-decoration-none"
@@ -528,52 +610,56 @@ const Unions = () => {
 																										</thead>
 																										<tbody>
 																											{/* <tr>
-																											<td scope="row">
-																												<div className="d-flex avatar-holder">
-																													<div className="position-relative">
-																														<div className="avatar-sm flex-shrink-0">
-																															<img
-																																src="/images/avatar-2.svg"
-																																className="img-fluid object-position-center object-fit-cover w-100 h-100"
-																																alt="Avatar"
-																															/>
+																												<td scope="row">
+																													<div className="d-flex avatar-holder">
+																														<div className="position-relative">
+																															<div className="avatar-sm flex-shrink-0">
+																																<img
+																																	src="/images/avatar-2.svg"
+																																	className="img-fluid object-position-center object-fit-cover w-100 h-100"
+																																	alt="Avatar"
+																																/>
+																															</div>
+																														</div>
+																														<div className="ms-2 flex-grow-1">
+																															<h5 className="mb-0">
+																																Salim Mustapha
+																															</h5>
+																															<p className="mb-0 text-muted-3">
+																																salimmusty@gmail.com
+																															</p>
 																														</div>
 																													</div>
-																													<div className="ms-2 flex-grow-1">
-																														<h5 className="mb-0">
-																															Salim Mustapha
-																														</h5>
-																														<p className="mb-0 text-muted-3">
-																															salimmusty@gmail.com
-																														</p>
-																													</div>
-																												</div>
-																											</td>
-																											<td>Feb 4 2023</td>
-																											<td>
-																												<img
-																													src="/images/claimant.svg"
-																													className="img-fluid"
-																													alt="claimant"
-																												/>
-																											</td>
-
-																											<td>
-																												<button
-																													className="btn btn-size btn-outline-light text-medium no-caret"
-																													type="button"
-																													data-bs-toggle="modal"
-																													data-bs-target="#removeModal"
-																												>
+																												</td>
+																												<td>Feb 4 2023</td>
+																												<td>
 																													<img
-																														src="/images/bin_2.svg"
+																														src="/images/claimant.svg"
 																														className="img-fluid"
-																														alt="dot-v"
+																														alt="claimant"
 																													/>
-																												</button>
-																											</td>
-																										</tr> */}
-																											<p className="m-3">No admin has been invited</p>
+																												</td>
+
+																												<td>
+																													<button
+																														className="btn btn-size btn-outline-light text-medium no-caret"
+																														type="button"
+																														data-bs-toggle="modal"
+																														data-bs-target="#removeModal"
+																													>
+																														<img
+																															src="/images/bin_2.svg"
+																															className="img-fluid"
+																															alt="dot-v"
+																														/>
+																													</button>
+																												</td>
+																											</tr> */}
+																											<tr>
+																												<td>
+																													<p className="m-3">No admin has been invited</p>
+																												</td>
+																											</tr>
 
 																										</tbody>
 																									</table>
@@ -1393,6 +1479,323 @@ const Unions = () => {
 								</div>
 							</div>
 						</footer>
+					</div>
+				</div>
+			</div>
+
+			{/* <!-- Modal --> */}
+			<div className="modal fade" id="inviteModal" tabIndex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
+				<div className="modal-dialog modal-dialog-centered modal-lg">
+					<div className="modal-content p-lg-4 border-0">
+						<div className="modal-header">
+							<h1 className="modal-title fs-5">Send invites</h1>
+							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div className="modal-body">
+							<div className="row my-4">
+								<div className="col-lg-7">
+									<div className="input-group">
+										<span className="input-group-text bg-transparent">
+											<img src="images/search.svg" className="img-fluid" alt="search" />
+										</span>
+										<input type="search" className="form-control border-start-0 form-control-height" placeholder="Type an email to send an invite"
+											name="email" onChange={onHandleChangeUnion} />
+									</div>
+								</div>
+
+								<div className="col-lg-5">
+									<div className="d-flex align-items-center justify-content-between gap-15">
+
+										<select
+											className="form-control form-control-height w-50"
+											name="role"
+											onChange={onHandleChangeUnion}
+										>
+											<option>
+												--Choose--
+											</option>
+											{roles.map((role) => (
+												<option
+													key={role._id}
+													value={role._id}
+												>
+													{role.name}
+												</option>
+											))}
+										</select>
+
+										<a href="#" className="btn btn-size btn-main-primary">Send Invite</a>
+									</div>
+								</div>
+							</div>
+
+							<p className="text-medium">Union Admins</p>
+
+							<div className="row">
+								<div className="col-lg-12">
+									<table className="table table-list">
+										<thead className="table-light">
+											{/* <tr>
+												<th scope="col">Name</th>
+												<th scope="col">Date added</th>
+												<th scope="col">Role</th>
+												<th scope="col"></th>
+											</tr> */}
+										</thead>
+										<tbody>
+											{/* <tr>
+												<td scope="row">
+													<div className="d-flex avatar-holder">
+														<div className="position-relative">
+
+															<div className="avatar-sm flex-shrink-0">
+																<img src="images/avatar-2.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+															</div>
+														</div>
+														<div className="ms-2 flex-grow-1">
+															<h5 className="mb-0">Salim Mustapha</h5>
+															<p className="mb-0 text-muted-3">salimmusty@gmail.com</p>
+														</div>
+													</div>
+												</td>
+												<td>Feb 4 2023</td>
+												<td>
+													<img src="images/claimant.svg" className="img-fluid" alt="claimant" />
+												</td>
+
+												<td>
+													<div className="dropdown">
+														<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+															<img src="images/bin.svg" className="img-fluid" alt="bin" />
+														</button>
+														<ul className="dropdown-menu border-radius action-menu-2">
+															<li><a className="dropdown-item" href="disputes-details.php">View details</a></li>
+														</ul>
+													</div>
+												</td>
+											</tr>
+
+											<tr>
+												<td scope="row">
+													<div className="d-flex avatar-holder">
+														<div className="position-relative">
+
+															<div className="avatar-sm flex-shrink-0">
+																<img src="images/avatar-2.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+															</div>
+														</div>
+														<div className="ms-2 flex-grow-1">
+															<h5 className="mb-0">Salim Mustapha</h5>
+															<p className="mb-0 text-muted-3">salimmusty@gmail.com</p>
+														</div>
+													</div>
+												</td>
+												<td>Feb 4 2023</td>
+												<td>
+													<img src="images/claimant.svg" className="img-fluid" alt="claimant" />
+												</td>
+
+												<td>
+													<div className="dropdown">
+														<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+															<img src="images/bin.svg" className="img-fluid" alt="bin" />
+														</button>
+														<ul className="dropdown-menu border-radius action-menu-2">
+															<li><a className="dropdown-item" href="disputes-details.php">View details</a></li>
+														</ul>
+													</div>
+												</td>
+											</tr>
+
+											<tr>
+												<td scope="row">
+													<div className="d-flex avatar-holder">
+														<div className="position-relative">
+
+															<div className="avatar-sm flex-shrink-0">
+																<img src="images/avatar-2.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+															</div>
+														</div>
+														<div className="ms-2 flex-grow-1">
+															<h5 className="mb-0">Salim Mustapha</h5>
+															<p className="mb-0 text-muted-3">salimmusty@gmail.com</p>
+														</div>
+													</div>
+												</td>
+												<td>Feb 4 2023</td>
+												<td>
+													<img src="images/claimant.svg" className="img-fluid" alt="claimant" />
+												</td>
+
+												<td>
+													<div className="dropdown">
+														<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+															<img src="images/bin.svg" className="img-fluid" alt="bin" />
+														</button>
+														<ul className="dropdown-menu border-radius action-menu-2">
+															<li><a className="dropdown-item" href="disputes-details.php">View details</a></li>
+														</ul>
+													</div>
+												</td>
+											</tr>
+
+											<tr>
+												<td scope="row">
+													<div className="d-flex avatar-holder">
+														<div className="position-relative">
+
+															<div className="avatar-sm flex-shrink-0">
+																<img src="images/avatar-2.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+															</div>
+														</div>
+														<div className="ms-2 flex-grow-1">
+															<h5 className="mb-0">Salim Mustapha</h5>
+															<p className="mb-0 text-muted-3">salimmusty@gmail.com</p>
+														</div>
+													</div>
+												</td>
+												<td>Feb 4 2023</td>
+												<td>
+													<img src="images/claimant.svg" className="img-fluid" alt="claimant" />
+												</td>
+
+												<td>
+													<div className="dropdown">
+														<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+															<img src="images/bin.svg" className="img-fluid" alt="bin" />
+														</button>
+														<ul className="dropdown-menu border-radius action-menu-2">
+															<li><a className="dropdown-item" href="disputes-details.php">View details</a></li>
+														</ul>
+													</div>
+												</td>
+											</tr> */}
+										</tbody>
+									</table>
+									<table className="table table-list">
+										<thead className="table-light">
+											<tr>
+												<th scope="col">Name</th>
+												<th scope="col">Date added</th>
+												<th scope="col">Role</th>
+												<th scope="col"></th>
+											</tr>
+										</thead>
+									</table>
+									<div className="card no-admin-card rounded-0">
+										<div className="card-body d-flex align-items-center justify-content-center">
+											<div className="text-center">
+												<h4 className="">No admins found</h4>
+
+												<p className="text-muted-3">Enter an admins email and role to send invite</p>
+
+												<div className="text-center">
+													<img src="images/no-found.svg" className="img-fluid" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{/* <!-- Modal --> */}
+			<div className="modal fade" id="removeModal" tabIndex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
+				<div className="modal-dialog modal-dialog-centered">
+					<div className="modal-content border-0 p-lg-4 p-3">
+						<div className="text-end">
+							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div className="modal-body">
+							<div className="text-center">
+								<img src="images/delete-icon.svg" className="img-fluid mb-3" alt="delete an account" />
+							</div>
+							<h1 className="heading modal-heading text-center mb-3">Are you sure you want send an invite to</h1>
+							<p className="mb-4 modal-text text-center">jamesomogiafo@gmail.com <span className="text-bold text-darken">as Union Branch Admin for</span> University of Lagos </p>
+
+
+							<button className="btn btn-size btn-main-danger w-100">Yes, Remove Admin</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{/* <!-- Modal --> */}
+			<div className="modal fade" id="previewModal" tabIndex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+				<div className="modal-dialog modal-dialog-centered modal-xl">
+					<div className="modal-content p-lg-4 border-0">
+						<div className="modal-header">
+							<div>
+								<h1 className="modal-title mb-1 fs-5">Preview Uploaded Unions</h1>
+								<p className="text-muted-3">Unions: 43</p>
+							</div>
+							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div className="modal-body">
+							<table className="table table-list">
+								<thead className="table-light">
+									<tr>
+										<th scope="col">
+											<div>
+												<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
+											</div>
+										</th>
+										<th scope="col">Unions</th>
+										<th scope="col">Industry</th>
+										<th scope="col">Date added</th>
+									</tr>
+								</thead>
+								<tbody>
+
+									<tr>
+										<td>
+											<div>
+												<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
+											</div>
+										</td>
+										<td>
+											<div className="d-flex align-items-center avatar-holder">
+												<div className="position-relative">
+													<div className="avatar-sm flex-shrink-0">
+														<img src="images/ipman.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+													</div>
+												</div>
+												<div className="ms-2 text-muted-3">
+													<p className="text-darken mb-0">Nigeria Union of Petroleum and Natural Gas Workers</p>
+													<span className="text-muted-3">(NUPENG)</span>
+												</div>
+											</div>
+										</td>
+										<td>
+											Oil & Gas
+										</td>
+										<td>Feb 4 2024</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+						<div className="modal-footer d-flex justify-content-between align-items-center">
+							<p className="mb-0 text-muted">Page 1 of 30</p>
+
+							<nav aria-label="...">
+								<ul className="pagination pager mb-0">
+									<li className="page-item active" aria-current="page">
+										<span className="page-link">1</span>
+									</li>
+									<li className="page-item"><a className="page-link" href="#">2</a></li>
+									<li className="page-item"><a className="page-link" href="#">3</a></li>
+								</ul>
+							</nav>
+
+							<div className="d-flex align-items-center gap-10">
+								<button className="btn btn-outline-light text-medium"><img src="images/prev.svg" className="img-fluid" /> Previous</button>
+								<button className="btn btn-outline-light text-medium">Next <img src="images/next.svg" className="img-fluid" /></button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

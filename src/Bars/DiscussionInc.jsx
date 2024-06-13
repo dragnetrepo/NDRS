@@ -1,6 +1,7 @@
 import { type } from "@testing-library/user-event/dist/type";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 
 const DiscussionIinc = () => {
   const [discussion, setDiscussions] = useState([]);
@@ -134,12 +135,12 @@ const DiscussionIinc = () => {
 
           <div className="chat-height">
             {discussion.map((item) => (
-              <a href="#" className="text-decoration-none" key={item._id}>
+              <Link to={`/discussionsDetails/${item._id}`} className="text-decoration-none" key={item._id}>
                 <div className="d-flex avatar-holder py-4 border-bottom">
                   <div className="position-relative">
                     <div className="avatar-sm flex-shrink-0">
                       <img
-                        src="/images/user-photo.svg"
+                        src={item.sender.photo}
                         className="img-fluid object-position-center object-fit-cover w-100 h-100"
                         alt="Avatar"
                       />
@@ -149,7 +150,7 @@ const DiscussionIinc = () => {
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <div className="mb-0 d-flex align-items-center">
                         <div className="heading-text text-truncate max-150">
-                          {item.type}
+                          {item.title}
                         </div>
                       </div>
 
@@ -159,238 +160,18 @@ const DiscussionIinc = () => {
                     </div>
                     <div className="d-flex justify-content-between align-items-start">
                       <p className="mb-0 text-muted-3 line-clamp-2">
-                        {item.title}
+                        {item.sender.sender}{` : `}
+                        {item.
+                          last_message
+                        }
                       </p>
                       <span className="badge rounded-pill text-bg-main">4</span>
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             ))}
 
-            <a href="#" className="text-decoration-none">
-              <div className="d-flex avatar-holder py-4 border-bottom">
-                <div className="position-relative">
-                  <div className="avatar-sm flex-shrink-0">
-                    <img
-                      src="/images/user-photo.svg"
-                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                      alt="Avatar"
-                    />
-                  </div>
-                </div>
-                <div className="ms-2 flex-grow-1">
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div className="mb-0 d-flex align-items-center">
-                      <div className="heading-text text-truncate max-150">
-                        DS138 Main Chat NNPC vs I
-                      </div>
-                    </div>
-
-                    <span className="text-main-primary ft-sm-only">12.30</span>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-start">
-                    <p className="mb-0 text-muted-3 line-clamp-2">
-                      I'd definitely shoot any discussions to all discussion in
-                      the box
-                    </p>
-                    <span className="badge rounded-pill text-bg-main">4</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" className="text-decoration-none">
-              <div className="d-flex avatar-holder py-4 border-bottom">
-                <div className="position-relative">
-                  <div className="avatar-sm flex-shrink-0">
-                    <img
-                      src="/images/user-photo.svg"
-                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                      alt="Avatar"
-                    />
-                  </div>
-                </div>
-                <div className="ms-2 flex-grow-1">
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div className="mb-0 d-flex align-items-center">
-                      <div className="heading-text text-truncate max-150">
-                        DS138 Main Chat NNPC vs I
-                      </div>
-                    </div>
-
-                    <span className="text-main-primary ft-sm-only">12.30</span>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-start">
-                    <p className="mb-0 text-muted-3 line-clamp-2">
-                      I'd definitely shoot any discussions to all discussion in
-                      the box
-                    </p>
-                    <span className="badge rounded-pill text-bg-main">4</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" className="text-decoration-none">
-              <div className="d-flex avatar-holder py-4 border-bottom">
-                <div className="position-relative">
-                  <div className="avatar-sm flex-shrink-0">
-                    <img
-                      src="/images/user-photo.svg"
-                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                      alt="Avatar"
-                    />
-                  </div>
-                </div>
-                <div className="ms-2 flex-grow-1">
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div className="mb-0 d-flex align-items-center">
-                      <div className="heading-text text-truncate max-150">
-                        DS138 Main Chat NNPC vs I
-                      </div>
-                    </div>
-
-                    <span className="text-main-primary ft-sm-only">12.30</span>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-start">
-                    <p className="mb-0 text-muted-3 line-clamp-2">
-                      I'd definitely shoot any discussions to all discussion in
-                      the box
-                    </p>
-                    <span className="badge rounded-pill text-bg-main">4</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" className="text-decoration-none">
-              <div className="d-flex avatar-holder py-4 border-bottom">
-                <div className="position-relative">
-                  <div className="avatar-sm flex-shrink-0">
-                    <img
-                      src="/images/user-photo.svg"
-                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                      alt="Avatar"
-                    />
-                  </div>
-                </div>
-                <div className="ms-2 flex-grow-1">
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div className="mb-0 d-flex align-items-center">
-                      <div className="heading-text text-truncate max-150">
-                        DS138 Main Chat NNPC vs I
-                      </div>
-                    </div>
-
-                    <span className="text-main-primary ft-sm-only">12.30</span>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-start">
-                    <p className="mb-0 text-muted-3 line-clamp-2">
-                      I'd definitely shoot any discussions to all discussion in
-                      the box
-                    </p>
-                    <span className="badge rounded-pill text-bg-main">4</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" className="text-decoration-none">
-              <div className="d-flex avatar-holder py-4 border-bottom">
-                <div className="position-relative">
-                  <div className="avatar-sm flex-shrink-0">
-                    <img
-                      src="/images/user-photo.svg"
-                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                      alt="Avatar"
-                    />
-                  </div>
-                </div>
-                <div className="ms-2 flex-grow-1">
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div className="mb-0 d-flex align-items-center">
-                      <div className="heading-text text-truncate max-150">
-                        DS138 Main Chat NNPC vs I
-                      </div>
-                    </div>
-
-                    <span className="text-main-primary ft-sm-only">12.30</span>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-start">
-                    <p className="mb-0 text-muted-3 line-clamp-2">
-                      I'd definitely shoot any discussions to all discussion in
-                      the box
-                    </p>
-                    <span className="badge rounded-pill text-bg-main">4</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" className="text-decoration-none">
-              <div className="d-flex avatar-holder py-4 border-bottom">
-                <div className="position-relative">
-                  <div className="avatar-sm flex-shrink-0">
-                    <img
-                      src="/images/user-photo.svg"
-                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                      alt="Avatar"
-                    />
-                  </div>
-                </div>
-                <div className="ms-2 flex-grow-1">
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div className="mb-0 d-flex align-items-center">
-                      <div className="heading-text text-truncate max-150">
-                        DS138 Main Chat NNPC vs I
-                      </div>
-                    </div>
-
-                    <span className="text-main-primary ft-sm-only">12.30</span>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-start">
-                    <p className="mb-0 text-muted-3 line-clamp-2">
-                      I'd definitely shoot any discussions to all discussion in
-                      the box
-                    </p>
-                    <span className="badge rounded-pill text-bg-main">4</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" className="text-decoration-none">
-              <div className="d-flex avatar-holder py-4 border-bottom">
-                <div className="position-relative">
-                  <div className="avatar-sm flex-shrink-0">
-                    <img
-                      src="/images/user-photo.svg"
-                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                      alt="Avatar"
-                    />
-                  </div>
-                </div>
-                <div className="ms-2 flex-grow-1">
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div className="mb-0 d-flex align-items-center">
-                      <div className="heading-text text-truncate max-150">
-                        DS138 Main Chat NNPC vs I
-                      </div>
-                    </div>
-
-                    <span className="text-main-primary ft-sm-only">12.30</span>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-start">
-                    <p className="mb-0 text-muted-3 line-clamp-2">
-                      I'd definitely shoot any discussions to all discussion in
-                      the box
-                    </p>
-                    <span className="badge rounded-pill text-bg-main">4</span>
-                  </div>
-                </div>
-              </div>
-            </a>
           </div>
         </div>
         <div className="discuss-2 flex-grow-1 border-end">

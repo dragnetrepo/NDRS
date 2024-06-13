@@ -1347,7 +1347,10 @@ const Users = () => {
                                                     </div>
                                                   </td>
                                                 </tr> */}
-                                                <p className="m-3">No user has been invited</p>
+                                                <tr>
+                                                  <td className="m-3">No user has been invited</td>
+
+                                                </tr>
                                               </tbody>
                                             </table>
                                           </div>

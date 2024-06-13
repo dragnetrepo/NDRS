@@ -806,7 +806,7 @@ const Settings = () => {
 															<div className="row">
 																<div className="col-lg-8">
 																	{notificationSettings.length ? notificationSettings.map((item, index) => (
-																		<div className="card card-box-view mb-4">
+																		<div className="card card-box-view mb-4" key={item._id}>
 																			<div className="card-body p-4">
 																				<div className="d-flex justify-content-between align-items-center flex-lg-nowrap flex-wrap">
 																					<div className="text-start mb-lg-0 mb-3">

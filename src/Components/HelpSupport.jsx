@@ -1,8 +1,83 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
+import { Link } from "react-router-dom";
 
 const HelpSupport = () => {
+  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+
+  const [categories, setCategories] = useState([])
+  const [categoryPost, setCategoryPost] = useState([])
+  const [post, setPost] = useState([])
+
+  useEffect(() => {
+    fetchCategories()
+    fetchCategoryPosts()
+    fetchPosts()
+  }, [])
+
+  const fetchCategories = async () => {
+    try {
+
+      const res = await fetch(baseUrl + "/api/posts/categories", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setCategories(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const fetchCategoryPosts = async (id) => {
+    try {
+      const res = await fetch(baseUrl + `/api/posts/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setCategoryPost(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const fetchPosts = async (id) => {
+    try {
+      const res = await fetch(baseUrl + `/api/posts/read/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setPost(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+
   return (
     <>
       <div className="main-admin-container bg-light dark-mode-active">
@@ -42,33 +117,35 @@ const HelpSupport = () => {
                         </div>
                       </div>
                       <div className="row mt-4">
-                        <div className="col-lg-6 mb-4">
-                          <a
-                            href="help-support-2.php"
-                            className="text-decoration-none"
-                          >
-                            <div className="card h-100 heading-card card-hover p-3">
-                              <div className="card-body">
-                                <img
-                                  src="/images/help.svg"
-                                  className="img-fluid mb-3"
-                                />
+                        {categories.map((item) =>
+                          <div className="col-lg-6 mb-4" key={item._id}>
+                            <Link
+                              to={`/helpSupport/${item._id}`}
+                              className="text-decoration-none"
+                            >
+                              <div className="card h-100 heading-card card-hover p-3">
+                                <div className="card-body">
+                                  <img
+                                    src="/images/help.svg"
+                                    className="img-fluid mb-3"
+                                  />
 
-                                <h3>General Questions & Overview</h3>
-                                <p className="help-text">
-                                  Get all your general questions about using
-                                  NDRS answered.
-                                </p>
+                                  <h3>{item.title}</h3>
+                                  <p className="help-text">
+                                    {item.description}
+                                  </p>
 
-                                <p className="help-text-sub">24 articles</p>
+                                  <p className="help-text-sub">{item.no_of_posts} articles</p>
+                                </div>
                               </div>
-                            </div>
-                          </a>
-                        </div>
+                            </Link>
+                          </div>
+                        )}
 
-                        <div className="col-lg-6 mb-4">
-                          <a
-                            href="help-support-2.php"
+
+                        {/* <div className="col-lg-6 mb-4">
+                          <Link
+                            to="/HelpSupport2"
                             className="text-decoration-none"
                           >
                             <div className="card h-100 heading-card card-hover p-3">
@@ -87,12 +164,12 @@ const HelpSupport = () => {
                                 <p className="help-text-sub">8 articles</p>
                               </div>
                             </div>
-                          </a>
+                          </Link>
                         </div>
 
                         <div className="col-lg-6 mb-4">
-                          <a
-                            href="help-support-2.php"
+                          <Link
+                            to="/helpSupport2"
                             className="text-decoration-none"
                           >
                             <div className="card h-100 heading-card card-hover p-3">
@@ -111,12 +188,12 @@ const HelpSupport = () => {
                                 <p className="help-text-sub">24 articles</p>
                               </div>
                             </div>
-                          </a>
+                          </Link>
                         </div>
 
                         <div className="col-lg-6 mb-4">
-                          <a
-                            href="help-support-2.php"
+                          <Link
+                            to="/helpSupport2"
                             className="text-decoration-none"
                           >
                             <div className="card h-100 heading-card card-hover p-3">
@@ -134,12 +211,12 @@ const HelpSupport = () => {
                                 <p className="help-text-sub">8 articles</p>
                               </div>
                             </div>
-                          </a>
+                          </Link>
                         </div>
 
                         <div className="col-lg-6 mb-4">
-                          <a
-                            href="help-support-2.php"
+                          <Link
+                            to="/helpSupport2"
                             className="text-decoration-none"
                           >
                             <div className="card h-100 heading-card card-hover p-3">
@@ -158,12 +235,12 @@ const HelpSupport = () => {
                                 <p className="help-text-sub">24 articles</p>
                               </div>
                             </div>
-                          </a>
+                          </Link>
                         </div>
 
                         <div className="col-lg-6 mb-4">
-                          <a
-                            href="help-support-2.php"
+                          <Link
+                            to="/helpSupport2"
                             className="text-decoration-none"
                           >
                             <div className="card h-100 heading-card card-hover p-3">
@@ -181,8 +258,8 @@ const HelpSupport = () => {
                                 <p className="help-text-sub">8 articles</p>
                               </div>
                             </div>
-                          </a>
-                        </div>
+                          </Link>
+                        </div> */}
                       </div>
                     </div>
                   </div>

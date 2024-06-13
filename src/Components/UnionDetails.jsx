@@ -26,6 +26,7 @@ const UnionDetails = () => {
   const [branches, setBranches] = useState([]);
   const navigate = useNavigate();
 
+
   useEffect(() => {
     fetchdata(id);
     fetchBranches(id);
@@ -1096,7 +1097,7 @@ const UnionDetails = () => {
                                   data-bs-target="#editModal2"
                                   className="btn btn-size btn-main-primary d-inline-flex"
                                 >
-                                  Edit Branch
+                                  Edit Union
                                 </a>
                               </div>
 
@@ -1258,7 +1259,7 @@ const UnionDetails = () => {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr>
+                                  {/* <tr>
                                     <td scope="row">
                                       <div className="d-flex avatar-holder">
                                         <div className="position-relative">
@@ -1499,6 +1500,11 @@ const UnionDetails = () => {
                                           </li>
                                         </ul>
                                       </div>
+                                    </td>
+                                  </tr> */}
+                                  <tr>
+                                    <td>
+                                      <p className="m-3">No admin has been invited</p>
                                     </td>
                                   </tr>
                                 </tbody>
@@ -1956,15 +1962,15 @@ const UnionDetails = () => {
                 <div className="col-lg-12">
                   <table className="table table-list">
                     <thead className="table-light">
-                      <tr>
+                      {/* <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Date added</th>
                         <th scope="col">Role</th>
                         <th scope="col"></th>
-                      </tr>
+                      </tr> */}
                     </thead>
                     <tbody>
-                      <tr>
+                      {/* <tr>
                         <td scope="row">
                           <div className="d-flex avatar-holder">
                             <div className="position-relative">
@@ -2190,17 +2196,17 @@ const UnionDetails = () => {
                             </ul>
                           </div>
                         </td>
-                      </tr>
+                      </tr> */}
                     </tbody>
                   </table>
                   <table className="table table-list">
                     <thead className="table-light">
-                      <tr>
+                      {/* <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Date added</th>
                         <th scope="col">Role</th>
                         <th scope="col"></th>
-                      </tr>
+                      </tr> */}
                     </thead>
                   </table>
                   <div className="card no-admin-card rounded-0">

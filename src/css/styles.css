@@ -23,7 +23,9 @@ body {
 a {
   color: #001a14;
 }
-
+.message-user {
+  display: block;
+}
 .text-darken {
   color: #001a14 !important;
 }

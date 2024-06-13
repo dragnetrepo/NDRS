@@ -28,7 +28,10 @@ import DisputesDetails from "./Components/DisputesDetails";
 import Documents from "./Components/Documents";
 import Documents2 from "./Components/Documents2";
 import HelpSupport from "./Components/HelpSupport";
+import HelpSupport2 from "./Components/HelpSupport2";
+import HelpSupport3 from "./Components/HelpSupport3";
 import Discussions from "./Components/Discussions";
+import DiscussionsDetails from "./Components/DiscussionsDetails";
 import Reports from "./Components/Reports";
 import Users from "./Components/Users";
 import Branches from "./Components/Branches";
@@ -140,9 +143,17 @@ const App = () => {
           <Route path="/Documents" element={<Documents />} />
           <Route path="/Documents2" element={<Documents2 />} />
           <Route path="/HelpSupport" element={<HelpSupport />} />
+          <Route path="/HelpSupport/:id" element={<HelpSupport2 />} />
+          {/* <Route path="/HelpSupport2" element={<HelpSupport2 />} /> */}
+          <Route path="/HelpSupport3" element={<HelpSupport3 />} />
           <Route path="/Settings" element={<Settings />} />
           <Route path="/Reports" element={<Reports />} />
           <Route path="/Discussions" element={<Discussions />} />
+
+          <Route
+            path="/DiscussionsDetails/:id"
+            element={<DiscussionsDetails />}
+          />
           <Route path="/Notifications" element={<Notifications />} />
           <Route path="/Users" element={<Users />} />
           <Route path="/Branches" element={<Branches />} />
