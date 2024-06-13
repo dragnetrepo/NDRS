@@ -181,467 +181,29 @@ const DiscussionIinc = () => {
                 <div className="position-relative">
                   <div className="avatar-sm flex-shrink-0">
                     <img
-                      src="/images/avatar-2.svg"
+                      src="/images/download.png"
                       className="img-fluid object-position-center object-fit-cover w-100 h-100"
                       alt="Avatar"
                     />
                   </div>
                 </div>
-                <div className="ms-2 flex-grow-1">
-                  <h5 className="mb-0">Stephen Ejiro</h5>
-                </div>
+
               </div>
             </div>
 
             <div className="chat-body flex-grow-1">
               <div className="container-fluid">
-                <div className="messages-container py-5">
-                  <div className="sender">
-                    <div className="message-box message-width message-left mb-3">
-                      <div className="message-inner">
-                        <p className="mb-0">
-                          In publishing and graphic design, Lorem ipsum is a
-                          placeholder text commonly used to demonstrate the
-                          visual form of a document or a typeface without
-                          relying on meaningful content.
-                        </p>
-                      </div>
-                    </div>
-                    <p className="message-user mt-1">
-                      James Daniel <i className="bi bi-dot"></i> 4:59 PM
-                    </p>
-                  </div>
-
-                  <div className="receiver d-flex flex-column align-items-end">
-                    <div className="message-box message-width message-right mb-3">
-                      <div className="message-inner">
-                        <p className="mb-0">
-                          In publishing and graphic design, Lorem ipsum is a
-                          placeholder text commonly used to demonstrate the
-                          visual form of a document or a typeface without
-                          relying on meaningful content.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="message-box message-width message-right mb-3">
-                      <div className="message-inner">
-                        <p className="text-orange text-medium mb-1">
-                          Stephen Ejiro
-                        </p>
-                        <div className="card mb-3 border-0 quote-border">
-                          <div className="card-body">
-                            In publishing and graphic design, Lorem ipsum is a
-                            placeholder text commonly used to demonstrate the
-                            visual form of a document or a typeface without
-                            relying on meaningful content.
-                          </div>
-                        </div>
-                        <p className="mb-0">
-                          In publishing and graphic design, Lorem ipsum is a
-                          placeholder text commonly used to demonstrate the
-                          visual form of a document or a typeface without
-                          relying on meaningful content.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="message-box message-width message-right mb-3">
-                      <div className="message-inner">
-                        <p className="mb-0">
-                          In publishing and graphic design, Lorem ipsum is a
-                          placeholder text commonly used to demonstrate the
-                          visual form of a document or a typeface without
-                          relying on meaningful content.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="message-box message-width message-right mb-3">
-                      <div className="message-inner">
-                        <p className="mb-0">
-                          In publishing and graphic design, Lorem ipsum is a
-                          placeholder text commonly used to demonstrate the
-                          visual form of a document or a typeface without
-                          relying on meaningful content.
-                        </p>
-                      </div>
-                    </div>
-                    <p className="message-user mt-1">
-                      You <i className="bi bi-dot"></i> 4:59 PM
-                    </p>
-                  </div>
-
-                  <div className="receiver d-flex flex-column align-items-end">
-                    <div className="message-box message-width px-0 mb-3">
-                      <div className="card">
-                        <div className="card-body">
-                          <p className="text-medium text-center">
-                            Are we satisfied with the settlement agreement?{" "}
-                          </p>
-
-                          <div className="form-check d-flex align-items-center gap-10 mb-1">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault1"
-                            />
-
-                            <label
-                              className="form-check-label w-100"
-                              htmlFor="flexRadioDefault1"
-                            >
-                              <span className="text-medium">Satisfied</span>
-                              <div
-                                className="progress progress-height"
-                                role="progressbar"
-                                aria-valuenow="15"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                              >
-                                <div
-                                  className="progress-bar bg-success"
-                                  style={{ width: "15%" }}
-                                ></div>
-                              </div>
-                              <span className="d-block text-end text-medium">
-                                50%
-                              </span>
-                            </label>
-                          </div>
-
-                          <div className="form-check d-flex align-items-center gap-10 mb-1">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault2"
-                            />
-
-                            <label
-                              className="form-check-label w-100"
-                              htmlFor="flexRadioDefault2"
-                            >
-                              <span className="text-medium">Not Satisfied</span>
-                              <div
-                                className="progress progress-height"
-                                role="progressbar"
-                                aria-valuenow="45"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                              >
-                                <div
-                                  className="progress-bar bg-success"
-                                  style={{ width: "45%" }}
-                                ></div>
-                              </div>
-                              <span className="d-block text-end text-medium">
-                                30%
-                              </span>
-                            </label>
-                          </div>
-
-                          <div className="form-check d-flex align-items-center gap-10 mb-1">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id="flexRadioDefault3"
-                            />
-
-                            <label
-                              className="form-check-label w-100"
-                              htmlFor="flexRadioDefault3"
-                            >
-                              <span className="text-medium">Not Sure</span>
-                              <div
-                                className="progress progress-height"
-                                role="progressbar"
-                                aria-valuenow="45"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                              >
-                                <div
-                                  className="progress-bar bg-success"
-                                  style={{ width: "45%" }}
-                                ></div>
-                              </div>
-                              <span className="d-block text-end text-medium">
-                                20%
-                              </span>
-                            </label>
-                          </div>
-
-                          <div className="d-flex align-items-center gap-10 justify-content-center mt-3">
-                            <div className="avatars margin-unset">
-                              <div className="avatars__item">
-                                <img
-                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                  src="https://randomuser.me/api/portraits/women/65.jpg"
-                                  alt=""
-                                />
-                              </div>
-
-                              <div className="avatars__item">
-                                <img
-                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                  src="https://randomuser.me/api/portraits/women/66.jpg"
-                                  alt=""
-                                />
-                              </div>
-
-                              <div className="avatars__item">
-                                <img
-                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                  src="https://randomuser.me/api/portraits/women/67.jpg"
-                                  alt=""
-                                />
-                              </div>
-
-                              <div className="avatars__item">
-                                <img
-                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                  src="https://randomuser.me/api/portraits/women/68.jpg"
-                                  alt=""
-                                />
-                              </div>
-
-                              <div className="avatars__item">
-                                <img
-                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                  src="https://randomuser.me/api/portraits/women/69.jpg"
-                                  alt=""
-                                />
-                              </div>
-
-                              <div className="avatars__item d-flex justify-content-center align-items-center ft-sm text-medium">
-                                +10
-                              </div>
-                            </div>
-
-                            <p className="mb-0">
-                              <a
-                                href="#"
-                                className="text-medium text-main-primary text-decoration-none"
-                                data-bs-toggle="modal"
-                                data-bs-target="#resultsModal"
-                              >
-                                View results
-                              </a>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="receiver d-flex flex-column align-items-end mb-3">
-                    <div className="card shadow border-start-custom-1">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center">
-                          <img
-                            src="/images/Misc_icon.svg"
-                            className="img-fluid me-2"
-                            alt="Misc"
-                          />
-                          <span className="text-medium">
-                            Conciliation was successful
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="receiver d-flex flex-column align-items-end mb-3">
-                    <div className="message-box message-width px-0">
-                      <div className="card shadow border-start-custom-2">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center">
-                            <img
-                              src="/images/Misc_icon_2.svg"
-                              className="img-fluid me-2"
-                              alt="Misc"
-                            />
-                            <span className="text-medium">
-                              Conciliation was unsuccessful
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="receiver d-flex flex-column align-items-end mb-3">
-                    <div className="message-box message-width px-0">
-                      <label className="d-block text-medium align-self-start mb-2">
-                        Summary of Concilliation
-                      </label>
-                      <div className="card">
-                        <div className="card-body">
-                          An arbitration decision was reached were both parties
-                          agreed to have the terms of the partnership rewritten
-                          in a a 60% to 40% profile split
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="receiver d-flex flex-column align-items-end">
-                    <div className="message-box message-width message-right mb-3">
-                      <div className="d-flex align-items-center mb-2">
-                        <div className="text-center me-2 flex-shrink-0">
-                          <img
-                            src="/images/pdf-icon.svg"
-                            className="img-fluid"
-                          />
-                        </div>
-                        <div>
-                          <p className="text-bold mb-1">
-                            Settlement Agreement.pdf
-                          </p>
-                          <p className="font-sm text-muted mb-0">
-                            11 Sep, 2023 | 12:24pm . 13MB
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="receiver d-flex flex-column align-items-end">
-                    <div className="message-box message-width px-0 mb-3">
-                      <div className="card">
-                        <div className="card-body">
-                          <h6 className="text-medium text-center">
-                            Scheduled Meeting
-                          </h6>
-
-                          <div>
-                            <div className="mb-3">
-                              <label className="form-label">Title</label>
-                              <input
-                                type="text"
-                                className="form-control form-control-height"
-                                placeholder="Type the title of the meeting"
-                                disabled
-                              />
-                            </div>
-                            <div className="mb-3">
-                              <label className="form-label">Date</label>
-                              <input
-                                type="date"
-                                className="form-control form-control-height"
-                                placeholder="Select a date"
-                                disabled
-                              />
-                            </div>
-                            <div className="mb-3">
-                              <label className="form-label">Location</label>
-                              <input
-                                type="text"
-                                className="form-control form-control-height"
-                                placeholder="Type the location for offline or link for online meetings"
-                                disabled
-                              />
-                            </div>
-                            <div className="row">
-                              <div className="col-lg-6">
-                                <div className="mb-3">
-                                  <label className="form-label">Start</label>
-                                  <select className="form-select form-control-height disabled">
-                                    <option>Select a time</option>
-                                    <option>10am</option>
-                                  </select>
-                                </div>
-                              </div>
-                              <div className="col-lg-6">
-                                <div className="mb-3">
-                                  <label className="form-label">End</label>
-                                  <select className="form-select form-control-height disabled">
-                                    <option>Select a time</option>
-                                    <option>2pm</option>
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="sender">
-                    <div className="message-box message-width px-0 mb-3">
-                      <div className="card bg-light">
-                        <div className="card-body">
-                          <h6 className="text-medium text-center">
-                            Scheduled Meeting
-                          </h6>
-
-                          <div>
-                            <div className="mb-3">
-                              <label className="form-label">Title</label>
-                              <input
-                                type="text"
-                                className="form-control form-control-height"
-                                placeholder="Type the title of the meeting"
-                                disabled
-                              />
-                            </div>
-                            <div className="mb-3">
-                              <label className="form-label">Date</label>
-                              <input
-                                type="date"
-                                className="form-control form-control-height"
-                                placeholder="Select a date"
-                                disabled
-                              />
-                            </div>
-                            <div className="mb-3">
-                              <label className="form-label">Location</label>
-                              <input
-                                type="text"
-                                className="form-control form-control-height"
-                                placeholder="Type the location for offline or link for online meetings"
-                                disabled
-                              />
-                            </div>
-                            <div className="row">
-                              <div className="col-lg-6">
-                                <div className="mb-3">
-                                  <label className="form-label">Start</label>
-                                  <select
-                                    className="form-select form-control-height"
-                                    disabled
-                                  >
-                                    <option>Select a time</option>
-                                    <option>10am</option>
-                                  </select>
-                                </div>
-                              </div>
-                              <div className="col-lg-6">
-                                <div className="mb-3">
-                                  <label className="form-label">End</label>
-                                  <select
-                                    className="form-select form-control-height"
-                                    disabled
-                                  >
-                                    <option>Select a time</option>
-                                    <option>2pm</option>
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div className="d-flex align-items-center justify-content-center" style={{
+                  height: '400px'
+                }}
+                >
+                  <h3>Start a conversation
+                  </h3>
                 </div>
               </div>
             </div>
 
-            <div className="chat-footer d-flex align-items-center justify-content-between bg-custom-color-2 px-3 gap-15 py-2">
+            {/* <div className="chat-footer d-flex align-items-center justify-content-between bg-custom-color-2 px-3 gap-15 py-2">
               <a href="#">
                 <img src="/images/file-upload.svg" className="img-fluid" />
               </a>
@@ -733,10 +295,10 @@ const DiscussionIinc = () => {
               <a onClick={(e) => handleSendMessages(e)}>
                 <img src="/images/send.svg" className="img-fluid" />
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
-        <div className="discuss-3 flex-shrink-0 p-3">
+        {/* <div className="discuss-3 flex-shrink-0 p-3">
           <div className="d-flex justify-content-between align-items-center avatar-icon w-100 mb-4">
             <div className="d-flex avatar-holder">
               <div className="position-relative">
@@ -948,8 +510,10 @@ const DiscussionIinc = () => {
               Pending
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
+
+
     </>
   );
 };

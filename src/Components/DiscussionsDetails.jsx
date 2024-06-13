@@ -296,7 +296,7 @@ const DiscussionIinc = () => {
                     <div className="container-fluid">
                       <div className="messages-container py-5">
                         {discussionMessages.map((item) =>
-                          <div key={item._id} className={item.sender.sender === 'You' ? 'd-flex justify-content-end' : ''}>
+                          <div key={item._id} className={item.sender.sender === 'You' ? 'd-flex flex-column align-items-end ' : 'd-flex flex-column align-items-start'}>
                             <div className={`message-box message-width ${item.sender.sender === 'You' ? 'message-right' : 'message-left'} mb-3`}>
                               <div className="message-inner">
                                 <p className="mb-0" >
@@ -1250,6 +1250,8 @@ const DiscussionIinc = () => {
           </div>
         </div>
       </div>
+
+
     </>
   );
 };
