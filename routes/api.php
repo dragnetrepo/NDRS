@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\Case\FolderController;
 use App\Http\Controllers\Api\Post\PostCategoryController;
 use App\Http\Controllers\Api\Post\PostController;
 use App\Http\Controllers\Api\User\NotificationController;
-use App\Http\Controllers\Api\User\SearchController;
+use App\Http\Controllers\Api\User\DashboardController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Auth\AuthenticationController;
 use Illuminate\Http\Request;
@@ -210,7 +210,8 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             });
         });
 
-        Route::get("search", [SearchController::class, "search"])->name("industries");
+        Route::get("dashboard", [DashboardController::class, "index"])->name("dashboard");
+        Route::get("search", [DashboardController::class, "search"])->name("search");
         Route::get("get-industries", [UserController::class, "industries"])->name("industries");
         Route::get("/settings/{auth}", [NotificationController::class, "settings"])->name("auth-settings");
         Route::post("/send-message", [ProfileController::class, "send_message"])->name("send-message");

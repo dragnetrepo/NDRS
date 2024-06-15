@@ -16,6 +16,11 @@ class CaseDispute extends Model
         "internally resolved", "concilliation", "voting for panel", "resolved", "internal resolution", "pending approval", "arbitration", "court decision"
     ];
 
+    public function scopePending($query)
+    {
+        return $query->where("status", "pending approval");
+    }
+
     public function involved_parties()
     {
         return $this->hasMany(CaseUserRoles::class, 'case_id');

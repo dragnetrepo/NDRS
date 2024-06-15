@@ -41,7 +41,17 @@ class DocumentController extends Controller
                 $query->where("folder_id", $folder_id);
             })->when(($case_id > 0), function($query) use ($case_id) {
                 $query->where("case_id", $case_id);
-            })->get();
+            })->when(!$case_id, function($query) use ($user_id) {
+                $query->where(function($query) use ($user_id) {
+                    $query->where("user_id", $user_id)->orwhereHas('dispute', function($sub_query) use ($user_id) {
+                        $sub_query->whereHas('involved_parties', function($query) use ($user_id) {
+                            $query->where("user_id", $user_id);
+                        })
+                        ->orWhere('created_by', $user_id);
+                    });
+                });
+            })
+            ->get();
 
             if ($case_documents->isNotEmpty()) {
                 foreach ($case_documents as $document) {

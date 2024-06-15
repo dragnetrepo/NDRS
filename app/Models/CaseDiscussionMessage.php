@@ -16,4 +16,9 @@ class CaseDiscussionMessage extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function discussion()
+    {
+        return $this->belongsTo(CaseDiscussion::class, "cd_id");
+    }
 }

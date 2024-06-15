@@ -417,7 +417,7 @@ if (!function_exists("get_user_notifications")) {
                 $query->where("is_read", true);
             }
         })
-        ->orderBy("created_at", "asc")
+        ->orderBy("created_at", "desc")
         ->paginate($perPage);
     }
 }
