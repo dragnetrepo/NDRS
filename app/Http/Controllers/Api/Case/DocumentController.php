@@ -168,7 +168,7 @@ class DocumentController extends Controller
 
         if ($dispute) {
             $document = CaseDocument::where("id", $request->document_id)->when($case_id, function($query)  use ($case_id) {
-                $query("case_id", $case_id);
+                $query->where("case_id", $case_id);
             })->first();
 
             if ($document) {

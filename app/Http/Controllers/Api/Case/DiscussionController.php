@@ -32,7 +32,7 @@ class DiscussionController extends Controller
         $admin_user = user_is_admin();
         $user_id = request()->user()->id;
 
-        $group_discussions = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
+        $group_discussions = CaseDiscussion::when((!$admin_user && false), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
             })->orWhereHas('dispute', function($sub_query) use ($user_id) {
@@ -118,7 +118,7 @@ class DiscussionController extends Controller
         $admin_user = user_is_admin();
         $user_id = request()->user()->id;
 
-        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
+        $discussion = CaseDiscussion::when((!$admin_user && false), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
             });
@@ -127,7 +127,7 @@ class DiscussionController extends Controller
         ->first();
 
         if ($discussion) {
-            $messages = CaseDiscussionMessage::where("cd_id", $discussion->id)->orderBy("id", "desc")->paginate(50);
+            $messages = CaseDiscussionMessage::where("cd_id", $discussion->id)->orderBy("id", "asc")->paginate(50);
             $data = [];
 
             if ($messages->isNotEmpty()) {
@@ -199,6 +199,24 @@ class DiscussionController extends Controller
                     }
 
                     if (!empty($message_data)) {
+                        $user = $message->user;
+
+                        if ($user) {
+                            if ($user->id == $user_id) {
+                                $sender_info = [
+                                    "sender" => "You",
+                                    "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
+                                ];
+                            }
+                            else {
+                                $sender_info = [
+                                    "sender" => trim($user->first_name.' '.$user->last_name),
+                                    "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
+                                ];
+                            }
+
+                            $message_data["sender"] = $sender_info;
+                        }
                         $message_data["_id"] = $message->id;
                         $message_data["time_sent"] = $message->created_at->format("h:i");
                         $data[] = $message_data;
@@ -220,7 +238,7 @@ class DiscussionController extends Controller
         $admin_user = user_is_admin();
         $user_id = request()->user()->id;
 
-        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
+        $discussion = CaseDiscussion::when((!$admin_user && false), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
             });
@@ -307,7 +325,7 @@ class DiscussionController extends Controller
         $user_id = request()->user()->id;
         $form_error_msg = [];
 
-        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
+        $discussion = CaseDiscussion::when((!$admin_user && false), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
             });
@@ -379,7 +397,7 @@ class DiscussionController extends Controller
         $user_id = request()->user()->id;
         $form_error_msg = [];
 
-        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
+        $discussion = CaseDiscussion::when((!$admin_user && false), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
             });

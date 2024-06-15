@@ -174,14 +174,14 @@ class FolderController extends Controller
         $all_folders = CaseFolder::where("case_id", 0)->where("user_id", $user_id)->union($case_folders)->get();
         if ($all_folders->isNotEmpty()) {
             foreach ($all_folders as $folder) {
-                $last_modified = Carbon::parse($folder->updated_at)->format("jS F Y, h:ia");
+                $last_modified = Carbon::parse($folder->updated_at)->format("F M Y");
                 $document_data = $folder->documents;
 
                 if ($document_data->count()) {
                     $document = $document_data->last();
 
                     if ($document) {
-                        $last_modified = Carbon::parse($document->updated_at)->format("jS F Y, h:ia");
+                        $last_modified = Carbon::parse($document->updated_at)->format("F M Y");
                     }
                 }
 
@@ -189,7 +189,7 @@ class FolderController extends Controller
                     "_id" => $folder->id,
                     "name" => $folder->folder_name,
                     "number_of_files" => $document_data->count(),
-                    "size" => $document_data->sum('doc_size'),
+                    "size" => format_bytes($document_data->sum('doc_size')),
                     "last_modified" => $last_modified,
                 ];
             }
