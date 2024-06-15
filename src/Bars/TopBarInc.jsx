@@ -12,14 +12,19 @@ const TopBarInc = () => {
   const [endDate, setEndDate] = useState('');
   const [orderBy, setOrderBy] = useState('');
   const [error, setError] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState({
+    branches: { count: 0, data: [] },
+    disputes: { count: 0, data: [] },
+    documents: { count: 0, data: [] },
+    'sub branches': { count: 0, data: [] },
+    unions: { count: 0, data: [] },
+    users: { count: 0, data: [] }
+  });
 
   useEffect(() => {
     fetchdata();
-
-    fetchSearch()
-
-  }, []);
+    fetchSearch();
+  }, [query, docType, caseStatus, startDate, endDate, orderBy]);
   const fetchdata = async () => {
     try {
 
@@ -74,7 +79,7 @@ const TopBarInc = () => {
       }
 
       const data = await res.json();
-      setsearch(data.data);
+      setSearchResults(data.data);
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
@@ -199,13 +204,15 @@ const TopBarInc = () => {
                         src="/images/search.svg"
                         className="img-fluid"
                         alt="search"
+
                       />
                     </span>
                     <input
                       type="search"
                       className="form-control border-start-0 form-control-height"
-                      placeholder="Search disputes..."
+                      placeholder="Search..."
                       value={query}
+                      onClick={fetchSearch}
                       onChange={(e) => setQuery(e.target.value)}
                     />
                   </div>
@@ -348,136 +355,53 @@ const TopBarInc = () => {
                 )}
               </div>
 
-              <ul
-                className="nav custom-tab nav-underline mb-3"
-                id="pills-tab"
-                role="tablist"
-              >
+              <ul className="nav custom-tab nav-underline mb-3" id="pills-tab" role="tablist">
                 <li className="nav-item" role="presentation">
-                  <button
-                    className="nav-link active"
-                    id="pills-all-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-all"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-all"
-                    aria-selected="true"
-                  >
-                    All (100)
-                  </button>
+                  <button className="nav-link active" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button" role="tab" aria-controls="pills-all" aria-selected="true">All <span className="badge badge-main rounded-pill">{searchResults.disputes.count + searchResults.documents.count + searchResults.users.count + searchResults.documents.count + searchResults.branches.count + searchResults.users.count + searchResults.unions.count + searchResults['sub branches'].count}</span></button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button
-                    className="nav-link"
-                    id="pills-pdf-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-pdf"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-pdf"
-                    aria-selected="false"
-                  >
-                    PDF (23)
-                  </button>
+                  <button className="nav-link" id="pills-disputes-tab" data-bs-toggle="pill" data-bs-target="#pills-disputes" type="button" role="tab" aria-controls="pills-disputes" aria-selected="false">Disputes <span className="badge badge-main rounded-pill">{searchResults.disputes.count}</span></button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button
-                    className="nav-link"
-                    id="pills-png-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-png"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-png"
-                    aria-selected="false"
-                  >
-                    PNG (43)
-                  </button>
+                  <button className="nav-link" id="pills-doc-tab" data-bs-toggle="pill" data-bs-target="#pills-doc" type="button" role="tab" aria-controls="pills-doc" aria-selected="false">Documents <span className="badge badge-main rounded-pill">{searchResults.documents.count}</span></button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button
-                    className="nav-link"
-                    id="pills-xls-tab"
-                    data-bs-toggle="pill"
-                    data-bs-target="#pills-xls"
-                    type="button"
-                    role="tab"
-                    aria-controls="pills-xls"
-                    aria-selected="false"
-                  >
-                    XLS (12)
-                  </button>
+                  <button className="nav-link" id="pills-users-tab" data-bs-toggle="pill" data-bs-target="#pills-users" type="button" role="tab" aria-controls="pills-users" aria-selected="false">Users <span className="badge badge-main rounded-pill">{searchResults.users.count}</span></button>
+                </li>
+                <li className="nav-item" role="presentation">
+                  <button className="nav-link" id="pills-union-tab" data-bs-toggle="pill" data-bs-target="#pills-union" type="button" role="tab" aria-controls="pills-union" aria-selected="false">Unions <span className="badge badge-main rounded-pill">{searchResults.unions.count}</span></button>
+                </li>
+                <li className="nav-item" role="presentation">
+                  <button className="nav-link" id="pills-companies-tab" data-bs-toggle="pill" data-bs-target="#pills-companies" type="button" role="tab" aria-controls="pills-companies" aria-selected="false">Companies <span className="badge badge-main rounded-pill">{searchResults.branches.count + searchResults['sub branches'].count + searchResults.unions.count}</span></button>
                 </li>
               </ul>
 
-              <div className="tab-content" id="pills-tabContent">
-                <div
-                  className="tab-pane fade show active"
-                  id="pills-all"
-                  role="tabpanel"
-                  aria-labelledby="pills-all-tab"
-                >
-                  <div className="row g-4">
-                    {/* Iterate through searchResults and display them here */}
-                    {searchResults.map((result, index) => (
-                      <div key={index} className="col-lg-4">
-                        <div className="card">
-                          <div className="card-body">
-                            <h5 className="card-title">{result.title}</h5>
-                            <p className="card-text">{result.description}</p>
+              <div className="tab-content" id="pills-tabContent" style={{ height: "300px", overflow: 'auto' }}>
+                {Object.entries(searchResults).map(([category, results]) => (
+                  <div className="tab-pane fade show active" id={`pills-${category}`} role="tabpanel" aria-labelledby={`pills-${category}-tab`} key={category}>
+                    <div className="mt-4 overflow-auto">
+                      {Array.isArray(results.data) && results.data.length > 0 && (
+                        results.data.map((result, index) => (
+                          <div className="d-flex avatar-holder py-4 border-bottom" key={index}>
+                            <div className="position-relative">
+                              <img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
+                              <div className="avatar-sm flex-shrink-0">
+                                <img src={result.logo || "images/pdf-icon.svg"} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+                              </div>
+                            </div>
+                            <div className="ms-2 flex-grow-1">
+                              <h5 className="mb-0">{result.name || result.document_name}</h5>
+                              <p className="mb-0 text-muted-3">in {category.replace('_', ' ')}</p>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    ))}
+                        ))
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div
-                  className="tab-pane fade"
-                  id="pills-pdf"
-                  role="tabpanel"
-                  aria-labelledby="pills-pdf-tab"
-                >
-                  <div className="row g-4">
-                    {/* Filter and display PDF results here */}
-                  </div>
-                </div>
-                <div
-                  className="tab-pane fade"
-                  id="pills-png"
-                  role="tabpanel"
-                  aria-labelledby="pills-png-tab"
-                >
-                  <div className="row g-4">
-                    {/* Filter and display PNG results here */}
-                  </div>
-                </div>
-                <div
-                  className="tab-pane fade"
-                  id="pills-xls"
-                  role="tabpanel"
-                  aria-labelledby="pills-xls-tab"
-                >
-                  <div className="row g-4">
-                    {/* Filter and display XLS results here */}
-                  </div>
-                </div>
+                ))}
               </div>
 
-              <div className="text-end mt-4">
-                <button
-                  className="btn btn-main-primary"
-                  onClick={fetchSearch}
-                >
-                  Search
-                </button>
-              </div>
 
-              {error && (
-                <div className="alert alert-danger mt-4" role="alert">
-                  {error}
-                </div>
-              )}
             </div>
           </div>
         </div>

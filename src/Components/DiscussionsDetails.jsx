@@ -16,12 +16,16 @@ const DiscussionIinc = () => {
     type: "text",
     message: "",
   });
+
+
   const [selectedFile, setSelectedFile] = useState({
     document: "", // This will store the object URL of the selected file for preview
     file: null, // This will store the actual file object
     reply_to: "2" // Example initial value for reply_to
   });
-
+  const [pollQuestion, setPollQuestion] = useState("");
+  const [pollOptions, setPollOptions] = useState([""]);
+  const [anonVoting, setAnonVoting] = useState(false);
 
 
   useEffect(() => {
@@ -91,8 +95,16 @@ const DiscussionIinc = () => {
     console.log(messages);
   };
 
-  const handleSendMessages = async (e, id) => {
-    e.preventDefault();
+  const onkeyPress = (e) => {
+
+    if (e.key === 'Enter') {
+
+      handleSendMessages(id)
+    }
+  }
+
+  const handleSendMessages = async (id) => {
+
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
       const token = localStorage.getItem("token");
@@ -143,6 +155,58 @@ const DiscussionIinc = () => {
     }
   };
 
+  const handlePoll = async (e, id) => {
+    e.preventDefault()
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const pollData = {
+        type: "poll",
+        poll_question: pollQuestion,
+        poll_options: pollOptions.filter(option => option.trim() !== ""),
+        anon_voting: anonVoting
+      };
+
+      const res = await fetch(
+        baseUrl + `/api/case/discussions/${id}/send-message`,
+        {
+          method: "POST",
+          headers: {
+            "content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(pollData),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json()
+
+
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const addPollOption = () => {
+    setPollOptions([...pollOptions, ""]);
+  };
+
+  const handlePollOptionChange = (index, value) => {
+    const newPollOptions = [...pollOptions];
+    newPollOptions[index] = value;
+    setPollOptions(newPollOptions);
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0]; // Get the file from input
 
@@ -156,9 +220,6 @@ const DiscussionIinc = () => {
 
     console.log(selectedFile); // Log the selectedFile state for information
   };
-
-
-  console.log(selectedFile);
 
   const handleUpload = async (e, id) => {
     e.preventDefault();
@@ -403,10 +464,11 @@ const DiscussionIinc = () => {
                         name="message"
                         value={messages.message}
                         onChange={onHandleChange}
+                        onKeyDown={onkeyPress}
                       />
                     </div>
 
-                    <a onClick={(e) => handleSendMessages(e, id)}>
+                    <a onClick={() => handleSendMessages(id)} >
                       <img src="/images/send.svg" className="img-fluid" />
                     </a>
                   </div>
@@ -642,19 +704,22 @@ const DiscussionIinc = () => {
           <div className="modal-content p-lg-4 border-0">
             <div className="modal-header justify-content-between">
               <h1 className="modal-title fs-5">Create poll</h1>
-
               <div className="gap-10 d-flex align-items-center">
                 <button
-                  className="btn btn btn-size btn-main-outline-primary px-3"
+                  className="btn btn-size btn-main-outline-primary px-3"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 >
                   Cancel
                 </button>
-
-                <a href="#" className="btn btn-main-primary btn-size px-3">
+                <button
+                  className="btn btn-main-primary btn-size px-3"
+                  onClick={handlePoll}
+                // data-bs-dismiss="modal"
+                // aria-label="Close"
+                >
                   Save
-                </a>
+                </button>
               </div>
             </div>
             <div className="modal-body">
@@ -665,37 +730,42 @@ const DiscussionIinc = () => {
                     type="text"
                     className="form-control form-control-height"
                     placeholder="Ask a question"
+                    value={pollQuestion}
+                    onChange={(e) => setPollQuestion(e.target.value)}
                   />
                 </div>
                 <div className="col-lg-12">
                   <p>
-                    <a
-                      href="#"
-                      className="text-medium text-main-primary text-decoration-none"
+                    <button
+                      className="btn text-medium text-main-primary text-decoration-none"
+                      onClick={addPollOption}
                     >
                       Add poll option <i className="bi bi-plus"></i>
-                    </a>
+                    </button>
                   </p>
                 </div>
-                <div className="col-lg-12 mb-3">
-                  <label className="form-label">Poll option 1</label>
-                  <input
-                    type="text"
-                    className="form-control form-control-height"
-                    placeholder="Type in a poll option"
-                  />
-                </div>
+                {pollOptions.map((option, index) => (
+                  <div className="col-lg-12 mb-3" key={index}>
+                    <label className="form-label">Poll option {index + 1}</label>
+                    <input
+                      type="text"
+                      className="form-control form-control-height"
+                      placeholder="Type in a poll option"
+                      value={option}
+                      onChange={(e) => handlePollOptionChange(index, e.target.value)}
+                    />
+                  </div>
+                ))}
                 <div className="col-lg-12">
                   <div className="mb-3 form-check">
                     <input
                       type="checkbox"
                       className="form-check-input"
                       id="Check1"
+                      checked={anonVoting}
+                      onChange={(e) => setAnonVoting(e.target.checked)}
                     />
-                    <label
-                      className="form-check-label text-medium"
-                      htmlFor="=Check1"
-                    >
+                    <label className="form-check-label text-medium" htmlFor="Check1">
                       Enable anonymous voting
                     </label>
                   </div>
