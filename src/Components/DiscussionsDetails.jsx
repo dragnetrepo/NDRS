@@ -1,5 +1,5 @@
 import { type } from "@testing-library/user-event/dist/type";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
@@ -16,22 +16,27 @@ const DiscussionIinc = () => {
     type: "text",
     message: "",
   });
-
-
-  const [selectedFile, setSelectedFile] = useState({
-    document: "", // This will store the object URL of the selected file for preview
-    file: null, // This will store the actual file object
-    reply_to: "2" // Example initial value for reply_to
-  });
+  const [selectedFile, setSelectedFile] = useState(null);
   const [pollQuestion, setPollQuestion] = useState("");
   const [pollOptions, setPollOptions] = useState([""]);
-  const [anonVoting, setAnonVoting] = useState(false);
+  const [anonVoting, setAnonVoting] = useState(0);
+  const [meetingTitle, setMeetingTitle] = useState("");
+  const [meetingDate, setMeetingDate] = useState("");
+  const [meetingLocation, setMeetingLocation] = useState("");
+  const [meetingStartTime, setMeetingStartTime] = useState("");
+  const [meetingEndTime, setMeetingEndTime] = useState("");
+  const messagesEndRef = useRef(null);
+
+
 
 
   useEffect(() => {
     fetchDiscussions();
     fetchDiscussionsMessages(id);
+
   }, [id]);
+
+
 
   const fetchDiscussions = async () => {
     try {
@@ -104,51 +109,54 @@ const DiscussionIinc = () => {
   }
 
   const handleSendMessages = async (id) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("User is not logged in.");
+      return;
+    }
+
+
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        throw new Error("User is not logged in."); // Handle case where user is not logged in
-      }
-
       const res = await fetch(
         baseUrl + `/api/case/discussions/${id}/send-message`,
         {
           method: "POST",
           headers: {
-            "content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
           },
           body: JSON.stringify(messages),
         }
       );
 
       if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
+        throw new Error("Failed to fetch data.");
       }
 
       const data = await res.json();
 
+      const newMessage = {
+        _id: data.data?._id || `local-${Date.now()}`,
+        sender: { sender: 'You' },
+        message: messages.message,
+        time_sent: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+        type: messages.type
+      };
+
       setDiscussionsMessages((prevMessages) => [
         ...prevMessages,
-        {
-          _id: data.data?._id || `local-${Date.now()}`,
-          sender: { sender: 'You' }, // Assuming 'You' is the current user
-          message: messages.message,
-          time_sent: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
-        },
+        newMessage
       ]);
+
+
 
       setMessages({
         type: "text",
-        message: "",
+        message: ""
       });
 
-
-
-      // setDiscussionsMessages(data.data);
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
@@ -207,53 +215,131 @@ const DiscussionIinc = () => {
     setPollOptions(newPollOptions);
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]; // Get the file from input
+  const handleMeeting = async (e, id) => {
+    e.preventDefault()
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
 
-    // Create object URL for previewing the file
-    const doc = URL.createObjectURL(file);
-    setSelectedFile({
-      document: doc,
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
 
-      reply_to: selectedFile.reply_to // Keep reply_to from previous state
-    });
+      const meetingData = {
+        type: "meeting",
+        meeting_title: meetingTitle,
+        meeting_date: meetingDate,
+        meeting_location: meetingLocation,
+        meeting_start_time: meetingStartTime,
+        meeting_end_time: meetingEndTime
+      };
 
-    console.log(selectedFile); // Log the selectedFile state for information
+      const res = await fetch(
+        baseUrl + `/api/case/discussions/${id}/send-message`,
+        {
+          method: "POST",
+          headers: {
+            "content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(meetingData),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json()
+
+
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
   };
 
   const handleUpload = async (e, id) => {
-    e.preventDefault();
-
+    e.preventDefault()
     try {
-      // Ensure that e.target.files is defined and contains at least one file
-      if (!e.target.files || e.target.files.length === 0) {
-        throw new Error("No file uploaded");
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
       }
 
-      const file = e.target.files[0];
-      const formData = new FormData();
-      formData.append('file', file);
+      const meetingData = {
+        type: "meeting",
+        meeting_title: meetingTitle,
+        meeting_date: meetingDate,
+        meeting_location: meetingLocation,
+        meeting_start_time: meetingStartTime,
+        meeting_end_time: meetingEndTime
+      };
 
-      const response = await fetch(baseUrl + `/api/case/discussions/${id}/upload-document`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: formData,
-      });
+      const res = await fetch(
+        baseUrl + `/api/case/discussions/${id}/send-message`,
+        {
+          method: "POST",
+          headers: {
+            "content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(meetingData),
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
       }
 
-      const result = await response.json();
-      console.log(result);
-      alert("File uploaded successfully!");
+      const data = await res.json()
+
+
+      console.log(data);
     } catch (error) {
-      console.error("There was a problem with the upload:", error);
-      alert("File upload failed!");
+      console.error("Error fetching data:", error.message);
     }
   };
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  // const handleUpload = async (e, id) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     // Ensure that e.target.files is defined and contains at least one file
+  //     if (!e.target.files || e.target.files.length === 0) {
+  //       throw new Error("No file uploaded");
+  //     }
+
+  //     const file = e.target.files[0];
+  //     const formData = new FormData();
+  //     formData.append('file', file);
+
+  //     const response = await fetch(baseUrl + `/api/case/discussions/${id}/upload-document`, {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //       body: formData,
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+
+  //     const result = await response.json();
+  //     console.log(result);
+  //     alert("File uploaded successfully!");
+  //   } catch (error) {
+  //     console.error("There was a problem with the upload:", error);
+  //     alert("File upload failed!");
+  //   }
+  // };
 
 
   return (
@@ -357,18 +443,94 @@ const DiscussionIinc = () => {
                     <div className="container-fluid">
                       <div className="messages-container py-5">
                         {discussionMessages.map((item) =>
-                          <div key={item._id} className={item.sender.sender === 'You' ? 'd-flex flex-column align-items-end ' : 'd-flex flex-column align-items-start'}>
-                            <div className={`message-box message-width ${item.sender.sender === 'You' ? 'message-right' : 'message-left'} mb-3`}>
-                              <div className="message-inner">
-                                <p className="mb-0" >
-                                  {item.message}
+                          <div key={item._id} className={item.sender.sender === 'You' ? 'd-flex flex-column align-items-end' : 'd-flex flex-column align-items-start'}>
+                            {item.type === 'text' ? (
+                              <div className={`message-box message-width ${item.sender.sender === 'You' ? 'message-right' : 'message-left'} mb-3`}>
+                                <div className="message-inner">
+                                  <p className="mb-0">
+                                    {item.message}
+                                  </p>
+                                </div>
+                                <p className="message-user mt-1">
+                                  {item.sender.sender} <i className="bi bi-dot"></i> {item.time_sent}
                                 </p>
                               </div>
-                            </div>
-                            <p className="message-user mt-1">
-                              {item.sender.sender} <i className="bi bi-dot"></i> {item.time_sent}
-                            </p>
-
+                            ) : item.type === 'meeting' ? (
+                              <div className="receiver d-flex flex-column align-items-end">
+                                <div className="message-box message-width px-0 mb-3">
+                                  <div className="card">
+                                    <div className="card-body">
+                                      <h6 className="text-medium text-center">Scheduled Meeting</h6>
+                                      <div>
+                                        <div className="mb-3">
+                                          <label className="form-label">Title</label>
+                                          <input type="text" className="form-control form-control-height" value={item.message.title} disabled />
+                                        </div>
+                                        <div className="mb-3">
+                                          <label className="form-label">Date</label>
+                                          <input type="text" className="form-control form-control-height" value={item.message.date} disabled />
+                                        </div>
+                                        <div className="mb-3">
+                                          <label className="form-label">Location</label>
+                                          <input type="text" className="form-control form-control-height" value={item.message.location} disabled />
+                                        </div>
+                                        <div className="row">
+                                          <div className="col-lg-6">
+                                            <div className="mb-3">
+                                              <label className="form-label">Start</label>
+                                              <input type="text" className="form-control form-control-height" value={item.message.start_time} disabled />
+                                            </div>
+                                          </div>
+                                          <div className="col-lg-6">
+                                            <div className="mb-3">
+                                              <label className="form-label">End</label>
+                                              <input type="text" className="form-control form-control-height" value={item.message.end_time} disabled />
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : item.type === 'poll' ? (
+                              <div className="receiver d-flex flex-column align-items-end">
+                                <div className="message-box message-width px-0 mb-3">
+                                  <div className="card">
+                                    <div className="card-body">
+                                      <p className="text-medium text-center">{item.message.question}</p>
+                                      {item.message.vote_results && Object.entries(item.message.vote_results).map(([option, result], index) => (
+                                        <div key={index} className="form-check d-flex align-items-center gap-10 mb-1">
+                                          <input className="form-check-input" type="radio" name={`poll-${item._id}`} id={`poll-${item._id}-${option}`} />
+                                          <label className="form-check-label w-100" htmlFor={`poll-${item._id}-${option}`}>
+                                            <span className="text-medium">{option.charAt(0).toUpperCase() + option.slice(1)}</span>
+                                            <div className="progress progress-height" role="progressbar" aria-valuenow={parseInt(result.percentage)} aria-valuemin="0" aria-valuemax="100">
+                                              <div className="progress-bar bg-success" style={{ width: result.percentage }}></div>
+                                            </div>
+                                            <span className="d-block text-end text-medium">{result.percentage}</span>
+                                          </label>
+                                        </div>
+                                      ))}
+                                      <div className="d-flex align-items-center gap-10 justify-content-center mt-3">
+                                        <div className="avatars margin-unset">
+                                          {item.message.vote_results && Object.values(item.message.vote_results).map((result, idx) =>
+                                            result.voters.map((voter, idy) => (
+                                              <div key={`${idx}-${idy}`} className="avatars__item">
+                                                <img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src={voter.photo} alt="" />
+                                              </div>
+                                            ))
+                                          )}
+                                          <div className="avatars__item d-flex justify-content-center align-items-center ft-sm text-medium">
+                                            +10
+                                          </div>
+                                        </div>
+                                        <p className="mb-0"><a href="#" className="text-medium text-main-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#resultsModal">View results</a></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : null}
                           </div>
                         )}
 
@@ -714,9 +876,9 @@ const DiscussionIinc = () => {
                 </button>
                 <button
                   className="btn btn-main-primary btn-size px-3"
-                  onClick={handlePoll}
-                // data-bs-dismiss="modal"
-                // aria-label="Close"
+                  onClick={(e) => handlePoll(e, id)}
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
                 >
                   Save
                 </button>
@@ -1262,9 +1424,13 @@ const DiscussionIinc = () => {
           <div className="modal-content p-lg-4 border-0">
             <div className="modal-header justify-content-between">
               <h1 className="modal-title fs-5">Schedule meeting</h1>
-
               <div className="gap-10 d-flex align-items-center">
-                <button className="btn btn-main-primary btn-size px-3">
+                <button
+                  className="btn btn-main-primary btn-size px-3"
+                  onClick={(e) => handleMeeting(e, id)}
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
                   Post meeting
                 </button>
               </div>
@@ -1277,6 +1443,8 @@ const DiscussionIinc = () => {
                     type="text"
                     className="form-control form-control-height"
                     placeholder="Type the title of the meeting"
+                    value={meetingTitle}
+                    onChange={(e) => setMeetingTitle(e.target.value)}
                   />
                 </div>
                 <div className="mb-3">
@@ -1285,6 +1453,8 @@ const DiscussionIinc = () => {
                     type="date"
                     className="form-control form-control-height"
                     placeholder="Select a date"
+                    value={meetingDate}
+                    onChange={(e) => setMeetingDate(e.target.value)}
                   />
                 </div>
                 <div className="mb-3">
@@ -1293,24 +1463,44 @@ const DiscussionIinc = () => {
                     type="text"
                     className="form-control form-control-height"
                     placeholder="Type the location for offline or link for online meetings"
+                    value={meetingLocation}
+                    onChange={(e) => setMeetingLocation(e.target.value)}
                   />
                 </div>
                 <div className="row">
                   <div className="col-lg-6">
                     <div className="mb-3">
                       <label className="form-label">Start</label>
-                      <select className="form-select form-control-height">
+                      <select
+                        className="form-select form-control-height"
+                        value={meetingStartTime}
+                        onChange={(e) => setMeetingStartTime(e.target.value)}
+                      >
                         <option>Select a time</option>
-                        <option>10am</option>
+                        <option>10:00 AM</option>
+                        <option>11:00 AM</option>
+                        <option>12:00 PM</option>
+                        <option>1:00 PM</option>
+                        <option>2:00 PM</option>
+                        <option>3:00 PM</option>
                       </select>
                     </div>
                   </div>
                   <div className="col-lg-6">
                     <div className="mb-3">
                       <label className="form-label">End</label>
-                      <select className="form-select form-control-height">
+                      <select
+                        className="form-select form-control-height"
+                        value={meetingEndTime}
+                        onChange={(e) => setMeetingEndTime(e.target.value)}
+                      >
                         <option>Select a time</option>
-                        <option>2pm</option>
+                        <option>11:00 AM</option>
+                        <option>12:00 PM</option>
+                        <option>1:00 PM</option>
+                        <option>2:00 PM</option>
+                        <option>3:00 PM</option>
+                        <option>4:00 PM</option>
                       </select>
                     </div>
                   </div>

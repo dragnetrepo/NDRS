@@ -1,10 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TopBarInc from "../Bars/TopBarInc";
 import MainNavbarInc from "../Bars/MainNavbarInc";
-
-
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
+  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+
+  const [discussion, setDiscussions] = useState([]);
+  const [user, setuser] = useState([]);
+
+
+  useEffect(() => {
+    fetchdata()
+    fetchDiscussions();
+  }, []);
+
+
+  const fetchdata = async () => {
+    try {
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + "/api/user-profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setuser(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const fetchDiscussions = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + "/api/case/discussions", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setDiscussions(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
 
   return (
     <>
@@ -20,7 +83,7 @@ const Dashboard = () => {
               <div className="header-box py-5">
                 <div className="container">
                   <p>Wednesday, March 6th</p>
-                  <h2>Good afternoon, Simon</h2>
+                  <h2>Good afternoon, {user.first_name}</h2>
                 </div>
               </div>
 
@@ -113,12 +176,12 @@ const Dashboard = () => {
 
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         <h4 className="mb-0 heading-4">Reports</h4>
-                        <a
-                          href="/reports"
+                        <Link
+                          to="/reports"
                           className="text-main-primary text-decoration-none text-medium"
                         >
                           Show all
-                        </a>
+                        </Link>
                       </div>
 
                       <div className="card p-lg-4 mb-5">
@@ -153,12 +216,12 @@ const Dashboard = () => {
 
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         <h4 className="mb-0 heading-4">Notifications</h4>
-                        <a
-                          href="notifications"
+                        <Link
+                          to="/notifications"
                           className="text-main-primary text-decoration-none text-medium"
                         >
                           Show all
-                        </a>
+                        </Link>
                       </div>
 
                       <div className="card p-lg-1 mb-5">
@@ -248,162 +311,53 @@ const Dashboard = () => {
                       <div className="mb-4">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                           <h4 className="mb-0 heading-4">Recent Discussions</h4>
-                          <a
-                            href="#"
+                          <Link
+                            to="/discussions"
                             className="text-main-primary text-decoration-none text-medium"
                           >
                             Show all
-                          </a>
+                          </Link>
                         </div>
                         <div className="card dash-card">
                           <div className="card-body">
-                            <div className="d-flex avatar-holder my-4">
-                              <div className="position-relative">
-                                <div className="avatar-sm flex-shrink-0">
-                                  <img
-                                    src="/images/user-photo.svg"
-                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                    alt="Avatar"
-                                  />
+                            {discussion.map((item) =>
+                              <div className="d-flex avatar-holder my-4" key={item._id}>
+                                <div className="position-relative">
+                                  <div className="avatar-sm flex-shrink-0">
+                                    <img
+                                      src={item.sender.photo}
+                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                      alt="Avatar"
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="ms-2 flex-grow-1">
-                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                  <div className="mb-0 d-flex align-items-center">
-                                    <div className="heading-text text-truncate max-150">
-                                      Bala Abdulkareem
+                                <div className="ms-2 flex-grow-1">
+                                  <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <div className="mb-0 d-flex align-items-center">
+                                      <div className="heading-text text-truncate max-150">
+                                        {item.sender.sender}
+                                      </div>
+                                      <span className="card-text-sm ms-2">
+                                        DS131
+                                      </span>
                                     </div>
-                                    <span className="card-text-sm ms-2">
-                                      DS131
+
+                                    <span className="text-main-primary ft-sm-only">
+                                      {item.time_sent}
                                     </span>
                                   </div>
-
-                                  <span className="text-main-primary ft-sm-only">
-                                    12.30
-                                  </span>
-                                </div>
-                                <div className="d-flex justify-content-between align-items-start">
-                                  <p className="mb-0 action line-clamp-2">
-                                    I'd definitely shoot any discussions to all
-                                    discussion in the box
-                                  </p>
-                                  <span className="badge rounded-pill text-bg-main">
-                                    4
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="d-flex avatar-holder my-4">
-                              <div className="position-relative">
-                                <div className="avatar-sm flex-shrink-0">
-                                  <img
-                                    src="/images/user-photo.svg"
-                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                    alt="Avatar"
-                                  />
-                                </div>
-                              </div>
-                              <div className="ms-2 flex-grow-1">
-                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                  <div className="mb-0 d-flex align-items-center">
-                                    <div className="heading-text text-truncate max-150">
-                                      Bala Abdulkareem
-                                    </div>
-                                    <span className="card-text-sm ms-2">
-                                      DS131
+                                  <div className="d-flex justify-content-between align-items-start">
+                                    <p className="mb-0 action line-clamp-2">
+                                      {item.last_message}
+                                    </p>
+                                    <span className="badge rounded-pill text-bg-main">
+                                      4
                                     </span>
                                   </div>
-
-                                  <span className="text-main-primary ft-sm-only">
-                                    12.30
-                                  </span>
-                                </div>
-                                <div className="d-flex justify-content-between align-items-start">
-                                  <p className="mb-0 action line-clamp-2">
-                                    I'd definitely shoot any discussions to all
-                                    discussion in the box
-                                  </p>
-                                  <span className="badge rounded-pill text-bg-main">
-                                    4
-                                  </span>
                                 </div>
                               </div>
-                            </div>
+                            )}
 
-                            <div className="d-flex avatar-holder my-4">
-                              <div className="position-relative">
-                                <div className="avatar-sm flex-shrink-0">
-                                  <img
-                                    src="/images/user-photo.svg"
-                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                    alt="Avatar"
-                                  />
-                                </div>
-                              </div>
-                              <div className="ms-2 flex-grow-1">
-                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                  <div className="mb-0 d-flex align-items-center">
-                                    <div className="heading-text text-truncate max-150">
-                                      Bala Abdulkareem
-                                    </div>
-                                    <span className="card-text-sm ms-2">
-                                      DS131
-                                    </span>
-                                  </div>
-
-                                  <span className="text-main-primary ft-sm-only">
-                                    12.30
-                                  </span>
-                                </div>
-                                <div className="d-flex justify-content-between align-items-start">
-                                  <p className="mb-0 action line-clamp-2">
-                                    I'd definitely shoot any discussions to all
-                                    discussion in the box
-                                  </p>
-                                  <span className="badge rounded-pill text-bg-main">
-                                    4
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="d-flex avatar-holder my-4">
-                              <div className="position-relative">
-                                <div className="avatar-sm flex-shrink-0">
-                                  <img
-                                    src="/images/user-photo.svg"
-                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                    alt="Avatar"
-                                  />
-                                </div>
-                              </div>
-                              <div className="ms-2 flex-grow-1">
-                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                  <div className="mb-0 d-flex align-items-center">
-                                    <div className="heading-text text-truncate max-150">
-                                      Bala Abdulkareem
-                                    </div>
-                                    <span className="card-text-sm ms-2">
-                                      DS131
-                                    </span>
-                                  </div>
-
-                                  <span className="text-main-primary ft-sm-only">
-                                    12.30
-                                  </span>
-                                </div>
-                                <div className="d-flex justify-content-between align-items-start">
-                                  <p className="mb-0 action line-clamp-2">
-                                    I'd definitely shoot any discussions to all
-                                    discussion in the box
-                                  </p>
-                                  <span className="badge rounded-pill text-bg-main">
-                                    4
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -411,12 +365,12 @@ const Dashboard = () => {
                       <div className="mb-4">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                           <h4 className="mb-0 heading-4">Recent Documents</h4>
-                          <a
-                            href="#"
+                          <Link
+                            to="/documents"
                             className="text-main-primary text-decoration-none text-medium"
                           >
                             Show all
-                          </a>
+                          </Link>
                         </div>
                         <div className="card dash-card">
                           <div className="card-body">
