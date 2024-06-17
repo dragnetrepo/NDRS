@@ -8,11 +8,15 @@ const Dashboard = () => {
 
   const [discussion, setDiscussions] = useState([]);
   const [user, setuser] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [documents, setDocuments] = useState([])
 
 
   useEffect(() => {
     fetchdata()
     fetchDiscussions();
+    fetchNotifications()
+    fetchDocuments()
   }, []);
 
 
@@ -43,6 +47,27 @@ const Dashboard = () => {
     }
   };
 
+  const fetchNotifications = async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+
+      const res = await fetch(`${baseUrl}/api/notifications`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch data.");
+
+      const data = await res.json();
+      setNotifications(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   const fetchDiscussions = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -63,6 +88,33 @@ const Dashboard = () => {
 
       const data = await res.json();
       setDiscussions(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const fetchDocuments = async () => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + "/api/documents/all", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setDocuments(data.data);
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
@@ -120,8 +172,8 @@ const Dashboard = () => {
                         </div>
 
                         <div className="col-lg-4 mb-lg-0 mb-3">
-                          <a
-                            href="/unions"
+                          <Link
+                            to="/unions"
                             className="text-decoration-none"
                           >
                             <div className="card dash-card bg-custom-color-2 h-100 border-0">
@@ -145,7 +197,7 @@ const Dashboard = () => {
                                 <p className="action mb-0">Create Unions</p>
                               </div>
                             </div>
-                          </a>
+                          </Link>
                         </div>
 
                         <div className="col-lg-4 mb-lg-0 mb-3">
@@ -239,11 +291,11 @@ const Dashboard = () => {
                             <div className="ms-2 flex-grow-1">
                               <div className="mb-2 d-flex align-items-center">
                                 <p className="mb-0">
-                                  <strong>
+                                  <strong style={{ fontWeight: 'bold' }}>
                                     Atoyebi Damola (Ministry Admin)
                                   </strong>{" "}
-                                  added you as <strong>Concilliator</strong> for{" "}
-                                  <strong>Dispute Case 124</strong>
+                                  added you as <strong style={{ fontWeight: 'bold' }}>Concilliator</strong> for{" "}
+                                  <strong style={{ fontWeight: 'bold' }}>Dispute Case 124</strong>
                                 </p>
                               </div>
 
@@ -320,41 +372,46 @@ const Dashboard = () => {
                         </div>
                         <div className="card dash-card">
                           <div className="card-body">
-                            {discussion.map((item) =>
-                              <div className="d-flex avatar-holder my-4" key={item._id}>
-                                <div className="position-relative">
-                                  <div className="avatar-sm flex-shrink-0">
-                                    <img
-                                      src={item.sender.photo}
-                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                      alt="Avatar"
-                                    />
+                            {discussion.length > 0 ? (
+                              discussion.slice(0, 4).map((item) => (
+                                <div className="d-flex avatar-holder my-4" key={item._id}>
+                                  <div className="position-relative">
+                                    <div className="avatar-sm flex-shrink-0">
+                                      <img
+                                        src={item.sender.photo}
+                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                        alt="Avatar"
+                                      />
+                                    </div>
                                   </div>
-                                </div>
-                                <div className="ms-2 flex-grow-1">
-                                  <div className="d-flex justify-content-between align-items-center mb-2">
-                                    <div className="mb-0 d-flex align-items-center">
-                                      <div className="heading-text text-truncate max-150">
-                                        {item.sender.sender}
+                                  <div className="ms-2 flex-grow-1">
+                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                      <div className="mb-0 d-flex align-items-center">
+                                        <div className="heading-text text-truncate max-150">
+                                          {item.sender.sender}
+                                        </div>
+                                        <span className="card-text-sm ms-2">
+                                          DS131
+                                        </span>
                                       </div>
-                                      <span className="card-text-sm ms-2">
-                                        DS131
+                                      <span className="text-main-primary ft-sm-only">
+                                        {item.time_sent}
                                       </span>
                                     </div>
-
-                                    <span className="text-main-primary ft-sm-only">
-                                      {item.time_sent}
-                                    </span>
-                                  </div>
-                                  <div className="d-flex justify-content-between align-items-start">
-                                    <p className="mb-0 action line-clamp-2">
-                                      {item.last_message}
-                                    </p>
-                                    <span className="badge rounded-pill text-bg-main">
-                                      4
-                                    </span>
+                                    <div className="d-flex justify-content-between align-items-start">
+                                      <p className="mb-0 action line-clamp-2">
+                                        {item.last_message}
+                                      </p>
+                                      <span className="badge rounded-pill text-bg-main">
+                                        4
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
+                              ))
+                            ) : (
+                              <div className="d-flex align-items-center justify-content-center">
+                                <h5>No Discussions Yet.</h5>
                               </div>
                             )}
 
@@ -374,153 +431,51 @@ const Dashboard = () => {
                         </div>
                         <div className="card dash-card">
                           <div className="card-body">
-                            <div className="d-flex avatar-holder my-4">
-                              <div className="position-relative">
-                                <div className="flex-shrink-0">
-                                  <img
-                                    src="/images/pdf-icon.svg"
-                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                    alt="PDF"
-                                  />
-                                </div>
-                              </div>
-                              <div className="ms-2 flex-grow-1">
-                                <div className="mb-2 d-flex align-items-center">
-                                  <div className="heading-text text-truncate max-150">
-                                    Union Guidelines Union Guidelines
-                                  </div>{" "}
-                                  <span className="card-text-sm ms-2">
-                                    DS131
-                                  </span>
-                                </div>
+                            {documents.length > 0 ? (
+                              documents.slice(0, 4).map((item) =>
+                                <div className="d-flex avatar-holder my-4" key={item._id}>
+                                  <div className="position-relative">
+                                    <div className="flex-shrink-0">
+                                      <img
+                                        src="/images/pdf-icon.svg"
+                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                        alt="PDF"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="ms-2 flex-grow-1">
+                                    <div className="mb-2 d-flex align-items-center">
+                                      <div className="heading-text text-truncate max-150">
+                                        {item.name}
+                                      </div>{" "}
+                                      <span className="card-text-sm ms-2">
+                                        DS131
+                                      </span>
+                                    </div>
 
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <p className="mb-0">
-                                    11 Sep, 2023 | 12:24pm{" "}
-                                    <i className="bi bi-dot"></i>{" "}
-                                    <span className="text-medium">13MB</span>
-                                  </p>
+                                    <div className="d-flex justify-content-between align-items-center">
+                                      <p className="mb-0">
+                                        {item.last_modified}{" "}
+                                        <i className="bi bi-dot"></i>{" "}
+                                        <span className="text-medium">{item.size}</span>
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="avatar-sm flex-shrink-0">
+                                    <img
+                                      src="/images/union-3.svg"
+                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                      alt="Avatar"
+                                    />
+                                  </div>
                                 </div>
+                              )) : (
+                              <div className="d-flex justify-content-center align-items-center">
+                                <h5>No Documents Yet</h5>
                               </div>
-                              <div className="avatar-sm flex-shrink-0">
-                                <img
-                                  src="/images/union-3.svg"
-                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                  alt="Avatar"
-                                />
-                              </div>
-                            </div>
 
-                            <div className="d-flex avatar-holder my-4">
-                              <div className="position-relative">
-                                <div className="flex-shrink-0">
-                                  <img
-                                    src="/images/pdf-icon.svg"
-                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                    alt="PDF"
-                                  />
-                                </div>
-                              </div>
-                              <div className="ms-2 flex-grow-1">
-                                <div className="mb-2 d-flex align-items-center">
-                                  <div className="heading-text text-truncate max-150">
-                                    Union Guidelines Union Guidelines
-                                  </div>{" "}
-                                  <span className="card-text-sm ms-2">
-                                    DS131
-                                  </span>
-                                </div>
+                            )}
 
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <p className="mb-0">
-                                    11 Sep, 2023 | 12:24pm{" "}
-                                    <i className="bi bi-dot"></i>{" "}
-                                    <span className="text-medium">13MB</span>
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="avatar-sm flex-shrink-0">
-                                <img
-                                  src="/images/union-3.svg"
-                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                  alt="Avatar"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="d-flex avatar-holder my-4">
-                              <div className="position-relative">
-                                <div className="flex-shrink-0">
-                                  <img
-                                    src="/images/jpg-icon.svg"
-                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                    alt="PDF"
-                                  />
-                                </div>
-                              </div>
-                              <div className="ms-2 flex-grow-1">
-                                <div className="mb-2 d-flex align-items-center">
-                                  <div className="heading-text text-truncate max-150">
-                                    Union Guidelines Union Guidelines
-                                  </div>{" "}
-                                  <span className="card-text-sm ms-2">
-                                    DS131
-                                  </span>
-                                </div>
-
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <p className="mb-0">
-                                    11 Sep, 2023 | 12:24pm{" "}
-                                    <i className="bi bi-dot"></i>{" "}
-                                    <span className="text-medium">13MB</span>
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="avatar-sm flex-shrink-0">
-                                <img
-                                  src="/images/union-3.svg"
-                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                  alt="Avatar"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="d-flex avatar-holder my-4">
-                              <div className="position-relative">
-                                <div className="flex-shrink-0">
-                                  <img
-                                    src="/images/png-icon.svg"
-                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                    alt="PDF"
-                                  />
-                                </div>
-                              </div>
-                              <div className="ms-2 flex-grow-1">
-                                <div className="mb-2 d-flex align-items-center">
-                                  <div className="heading-text text-truncate max-150">
-                                    Union Guidelines Union Guidelines
-                                  </div>{" "}
-                                  <span className="card-text-sm ms-2">
-                                    DS131
-                                  </span>
-                                </div>
-
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <p className="mb-0">
-                                    11 Sep, 2023 | 12:24pm{" "}
-                                    <i className="bi bi-dot"></i>{" "}
-                                    <span className="text-medium">13MB</span>
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="avatar-sm flex-shrink-0">
-                                <img
-                                  src="/images/union-3.svg"
-                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                  alt="Avatar"
-                                />
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>

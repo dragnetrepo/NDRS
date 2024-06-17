@@ -9,7 +9,7 @@ const MainNavbarInc = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       // If token is not available, navigate back to the login page
-      navigate("/");
+      navigate("/login");
     }
     // Fetch profile data using the token or perform any other actions
   }, [navigate]);
@@ -34,7 +34,7 @@ const MainNavbarInc = () => {
 
       console.log(data);
       localStorage.removeItem("token");
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.error("Error fetching data:", error);
     }

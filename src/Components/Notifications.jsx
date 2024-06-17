@@ -293,7 +293,7 @@ const Notifications = () => {
                                             <div className="ms-2 flex-grow-1">
                                               <div className="mb-2 d-flex align-items-center">
                                                 <p className="mb-0">
-                                                  <strong>
+                                                  <strong style={{ fontWeight: 'bold' }}>
                                                     {notification.message}
                                                   </strong>
                                                 </p>

@@ -36,6 +36,8 @@ import Reports from "./Components/Reports";
 import Users from "./Components/Users";
 import Branches from "./Components/Branches";
 import SubBranch from "./Components/SubBranch";
+import Error404 from "./Components/Error404";
+import LandingPage from "./Components/LandingPage";
 
 export const AppContext = createContext();
 
@@ -114,12 +116,13 @@ const App = () => {
         <Toaster />
         <Routes>
           {/* <Route path="/" element={<Index />} /> */}
+          <Route path="/" element={<LandingPage />} />
           <Route path="/CreateAccount" element={<CreateAccount />} />
           <Route path="/CreatePassword" element={<CreatePassword />} />
           <Route path="/Verification" element={<Verification />} />
           <Route path="/Verification2" element={<Verification2 />} />
           <Route path="/ProfileSetup" element={<ProfileSetup />} />
-          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/Recovery" element={<Recovery />} />
           <Route path="/ProfileSetup2" element={<ProfileSetup2 />} />
           <Route path="/PasswordSet2" element={<PasswordSet2 />} />
@@ -159,6 +162,8 @@ const App = () => {
           <Route path="/Branches" element={<Branches />} />
           <Route path="/Branches/:id" element={<Branches />} />
           <Route path="/SubBranch/:id" element={<SubBranch />} />
+
+          <Route path="/*" element={<Error404 />} />
         </Routes>
       </AppContext.Provider>
     </div>

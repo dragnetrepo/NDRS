@@ -198,21 +198,80 @@ const DiscussionIinc = () => {
 
       const data = await res.json()
 
+      const newMessage = {
+        _id: data.data?._id || `local-${Date.now()}`,
+        sender: { sender: 'You' },
+        message: pollData, // Use the pollData directly as message for poll type
+        time_sent: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+        type: 'poll'
+      };
+
+      setDiscussionsMessages((prevMessages) => [
+        ...prevMessages,
+        newMessage
+      ]);
+
+      // Clear the poll form fields after sending
+      setPollQuestion("");
+      setPollOptions(["", ""]); // Reset options to initial state
+      setAnonVoting(false);
+
 
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
-  };
 
-  const addPollOption = () => {
-    setPollOptions([...pollOptions, ""]);
   };
 
   const handlePollOptionChange = (index, value) => {
     const newPollOptions = [...pollOptions];
     newPollOptions[index] = value;
     setPollOptions(newPollOptions);
+  };
+
+
+  const addPollOption = () => {
+    const newOption = ""; // Default new option value
+    setPollOptions([...pollOptions, newOption]);
+
+  };
+
+
+
+
+  const handleVote = async (id, pollId, pollValue) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("User is not logged in.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${baseUrl}/api/case/discussions/${id}/vote-poll`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ poll_id: pollId, poll_value: pollValue }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to submit vote.");
+      }
+
+      const data = await res.json();
+      console.log("Vote submitted successfully:", data);
+
+      // Optional: Refresh the messages to get updated poll results
+      // fetchDiscussionMessages(discussionId);
+
+
+    } catch (error) {
+      console.error("Error submitting vote:", error.message);
+    }
   };
 
   const handleMeeting = async (e, id) => {
@@ -252,6 +311,26 @@ const DiscussionIinc = () => {
 
       const data = await res.json()
 
+      const newMessage = {
+        _id: data.data?._id || `local-${Date.now()}`,
+        sender: { sender: 'You' },
+        message: meetingData, // Use the meetingData directly as message for meeting type
+        time_sent: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+        type: 'meeting'
+      };
+
+      // Update discussionMessages state with the new meeting message
+      setDiscussionsMessages((prevMessages) => [
+        ...prevMessages,
+        newMessage
+      ]);
+
+
+      setMeetingTitle("");
+      setMeetingDate("");
+      setMeetingLocation("");
+      setMeetingStartTime("");
+      setMeetingEndTime("");
 
       console.log(data);
     } catch (error) {
@@ -269,14 +348,6 @@ const DiscussionIinc = () => {
         throw new Error("User is not logged in."); // Handle case where user is not logged in
       }
 
-      const meetingData = {
-        type: "meeting",
-        meeting_title: meetingTitle,
-        meeting_date: meetingDate,
-        meeting_location: meetingLocation,
-        meeting_start_time: meetingStartTime,
-        meeting_end_time: meetingEndTime
-      };
 
       const res = await fetch(
         baseUrl + `/api/case/discussions/${id}/send-message`,
@@ -286,7 +357,7 @@ const DiscussionIinc = () => {
             "content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(meetingData),
+          body: JSON.stringify(),
         }
       );
 
@@ -464,27 +535,27 @@ const DiscussionIinc = () => {
                                       <div>
                                         <div className="mb-3">
                                           <label className="form-label">Title</label>
-                                          <input type="text" className="form-control form-control-height" value={item.message.title} disabled />
+                                          <input type="text" className="form-control form-control-height" value={item.message.title || item.message.meeting_title} disabled />
                                         </div>
                                         <div className="mb-3">
                                           <label className="form-label">Date</label>
-                                          <input type="text" className="form-control form-control-height" value={item.message.date} disabled />
+                                          <input type="text" className="form-control form-control-height" value={item.message.date || item.message.meeting_date} disabled />
                                         </div>
                                         <div className="mb-3">
                                           <label className="form-label">Location</label>
-                                          <input type="text" className="form-control form-control-height" value={item.message.location} disabled />
+                                          <input type="text" className="form-control form-control-height" value={item.message.location || item.message.meeting_location} disabled />
                                         </div>
                                         <div className="row">
                                           <div className="col-lg-6">
                                             <div className="mb-3">
                                               <label className="form-label">Start</label>
-                                              <input type="text" className="form-control form-control-height" value={item.message.start_time} disabled />
+                                              <input type="text" className="form-control form-control-height" value={item.message.start_time || item.message.meeting_start_time} disabled />
                                             </div>
                                           </div>
                                           <div className="col-lg-6">
                                             <div className="mb-3">
                                               <label className="form-label">End</label>
-                                              <input type="text" className="form-control form-control-height" value={item.message.end_time} disabled />
+                                              <input type="text" className="form-control form-control-height" value={item.message.end_time || item.message.meeting_end_time} disabled />
                                             </div>
                                           </div>
                                         </div>
@@ -501,7 +572,7 @@ const DiscussionIinc = () => {
                                       <p className="text-medium text-center">{item.message.question}</p>
                                       {item.message.vote_results && Object.entries(item.message.vote_results).map(([option, result], index) => (
                                         <div key={index} className="form-check d-flex align-items-center gap-10 mb-1">
-                                          <input className="form-check-input" type="radio" name={`poll-${item._id}`} id={`poll-${item._id}-${option}`} />
+                                          <input className="form-check-input" type="radio" name={`poll-${item._id}`} id={`poll-${item._id}-${option}`} onClick={() => handleVote(id, option)} />
                                           <label className="form-check-label w-100" htmlFor={`poll-${item._id}-${option}`}>
                                             <span className="text-medium">{option.charAt(0).toUpperCase() + option.slice(1)}</span>
                                             <div className="progress progress-height" role="progressbar" aria-valuenow={parseInt(result.percentage)} aria-valuemin="0" aria-valuemax="100">
@@ -533,8 +604,6 @@ const DiscussionIinc = () => {
                             ) : null}
                           </div>
                         )}
-
-
                       </div>
                     </div>
                   </div>
