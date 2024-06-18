@@ -29,6 +29,23 @@ const DiscussionIinc = () => {
   const [status, setStatus] = useState('concilliation');
   const [resolution, setResolution] = useState('');
   const [summary, setSummary] = useState('');
+  const [sidebar, setsidebar] = useState(true)
+  const [removeDetails, setRemoveDetails] = useState(true)
+
+  const toggleSideBar = () => {
+    setsidebar(!sidebar)
+  }
+
+  const handleRemovedetails = (e) => {
+    e.preventDefault()
+    setRemoveDetails(false)
+  }
+
+  const handleAdddetails = (e) => {
+    e.preventDefault()
+    setRemoveDetails(true)
+  }
+
 
 
   const handleStatusChange = (e) => {
@@ -467,11 +484,11 @@ const DiscussionIinc = () => {
       <div className="main-admin-container bg-light dark-mode-active">
         <div className="d-flex flex-column flex-lg-row h-lg-100">
           {/* <?php include "./components/main-navbar.inc.php"; ?> */}
-          <MainNavbarInc />
+          <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-            {/* <?php include "./components/top-bar.inc.php"; ?> */}
-            <TopBarInc />
+
+            <TopBarInc toggleSideBar={toggleSideBar} />
 
             <main className="admin-content">
               <div className="header-box py-5">
@@ -538,9 +555,9 @@ const DiscussionIinc = () => {
 
                 </div>
               </div>
-              <div className="discuss-2 flex-grow-1 border-end">
+              <div className="discuss-2 flex-grow-1 border-end" >
                 <div className="chat-box d-flex flex-column h-100">
-                  <div className="chat-header sticky-top bg-custom-color-2 px-3 py-2">
+                  <div className="chat-header sticky-top bg-custom-color-2 px-3 py-2" onClick={handleAdddetails}>
                     <div className="d-flex align-items-center avatar-holder avatar-chat cursor-pointer">
                       <div className="position-relative">
                         <div className="avatar-sm flex-shrink-0">
@@ -756,7 +773,7 @@ const DiscussionIinc = () => {
                   </div>
                 </div >
               </div >
-              <div className="discuss-3 flex-shrink-0 p-3">
+              <div className="discuss-3 flex-shrink-0 p-3" style={{ display: removeDetails ? 'block' : 'none' }}>
                 <div className="d-flex justify-content-between align-items-center avatar-icon w-100 mb-4">
                   <div className="d-flex avatar-holder">
                     <div className="position-relative">
@@ -784,6 +801,7 @@ const DiscussionIinc = () => {
                         src="/images/multiply.svg"
                         className="img-fluid close-grid-3"
                         alt="close"
+                        onClick={handleRemovedetails}
                       />
                     </a>
                   </div>

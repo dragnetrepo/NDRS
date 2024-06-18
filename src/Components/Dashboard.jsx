@@ -10,6 +10,32 @@ const Dashboard = () => {
   const [user, setuser] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [documents, setDocuments] = useState([])
+  const [sidebar, setsidebar] = useState(true)
+
+  const toggleSideBar = () => {
+    setsidebar(!sidebar)
+  }
+
+  const today = new Date();
+
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const dayName = days[today.getDay()];
+  const monthName = months[today.getMonth()];
+  const day = today.getDate();
+
+  // Function to get the correct ordinal suffix for a given day
+  const getOrdinalSuffix = (n) => {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return (s[(v - 20) % 10] || s[v] || s[0]);
+  };
+
+  const formattedDate = `${dayName}, ${monthName} ${day}${getOrdinalSuffix(day)}`;
 
 
   useEffect(() => {
@@ -117,20 +143,22 @@ const Dashboard = () => {
     }
   };
 
+
+
   return (
     <>
       <div className="main-admin-container bg-light dark-mode-active">
         <div className="d-flex flex-column flex-lg-row h-lg-100">
           {/* <?php include "./components/main-navbar.inc.php"; ?> */}
-          <MainNavbarInc />
+          <MainNavbarInc sidebar={sidebar} />
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
             {/* <?php include "./components/top-bar.inc.php"; ?> */}
-            <TopBarInc />
+            <TopBarInc toggleSideBar={toggleSideBar} />
 
             <main className="admin-content">
               <div className="header-box py-5">
                 <div className="container">
-                  <p>Wednesday, March 6th</p>
+                  <p>{formattedDate}</p>
                   <h2>Good afternoon, {user.first_name}</h2>
                 </div>
               </div>

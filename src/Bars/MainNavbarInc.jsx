@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const MainNavbarInc = () => {
+const MainNavbarInc = ({ sidebar }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const MainNavbarInc = () => {
   return (
     <nav
       className="flex-none navbar navbar-vertical navbar-expand-lg show vh-lg-100 bg-custom-color px-0 py-2 navbar-light"
-      id="sidebar"
+      id="sidebar" style={{ display: sidebar ? 'block' : 'none' }}
     >
       <div className="container-fluid flex-lg-column align-items-lg-start">
         <button

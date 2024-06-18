@@ -30,6 +30,12 @@ const Settings = () => {
 
 	const [twoFactorAuth, setTwoFactorAuth] = useState(false);
 	const [notificationSettings, setNotificationSettings] = useState([]);
+	const [sidebar, setsidebar] = useState(true)
+
+	const toggleSideBar = () => {
+		setsidebar(!sidebar)
+	}
+
 
 	useEffect(() => {
 		fetchdata(user, setuser);
@@ -300,9 +306,11 @@ const Settings = () => {
 		<>
 			<div className="main-admin-container bg-light dark-mode-active">
 				<div className="d-flex flex-column flex-lg-row h-lg-100">
-					<MainNavbarInc />
+					<MainNavbarInc sidebar={sidebar} />
+
 					<div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-						<TopBarInc />
+
+						<TopBarInc toggleSideBar={toggleSideBar} />
 						<main className="admin-content">
 							<div className="header-box py-5">
 								<div className="container">

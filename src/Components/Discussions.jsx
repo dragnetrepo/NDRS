@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
 import DiscussionInc from "../Bars/DiscussionInc";
 
 
+
 const Discussions = () => {
+  const [sidebar, setsidebar] = useState(true)
+
+  const toggleSideBar = () => {
+    setsidebar(!sidebar)
+  }
+
 
   // const [messages, setMessages] = useState([])
 
@@ -44,11 +51,11 @@ const Discussions = () => {
       <div className="main-admin-container bg-light dark-mode-active">
         <div className="d-flex flex-column flex-lg-row h-lg-100">
           {/* <?php include "./components/main-navbar.inc.php"; ?> */}
-          <MainNavbarInc />
+          <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-            {/* <?php include "./components/top-bar.inc.php"; ?> */}
-            <TopBarInc />
+
+            <TopBarInc toggleSideBar={toggleSideBar} />
 
             <main className="admin-content">
               <div className="header-box py-5">

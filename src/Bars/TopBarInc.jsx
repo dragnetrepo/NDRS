@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const TopBarInc = () => {
+const TopBarInc = ({ toggleSideBar }) => {
   const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
   const [user, setuser] = useState([]);
   const [search, setsearch] = useState([]);
@@ -102,7 +102,7 @@ const TopBarInc = () => {
           </div> */}
 
           <div className="d-flex align-items-center">
-            <i className="bi bi-list bi-2 text-dark cursor-pointer arrow-box me-3"></i>
+            <i className="bi bi-list bi-2 text-dark cursor-pointer arrow-box me-3" onClick={toggleSideBar}></i>
 
             <div
               className="d-flex align-items-center"
