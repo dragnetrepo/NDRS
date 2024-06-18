@@ -1,4 +1,3 @@
-import "./css/styles.css";
 import { Route, Routes } from "react-router-dom";
 import CreateAccount from "./Components/CreateAccount";
 import Index from "./Components/Index";
