@@ -148,7 +148,7 @@ const Dashboard = () => {
                                   <div className="position-relative flex-shrink-0">
                                     <img
                                       src="/images/dispute-icon.svg"
-                                      className="img-fluid"
+                                      className="img-fluid" alt=""
                                     />
                                   </div>
                                   <div className="ms-2 flex-grow-1">
@@ -178,7 +178,7 @@ const Dashboard = () => {
                                   <div className="position-relative flex-shrink-0">
                                     <img
                                       src="/images/union-icon.svg"
-                                      className="img-fluid"
+                                      className="img-fluid" alt=""
                                     />
                                   </div>
                                   <div className="ms-2 flex-grow-1">
@@ -204,7 +204,7 @@ const Dashboard = () => {
                                   <div className="position-relative flex-shrink-0">
                                     <img
                                       src="/images/userz-icon.svg"
-                                      className="img-fluid"
+                                      className="img-fluid" alt=""
                                     />
                                   </div>
                                   <div className="ms-2 flex-grow-1">

@@ -10,7 +10,7 @@ const VerificationSuccess = () => {
           <div className="card pop-card border-0 py-4">
             <div className="card-body">
               <div className="text-center mb-3">
-                <img src="/images/ok-icon.svg" className="img-fluid" />
+                <img src="/images/ok-icon.svg" className="img-fluid" alt="" />
               </div>
               <h3 className="pop-text">
                 Great work, your email{" "}
@@ -53,7 +53,7 @@ const VerificationSuccess = () => {
                           <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
                             <img
                               src="/images/check-tick.svg"
-                              className="img-fluid"
+                              className="img-fluid" alt=""
                             />
                           </span>
                         </div>

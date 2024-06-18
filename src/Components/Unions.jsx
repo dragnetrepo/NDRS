@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
 import { AppContext } from "../App";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
 
 const Unions = () => {
-	const navigate = useNavigate();
+
 	const user_avatar = "/images/download.png";
 	const fileInputRef = useRef(null);
 	const [avatarImage, setAvatarImage] = useState(user_avatar);
@@ -335,7 +335,7 @@ const Unions = () => {
 																					<div className="col-lg-5 offset-lg-2">
 																						<img
 																							src="/images/csv.png"
-																							className="img-fluid"
+																							className="img-fluid" alt=""
 																						/>
 																					</div>
 																				</div>
@@ -354,7 +354,7 @@ const Unions = () => {
 																							<div className="text-center mb-2">
 																								<img
 																									src="/images/file_upload_states.svg"
-																									className="img-fluid"
+																									className="img-fluid" alt=""
 																								/>
 																							</div>
 																							<p className="text-muted-3 mb-1">
@@ -366,7 +366,7 @@ const Unions = () => {
 
 																							<img
 																								src="/images/or-line.svg"
-																								className="img-fluid"
+																								className="img-fluid" alt=""
 																							/>
 																							<div className="mt-3">
 																								<input
@@ -392,7 +392,7 @@ const Unions = () => {
 																							<div className="text-center mb-2">
 																								<img
 																									src="/images/uploaded.svg"
-																									className="img-fluid"
+																									 className="img-fluid" alt=""
 																								/>
 																							</div>
 																							<p className="text-dark text-medium mb-1">
@@ -411,7 +411,7 @@ const Unions = () => {
 																								>
 																									<img
 																										src="/images/eyes.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																									/>{" "}
 																									Preview Sent Invites
 																								</a>
@@ -424,7 +424,7 @@ const Unions = () => {
 																								>
 																									<img
 																										src="/images/trash-bin.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																									/>{" "}
 																									Clear Upload
 																								</a>
@@ -472,7 +472,7 @@ const Unions = () => {
 																									<div className="main-avatar mx-auto">
 																										<img
 																											src={avatarImage}
-																											className="img-fluid object-fit-cover object-position-center w-100 h-100"
+																											className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
 																										/>
 																									</div>
 
@@ -623,7 +623,7 @@ const Unions = () => {
 																												<td>
 																													<img
 																														src="/images/claimant.svg"
-																														className="img-fluid"
+																														 className="img-fluid" alt=""
 																														alt="claimant"
 																													/>
 																												</td>
@@ -637,7 +637,7 @@ const Unions = () => {
 																													>
 																														<img
 																															src="/images/bin_2.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="dot-v"
 																														/>
 																													</button>
@@ -696,7 +696,7 @@ const Unions = () => {
 																		<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
 																			<img
 																				src="/images/filter.svg"
-																				className="img-fluid"
+																				className="img-fluid" alt=""
 																			/>{" "}
 																			A-Z
 																		</a>
@@ -827,7 +827,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/users.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -836,7 +836,7 @@ const Unions = () => {
 																										</p>
 																										<img
 																											src="/images/claim.svg"
-																											className="img-fluid"
+																											 className="img-fluid" alt=""
 																											alt="claimant"
 																										/>
 																									</div>
@@ -845,7 +845,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/user.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -862,7 +862,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/mail.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -876,7 +876,7 @@ const Unions = () => {
 
 																									<img
 																										src="/images/copy.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="copy"
 																									/>
 																								</div>
@@ -884,7 +884,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/call.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -897,7 +897,7 @@ const Unions = () => {
 																									</div>
 																									<img
 																										src="/images/copy.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="copy"
 																									/>
 																								</div>
@@ -950,7 +950,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/users.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -959,7 +959,7 @@ const Unions = () => {
 																										</p>
 																										<img
 																											src="/images/claim.svg"
-																											className="img-fluid"
+																											 className="img-fluid" alt=""
 																											alt="claimant"
 																										/>
 																									</div>
@@ -968,7 +968,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/user.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -985,7 +985,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/mail.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -999,7 +999,7 @@ const Unions = () => {
 
 																									<img
 																										src="/images/copy.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="copy"
 																									/>
 																								</div>
@@ -1007,7 +1007,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/call.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1020,7 +1020,7 @@ const Unions = () => {
 																									</div>
 																									<img
 																										src="/images/copy.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="copy"
 																									/>
 																								</div>
@@ -1073,7 +1073,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/users.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1082,7 +1082,7 @@ const Unions = () => {
 																										</p>
 																										<img
 																											src="/images/claim.svg"
-																											className="img-fluid"
+																											 className="img-fluid" alt=""
 																											alt="claimant"
 																										/>
 																									</div>
@@ -1091,7 +1091,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/user.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1108,7 +1108,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/mail.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1122,7 +1122,7 @@ const Unions = () => {
 
 																									<img
 																										src="/images/copy.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="copy"
 																									/>
 																								</div>
@@ -1130,7 +1130,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/call.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1143,7 +1143,7 @@ const Unions = () => {
 																									</div>
 																									<img
 																										src="/images/copy.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="copy"
 																									/>
 																								</div>
@@ -1196,7 +1196,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/users.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1205,7 +1205,7 @@ const Unions = () => {
 																										</p>
 																										<img
 																											src="/images/claim.svg"
-																											className="img-fluid"
+																											 className="img-fluid" alt=""
 																											alt="claimant"
 																										/>
 																									</div>
@@ -1214,7 +1214,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/user.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1231,7 +1231,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/mail.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1245,7 +1245,7 @@ const Unions = () => {
 
 																									<img
 																										src="/images/copy.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="copy"
 																									/>
 																								</div>
@@ -1253,7 +1253,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/call.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1266,7 +1266,7 @@ const Unions = () => {
 																									</div>
 																									<img
 																										src="/images/copy.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="copy"
 																									/>
 																								</div>
@@ -1319,7 +1319,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/users.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1328,7 +1328,7 @@ const Unions = () => {
 																										</p>
 																										<img
 																											src="/images/claim.svg"
-																											className="img-fluid"
+																											 className="img-fluid" alt=""
 																											alt="claimant"
 																										/>
 																									</div>
@@ -1337,7 +1337,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/user.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1354,7 +1354,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/mail.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1368,7 +1368,7 @@ const Unions = () => {
 
 																									<img
 																										src="/images/copy.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="copy"
 																									/>
 																								</div>
@@ -1376,7 +1376,7 @@ const Unions = () => {
 																								<div className="d-flex align-items-center py-2">
 																									<img
 																										src="/images/call.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="users"
 																									/>
 																									<div className="ms-2 flex-grow-1">
@@ -1389,7 +1389,7 @@ const Unions = () => {
 																									</div>
 																									<img
 																										src="/images/copy.svg"
-																										className="img-fluid"
+																										 className="img-fluid" alt=""
 																										alt="copy"
 																									/>
 																								</div>
@@ -1548,13 +1548,13 @@ const Unions = () => {
 												</td>
 												<td>Feb 4 2023</td>
 												<td>
-													<img src="images/claimant.svg" className="img-fluid" alt="claimant" />
+													<img src="images/claimant.svg"  className="img-fluid" alt="" alt="claimant" />
 												</td>
 
 												<td>
 													<div className="dropdown">
 														<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-															<img src="images/bin.svg" className="img-fluid" alt="bin" />
+															<img src="images/bin.svg"  className="img-fluid" alt="" alt="bin" />
 														</button>
 														<ul className="dropdown-menu border-radius action-menu-2">
 															<li><a className="dropdown-item" href="disputes-details.php">View details</a></li>
@@ -1580,13 +1580,13 @@ const Unions = () => {
 												</td>
 												<td>Feb 4 2023</td>
 												<td>
-													<img src="images/claimant.svg" className="img-fluid" alt="claimant" />
+													<img src="images/claimant.svg"  className="img-fluid" alt="" alt="claimant" />
 												</td>
 
 												<td>
 													<div className="dropdown">
 														<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-															<img src="images/bin.svg" className="img-fluid" alt="bin" />
+															<img src="images/bin.svg"  className="img-fluid" alt="" alt="bin" />
 														</button>
 														<ul className="dropdown-menu border-radius action-menu-2">
 															<li><a className="dropdown-item" href="disputes-details.php">View details</a></li>
@@ -1612,13 +1612,13 @@ const Unions = () => {
 												</td>
 												<td>Feb 4 2023</td>
 												<td>
-													<img src="images/claimant.svg" className="img-fluid" alt="claimant" />
+													<img src="images/claimant.svg"  className="img-fluid" alt="" alt="claimant" />
 												</td>
 
 												<td>
 													<div className="dropdown">
 														<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-															<img src="images/bin.svg" className="img-fluid" alt="bin" />
+															<img src="images/bin.svg"  className="img-fluid" alt="" alt="bin" />
 														</button>
 														<ul className="dropdown-menu border-radius action-menu-2">
 															<li><a className="dropdown-item" href="disputes-details.php">View details</a></li>
@@ -1644,13 +1644,13 @@ const Unions = () => {
 												</td>
 												<td>Feb 4 2023</td>
 												<td>
-													<img src="images/claimant.svg" className="img-fluid" alt="claimant" />
+													<img src="images/claimant.svg"  className="img-fluid" alt="" alt="claimant" />
 												</td>
 
 												<td>
 													<div className="dropdown">
 														<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-															<img src="images/bin.svg" className="img-fluid" alt="bin" />
+															<img src="images/bin.svg"  className="img-fluid" alt="" alt="bin" />
 														</button>
 														<ul className="dropdown-menu border-radius action-menu-2">
 															<li><a className="dropdown-item" href="disputes-details.php">View details</a></li>
@@ -1678,7 +1678,7 @@ const Unions = () => {
 												<p className="text-muted-3">Enter an admins email and role to send invite</p>
 
 												<div className="text-center">
-													<img src="images/no-found.svg" className="img-fluid" />
+													<img src="images/no-found.svg" className="img-fluid" alt="" />
 												</div>
 											</div>
 										</div>
@@ -1780,8 +1780,8 @@ const Unions = () => {
 							</nav>
 
 							<div className="d-flex align-items-center gap-10">
-								<button className="btn btn-outline-light text-medium"><img src="images/prev.svg" className="img-fluid" /> Previous</button>
-								<button className="btn btn-outline-light text-medium">Next <img src="images/next.svg" className="img-fluid" /></button>
+								<button className="btn btn-outline-light text-medium"><img src="images/prev.svg" className="img-fluid" alt="" /> Previous</button>
+								<button className="btn btn-outline-light text-medium">Next <img src="images/next.svg" className="img-fluid" alt="" /></button>
 							</div>
 						</div>
 					</div>

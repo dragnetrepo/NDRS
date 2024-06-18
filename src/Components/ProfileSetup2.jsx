@@ -230,7 +230,7 @@ const ProfileSetup2 = () => {
 						<div className="row">
 							<div className="col-lg-7 mx-auto">
 								<div className="mb-5 d-flex justify-content-between align-items-center">
-									<img src="/images/NDRS-Logo.svg" className="img-fluid" />
+									<img src="/images/NDRS-Logo.svg" className="img-fluid" alt="" />
 
 									<div
 										className="progress w-50 progress-height"
@@ -295,14 +295,14 @@ const ProfileSetup2 = () => {
 						<div className="row">
 							<div className="col-lg-10 mx-auto">
 								<div className="text-center mb-4">
-									<img src="/images/setup-banner.png" className="img-fluid" />
+									<img src="/images/setup-banner.png" className="img-fluid" alt="" />
 								</div>
 								<h2 className="bold-text mb-4">
 									We’re making dispute resolutions{" "}
 									<span className="text-main-primary">3x easier</span>
 								</h2>
 
-								<img src="/images/partners.png" className="img-fluid" style={{ height: "100px" }} />
+								<img src="/images/partners.png" className="img-fluid" alt="" style={{ height: "100px" }} />
 							</div>
 						</div>
 					</div>

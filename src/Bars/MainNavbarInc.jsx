@@ -57,9 +57,9 @@ const MainNavbarInc = () => {
           <i className="bi bi-list bi-2 text-dark cursor-pointer"></i>
         </button>
 
-        <a className="navbar-brand me-0 text-bold" href="/">
+        <Link className="navbar-brand me-0 text-bold" to="/dashboard">
           <img src="/images/NDRS-Logo.svg" className="img-fluid" alt="logo" />
-        </a>
+        </Link>
 
         <div className="navbar-user d-lg-none">
           <div className="position-relative">
@@ -86,7 +86,7 @@ const MainNavbarInc = () => {
         >
           <div className="offcanvas-header">
             <div className="offcanvas-title flex-grow-1">
-              <Link className="navbar-brand me-0 text-bold" to="/">
+              <Link className="navbar-brand me-0 text-bold" to="/dashboard">
                 <img
                   src="/images/NDRS-Logo.svg"
                   className="img-fluid"

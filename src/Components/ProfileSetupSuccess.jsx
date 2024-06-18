@@ -8,7 +8,7 @@ const ProfileSetupSuccess = () => {
           <div className="card pop-card border-0 py-4">
             <div className="card-body">
               <div className="text-center mb-3">
-                <img src="/images/ok-icon.svg" className="img-fluid" />
+                <img src="/images/ok-icon.svg" className="img-fluid" alt="" />
               </div>
               <h3 className="pop-text">
                 Your NDRS account has been created successfully.
@@ -22,7 +22,7 @@ const ProfileSetupSuccess = () => {
               <div className="row">
                 <div className="col-lg-7 mx-auto">
                   <div className="mb-5 d-flex justify-content-between align-items-center">
-                    <img src="/images/NDRS-Logo.svg" className="img-fluid" />
+                    <img src="/images/NDRS-Logo.svg" className="img-fluid" alt="" />
 
                     <div
                       className="progress w-50 progress-height"
@@ -93,7 +93,7 @@ const ProfileSetupSuccess = () => {
               <div className="row">
                 <div className="col-lg-10 mx-auto">
                   <div className="text-center mb-4">
-                    <img src="/images/setup-banner.png" className="img-fluid" />
+                    <img src="/images/setup-banner.png" className="img-fluid" alt="" />
                   </div>
                   <h2 className="bold-text mb-4">
                     We’re making dispute resolutions{" "}
@@ -102,7 +102,7 @@ const ProfileSetupSuccess = () => {
 
                   <img
                     src="/images/partners.png"
-                    className="img-fluid"
+                    className="img-fluid" alt=""
                     style="height: 100px;"
                   />
                 </div>

@@ -269,7 +269,7 @@ const Documents = () => {
                                           <a className="btn btn-size btn-outline-light text-medium px-3">
                                             <img
                                               src="/images/sort.svg"
-                                              className="img-fluid me-2"
+                                              className="img-fluid me-2" alt=""
                                             />{" "}
                                             Sort
                                           </a>

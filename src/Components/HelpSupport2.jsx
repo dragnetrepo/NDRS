@@ -136,7 +136,7 @@ const HelpSsupport2 = () => {
                       <div className="heading-card mt-4">
                         <img
                           src="/images/help.svg"
-                          className="img-fluid mb-3"
+                          className="img-fluid mb-3" alt=""
                         />
 
                         <h3>{singleCategory.title}</h3>

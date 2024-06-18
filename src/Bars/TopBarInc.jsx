@@ -231,12 +231,13 @@ const TopBarInc = () => {
                       <img
                         src="/images/filter.svg"
                         className="img-fluid me-2"
+                        alt=""
                       />{' '}
                       Filters
                     </a>
 
                     <button className="btn btn-size btn-outline-light w-100 text-medium px-3">
-                      <img src="/images/sort.svg" className="img-fluid me-2" />{' '}
+                      <img src="/images/sort.svg" className="img-fluid me-2" alt="" />{' '}
                       Sort
                     </button>
 
@@ -325,7 +326,7 @@ const TopBarInc = () => {
                     className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
                     onClick={() => setQuery('')}
                   >
-                    {query} <img src="/images/x.svg" className="img-fluid ms-2" />
+                    {query} <img src="/images/x.svg" className="img-fluid ms-2" alt="" />
                   </button>
                 )}
                 {docType && (
@@ -333,7 +334,7 @@ const TopBarInc = () => {
                     className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
                     onClick={() => setDocType('')}
                   >
-                    {docType} <img src="/images/x.svg" className="img-fluid ms-2" />
+                    {docType} <img src="/images/x.svg" className="img-fluid ms-2" alt="" />
                   </button>
                 )}
                 {caseStatus && (
@@ -341,7 +342,7 @@ const TopBarInc = () => {
                     className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
                     onClick={() => setCaseStatus('')}
                   >
-                    {caseStatus} <img src="/images/x.svg" className="img-fluid ms-2" />
+                    {caseStatus} <img src="/images/x.svg" className="img-fluid ms-2" alt="" />
                   </button>
                 )}
                 {(startDate || endDate) && (
@@ -350,7 +351,7 @@ const TopBarInc = () => {
                     onClick={() => { setStartDate(''); setEndDate(''); }}
                   >
                     {startDate} - {endDate}{' '}
-                    <img src="/images/x.svg" className="img-fluid ms-2" />
+                    <img src="/images/x.svg" className="img-fluid ms-2" alt="" />
                   </button>
                 )}
               </div>

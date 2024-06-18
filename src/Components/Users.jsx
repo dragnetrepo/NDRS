@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
-
 import toast from "react-hot-toast";
 
 const Users = () => {
@@ -9,9 +8,9 @@ const Users = () => {
   const [getBoardOfEnquire, setGetBoardOfEnquire] = useState([]);
   const [getDisputes, setGetDisputes] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
-  const [bulkUpload, setBulkUpload] = useState({
-    file: "",
-  });
+  // const [bulkUpload, setBulkUpload] = useState({
+  //   file: "",
+  // });
   const [users, setUsers] = useState({
     email: "",
     role: "",
@@ -651,7 +650,7 @@ const Users = () => {
                                           <div className="col-lg-5 offset-lg-2">
                                             <img
                                               src="/images/csv.png"
-                                              className="img-fluid"
+                                              className="img-fluid" alt=""
                                             />
                                           </div>
                                         </div>
@@ -670,7 +669,7 @@ const Users = () => {
                                               <div className="text-center mb-2">
                                                 <img
                                                   src="/images/file_upload_states.svg"
-                                                  className="img-fluid"
+                                                  className="img-fluid" alt=""
                                                 />
                                               </div>
                                               <p className="text-muted-3 mb-1">
@@ -682,7 +681,7 @@ const Users = () => {
 
                                               <img
                                                 src="/images/or-line.svg"
-                                                className="img-fluid"
+                                                className="img-fluid" alt=""
                                               />
 
                                               <div className="mt-3">
@@ -709,7 +708,7 @@ const Users = () => {
                                               <div className="text-center mb-2">
                                                 <img
                                                   src="/images/uploaded.svg"
-                                                  className="img-fluid"
+                                                   className="img-fluid" alt=""
                                                 />
                                               </div>
                                               <p className="text-dark text-medium mb-1">
@@ -728,7 +727,7 @@ const Users = () => {
                                                 >
                                                   <img
                                                     src="/images/eyes.svg"
-                                                    className="img-fluid"
+                                                     className="img-fluid" alt=""
                                                   />{" "}
                                                   Preview Sent Invites
                                                 </a>
@@ -741,7 +740,7 @@ const Users = () => {
                                                 >
                                                   <img
                                                     src="/images/trash-bin.svg"
-                                                    className="img-fluid"
+                                                     className="img-fluid" alt=""
                                                   />{" "}
                                                   Clear Upload
                                                 </a>
@@ -969,8 +968,7 @@ const Users = () => {
                                               <span className="input-group-text bg-transparent">
                                                 <img
                                                   src="/images/search.svg"
-                                                  className="img-fluid"
-                                                  alt="search"
+                                                  className="img-fluid" alt=""
                                                 />
                                               </span>
                                               <input
@@ -987,7 +985,7 @@ const Users = () => {
                                                 <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
                                                   <img
                                                     src="/images/filter.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                   />{" "}
                                                   A-Z
                                                 </a>
@@ -1073,7 +1071,7 @@ const Users = () => {
                                                   <td>
                                                     <img
                                                       src="/images/active.svg"
-                                                      className="img-fluid"
+                                                       className="img-fluid" alt=""
                                                     />
                                                   </td>
                                                   <td>Feb 4 2023</td>
@@ -1088,7 +1086,7 @@ const Users = () => {
                                                       >
                                                         <img
                                                           src="/images/dots-v.svg"
-                                                          className="img-fluid"
+                                                           className="img-fluid" alt=""
                                                           alt="dots"
                                                         />
                                                       </button>
@@ -1525,8 +1523,7 @@ const Users = () => {
                                               <span className="input-group-text bg-transparent">
                                                 <img
                                                   src="/images/search.svg"
-                                                  className="img-fluid"
-                                                  alt="search"
+                                                  className="img-fluid" alt="search"
                                                 />
                                               </span>
                                               <input
@@ -1543,7 +1540,7 @@ const Users = () => {
                                                 <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
                                                   <img
                                                     src="/images/filter.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                   />{" "}
                                                   A-Z
                                                 </a>
@@ -1666,7 +1663,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1675,7 +1672,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -1684,7 +1681,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1702,7 +1699,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1716,7 +1713,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -1724,7 +1721,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1737,7 +1734,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -1790,7 +1787,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1799,7 +1796,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -1808,7 +1805,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1826,7 +1823,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1840,7 +1837,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -1848,7 +1845,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1861,7 +1858,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -1914,7 +1911,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1923,7 +1920,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -1932,7 +1929,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1950,7 +1947,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1964,7 +1961,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -1972,7 +1969,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -1985,7 +1982,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2038,7 +2035,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2047,7 +2044,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -2056,7 +2053,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2074,7 +2071,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2088,7 +2085,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2096,7 +2093,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2109,7 +2106,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2162,7 +2159,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2171,7 +2168,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -2180,7 +2177,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2198,7 +2195,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2212,7 +2209,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2220,7 +2217,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2233,7 +2230,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2246,7 +2243,7 @@ const Users = () => {
 																									<td>
 																										<img
 																											src="/images/active.svg"
-																											className="img-fluid"
+																											 className="img-fluid" alt=""
 																										/>
 																									</td>
 																									<td>Feb 4 2023</td>
@@ -2261,7 +2258,7 @@ const Users = () => {
 																											>
 																												<img
 																													src="/images/dots-v.svg"
-																													className="img-fluid"
+																													 className="img-fluid" alt=""
 																													alt="dots"
 																												/>
 																											</button>
@@ -2564,7 +2561,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2573,7 +2570,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -2582,7 +2579,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2600,7 +2597,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2614,7 +2611,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2622,7 +2619,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2635,7 +2632,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2688,7 +2685,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2697,7 +2694,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -2706,7 +2703,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2724,7 +2721,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2738,7 +2735,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2746,7 +2743,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2759,7 +2756,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2812,7 +2809,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2821,7 +2818,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -2830,7 +2827,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2848,7 +2845,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2862,7 +2859,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2870,7 +2867,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2883,7 +2880,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2936,7 +2933,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2945,7 +2942,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -2954,7 +2951,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2972,7 +2969,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -2986,7 +2983,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -2994,7 +2991,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3007,7 +3004,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3060,7 +3057,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3069,7 +3066,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -3078,7 +3075,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3096,7 +3093,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3110,7 +3107,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3118,7 +3115,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3131,7 +3128,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3144,7 +3141,7 @@ const Users = () => {
 																									<td>
 																										<img
 																											src="/images/pending-icon.svg"
-																											className="img-fluid"
+																											 className="img-fluid" alt=""
 																										/>
 																									</td>
 																									<td>Feb 4 2023</td>
@@ -3159,7 +3156,7 @@ const Users = () => {
 																											>
 																												<img
 																													src="/images/dots-v.svg"
-																													className="img-fluid"
+																													 className="img-fluid" alt=""
 																													alt="dots"
 																												/>
 																											</button>
@@ -3462,7 +3459,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3471,7 +3468,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -3480,7 +3477,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3498,7 +3495,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3512,7 +3509,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3520,7 +3517,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3533,7 +3530,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3586,7 +3583,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3595,7 +3592,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -3604,7 +3601,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3622,7 +3619,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3636,7 +3633,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3644,7 +3641,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3657,7 +3654,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3710,7 +3707,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3719,7 +3716,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -3728,7 +3725,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3746,7 +3743,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3760,7 +3757,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3768,7 +3765,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3781,7 +3778,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3834,7 +3831,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3843,7 +3840,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -3852,7 +3849,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3870,7 +3867,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3884,7 +3881,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3892,7 +3889,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3905,7 +3902,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -3958,7 +3955,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/users.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3967,7 +3964,7 @@ const Users = () => {
 																															</p>
 																															<img
 																																src="/images/claim.svg"
-																																className="img-fluid"
+																																 className="img-fluid" alt=""
 																																alt="claimant"
 																															/>
 																														</div>
@@ -3976,7 +3973,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/user.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -3994,7 +3991,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/mail.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -4008,7 +4005,7 @@ const Users = () => {
 
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -4016,7 +4013,7 @@ const Users = () => {
 																													<div className="d-flex align-items-center py-2">
 																														<img
 																															src="/images/call.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="users"
 																														/>
 																														<div className="ms-2 flex-grow-1">
@@ -4029,7 +4026,7 @@ const Users = () => {
 																														</div>
 																														<img
 																															src="/images/copy.svg"
-																															className="img-fluid"
+																															 className="img-fluid" alt=""
 																															alt="copy"
 																														/>
 																													</div>
@@ -4042,7 +4039,7 @@ const Users = () => {
 																									<td>
 																										<img
 																											src="/images/deactivated.svg"
-																											className="img-fluid"
+																											 className="img-fluid" alt=""
 																										/>
 																									</td>
 																									<td>Feb 4 2023</td>
@@ -4057,7 +4054,7 @@ const Users = () => {
 																											>
 																												<img
 																													src="/images/dots-v.svg"
-																													className="img-fluid"
+																													 className="img-fluid" alt=""
 																													alt="dots"
 																												/>
 																											</button>
@@ -4363,7 +4360,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/users.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4373,7 +4370,7 @@ const Users = () => {
                                                                   </p>
                                                                   <img
                                                                     src="/images/claim.svg"
-                                                                    className="img-fluid"
+                                                                     className="img-fluid" alt=""
                                                                     alt="claimant"
                                                                   />
                                                                 </div>
@@ -4382,7 +4379,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/user.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4401,7 +4398,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/mail.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 /
@@ -4415,7 +4412,7 @@ const Users = () => {
                                                                 </div>
                                                                 <img
                                                                   src="/images/copy.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="copy"
                                                                 />
                                                               </div>
@@ -4423,7 +4420,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/call.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4436,7 +4433,7 @@ const Users = () => {
                                                                 </div>
                                                                 <img
                                                                   src="/images/copy.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="copy"
                                                                 />
                                                               </div>
@@ -4490,7 +4487,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/users.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4500,7 +4497,7 @@ const Users = () => {
                                                                   </p>
                                                                   <img
                                                                     src="/images/claim.svg"
-                                                                    className="img-fluid"
+                                                                     className="img-fluid" alt=""
                                                                     alt="claimant"
                                                                   />
                                                                 </div>
@@ -4509,7 +4506,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/user.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4528,7 +4525,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/mail.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4542,7 +4539,7 @@ const Users = () => {
 
                                                                 <img
                                                                   src="/images/copy.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="copy"
                                                                 />
                                                               </div>
@@ -4550,7 +4547,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/call.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4563,7 +4560,7 @@ const Users = () => {
                                                                 </div>
                                                                 <img
                                                                   src="/images/copy.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="copy"
                                                                 />
                                                               </div>
@@ -4617,7 +4614,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/users.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4627,7 +4624,7 @@ const Users = () => {
                                                                   </p>
                                                                   <img
                                                                     src="/images/claim.svg"
-                                                                    className="img-fluid"
+                                                                     className="img-fluid" alt=""
                                                                     alt="claimant"
                                                                   />
                                                                 </div>
@@ -4636,7 +4633,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/user.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4655,7 +4652,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/mail.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4669,7 +4666,7 @@ const Users = () => {
 
                                                                 <img
                                                                   src="/images/copy.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="copy"
                                                                 />
                                                               </div>
@@ -4677,7 +4674,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/call.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4690,7 +4687,7 @@ const Users = () => {
                                                                 </div>
                                                                 <img
                                                                   src="/images/copy.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="copy"
                                                                 />
                                                               </div>
@@ -4744,7 +4741,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/users.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4754,7 +4751,7 @@ const Users = () => {
                                                                   </p>
                                                                   <img
                                                                     src="/images/claim.svg"
-                                                                    className="img-fluid"
+                                                                     className="img-fluid" alt=""
                                                                     alt="claimant"
                                                                   />
                                                                 </div>
@@ -4763,7 +4760,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/user.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4782,7 +4779,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/mail.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4796,7 +4793,7 @@ const Users = () => {
 
                                                                 <img
                                                                   src="/images/copy.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="copy"
                                                                 />
                                                               </div>
@@ -4804,7 +4801,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/call.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4817,7 +4814,7 @@ const Users = () => {
                                                                 </div>
                                                                 <img
                                                                   src="/images/copy.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="copy"
                                                                 />
                                                               </div>
@@ -4871,7 +4868,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/users.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4881,7 +4878,7 @@ const Users = () => {
                                                                   </p>
                                                                   <img
                                                                     src="/images/claim.svg"
-                                                                    className="img-fluid"
+                                                                     className="img-fluid" alt=""
                                                                     alt="claimant"
                                                                   />
                                                                 </div>
@@ -4890,7 +4887,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/user.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4909,7 +4906,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/mail.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4923,7 +4920,7 @@ const Users = () => {
 
                                                                 <img
                                                                   src="/images/copy.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="copy"
                                                                 />
                                                               </div>
@@ -4931,7 +4928,7 @@ const Users = () => {
                                                               <div className="d-flex align-items-center py-2">
                                                                 <img
                                                                   src="/images/call.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="users"
                                                                 />
                                                                 <div className="ms-2 flex-grow-1">
@@ -4944,7 +4941,7 @@ const Users = () => {
                                                                 </div>
                                                                 <img
                                                                   src="/images/copy.svg"
-                                                                  className="img-fluid"
+                                                                   className="img-fluid" alt=""
                                                                   alt="copy"
                                                                 />
                                                               </div>
@@ -4959,7 +4956,7 @@ const Users = () => {
                                                       <td>
                                                         <img
                                                           src="/images/suspending.svg"
-                                                          className="img-fluid"
+                                                          className="img-fluid" alt=""
                                                         />
                                                       </td>
                                                       <td>{item.date_added}</td>
@@ -5402,7 +5399,7 @@ const Users = () => {
                           >
                             <img
                               src="/images/filter.svg"
-                              className="img-fluid me-2"
+                              className="img-fluid me-2" alt=""
                             />{" "}
                             Filters
                           </a>
@@ -5410,7 +5407,7 @@ const Users = () => {
                           <button className="btn btn-size btn-outline-light text-medium px-4">
                             <img
                               src="/images/sort.svg"
-                              className="img-fluid me-2"
+                              className="img-fluid me-2" alt=""
                             />{" "}
                             Most Recent
                           </button>
@@ -5678,7 +5675,7 @@ const Users = () => {
                     <td>
                       <img
                         src="/images/ministry-admin.svg"
-                        className="img-fluid"
+                        className="img-fluid" alt=""
                       />
                     </td>
                     <td>DS133</td>
@@ -5709,10 +5706,10 @@ const Users = () => {
 
               <div className="d-flex align-items-center gap-10">
                 <button className="btn btn-outline-light text-medium">
-                  <img src="/images/prev.svg" className="img-fluid" /> Previous
+                  <img src="/images/prev.svg" className="img-fluid" alt="" /> Previous
                 </button>
                 <button className="btn btn-outline-light text-medium">
-                  Next <img src="/images/next.svg" className="img-fluid" />
+                  Next <img src="/images/next.svg" className="img-fluid" alt="" />
                 </button>
               </div>
             </div>
@@ -5872,7 +5869,7 @@ const Users = () => {
                         <div className="text-center">
                           <img
                             src="/images/no-found.svg"
-                            className="img-fluid"
+                            className="img-fluid" alt=""
                           />
                         </div>
                       </div>

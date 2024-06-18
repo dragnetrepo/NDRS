@@ -12,8 +12,8 @@ const HelpSupport = () => {
 
   useEffect(() => {
     fetchCategories()
-    fetchCategoryPosts()
-    fetchPosts()
+    // fetchCategoryPosts()
+    // fetchPosts()
   }, [])
 
   const fetchCategories = async () => {
@@ -36,43 +36,43 @@ const HelpSupport = () => {
     }
   };
 
-  const fetchCategoryPosts = async (id) => {
-    try {
-      const res = await fetch(baseUrl + `/api/posts/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+  // const fetchCategoryPosts = async (id) => {
+  //   try {
+  //     const res = await fetch(baseUrl + `/api/posts/${id}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
-      }
+  //     if (!res.ok) {
+  //       throw new Error("Failed to fetch data."); // Handle failed request
+  //     }
 
-      const data = await res.json();
-      setCategoryPost(data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  };
+  //     const data = await res.json();
+  //     setCategoryPost(data.data);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error.message);
+  //   }
+  // };
 
-  const fetchPosts = async (id) => {
-    try {
-      const res = await fetch(baseUrl + `/api/posts/read/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+  // const fetchPosts = async (id) => {
+  //   try {
+  //     const res = await fetch(baseUrl + `/api/posts/read/${id}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
-      }
+  //     if (!res.ok) {
+  //       throw new Error("Failed to fetch data."); // Handle failed request
+  //     }
 
-      const data = await res.json();
-      setPost(data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  };
+  //     const data = await res.json();
+  //     setPost(data.data);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error.message);
+  //   }
+  // };
 
 
   return (
@@ -124,7 +124,7 @@ const HelpSupport = () => {
                                 <div className="card-body">
                                   <img
                                     src="/images/help.svg"
-                                    className="img-fluid mb-3"
+                                    className="img-fluid mb-3" alt=""
                                   />
 
                                   <h3>{item.title}</h3>

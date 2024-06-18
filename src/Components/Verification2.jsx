@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../App";
 
@@ -83,7 +83,7 @@ const Verification2 = () => {
                         <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
                           <img
                             src="/images/check-tick.svg"
-                            className="img-fluid"
+                            className="img-fluid" alt=""
                           />
                         </span>
                       </div>
@@ -102,7 +102,7 @@ const Verification2 = () => {
                       <li>Make sure you entered details correctly</li>
                       <li>Check your spam folder</li>
                       <li>
-                        <a href="#" className="text-main-primary">
+                        <a href="" className="text-main-primary">
                           Resend verification code
                         </a>
                       </li>
@@ -112,7 +112,7 @@ const Verification2 = () => {
                   <p className="mt-4 text-center text-muted-3 mb-0">
                     Already have an account?{" "}
                     <Link
-                      href="/login"
+                      to="/login"
                       className="text-main-primary text-medium text-decoration-none"
                     >
                       Log in

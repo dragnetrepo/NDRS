@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
 import DiscussionInc from "../Bars/DiscussionInc";
@@ -250,7 +250,7 @@ const Discussions = () => {
                   <div className="text-center me-2 flex-shrink-0">
                     <img
                       src="/images/file_upload_states.svg"
-                      className="img-fluid"
+                      className="img-fluid" alt=""
                       style={{ height: "40px" }}
                     />
                   </div>
@@ -468,7 +468,7 @@ const Discussions = () => {
                     <div className="text-center me-2 flex-shrink-0">
                       <img
                         src="/images/file_upload_states.svg"
-                        className="img-fluid"
+                        className="img-fluid" alt=""
                         style={{ height: "40px" }}
                       />
                     </div>
@@ -490,7 +490,7 @@ const Discussions = () => {
                 <div className="d-flex align-items-center justify-content-between mb-4">
                   <div className="d-flex align-items-center">
                     <div className="text-center me-2 flex-shrink-0">
-                      <img src="/images/pdf-icon.svg" className="img-fluid" />
+                      <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
                     </div>
                     <div>
                       <p className="text-bold mb-1">Submission Letter.pdf</p>
@@ -521,7 +521,7 @@ const Discussions = () => {
                 <div className="d-flex align-items-center justify-content-between mb-4">
                   <div className="d-flex align-items-center">
                     <div className="text-center me-2 flex-shrink-0">
-                      <img src="/images/pdf-icon.svg" className="img-fluid" />
+                      <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
                     </div>
                     <div>
                       <p className="text-bold mb-1">Submission Letter.pdf</p>
@@ -552,7 +552,7 @@ const Discussions = () => {
                 <div className="d-flex align-items-center justify-content-between mb-4">
                   <div className="d-flex align-items-center">
                     <div className="text-center me-2 flex-shrink-0">
-                      <img src="/images/pdf-icon.svg" className="img-fluid" />
+                      <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
                     </div>
                     <div>
                       <p className="text-bold mb-1">Submission Letter.pdf</p>
@@ -585,7 +585,7 @@ const Discussions = () => {
                     <div className="text-center me-2 flex-shrink-0">
                       <img
                         src="/images/file_upload_states_1.svg"
-                        className="img-fluid"
+                        className="img-fluid" alt=""
                         style={{ height: "40px" }}
                       />
                     </div>

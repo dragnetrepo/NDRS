@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, } from "react";
 import { AppContext } from "../App";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -105,7 +105,7 @@ const Verification = () => {
                         <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
                           <img
                             src="/images/check-tick.svg"
-                            className="img-fluid"
+                            className="img-fluid" alt=""
                           />
                         </span>
                       </div>

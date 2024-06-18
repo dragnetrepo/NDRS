@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, } from "react";
 import { AppContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -52,7 +52,7 @@ const CreatePassword = () => {
 				throw new Error("Network response was not ok");
 			}
 
-			const data = await response.json();
+			// const data = await response.json();
 
 			navigate("/ProfileSetup");
 		} catch (error) {
@@ -66,7 +66,7 @@ const CreatePassword = () => {
 		let password_field = e.target.closest('.input-group').querySelector('input');
 		let attribute_name = password_field.getAttribute("type");
 
-		if (attribute_name == "password") {
+		if (attribute_name === "password") {
 			password_field.setAttribute("type", "text");
 		}
 		else {
@@ -118,7 +118,7 @@ const CreatePassword = () => {
 												/>
 												<span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right"
 													onClick={(e) => handleViewPassword(e)}>
-													<img src="/images/eye.svg" className="img-fluid" />
+													<img src="/images/eye.svg" className="img-fluid" alt="" />
 												</span>
 											</div>
 										</div>
@@ -136,7 +136,7 @@ const CreatePassword = () => {
 												/>
 												<span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right"
 													onClick={(e) => handleViewPassword(e)}>
-													<img src="/images/eye.svg" className="img-fluid" />
+													<img src="/images/eye.svg" className="img-fluid" alt="" />
 												</span>
 												{passwordField.password !== passwordField.password_confirmation && (
 													<div className="invalid-feedback">

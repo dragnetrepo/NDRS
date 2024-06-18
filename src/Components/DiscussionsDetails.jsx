@@ -26,7 +26,56 @@ const DiscussionIinc = () => {
   const [meetingStartTime, setMeetingStartTime] = useState("");
   const [meetingEndTime, setMeetingEndTime] = useState("");
   const messagesEndRef = useRef(null);
+  const [status, setStatus] = useState('concilliation');
+  const [resolution, setResolution] = useState('');
+  const [summary, setSummary] = useState('');
 
+
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+  };
+
+  const handleResolutionChange = (e) => {
+    setResolution(e.target.value);
+  };
+
+  const handleSummaryChange = (e) => {
+    setSummary(e.target.value);
+  };
+
+  const handleFileDocument = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const handleStatus = async (e, id) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('status', status);
+      formData.append('resolution', resolution);
+      formData.append('summary', summary);
+      if (selectedFile) {
+        formData.append('document', selectedFile);
+      }
+
+      const res = await fetch(baseUrl + `/api/case/change-status/${id}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to update status');
+      }
+
+      const data = await res.json();
+      console.log('Success:', data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
 
 
@@ -160,7 +209,7 @@ const DiscussionIinc = () => {
   };
 
   const handlePoll = async (e, id) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
       const token = localStorage.getItem("token");
@@ -181,8 +230,8 @@ const DiscussionIinc = () => {
         {
           method: "POST",
           headers: {
-            "content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(pollData),
         }
@@ -192,12 +241,16 @@ const DiscussionIinc = () => {
         throw new Error("Failed to fetch data."); // Handle failed request
       }
 
-      const data = await res.json()
+      const data = await res.json();
 
       const newMessage = {
         _id: data.data?._id || `local-${Date.now()}`,
         sender: { sender: 'You' },
-        message: pollData, // Use the pollData directly as message for poll type
+        message: {
+          question: pollData.poll_question,
+          options: pollData.poll_options,
+          vote_results: {}, // Initially empty vote results
+        },
         time_sent: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
         type: 'poll'
       };
@@ -212,12 +265,11 @@ const DiscussionIinc = () => {
       setPollOptions(["", ""]); // Reset options to initial state
       setAnonVoting(false);
 
-
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
-
   };
+
 
   const handlePollOptionChange = (index, value) => {
     const newPollOptions = [...pollOptions];
@@ -225,14 +277,10 @@ const DiscussionIinc = () => {
     setPollOptions(newPollOptions);
   };
 
-
   const addPollOption = () => {
     const newOption = ""; // Default new option value
     setPollOptions([...pollOptions, newOption]);
-
   };
-
-
 
 
   const handleVote = async (id, pollId, pollValue) => {
@@ -332,6 +380,14 @@ const DiscussionIinc = () => {
   };
 
   const handleUpload = async (e, id) => {
+
+    const formData = new FormData();
+
+    // formData.append('reply_to', reply_to);
+    // if (selectedFile) {
+    //   formData.append('document', selectedFile);
+    // }
+
     e.preventDefault()
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -343,14 +399,14 @@ const DiscussionIinc = () => {
 
 
       const res = await fetch(
-        baseUrl + `/api/case/discussions/${id}/send-message`,
+        baseUrl + `/api/case/discussions/${id}/upload-document`,
         {
           method: "POST",
           headers: {
             "content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(),
+          body: formData,
         }
       );
 
@@ -359,6 +415,7 @@ const DiscussionIinc = () => {
       }
 
       const data = await res.json()
+      console.log('Success:', data);
 
 
     } catch (error) {
@@ -469,8 +526,7 @@ const DiscussionIinc = () => {
                           <div className="d-flex justify-content-between align-items-start">
                             <p className="mb-0 text-muted-3 line-clamp-2">
                               {item.sender.sender}{` : `}
-                              {item.
-                                last_message
+                              {item.last_message
                               }
                             </p>
                             <span className="badge rounded-pill text-bg-main">4</span>
@@ -565,15 +621,15 @@ const DiscussionIinc = () => {
                                   <div className="card">
                                     <div className="card-body">
                                       <p className="text-medium text-center">{item.message.question}</p>
-                                      {item.message.vote_results && Object.entries(item.message.vote_results).map(([option, result], index) => (
+                                      {item.message.options && item.message.options.map((option, index) => (
                                         <div key={index} className="form-check d-flex align-items-center gap-10 mb-1">
-                                          <input className="form-check-input" type="radio" name={`poll-${item._id}`} id={`poll-${item._id}-${option}`} onClick={() => handleVote(id, option)} />
+                                          <input className="form-check-input" type="radio" name={`poll-${item._id}`} id={`poll-${item._id}-${option}`} onClick={() => handleVote(item._id, option)} />
                                           <label className="form-check-label w-100" htmlFor={`poll-${item._id}-${option}`}>
                                             <span className="text-medium">{option.charAt(0).toUpperCase() + option.slice(1)}</span>
-                                            <div className="progress progress-height " role="progressbar" aria-valuenow={parseInt(result.percentage)} aria-valuemin="0" aria-valuemax="100">
-                                              <div className="progress-bar bg-success" style={{ width: result.percentage }}></div>
+                                            <div className="progress progress-height " role="progressbar" aria-valuenow={0} aria-valuemin="0" aria-valuemax="100">
+                                              <div className="progress-bar bg-success" style={{ width: "0%" }}></div>
                                             </div>
-                                            <span className="d-block text-end text-medium">{result.percentage}</span>
+                                            <span className="d-block text-end text-medium">0%</span>
                                           </label>
                                         </div>
                                       ))}
@@ -604,9 +660,9 @@ const DiscussionIinc = () => {
                   </div>
 
                   <div className="chat-footer d-flex align-items-center justify-content-between bg-custom-color-2 px-3 gap-15 py-2">
-                    <a href="#">
-                      <img src="/images/file-upload.svg" className="img-fluid" />
-                    </a>
+                    {/* <a href="#">
+                      <img src="/images/file-upload.svg" className="img-fluid" alt="" />
+                    </a> */}
 
                     <div className="dropdown">
                       <div
@@ -615,7 +671,7 @@ const DiscussionIinc = () => {
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                       >
-                        <img src="/images/plus.svg" className="img-fluid" />
+                        <img src="/images/plus.svg" className="img-fluid" alt="" />
                       </div>
                       <ul className="dropdown-menu shadow-box p-3">
                         <li>
@@ -695,7 +751,7 @@ const DiscussionIinc = () => {
                     </div>
 
                     <a onClick={() => handleSendMessages(id)} >
-                      <img src="/images/send.svg" className="img-fluid" />
+                      <img src="/images/send.svg" className="img-fluid" alt="" />
                     </a>
                   </div>
                 </div >
@@ -736,11 +792,11 @@ const DiscussionIinc = () => {
                 <div className="d-flex justify-content-between align-items-center avatar-icon w-100 mb-3">
                   <div className="d-flex avatar-holder">
                     <div className="position-relative">
-                      <img src="/images/users-2.svg" className="img-fluid" />
+                      <img src="/images/users-2.svg" className="img-fluid" alt="" />
                     </div>
                     <div className="ms-2 flex-grow-1">
                       <p className="mb-1 ft-sm">Role in dispute</p>
-                      <img src="/images/claimant.svg" className="img-fluid" />
+                      <img src="/images/claimant.svg" className="img-fluid" alt="" />
                     </div>
                   </div>
                   <div>
@@ -757,7 +813,7 @@ const DiscussionIinc = () => {
                 <div className="d-flex justify-content-between align-items-center avatar-icon w-100 mb-3">
                   <div className="d-flex avatar-holder">
                     <div className="position-relative">
-                      <img src="/images/user.svg" className="img-fluid" />
+                      <img src="/images/user.svg" className="img-fluid" alt="" />
                     </div>
                     <div className="ms-2 flex-grow-1">
                       <p className="mb-1 ft-sm">Name & Organization</p>
@@ -778,7 +834,7 @@ const DiscussionIinc = () => {
                 <div className="d-flex justify-content-between align-items-center avatar-icon w-100 mb-3">
                   <div className="d-flex avatar-holder">
                     <div className="position-relative">
-                      <img src="/images/mail.svg" className="img-fluid" />
+                      <img src="/images/mail.svg" className="img-fluid" alt="" />
                     </div>
                     <div className="ms-2 flex-grow-1">
                       <p className="mb-1 ft-sm">Email</p>
@@ -795,7 +851,7 @@ const DiscussionIinc = () => {
                 <div className="d-flex justify-content-between align-items-center avatar-icon w-100 mb-3">
                   <div className="d-flex avatar-holder">
                     <div className="position-relative">
-                      <img src="/images/call.svg" className="img-fluid" />
+                      <img src="/images/call.svg" className="img-fluid" alt="" />
                     </div>
                     <div className="ms-2 flex-grow-1">
                       <p className="mb-1 ft-sm">Phone Number</p>
@@ -867,7 +923,7 @@ const DiscussionIinc = () => {
                   >
                     <div className="d-flex align-items-center mb-4">
                       <div className="text-center me-2 flex-shrink-0">
-                        <img src="/images/pdf-icon.svg" className="img-fluid" />
+                        <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
                       </div>
                       <div>
                         <p className="text-bold mb-1">Submission Letter.pdf</p>
@@ -879,7 +935,7 @@ const DiscussionIinc = () => {
 
                     <div className="d-flex align-items-center mb-4">
                       <div className="text-center me-2 flex-shrink-0">
-                        <img src="/images/pdf-icon.svg" className="img-fluid" />
+                        <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
                       </div>
                       <div>
                         <p className="text-bold mb-1">Submission Letter.pdf</p>
@@ -891,7 +947,7 @@ const DiscussionIinc = () => {
 
                     <div className="d-flex align-items-center mb-4">
                       <div className="text-center me-2 flex-shrink-0">
-                        <img src="/images/pdf-icon.svg" className="img-fluid" />
+                        <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
                       </div>
                       <div>
                         <p className="text-bold mb-1">Submission Letter.pdf</p>
@@ -1014,117 +1070,127 @@ const DiscussionIinc = () => {
           <div className="modal-content p-lg-4 border-0">
             <div className="modal-header justify-content-between">
               <h1 className="modal-title fs-5">Change case status</h1>
-
               <div className="gap-10 d-flex align-items-center">
                 <button
-                  className="btn btn btn-size btn-main-outline-primary px-3"
+                  className="btn btn-size btn-main-outline-primary px-3"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 >
                   Cancel
                 </button>
-
-                <a href="#" className="btn btn-main-primary btn-size px-3">
+                <button onClick={(e) => handleStatus(e, id)} className="btn btn-main-primary btn-size px-3">
                   Save
-                </a>
+                </button>
               </div>
             </div>
             <div className="modal-body">
-              <div className="mb-3">
-                <label className="form-label">
-                  What is the current state of the dispute?
-                </label>
-                <select className="form-select form-control-height disabled">
-                  <option>Concilliation</option>
-                  <option>Arbitration Tribunal</option>
-                  <option>National Industrial Courts</option>
-                </select>
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label d-block">
-                  Was a resolution successfully reached?
-                </label>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="inlineRadio1"
-                    value="option1"
-                  />
-                  <label className="form-check-label" htmlFor="inlineRadio1">
-                    Yes
+              <form onSubmit={handleStatus}>
+                <div className="mb-3">
+                  <label className="form-label">
+                    What is the current state of the dispute?
                   </label>
+                  <select className="form-select form-control-height" value={status} onChange={handleStatusChange}>
+                    <option value="Concilliation">Concilliation</option>
+                    <option value="Arbitration Tribunal">Arbitration Tribunal</option>
+                    <option value="National Industrial Courts">National Industrial Courts</option>
+                  </select>
                 </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="inlineRadio2"
-                    value="option2"
-                  />
-                  <label className="form-check-label" htmlFor="inlineRadio2">
-                    No
+
+                <div className="mb-3">
+                  <label className="form-label d-block">
+                    Was a resolution successfully reached?
                   </label>
-                </div>
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Summary of Concilliation</label>
-                <textarea
-                  className="form-control"
-                  rows="3"
-                  placeholder="Type in your message"
-                ></textarea>
-              </div>
-
-              <label htmlFor="add_doc">
-                <input
-                  type="file"
-                  name="add_doc"
-                  id="add_doc"
-                  className="d-none"
-                />
-                <div className="mb-4">
-                  <div className="btn-flat text-main-primary text-decoration-none cursor-pointer">
-                    Add document{" "}
-                    <img
-                      src="/images/button-icon-1.svg"
-                      className="img-fluid"
-                      alt="add-icon"
+                  <div className="form-check form-check-inline">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="resolutionOptions"
+                      id="resolutionYes"
+                      value="Yes"
+                      checked={resolution === 'Yes'}
+                      onChange={handleResolutionChange}
                     />
+                    <label className="form-check-label" htmlFor="resolutionYes">
+                      Yes
+                    </label>
                   </div>
-                </div>
-              </label>
-
-              <div className="d-flex align-items-center justify-content-between mb-4">
-                <div className="d-flex align-items-center">
-                  <div className="text-center me-2 flex-shrink-0">
-                    <img
-                      src="/images/file_upload_states.svg"
-                      className="img-fluid"
-                      style={{ height: "40px" }}
+                  <div className="form-check form-check-inline">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="resolutionOptions"
+                      id="resolutionNo"
+                      value="No"
+                      checked={resolution === 'No'}
+                      onChange={handleResolutionChange}
                     />
-                  </div>
-                  <div>
-                    <p className="text-bold mb-1">Document Name</p>
-                    <p className="font-sm text-muted mb-0">
-                      Doc format . Max. 5MB
-                    </p>
+                    <label className="form-check-label" htmlFor="resolutionNo">
+                      No
+                    </label>
                   </div>
                 </div>
 
-                <div>
-                  <button className="btn btn-main-primary btn-size">
-                    Upload
-                  </button>
+                <div className="mb-3">
+                  <label className="form-label">Summary of Concilliation</label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    placeholder="Type in your message"
+                    value={summary}
+                    onChange={handleSummaryChange}
+                  ></textarea>
                 </div>
-              </div>
+
+                <label htmlFor="add_doc">
+                  <input
+                    type="file"
+                    name="add_doc"
+                    id="add_doc"
+                    className="d-none"
+                    onChange={handleFileChange}
+                  />
+                  <div className="mb-4">
+                    <div className="btn-flat text-main-primary text-decoration-none cursor-pointer">
+                      Add document{" "}
+                      <img
+                        src="/images/button-icon-1.svg"
+                        className="img-fluid"
+                        alt="add-icon"
+                      />
+                    </div>
+                  </div>
+                </label>
+
+                {selectedFile && (
+                  <div className="d-flex align-items-center justify-content-between mb-4">
+                    <div className="d-flex align-items-center">
+                      <div className="text-center me-2 flex-shrink-0">
+                        <img
+                          src="/images/file_upload_states.svg"
+                          className="img-fluid"
+                          alt=""
+                          style={{ height: "40px" }}
+                        />
+                      </div>
+                      <div>
+                        <p className="text-bold mb-1">{selectedFile.name}</p>
+                        <p className="font-sm text-muted mb-0">
+                          Doc format . Max. 5MB
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <button type="button" className="btn btn-main-primary btn-size" onClick={handleStatus}>
+                        Upload
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </form>
             </div>
           </div>
         </div>
+
       </div>
 
       {/* <!-- Modal --> */}
@@ -1323,7 +1389,7 @@ const DiscussionIinc = () => {
                     <div className="text-center me-2 flex-shrink-0">
                       <img
                         src="/images/file_upload_states.svg"
-                        className="img-fluid"
+                        className="img-fluid" alt=""
                         style={{ height: "40px" }}
                       />
                     </div>
@@ -1345,7 +1411,7 @@ const DiscussionIinc = () => {
                 <div className="d-flex align-items-center justify-content-between mb-4">
                   <div className="d-flex align-items-center">
                     <div className="text-center me-2 flex-shrink-0">
-                      <img src="/images/pdf-icon.svg" className="img-fluid" />
+                      <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
                     </div>
                     <div>
                       <p className="text-bold mb-1">Submission Letter.pdf</p>
@@ -1376,7 +1442,7 @@ const DiscussionIinc = () => {
                 <div className="d-flex align-items-center justify-content-between mb-4">
                   <div className="d-flex align-items-center">
                     <div className="text-center me-2 flex-shrink-0">
-                      <img src="/images/pdf-icon.svg" className="img-fluid" />
+                      <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
                     </div>
                     <div>
                       <p className="text-bold mb-1">Submission Letter.pdf</p>
@@ -1407,7 +1473,7 @@ const DiscussionIinc = () => {
                 <div className="d-flex align-items-center justify-content-between mb-4">
                   <div className="d-flex align-items-center">
                     <div className="text-center me-2 flex-shrink-0">
-                      <img src="/images/pdf-icon.svg" className="img-fluid" />
+                      <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
                     </div>
                     <div>
                       <p className="text-bold mb-1">Submission Letter.pdf</p>
@@ -1440,7 +1506,7 @@ const DiscussionIinc = () => {
                     <div className="text-center me-2 flex-shrink-0">
                       <img
                         src="/images/file_upload_states_1.svg"
-                        className="img-fluid"
+                        className="img-fluid" alt=""
                         style={{ height: "40px" }}
                       />
                     </div>

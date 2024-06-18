@@ -19,7 +19,7 @@ import TopBarInc from "./Bars/TopBarInc";
 import Notifications from "./Components/Notifications";
 import Unions from "./Components/Unions";
 import UnionDetails from "./Components/UnionDetails";
-import UnionBranches3 from "./Components/UnionBranches3";
+// import UnionBranches3 from "./Components/UnionBranches3";
 import Settings from "./Components/Settings";
 import Disputes from "./Components/Disputes";
 import Disputes2 from "./Components/Disputes2";
@@ -136,7 +136,7 @@ const App = () => {
           <Route path="/Unions" element={<Unions />} />
           <Route path="/UnionDetails" element={<UnionDetails />} />
           <Route path="/UnionDetails/:id" element={<UnionDetails />} />
-          <Route path="/UnionBranches3" element={<UnionBranches3 />} />
+          {/* <Route path="/UnionBranches3" element={<UnionBranches3 />} /> */}
           <Route path="/Disputes" element={<Disputes />} />
           <Route path="/Disputes2" element={<Disputes2 />} />
           <Route path="/Disputes2/:id" element={<Disputes2 />} />

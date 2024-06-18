@@ -5,15 +5,15 @@ import { Link } from "react-router-dom";
 
 const DiscussionIinc = () => {
   const [discussion, setDiscussions] = useState([]);
-  const [discussionMessages, setDiscussionsMessages] = useState([]);
-  const [messages, setMessages] = useState({
-    type: "",
-    message: "",
-  });
+  // const [discussionMessages, setDiscussionsMessages] = useState([]);
+  // const [messages, setMessages] = useState({
+  //   type: "",
+  //   message: "",
+  // });
 
   useEffect(() => {
     fetchDiscussions();
-    fetchDiscussionsMessages();
+    // fetchDiscussionsMessages();
   }, []);
 
   const fetchDiscussions = async () => {
@@ -43,76 +43,76 @@ const DiscussionIinc = () => {
     }
   };
 
-  const fetchDiscussionsMessages = async (id) => {
-    try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-      const token = localStorage.getItem("token");
+  // const fetchDiscussionsMessages = async (id) => {
+  //   try {
+  //     const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  //     const token = localStorage.getItem("token");
 
-      if (!token) {
-        throw new Error("User is not logged in."); // Handle case where user is not logged in
-      }
+  //     if (!token) {
+  //       throw new Error("User is not logged in."); // Handle case where user is not logged in
+  //     }
 
-      const res = await fetch(
-        baseUrl + `/api/case/discussions/${id}/messages`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  //     const res = await fetch(
+  //       baseUrl + `/api/case/discussions/${id}/messages`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
-      }
+  //     if (!res.ok) {
+  //       throw new Error("Failed to fetch data."); // Handle failed request
+  //     }
 
-      const data = await res.json();
-      setDiscussionsMessages(data.data);
+  //     const data = await res.json();
+  //     setDiscussionsMessages(data.data);
 
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error.message);
+  //   }
+  // };
 
-  const onHandleChange = (e) => {
-    setMessages({ ...messages, [e.target.name]: e.target.value });
+  // const onHandleChange = (e) => {
+  //   setMessages({ ...messages, [e.target.name]: e.target.value });
 
-  };
+  // };
 
-  const handleSendMessages = async (e, id) => {
-    e.preventDefault();
-    try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-      const token = localStorage.getItem("token");
+  // const handleSendMessages = async (e, id) => {
+  //   e.preventDefault();
+  //   try {
+  //     const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  //     const token = localStorage.getItem("token");
 
-      if (!token) {
-        throw new Error("User is not logged in."); // Handle case where user is not logged in
-      }
+  //     if (!token) {
+  //       throw new Error("User is not logged in."); // Handle case where user is not logged in
+  //     }
 
-      const res = await fetch(
-        baseUrl + `/api/case/discussions/${id}/send-message`,
-        {
-          method: "POST",
-          headers: {
-            "content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ message: messages, type: messages }),
-        }
-      );
+  //     const res = await fetch(
+  //       baseUrl + `/api/case/discussions/${id}/send-message`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "content-Type": "application/json",
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //         body: JSON.stringify({ message: messages, type: messages }),
+  //       }
+  //     );
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
-      }
+  //     if (!res.ok) {
+  //       throw new Error("Failed to fetch data."); // Handle failed request
+  //     }
 
-      fetchDiscussionsMessages();
+  //     fetchDiscussionsMessages();
 
-      const data = await res.json();
-      // setDiscussionsMessages(data.data);
+  //     const data = await res.json();
+  //     // setDiscussionsMessages(data.data);
 
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error.message);
+  //   }
+  // };
 
   return (
     <>

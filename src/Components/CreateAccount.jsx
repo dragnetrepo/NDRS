@@ -27,7 +27,7 @@ const CreateAccount = () => {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
+      // const data = await response.json();
 
       navigate("/Verification");
     } catch (error) {

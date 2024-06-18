@@ -288,7 +288,7 @@ const Settings = () => {
 		let password_field = e.target.closest('.input-group').querySelector('input');
 		let attribute_name = password_field.getAttribute("type");
 
-		if (attribute_name == "password") {
+		if (attribute_name === "password") {
 			password_field.setAttribute("type", "text");
 		}
 		else {
@@ -422,15 +422,15 @@ const Settings = () => {
 																							<img
 																								src={
 																									user.display_picture ||
-																									avatarImage
+																									'/images/download.png'
 																								}
-																								className="img-fluid object-fit-cover object-position-center w-100 h-100"
+																								className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
 																							/>
 																						</div>
 
 																						<img
 																							src="/images/close-x.svg"
-																							className="img-fluid remove-profile cursor-pointer"
+																							className="img-fluid remove-profile cursor-pointer" alt=""
 																						/>
 																					</label>
 																				</div>
@@ -819,7 +819,7 @@ const Settings = () => {
 																					<div className="d-flex flex-column gap-10">
 																						{Object.keys(item.settings).map((setting) => (
 																							<div className="form-check d-flex align-items-center form-switch">
-																								<input className="form-check-input" type="checkbox" role="switch" id={`toggler-${item.key}-${setting}`} checked={(item.settings[setting] == "1")} onChange={(e) => {
+																								<input className="form-check-input" type="checkbox" role="switch" id={`toggler-${item.key}-${setting}`} checked={(item.settings[setting] === "1")} onChange={(e) => {
 																									toggleNotificationSettings(item.key, setting)
 																								}} />
 																								<label className="form-check-label ms-4" htmlFor={`toggler-${item.key}-${setting}`} >
@@ -1100,7 +1100,7 @@ const Settings = () => {
 										/>
 										<span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right"
 											onClick={(e) => handleViewPassword(e)}>
-											<img src="/images/eye.svg" className="img-fluid" />
+											<img src="/images/eye.svg" className="img-fluid" alt="" />
 										</span>
 									</div>
 								</div>
@@ -1116,7 +1116,7 @@ const Settings = () => {
 										/>
 										<span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right"
 											onClick={(e) => handleViewPassword(e)}>
-											<img src="/images/eye.svg" className="img-fluid" />
+											<img src="/images/eye.svg" className="img-fluid" alt="" />
 										</span>
 									</div>
 								</div>
@@ -1132,7 +1132,7 @@ const Settings = () => {
 										/>
 										<span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right"
 											onClick={(e) => handleViewPassword(e)}>
-											<img src="/images/eye.svg" className="img-fluid" />
+											<img src="/images/eye.svg" className="img-fluid" alt="" />
 										</span>
 										{changePassword.password !== changePassword.password_confirmation && (
 											<div className="invalid-feedback">

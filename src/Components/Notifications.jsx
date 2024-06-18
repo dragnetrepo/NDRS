@@ -603,7 +603,7 @@ const Notifications = () => {
                         placeholder="Current password"
                       />
                       <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
-                        <img src="/images/eye.svg" className="img-fluid" />
+                        <img src="/images/eye.svg" className="img-fluid" alt="" />
                       </span>
                     </div>
                   </div>
@@ -616,7 +616,7 @@ const Notifications = () => {
                         placeholder="New password"
                       />
                       <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
-                        <img src="/images/eye.svg" className="img-fluid" />
+                        <img src="/images/eye.svg" className="img-fluid" alt="" />
                       </span>
                     </div>
                   </div>
@@ -629,7 +629,7 @@ const Notifications = () => {
                         placeholder="Re-enter password"
                       />
                       <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
-                        <img src="/images/eye.svg" className="img-fluid" />
+                        <img src="/images/eye.svg" className="img-fluid" alt="" />
                       </span>
                       <div className="invalid-feedback">
                         Passwords do not match

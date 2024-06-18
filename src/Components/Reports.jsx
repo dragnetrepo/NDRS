@@ -48,7 +48,7 @@ const Reports = () => {
                           <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
                             <img
                               src="/images/filter.svg"
-                              className="img-fluid"
+                              className="img-fluid" alt=""
                             />{" "}
                             Last 30 days
                           </a>

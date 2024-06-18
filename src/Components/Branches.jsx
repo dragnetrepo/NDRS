@@ -273,8 +273,8 @@ const Branches = () => {
                                           <div className="col-lg-5 offset-lg-2">
                                             <img
                                               src="/images/csv.png"
-                                              className="img-fluid"
-                                              alt=""
+                                              className="img-fluid" alt=""
+
                                             />
                                           </div>
                                         </div>
@@ -291,7 +291,7 @@ const Branches = () => {
                                               <div className="text-center mb-2">
                                                 <img
                                                   src="/images/file_upload_states.svg"
-                                                  className="img-fluid"
+                                                  className="img-fluid" alt=""
                                                 />
                                               </div>
                                               <p className="text-muted-3 mb-1">
@@ -303,7 +303,7 @@ const Branches = () => {
 
                                               <img
                                                 src="/images/or-line.svg"
-                                                className="img-fluid"
+                                                className="img-fluid" alt=""
                                               />
 
                                               <div className="mt-3">
@@ -317,7 +317,7 @@ const Branches = () => {
                                               <div className="text-center mb-2">
                                                 <img
                                                   src="/images/uploaded.svg"
-                                                  className="img-fluid"
+                                                  className="img-fluid" alt=""
                                                 />
                                               </div>
                                               <p className="text-dark text-medium mb-1">
@@ -336,7 +336,7 @@ const Branches = () => {
                                                 >
                                                   <img
                                                     src="/images/eyes.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                   />{" "}
                                                   Preview Sent Invites
                                                 </a>
@@ -349,7 +349,7 @@ const Branches = () => {
                                                 >
                                                   <img
                                                     src="/images/trash-bin.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                   />{" "}
                                                   Clear Upload
                                                 </a>
@@ -432,13 +432,13 @@ const Branches = () => {
                                                   <div className="main-avatar mx-auto">
                                                     <img
                                                       src={avatarImage}
-                                                      className="img-fluid object-fit-cover object-position-center w-100 h-100"
+                                                      className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
                                                     />
                                                   </div>
 
                                                   <img
                                                     src="/images/close-x.svg"
-                                                    className="img-fluid remove-profile cursor-pointer"
+                                                    className="img-fluid remove-profile cursor-pointer" alt=""
                                                   />
                                                 </label>
                                               </div>
@@ -686,7 +686,7 @@ const Branches = () => {
                                     <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
                                       <img
                                         src="/images/filter.svg"
-                                        className="img-fluid"
+                                        className="img-fluid" alt=""
                                       />{" "}
                                       A-Z
                                     </a>
@@ -820,7 +820,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/users.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -829,7 +829,7 @@ const Branches = () => {
                                                     </p>
                                                     <img
                                                       src="/images/claim.svg"
-                                                      className="img-fluid"
+                                                      className="img-fluid" alt=""
                                                       alt="claimant"
                                                     />
                                                   </div>
@@ -838,7 +838,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/user.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -855,7 +855,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/mail.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -869,7 +869,7 @@ const Branches = () => {
 
                                                   <img
                                                     src="/images/copy.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="copy"
                                                   />
                                                 </div>
@@ -877,7 +877,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/call.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -890,7 +890,7 @@ const Branches = () => {
                                                   </div>
                                                   <img
                                                     src="/images/copy.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="copy"
                                                   />
                                                 </div>
@@ -943,7 +943,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/users.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -952,7 +952,7 @@ const Branches = () => {
                                                     </p>
                                                     <img
                                                       src="/images/claim.svg"
-                                                      className="img-fluid"
+                                                      className="img-fluid" alt=""
                                                       alt="claimant"
                                                     />
                                                   </div>
@@ -961,7 +961,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/user.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -978,7 +978,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/mail.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -992,7 +992,7 @@ const Branches = () => {
 
                                                   <img
                                                     src="/images/copy.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="copy"
                                                   />
                                                 </div>
@@ -1000,7 +1000,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/call.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1013,7 +1013,7 @@ const Branches = () => {
                                                   </div>
                                                   <img
                                                     src="/images/copy.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="copy"
                                                   />
                                                 </div>
@@ -1066,7 +1066,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/users.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1075,7 +1075,7 @@ const Branches = () => {
                                                     </p>
                                                     <img
                                                       src="/images/claim.svg"
-                                                      className="img-fluid"
+                                                      className="img-fluid" alt=""
                                                       alt="claimant"
                                                     />
                                                   </div>
@@ -1084,7 +1084,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/user.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1101,7 +1101,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/mail.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1115,7 +1115,7 @@ const Branches = () => {
 
                                                   <img
                                                     src="/images/copy.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="copy"
                                                   />
                                                 </div>
@@ -1123,7 +1123,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/call.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1136,7 +1136,7 @@ const Branches = () => {
                                                   </div>
                                                   <img
                                                     src="/images/copy.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="copy"
                                                   />
                                                 </div>
@@ -1189,7 +1189,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/users.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1198,7 +1198,7 @@ const Branches = () => {
                                                     </p>
                                                     <img
                                                       src="/images/claim.svg"
-                                                      className="img-fluid"
+                                                      className="img-fluid" alt=""
                                                       alt="claimant"
                                                     />
                                                   </div>
@@ -1207,7 +1207,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/user.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1224,7 +1224,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/mail.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1238,7 +1238,7 @@ const Branches = () => {
 
                                                   <img
                                                     src="/images/copy.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="copy"
                                                   />
                                                 </div>
@@ -1246,7 +1246,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/call.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1259,7 +1259,7 @@ const Branches = () => {
                                                   </div>
                                                   <img
                                                     src="/images/copy.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="copy"
                                                   />
                                                 </div>
@@ -1312,7 +1312,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/users.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1321,7 +1321,7 @@ const Branches = () => {
                                                     </p>
                                                     <img
                                                       src="/images/claim.svg"
-                                                      className="img-fluid"
+                                                      className="img-fluid" alt=""
                                                       alt="claimant"
                                                     />
                                                   </div>
@@ -1330,7 +1330,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/user.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1347,7 +1347,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/mail.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1361,7 +1361,7 @@ const Branches = () => {
 
                                                   <img
                                                     src="/images/copy.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="copy"
                                                   />
                                                 </div>
@@ -1369,7 +1369,7 @@ const Branches = () => {
                                                 <div className="d-flex align-items-center py-2">
                                                   <img
                                                     src="/images/call.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="users"
                                                   />
                                                   <div className="ms-2 flex-grow-1">
@@ -1382,7 +1382,7 @@ const Branches = () => {
                                                   </div>
                                                   <img
                                                     src="/images/copy.svg"
-                                                    className="img-fluid"
+                                                    className="img-fluid" alt=""
                                                     alt="copy"
                                                   />
                                                 </div>
@@ -1769,7 +1769,7 @@ const Branches = () => {
                         </p>
 
                         <div className="text-center">
-                          <img src="/images/no-found.svg" className="img-fluid" />
+                          <img src="/images/no-found.svg" className="img-fluid" alt="" />
                         </div>
                       </div>
                     </div>
@@ -1929,10 +1929,10 @@ const Branches = () => {
 
               <div className="d-flex align-items-center gap-10">
                 <button className="btn btn-outline-light text-medium">
-                  <img src="/images/prev.svg" className="img-fluid" /> Previous
+                  <img src="/images/prev.svg" className="img-fluid" alt="" /> Previous
                 </button>
                 <button className="btn btn-outline-light text-medium">
-                  Next <img src="/images/next.svg" className="img-fluid" />
+                  Next <img src="/images/next.svg" className="img-fluid" alt="" />
                 </button>
               </div>
             </div>
