@@ -32,7 +32,7 @@ const MainNavbarInc = () => {
 
       const data = await response.json();
 
-      console.log(data);
+
       localStorage.removeItem("token");
       navigate("/login");
     } catch (error) {
@@ -110,27 +110,27 @@ const MainNavbarInc = () => {
                   aria-current="page"
                   to="/dashboard"
                 >
-                  <img src="/images/home.svg" className="img-fluid" /> Dashboard
+                  <img src="/images/home.svg" className="img-fluid" alt="" /> Dashboard
                 </Link>
               </li>
 
               <li className="nav-item">
                 <Link className="nav-link" to="/Disputes">
-                  <img src="/images/suitcase.svg" className="img-fluid" />{" "}
+                  <img src="/images/suitcase.svg" className="img-fluid" alt="" />{" "}
                   Disputes
                 </Link>
               </li>
 
               <li className="nav-item">
                 <Link className="nav-link" to="/discussions">
-                  <img src="/images/chats.svg" className="img-fluid" />{" "}
+                  <img src="/images/chats.svg" className="img-fluid" alt="" />{" "}
                   Discussions
                 </Link>
               </li>
 
               <li className="nav-item">
                 <Link className="nav-link" to="/documents">
-                  <img src="/images/folder.svg" className="img-fluid" />{" "}
+                  <img src="/images/folder.svg" className="img-fluid" alt="" />{" "}
                   Documents
                 </Link>
               </li>
@@ -141,27 +141,27 @@ const MainNavbarInc = () => {
             <ul className="navbar-nav flex-column sidebar-list list-unstyled py-3 flex-grow-1">
               <li className="nav-item">
                 <Link className="nav-link" aria-current="page" to="/users">
-                  <img src="/images/users.svg" className="img-fluid" /> Users &
+                  <img src="/images/users.svg" className="img-fluid" alt="" /> Users &
                   Groups
                 </Link>
               </li>
 
               <li className="nav-item">
                 <Link className="nav-link" to="/Unions">
-                  <img src="/images/branch.svg" className="img-fluid" /> Unions
+                  <img src="/images/branch.svg" className="img-fluid" alt="" /> Unions
                 </Link>
               </li>
 
               <li className="nav-item">
                 <Link className="nav-link" to="/notifications">
-                  <img src="/images/bell.svg" className="img-fluid" />{" "}
+                  <img src="/images/bell.svg" className="img-fluid" alt="" />{" "}
                   Notifications
                 </Link>
               </li>
 
               <li className="nav-item">
                 <Link className="nav-link" to="/reports">
-                  <img src="/images/clipboard.svg" className="img-fluid" />{" "}
+                  <img src="/images/clipboard.svg" className="img-fluid" alt="" />{" "}
                   Reports
                 </Link>
               </li>
@@ -175,21 +175,21 @@ const MainNavbarInc = () => {
                     aria-current="page"
                     to="/helpSupport"
                   >
-                    <img src="/images/headphones.svg" className="img-fluid" />{" "}
+                    <img src="/images/headphones.svg" className="img-fluid" alt="" />{" "}
                     Help & Support
                   </Link>
                 </li>
 
                 <li className="nav-item">
                   <Link className="nav-link" to="/settings">
-                    <img src="/images/settings.svg" className="img-fluid" />{" "}
+                    <img src="/images/settings.svg" className="img-fluid" alt="" />{" "}
                     Settings
                   </Link>
                 </li>
 
                 <li className="nav-item" onClick={handleClick}>
                   <Link className="nav-link" to="/">
-                    <img src="/images/log-out.svg" className="img-fluid" /> Log
+                    <img src="/images/log-out.svg" className="img-fluid" alt="" /> Log
                     out
                   </Link>
                 </li>

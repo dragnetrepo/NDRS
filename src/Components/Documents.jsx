@@ -33,7 +33,6 @@ const Documents = () => {
 
   const onHandleChange = (e) => {
     setcaseFolder({ ...caseFolder, [e.target.name]: e.target.value });
-    console.log(caseFolder);
   };
 
   const fetchFolder = async () => {
@@ -57,7 +56,6 @@ const Documents = () => {
 
       const data = await res.json();
       setFolders(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -84,7 +82,6 @@ const Documents = () => {
 
       const data = await res.json();
       setDocuments(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -115,13 +112,11 @@ const Documents = () => {
       }
 
       const data = await response.json();
-      console.log(data);
 
       navigate("/documents2");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    console.log(caseFolder);
   };
 
   const handleDelete = async (e, id) => {
@@ -145,7 +140,6 @@ const Documents = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       setDocuments((prevUnionsList) =>
         prevUnionsList.filter((document) => document.id !== id)
       );

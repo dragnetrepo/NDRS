@@ -34,7 +34,6 @@ const Disputes2 = () => {
 
       const data = await res.json();
       setDisputeId(data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -55,21 +54,17 @@ const Disputes2 = () => {
 
       const data = await res.json();
       setDisputeId(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
   };
-  console.log(disputeId);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    console.log("Selected file:", file);
     const formData = new FormData();
     formData.append("file", file);
     setUploadDocuments(formData);
   };
-  console.log(uploaddocuments);
 
   const handleSubmit = async (
     e,
@@ -98,7 +93,6 @@ const Disputes2 = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       // setDisputeId(data);
       toast.success("Document has been uploaded successfully!");
     } catch (error) {

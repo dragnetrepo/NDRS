@@ -25,7 +25,7 @@ const Branches = () => {
     fetchdata(id);
     fetchBranches(id);
   }, []);
-  console.log(unions);
+
 
   const fetchdata = async (id) => {
     try {
@@ -47,8 +47,7 @@ const Branches = () => {
       }
 
       const data = await res.json();
-      setunions(data.data);
-      console.log(data);
+
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -75,7 +74,7 @@ const Branches = () => {
 
       const data = await res.json();
       setbranches(data.data);
-      console.log(data);
+
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -83,7 +82,7 @@ const Branches = () => {
 
   const onHandleChange = (e) => {
     setBranch({ ...branch, [e.target.name]: e.target.value });
-    console.log(branch);
+
   };
 
   const handleAvatarChange = (e) => {
@@ -95,7 +94,7 @@ const Branches = () => {
     setAvatarImage(image);
 
     setBranch((prevFormData) => ({ ...prevFormData, logo: file }));
-    console.log(formData, image, file);
+
   };
 
   const handleSubmit = async (e) => {
@@ -123,7 +122,6 @@ const Branches = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       toast.success("Branch has been created successfully!");
       window.location.reload();
     } catch (error) {
@@ -276,6 +274,7 @@ const Branches = () => {
                                             <img
                                               src="/images/csv.png"
                                               className="img-fluid"
+                                              alt=""
                                             />
                                           </div>
                                         </div>

@@ -593,7 +593,7 @@ const Notifications = () => {
                   <li>has alphabets, numbers & special characters</li>
                 </ul>
 
-                <form action="login.php" method="post">
+                <form action="" method="post">
                   <div className="mb-3">
                     <label className="form-label">Current password</label>
                     <div className="input-group">

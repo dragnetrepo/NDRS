@@ -1,41 +1,43 @@
-import React, { useContext } from "react";
-// import usericon from '../images/user-icon.svg'
+import React, { useContext, useState } from "react";
 import { AppContext } from "../App";
-import { Link, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+// import usericon from '../images/user-icon.svg'
 
-const CreateAccount = () => {
+const Test = () => {
   const navigate = useNavigate();
-  const { verifyEmail, setVerifyEmail } = useContext(AppContext);
-  const { passwordField, setPasswordField } = useContext(AppContext);
+  const [loginEmail, setLoginEmail] = useState("");
+  const { twoFactorAuth, setTwoFactorAuth } = useContext(AppContext);
 
   const onHandleChange = (e) => {
-    setVerifyEmail({ ...verifyEmail, [e.target.name]: e.target.value });
-    setPasswordField({ ...passwordField, [e.target.name]: e.target.value });
+    setTwoFactorAuth({ ...twoFactorAuth, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-      const response = await fetch(
-        `${baseUrl}/api/validate-email?email=${verifyEmail.email}`
-      );
+  //   //   try {
+  //   //     const baseUrl = 'https://phpstack-1245936-4460801.cloudwaysapps.com/dev'
+  //   //      const response = await fetch( baseUrl + '/api/two-factor-authentication', {
+  //   //     method: 'POST',
+  //   //     headers: {
+  //   //       'Content-Type': 'application/json'
+  //   //     },
+  //   //     body: JSON.stringify(twoFactorAuth)
+  //   //   });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+  //   //   if (!response.ok) {
+  //   //     throw new Error('two-factor-authentification-failed');
+  //   //   }
 
-      const data = await response.json();
-
-      navigate("/Verification");
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Please enter a valid Email");
-    }
-  };
-
+  //   //   // Assuming the response contains a JSON object with a token
+  //   //   const data = await response.json();
+  //   //   console.log(data);
+  //   //   navigate('/Verification2')
+  //   // } catch (error) {
+  //   //   console.error('Error logging in:', error);
+  //   // }
+  //   navigate("/LoginPassword");
+  // };
   return (
     <>
       <div className="auth-container d-flex align-items-center justify-content-center vh-100">
@@ -59,21 +61,16 @@ const CreateAccount = () => {
                     number for verification.
                   </p>
 
-                  <form
-                    action="/Verification"
-                    method="post"
-                    onSubmit={handleSubmit}
-                  >
+                  <form action="" method="post">
                     <div className="mb-3">
                       <label className="form-label">
                         Email or Mobile number
                       </label>
                       <input
                         type="text"
-                        className="form-control form-control-height"
                         name="email"
+                        className="form-control form-control-height"
                         placeholder="Type in your email or mobile number"
-                        value={verifyEmail.email}
                         onChange={onHandleChange}
                       />
                     </div>
@@ -86,13 +83,13 @@ const CreateAccount = () => {
                   </form>
 
                   <p className="mt-4 text-center text-muted-3 mb-0">
-                    Already have an account?{" "}
-                    <Link
-                      to="/"
+                    Are you new here?{" "}
+                    <a
+                      href="/CreateAccount"
                       className="text-main-primary text-medium text-decoration-none"
                     >
-                      Log in
-                    </Link>
+                      Create account
+                    </a>
                   </p>
                 </div>
               </div>
@@ -104,4 +101,4 @@ const CreateAccount = () => {
   );
 };
 
-export default CreateAccount;
+export default Test;

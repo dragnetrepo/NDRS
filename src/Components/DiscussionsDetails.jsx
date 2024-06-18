@@ -59,7 +59,6 @@ const DiscussionIinc = () => {
 
       const data = await res.json();
       setDiscussions(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -89,7 +88,6 @@ const DiscussionIinc = () => {
 
       const data = await res.json();
       setDiscussionsMessages(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -97,7 +95,6 @@ const DiscussionIinc = () => {
 
   const onHandleChange = (e) => {
     setMessages({ ...messages, [e.target.name]: e.target.value });
-    console.log(messages);
   };
 
   const onkeyPress = (e) => {
@@ -157,7 +154,6 @@ const DiscussionIinc = () => {
         message: ""
       });
 
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -217,7 +213,6 @@ const DiscussionIinc = () => {
       setAnonVoting(false);
 
 
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -263,7 +258,6 @@ const DiscussionIinc = () => {
       }
 
       const data = await res.json();
-      console.log("Vote submitted successfully:", data);
 
       // Optional: Refresh the messages to get updated poll results
       // fetchDiscussionMessages(discussionId);
@@ -332,7 +326,6 @@ const DiscussionIinc = () => {
       setMeetingStartTime("");
       setMeetingEndTime("");
 
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -368,7 +361,6 @@ const DiscussionIinc = () => {
       const data = await res.json()
 
 
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -456,7 +448,7 @@ const DiscussionIinc = () => {
                         <div className="position-relative">
                           <div className="avatar-sm flex-shrink-0">
                             <img
-                              src={item.sender.photo}
+                              src={item.sender.photo || '/images/download.png'}
                               className="img-fluid object-position-center object-fit-cover w-100 h-100"
                               alt="Avatar"
                             />
@@ -516,16 +508,19 @@ const DiscussionIinc = () => {
                         {discussionMessages.map((item) =>
                           <div key={item._id} className={item.sender.sender === 'You' ? 'd-flex flex-column align-items-end' : 'd-flex flex-column align-items-start'}>
                             {item.type === 'text' ? (
-                              <div className={`message-box message-width ${item.sender.sender === 'You' ? 'message-right' : 'message-left'} mb-3`}>
-                                <div className="message-inner">
-                                  <p className="mb-0">
-                                    {item.message}
-                                  </p>
+                              <>
+                                <div className={`message-box message-width ${item.sender.sender === 'You' ? 'message-right' : 'message-left'} mb-3`}>
+                                  <div className="message-inner">
+                                    <p className="mb-0">
+                                      {item.message}
+                                    </p>
+                                  </div>
+
                                 </div>
                                 <p className="message-user mt-1">
                                   {item.sender.sender} <i className="bi bi-dot"></i> {item.time_sent}
                                 </p>
-                              </div>
+                              </>
                             ) : item.type === 'meeting' ? (
                               <div className="receiver d-flex flex-column align-items-end">
                                 <div className="message-box message-width px-0 mb-3">
@@ -566,7 +561,7 @@ const DiscussionIinc = () => {
                               </div>
                             ) : item.type === 'poll' ? (
                               <div className="receiver d-flex flex-column align-items-end">
-                                <div className="message-box message-width px-0 mb-3">
+                                <div className="message-box message-width progress-poll px-0 mb-3">
                                   <div className="card">
                                     <div className="card-body">
                                       <p className="text-medium text-center">{item.message.question}</p>
@@ -575,7 +570,7 @@ const DiscussionIinc = () => {
                                           <input className="form-check-input" type="radio" name={`poll-${item._id}`} id={`poll-${item._id}-${option}`} onClick={() => handleVote(id, option)} />
                                           <label className="form-check-label w-100" htmlFor={`poll-${item._id}-${option}`}>
                                             <span className="text-medium">{option.charAt(0).toUpperCase() + option.slice(1)}</span>
-                                            <div className="progress progress-height" role="progressbar" aria-valuenow={parseInt(result.percentage)} aria-valuemin="0" aria-valuemax="100">
+                                            <div className="progress progress-height " role="progressbar" aria-valuenow={parseInt(result.percentage)} aria-valuemin="0" aria-valuemax="100">
                                               <div className="progress-bar bg-success" style={{ width: result.percentage }}></div>
                                             </div>
                                             <span className="d-block text-end text-medium">{result.percentage}</span>

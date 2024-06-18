@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 
 const PasswordSet = () => {
   return (
@@ -27,12 +29,12 @@ const PasswordSet = () => {
           <div className="row">
             <div className="col-lg-4 mx-auto">
               <div className="mt-5">
-                <a
-                  href="profile-setup.php"
+                <Link
+                  to="/profileSetup"
                   className="btn btn-size btn-main-primary w-100"
                 >
                   Go to account
-                </a>
+                </Link>
               </div>
             </div>
           </div>

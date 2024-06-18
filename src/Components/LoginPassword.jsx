@@ -13,7 +13,6 @@ const LoginPassword = () => {
       [e.target.name]: value,
     }));
   };
-  console.log(twoFactorAuth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

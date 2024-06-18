@@ -46,7 +46,7 @@ const TopBarInc = () => {
 
       const data = await res.json();
       setuser(data.data);
-      console.log(data);
+
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -80,7 +80,7 @@ const TopBarInc = () => {
 
       const data = await res.json();
       setSearchResults(data.data);
-      console.log(data);
+
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }

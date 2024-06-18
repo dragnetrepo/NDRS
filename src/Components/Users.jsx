@@ -56,7 +56,6 @@ const Users = () => {
           setUploadStatus("Upload successful!");
           const result = await response.json();
           toast.success("users have been uploaded succesfully!");
-          console.log("Server response:", result);
         } else {
           setUploadStatus("Upload failed.");
           toast.error("Failed to upload users!");
@@ -81,7 +80,6 @@ const Users = () => {
 
   const onHandleChangeUser = (e) => {
     setUsers({ ...users, [e.target.name]: e.target.value });
-    console.log(users);
   };
 
   const fetchBoardOfEnquires = async () => {
@@ -105,7 +103,6 @@ const Users = () => {
 
       const data = await res.json();
       setGetBoardOfEnquire(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -136,7 +133,6 @@ const Users = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       // setGetBoardOfEnquire((prevUnionsList) =>
       //   prevUnionsList.filter((boardOfEnquire) => boardOfEnquire._id !== id)
       // );
@@ -163,7 +159,6 @@ const Users = () => {
       }
 
       const data = await response.json();
-      console.log(data.data.sample_csv);
       // const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = data.data.sample_csv;
@@ -200,7 +195,6 @@ const Users = () => {
 
       const data = await response.json();
 
-      console.log(data);
       toast.success("User Invite has been sent!");
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -235,7 +229,6 @@ const Users = () => {
 
       const data = await response.json();
 
-      console.log(data);
       toast.success("Board of Enquire has been created successfully!");
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -262,7 +255,6 @@ const Users = () => {
 
       const data = await res.json();
       setRoles(data.data);
-      console.log(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -293,7 +285,6 @@ const Users = () => {
 
       const data = await response.json();
 
-      console.log(data);
       window.location.reload();
       toast.success("custom role has been created!");
     } catch (error) {
@@ -322,7 +313,6 @@ const Users = () => {
 
       const data = await res.json();
       setGetDisputes(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -336,11 +326,6 @@ const Users = () => {
     category,
     permissionIndex
   ) => {
-    console.log("Updating permission:", {
-      roleId,
-      permissionId,
-      hasPermission,
-    });
 
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -363,7 +348,6 @@ const Users = () => {
       }
 
       const data = await res.json();
-      console.log("Permission updated:", data);
 
       // If API call is successful, update state
       setRoles((prevRoles) => {
@@ -436,7 +420,6 @@ const Users = () => {
 
       const data = await response.json();
       // setRoles(data);
-      console.log(data);
       window.location.reload();
       toast.success("Roles has been restored to default!");
     } catch (error) {
@@ -472,7 +455,6 @@ const Users = () => {
 
       const data = await response.json();
 
-      console.log(data);
 
       // toast.success("Roles has been restored to default!");
     } catch (error) {
@@ -5523,7 +5505,7 @@ const Users = () => {
                               <li>
                                 <a
                                   className="dropdown-item"
-                                  href="disputes-details.php"
+                                  href="/disputeDetails"
                                 >
                                   View details
                                 </a>
@@ -5622,7 +5604,7 @@ const Users = () => {
                               <li>
                                 <a
                                   className="dropdown-item"
-                                  href="disputes-details.php"
+                                  href="/diputeDetails"
                                 >
                                   View details
                                 </a>

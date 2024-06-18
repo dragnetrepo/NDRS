@@ -31,7 +31,6 @@ const HelpSupport = () => {
 
       const data = await res.json();
       setCategories(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -51,7 +50,6 @@ const HelpSupport = () => {
 
       const data = await res.json();
       setCategoryPost(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -71,7 +69,6 @@ const HelpSupport = () => {
 
       const data = await res.json();
       setPost(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }

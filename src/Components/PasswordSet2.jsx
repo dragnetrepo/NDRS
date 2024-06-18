@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../App";
+
 
 const PasswordSet2 = () => {
   const { recovery, setRecovery } = useContext(AppContext);
-  console.log(recovery);
   const navigate = useNavigate();
 
   const nextPage = () => {
@@ -27,13 +27,10 @@ const PasswordSet2 = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       navigate("/PasswordSet2");
     } catch (error) {
       console.error("Error logging in:", error);
     }
-    console.log(recovery);
-    console.log("hello");
   };
   return (
     <>
@@ -61,12 +58,12 @@ const PasswordSet2 = () => {
             <div className="col-lg-5 mx-auto">
               <div className="mt-4">
                 {/* <a href="create-password.php" className="btn btn-size btn-main-primary w-100" onClick={nextPage}>Got it</a> */}
-                <a
-                  href="/CreatePassword"
+                <Link
+                  to="/CreatePassword"
                   className="btn btn-size btn-main-primary w-100"
                 >
                   Got it
-                </a>
+                </Link>
               </div>
 
               <div className="mt-3">

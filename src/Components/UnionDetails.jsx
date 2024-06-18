@@ -54,7 +54,6 @@ const UnionDetails = () => {
 
       const data = await res.json();
       setunions(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -76,12 +75,10 @@ const UnionDetails = () => {
 
       const data = await res.json();
       setRoles(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
   };
-  console.log(unions);
 
   const fetchBranches = async (id, unions) => {
     try {
@@ -104,13 +101,10 @@ const UnionDetails = () => {
 
       const data = await res.json();
       setBranches(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
   };
-  console.log(branches);
-  console.log(users);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -121,12 +115,10 @@ const UnionDetails = () => {
     setAvatarImage(image);
 
     setunions((prevFormData) => ({ ...prevFormData, logo: file }));
-    console.log(unions, image, file);
   };
 
   const onHandleChange = (e) => {
     setunions({ ...unions, [e.target.name]: e.target.value });
-    console.log(unions);
   };
 
   const updateUnion = async (id, unions) => {
@@ -155,7 +147,6 @@ const UnionDetails = () => {
 
       const data = await res.json();
       setunions(data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -163,7 +154,6 @@ const UnionDetails = () => {
 
   const onHandleChangeUser = (e) => {
     setUsers({ ...users, [e.target.name]: e.target.value });
-    console.log(users);
   };
 
   const handleSendInvite = async (e, id, unions, setunions) => {
@@ -188,7 +178,6 @@ const UnionDetails = () => {
       // setGetDisputes(data.data);
       toast("union invite has been sent!");
       window.location.reload();
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }

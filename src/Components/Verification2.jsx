@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../App";
+
 
 const Verification2 = () => {
   // const [token, setToken] = useState('');
@@ -18,8 +19,6 @@ const Verification2 = () => {
 
   const auth_email = localStorage.getItem("auth_email");
   twoFactorAuth.email = auth_email;
-  console.log(twoFactorAuth);
-  // console.log(auth_email);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,7 +40,6 @@ const Verification2 = () => {
       const data = await response.json();
       const token = data.data.token;
       localStorage.setItem("token", token);
-      console.log(data);
       localStorage.removeItem("auth_email");
       navigate("/dashboard");
     } catch (error) {
@@ -113,12 +111,12 @@ const Verification2 = () => {
 
                   <p className="mt-4 text-center text-muted-3 mb-0">
                     Already have an account?{" "}
-                    <a
-                      href="index.php"
+                    <Link
+                      href="/login"
                       className="text-main-primary text-medium text-decoration-none"
                     >
                       Log in
-                    </a>
+                    </Link>
                   </p>
                 </div>
               </div>

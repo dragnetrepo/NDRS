@@ -5,6 +5,7 @@ import DiscussionInc from "../Bars/DiscussionInc";
 import { Link, useParams } from "react-router-dom";
 import Disputes from "./Disputes";
 import toast from "react-hot-toast";
+import { type } from "@testing-library/user-event/dist/type";
 
 const DisputesDetails = () => {
 	const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -13,6 +14,11 @@ const DisputesDetails = () => {
 	const [getCaseDocuments, setGetCaseDocuments] = useState([]);
 	const [disputeId, setDisputeId] = useState([]);
 	const [roles, setRoles] = useState([]);
+	const [sendMessage, setSendMessage] = useState({
+		type: '',
+		message: ''
+	});
+
 
 	const [caseFolder, setcaseFolder] = useState({
 		name: "",
@@ -43,7 +49,6 @@ const DisputesDetails = () => {
 
 	const onHandleChangeUser = (e) => {
 		setUsers({ ...users, [e.target.name]: e.target.value });
-		console.log(users);
 	};
 
 	const fetchroles = async () => {
@@ -60,7 +65,6 @@ const DisputesDetails = () => {
 
 			const data = await res.json();
 			setRoles(data.data);
-			console.log(data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -68,7 +72,6 @@ const DisputesDetails = () => {
 
 	const onHandleChange = (e) => {
 		setGetDisputes({ ...getDisputes, [e.target.name]: e.target.value });
-		console.log(getDisputes);
 	};
 
 	const fetchSingleDisputes = async (id) => {
@@ -85,7 +88,6 @@ const DisputesDetails = () => {
 
 			const data = await res.json();
 			setGetDisputes(data.data);
-			console.log(data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -105,7 +107,6 @@ const DisputesDetails = () => {
 
 			const data = await res.json();
 			setGetInvolvedParties(data.data);
-			console.log(data.data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -131,7 +132,6 @@ const DisputesDetails = () => {
 				document.getElementById("document-not-found").classList.remove("d-none");
 			}
 
-			console.log(data.data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -154,7 +154,6 @@ const DisputesDetails = () => {
 
 			const data = await res.json();
 			toast.success("Case has been Approved!");
-			console.log(data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -178,7 +177,6 @@ const DisputesDetails = () => {
 			}
 
 			const data = await res.json();
-			console.log(data);
 			setUsers({
 				email: '',
 				role: ''
@@ -191,7 +189,6 @@ const DisputesDetails = () => {
 
 	const onHandleChangeFolder = (e) => {
 		setcaseFolder({ ...caseFolder, [e.target.name]: e.target.value });
-		console.log(caseFolder);
 	};
 
 	const handleSubmitFolder = async (e, id, getDisputes, setGetDisputes) => {
@@ -212,12 +209,38 @@ const DisputesDetails = () => {
 			}
 
 			const data = await response.json();
-			console.log(data);
 			toast.success("Folder has been created!");
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
-		console.log(caseFolder);
+	};
+
+	const handleSendMessage = async (e, id) => {
+		e.preventDefault();
+		try {
+			const res = await fetch(baseUrl + `/api/case/discussions/${id}/send-message`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+				body: JSON.stringify(sendMessage),
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			// setUsers({
+			// 	email: '',
+			// 	role: ''
+			// })
+			toast.success('message sent');
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
 	};
 
 	const handleDocument = (e) => {
@@ -232,7 +255,6 @@ const DisputesDetails = () => {
 			...prevFormData,
 			documents: file,
 		}));
-		console.log(formData, image, file);
 	};
 
 	const handleSubmitDocuments = async (e, id, getDisputes, setGetDisputes) => {
@@ -253,16 +275,15 @@ const DisputesDetails = () => {
 			}
 
 			const data = await response.json();
-			console.log(data);
 			toast.success("Document has been added!");
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
-		console.log(caseFolder);
 	};
 
+
+
 	(getCaseDocuments.map(item => {
-		console.log(item);
 	}));
 
 	return (

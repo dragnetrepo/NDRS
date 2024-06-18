@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 
 const VerificationSuccess = () => {
   return (
@@ -39,7 +41,7 @@ const VerificationSuccess = () => {
                     </h1>
                     <p className="mb-4 text-detail">balamihu@gmail.com</p>
 
-                    <form action="verification.php" method="post">
+                    <form action="/verification" method="post">
                       <div className="mb-3">
                         <label className="form-label">6 digit code</label>
                         <div className="input-group">
@@ -70,21 +72,21 @@ const VerificationSuccess = () => {
                         <li>Make sure you entered details correctly</li>
                         <li>Check your spam folder</li>
                         <li>
-                          <a href="#" className="text-main-primary">
+                          <Link to="#" className="text-main-primary">
                             Resend verification code
-                          </a>
+                          </Link>
                         </li>
                       </ul>
                     </div>
 
                     <p className="mt-4 text-center text-muted-3 mb-0">
                       Already have an account?{" "}
-                      <a
-                        href="login.php"
+                      <Link
+                        to="/login"
                         className="text-main-primary text-medium text-decoration-none"
                       >
                         Log in
-                      </a>
+                      </Link>
                     </p>
                   </div>
                 </div>

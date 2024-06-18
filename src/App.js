@@ -37,7 +37,7 @@ import Users from "./Components/Users";
 import Branches from "./Components/Branches";
 import SubBranch from "./Components/SubBranch";
 import Error404 from "./Components/Error404";
-import LandingPage from "./Components/LandingPage";
+// import LandingPage from "./Components/Index";
 
 export const AppContext = createContext();
 
@@ -115,8 +115,7 @@ const App = () => {
       >
         <Toaster />
         <Routes>
-          {/* <Route path="/" element={<Index />} /> */}
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<Index />} />
           <Route path="/CreateAccount" element={<CreateAccount />} />
           <Route path="/CreatePassword" element={<CreatePassword />} />
           <Route path="/Verification" element={<Verification />} />

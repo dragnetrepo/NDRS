@@ -28,7 +28,6 @@ const SubBranch = () => {
     fetchBranch(id);
     fetchSubBranch(id);
   }, []);
-  console.log(unions);
 
   const fetchBranch = async (id) => {
     try {
@@ -52,7 +51,6 @@ const SubBranch = () => {
       const data = await res.json();
       subBranch.union = data.data.union_id;
       setbranch(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -80,7 +78,6 @@ const SubBranch = () => {
       const data = await res.json();
       //   subBranch.union = data.data.union_id;
       setSubBranches(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -115,7 +112,6 @@ const SubBranch = () => {
 
   const onHandleChange = (e) => {
     setSubBranch({ ...subBranch, [e.target.name]: e.target.value });
-    console.log(subBranch);
   };
 
   const handleAvatarChange = (e) => {
@@ -127,7 +123,6 @@ const SubBranch = () => {
     setAvatarImage(image);
 
     setSubBranch((prevFormData) => ({ ...prevFormData, logo: file }));
-    console.log(formData, image, file);
   };
 
   const handleSubmit = async (e) => {
@@ -155,7 +150,6 @@ const SubBranch = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       toast.success("Sub Branch has been created successfully!");
       window.location.reload();
     } catch (error) {

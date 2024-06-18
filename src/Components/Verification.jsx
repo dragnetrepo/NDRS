@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { AppContext } from "../App";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+
 
 const Verification = () => {
   const navigate = useNavigate();
@@ -34,7 +35,6 @@ const Verification = () => {
   const onHandleChange = (e) => {
     setVerifyEmail({ ...verifyEmail, [e.target.name]: e.target.value });
   };
-  console.log(verifyEmail);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -53,7 +53,6 @@ const Verification = () => {
       }
 
       const data = await response.json();
-      console.log(data);
 
       const token = data.data.token;
 
@@ -65,7 +64,6 @@ const Verification = () => {
       console.error("Error fetching data:", error);
       toast.error("Please enter a valid code");
     }
-    console.log(verifyEmail);
   };
 
   return (
@@ -135,12 +133,12 @@ const Verification = () => {
 
                   <p className="mt-4 text-center text-muted-3 mb-0">
                     Already have an account?{" "}
-                    <a
-                      href="index.php"
+                    <Link
+                      to="/login"
                       className="text-main-primary text-medium text-decoration-none"
                     >
                       Log in
-                    </a>
+                    </Link>
                   </p>
                 </div>
               </div>

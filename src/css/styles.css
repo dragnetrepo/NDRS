@@ -1336,7 +1336,9 @@ tr {
   overflow: hidden;
   position: relative;
 }
-
+.progress-poll {
+  width: 450px;
+}
 @media screen and (max-width: 768px) {
   .custom-card {
     padding: 20px 16px 20px 16px;

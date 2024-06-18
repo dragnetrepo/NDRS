@@ -17,7 +17,6 @@ const ProfileSetup2 = () => {
 	const onHandleChange = (e) => {
 		setProfile({ ...profile, [e.target.name]: e.target.value });
 	};
-	console.log(profile);
 
 	if (!profile.first_name) {
 		navigate("/ProfileSetup");
@@ -46,7 +45,6 @@ const ProfileSetup2 = () => {
 			}
 
 			const data = await response.json();
-			console.log(data);
 			toast.success('Registration has been completed!!!')
 			navigate("/Dashboard");
 		} catch (error) {
@@ -118,7 +116,6 @@ const ProfileSetup2 = () => {
 
 			const data = await res.json();
 			setUnions(data.data);
-			console.log(data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}

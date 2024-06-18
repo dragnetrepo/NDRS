@@ -68,7 +68,7 @@ const Documents2 = () => {
                           >
                             <div class="d-flex align-items-center gap-20 mt-4 ">
                               <a
-                                href="help-support.php"
+                                href="/HelpSupport"
                                 class="text-muted-4 text-decoration-none"
                               >
                                 <i class="bi bi-arrow-left"></i> Go back
@@ -81,7 +81,7 @@ const Documents2 = () => {
                                 <ol class="breadcrumb mb-0">
                                   <li class="breadcrumb-item">
                                     <a
-                                      href="documents.php"
+                                      href="/documents"
                                       class="text-main-primary text-decoration-none"
                                     >
                                       Case Folders
@@ -557,7 +557,7 @@ const Documents2 = () => {
                 </button>
 
                 <a
-                  href="documents-2.php"
+                  href="/documents2"
                   class="btn btn-main-primary btn-size px-3"
                 >
                   Save

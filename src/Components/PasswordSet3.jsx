@@ -28,7 +28,7 @@ const PasswordSet3 = () => {
             <div className="col-lg-4 mx-auto">
               <div className="mt-5">
                 <a
-                  href="login.php"
+                  href="/login"
                   className="btn btn-size btn-main-primary w-100"
                 >
                   Login to account

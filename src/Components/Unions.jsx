@@ -20,7 +20,6 @@ const Unions = () => {
 		email: "",
 		role: "",
 	});
-	console.log(unions);
 
 	useEffect(() => {
 		fetchdata();
@@ -45,7 +44,6 @@ const Unions = () => {
 
 			const data = await res.json();
 			setRoles(data.data);
-			console.log(data.data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -72,7 +70,6 @@ const Unions = () => {
 
 			const data = await res.json();
 			setUnionsList(data.data);
-			console.log(data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -99,7 +96,6 @@ const Unions = () => {
 
 			const data = await res.json();
 			setIndustries(data.data);
-			console.log(data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -107,7 +103,6 @@ const Unions = () => {
 
 	const onHandleChange = (e) => {
 		setUnions({ ...unions, [e.target.name]: e.target.value });
-		console.log(unions);
 	};
 
 	const handleAvatarChange = (e) => {
@@ -119,7 +114,6 @@ const Unions = () => {
 		setAvatarImage(image);
 
 		setUnions((prevFormData) => ({ ...prevFormData, logo: file }));
-		console.log(formData, image, file);
 	};
 
 	const handleSubmit = async (e) => {
@@ -147,7 +141,6 @@ const Unions = () => {
 			}
 
 			const data = await response.json();
-			console.log(data);
 			toast.success("Union has been created successfully!");
 			window.location.reload();
 		} catch (error) {
@@ -157,9 +150,7 @@ const Unions = () => {
 
 	const onHandleChangeUnion = (e) => {
 		seUnionInvite({ ...unionInvite, [e.target.name]: e.target.value });
-		console.log(unionInvite);
 	};
-	console.log(unionInvite);
 
 	const handleDelete = async (e, id, unionsList, setUnionsList) => {
 		e.preventDefault();
@@ -179,7 +170,6 @@ const Unions = () => {
 			}
 
 			const data = await response.json();
-			console.log(data);
 			setUnionsList((prevUnionsList) =>
 				prevUnionsList.filter((union) => union.id !== id)
 			);
@@ -206,7 +196,6 @@ const Unions = () => {
 			}
 
 			const data = await response.json();
-			console.log(data);
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
@@ -237,7 +226,6 @@ const Unions = () => {
 					setUploadStatus("Upload successful!");
 					const result = await response.json();
 					toast.success("unions have been uploaded succesfully!");
-					console.log("Server response:", result);
 				} else {
 					setUploadStatus("Upload failed.");
 					toast.error("Failed to upload unions!");

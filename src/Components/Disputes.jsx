@@ -42,7 +42,6 @@ const Disputes = () => {
 
 			const data = await res.json();
 			setUnionsList(data.data);
-			console.log(data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -62,7 +61,7 @@ const Disputes = () => {
 			<div className="d-flex align-items-center justify-content-between mb-4 document-housing" id="housing-${array_key_val}">
 				<div className="d-flex align-items-center">
 					<div className="text-center me-2 flex-shrink-0">
-						<img src="images/file_upload_states.svg" className="img-fluid" style={{ height: "40px" }} />
+						<img src="images/file_upload_states.svg" alt="" className="img-fluid" style={{ height: "40px" }} />
 					</div>
 					<div>
 						<p className="text-bold mb-1">${file.name}</p>
@@ -91,7 +90,6 @@ const Disputes = () => {
 			if (file) {
 				var formData = new FormData();
 				formData.append("documents[]", file);
-				console.log(file);
 				try {
 					const response = await fetch(baseUrl + `/api/case/${dispute_id}/add-document`, {
 						method: "POST",
@@ -108,7 +106,6 @@ const Disputes = () => {
 					}
 
 					const data = await response.json();
-					console.log(data);
 					document.getElementById(`housing-${id}`).getElementsByTagName("img")[0].setAttribute("src", "images/file_upload_states_1.svg");
 					document.getElementById(id).closest("div").outerHTML = ``;
 					toast.success(data.message);
@@ -140,7 +137,6 @@ const Disputes = () => {
 			}
 
 			const data = await response.json();
-			console.log(data);
 			dispute_id = data.data._id;
 
 			if (dispute_id) {
@@ -153,7 +149,6 @@ const Disputes = () => {
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
-		console.log(disputes);
 	};
 
 	const finishCreateDispute = () => {
@@ -195,7 +190,6 @@ const Disputes = () => {
 				document.getElementById("dispute-not-found").classList.remove("d-none");
 			}
 
-			console.log(data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -251,7 +245,6 @@ const Disputes = () => {
 
 	const handleDocsEventListeners = () => {
 		document.querySelectorAll('.upload-doc').forEach(el => el.removeEventListener('click', event => {
-			console.log("removed!");
 		}));
 
 		document.querySelectorAll('.upload-doc').forEach(el => el.addEventListener('click', event => {
@@ -262,13 +255,11 @@ const Disputes = () => {
 		document.querySelectorAll('.remove-doc').forEach(el => el.addEventListener('click', event => {
 			let document_clicked = el.getAttribute("remove-id");
 
-			console.log(documentsArray);
 
 			if (documentsArray[document_clicked]) {
 				delete documentsArray[document_clicked];
 			}
 
-			console.log(document.getElementById(`housing-${document_clicked}`));
 			document.getElementById(`housing-${document_clicked}`).remove();
 		}));
 	}
@@ -458,11 +449,11 @@ const Disputes = () => {
 																		<div className="col-lg-6">
 																			<div className="d-flex align-items-center justify-content-between gap-15">
 																				<a className="btn btn-size btn-outline-light text-medium px-4" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter" >
-																					<img src="/images/filter.svg" className="img-fluid me-2" />{" "} Filters
+																					<img src="/images/filter.svg" className="img-fluid me-2" alt="" />{" "} Filters
 																				</a>
 
 																				<button className="btn btn-size btn-outline-light text-medium px-4">
-																					<img src="/images/sort.svg" className="img-fluid me-2" />{" "} Sort
+																					<img src="/images/sort.svg" className="img-fluid me-2" alt="" />{" "} Sort
 																				</button>
 
 																				<button className="btn btn-size btn-main-outline-primary px-4 w-100 create-dispute-other-btn">
@@ -536,7 +527,7 @@ const Disputes = () => {
 																				</td>
 																				<td>{dispute.title}</td>
 																				<td>
-																					<img src="/images/Internally-resolved.svg" />
+																					<img src="/images/Internally-resolved.svg" alt="" />
 																				</td>
 																				<td>
 																					<div className="dropdown">
@@ -584,11 +575,11 @@ const Disputes = () => {
 																		<div className="col-lg-6">
 																			<div className="d-flex align-items-center justify-content-between gap-15">
 																				<a className="btn btn-size btn-outline-light text-medium px-4" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter" >
-																					<img src="/images/filter.svg" className="img-fluid me-2" />{" "} Filters
+																					<img src="/images/filter.svg" className="img-fluid me-2" alt="" />{" "} Filters
 																				</a>
 
 																				<button className="btn btn-size btn-outline-light text-medium px-4">
-																					<img src="/images/sort.svg" className="img-fluid me-2" />{" "} Sort
+																					<img src="/images/sort.svg" className="img-fluid me-2" alt="" />{" "} Sort
 																				</button>
 
 																				<button className="btn btn-size btn-main-outline-primary px-4 w-100 create-dispute-other-btn">
@@ -665,7 +656,7 @@ const Disputes = () => {
 																				</td>
 																				<td>{dispute.title}</td>
 																				<td>
-																					<img src="/images/pending.svg" />
+																					<img src="/images/pending.svg" alt="" />
 																				</td>
 																				<td>
 																					<div className="dropdown">

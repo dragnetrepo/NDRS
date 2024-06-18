@@ -23,10 +23,8 @@ const ProfileSetup = () => {
 		setAvatarImage(image);
 
 		setProfile((prevFormData) => ({ ...prevFormData, display_picture: file }));
-		console.log(profile, image, file);
 	};
 
-	console.log(profile);
 
 	const onHandleChange = (e) => {
 		setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -34,7 +32,6 @@ const ProfileSetup = () => {
 
 	const handleNext = (e) => {
 		e.preventDefault();
-		console.log(profile);
 		navigate("/ProfileSetup2");
 	};
 

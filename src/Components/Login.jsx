@@ -14,7 +14,6 @@ function Login() {
   const onHandleChange = (e) => {
     setPasswordField({ ...passwordField, [e.target.name]: e.target.value });
   };
-  console.log(passwordField);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

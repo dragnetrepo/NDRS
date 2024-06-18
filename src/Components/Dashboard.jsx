@@ -41,7 +41,6 @@ const Dashboard = () => {
 
       const data = await res.json();
       setuser(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -62,7 +61,6 @@ const Dashboard = () => {
 
       const data = await res.json();
       setNotifications(data.data);
-      console.log(data);
     } catch (error) {
       console.error(error.message);
     }
@@ -88,7 +86,6 @@ const Dashboard = () => {
 
       const data = await res.json();
       setDiscussions(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -115,7 +112,6 @@ const Dashboard = () => {
 
       const data = await res.json();
       setDocuments(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -378,7 +374,7 @@ const Dashboard = () => {
                                   <div className="position-relative">
                                     <div className="avatar-sm flex-shrink-0">
                                       <img
-                                        src={item.sender.photo}
+                                        src={item.sender.photo || '/images/download.png'}
                                         className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                         alt="Avatar"
                                       />

@@ -46,7 +46,7 @@ const ProfileSetupSuccess = () => {
                     </p>
                   </div>
 
-                  <form action="profile-setup-2.php" method="post">
+                  <form action="" method="post">
                     <div className="mb-4">
                       <label className="form-label">Organization name</label>
                       <select className="form-control form-control-height">
@@ -77,7 +77,7 @@ const ProfileSetupSuccess = () => {
 
                     <div className="mt-4">
                       <a
-                        href="profile-setup.php"
+                        href="/profileSetup"
                         className="btn btn-size btn-main-outline-primary w-100"
                       >
                         Back

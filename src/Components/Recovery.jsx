@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 const Recovery = () => {
   const { recovery, setRecovery } = useContext(AppContext);
   const navigate = useNavigate();
-  console.log(recovery);
   const onHandleChange = (e) => {
     setRecovery({ ...recovery, [e.target.name]: e.target.value });
   };
@@ -30,7 +29,6 @@ const Recovery = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       navigate("/PasswordSet2");
     } catch (error) {
       console.error("Error logging in:", error);
@@ -58,7 +56,7 @@ const Recovery = () => {
                   </h1>
 
                   <form
-                    action="password-set-2.php"
+                    action=""
                     method="post"
                     onSubmit={handleSubmit}
                   >
