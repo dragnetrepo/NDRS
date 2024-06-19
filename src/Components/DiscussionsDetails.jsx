@@ -1,10 +1,9 @@
 import { type } from "@testing-library/user-event/dist/type";
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
-
-
+import toast from "react-hot-toast";
 
 
 const DiscussionIinc = () => {
@@ -29,8 +28,10 @@ const DiscussionIinc = () => {
   const [status, setStatus] = useState('concilliation');
   const [resolution, setResolution] = useState('');
   const [summary, setSummary] = useState('');
+  const modalRef = useRef(null);
   const [sidebar, setsidebar] = useState(true)
   const [removeDetails, setRemoveDetails] = useState(true)
+
 
   const toggleSideBar = () => {
     setsidebar(!sidebar)
@@ -396,52 +397,51 @@ const DiscussionIinc = () => {
     }
   };
 
-  const handleUpload = async (e, id) => {
+  const handleUpload = (e, id) => {
+    const token = localStorage.getItem("token");
+    e.preventDefault();
+
+    if (!selectedFile) {
+
+      toast.error('please upload a file')
+      return;
+    }
 
     const formData = new FormData();
+    formData.append('document', selectedFile);
 
-    // formData.append('reply_to', reply_to);
-    // if (selectedFile) {
-    //   formData.append('document', selectedFile);
-    // }
+    fetch(baseUrl + `/api/case/discussions/${id}/upload-document`, {
+      method: 'POST',
+      headers: {
 
-    e.preventDefault()
-    try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-      const token = localStorage.getItem("token");
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    })
+      .then(response => {
+        if (response.ok) {
+          setSelectedFile(null);
+          // Optionally, you can handle UI updates or closing the modal here
 
-      if (!token) {
-        throw new Error("User is not logged in."); // Handle case where user is not logged in
-      }
-
-
-      const res = await fetch(
-        baseUrl + `/api/case/discussions/${id}/upload-document`,
-        {
-          method: "POST",
-          headers: {
-            "content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: formData,
+        } else {
+          throw new Error('Upload failed');
         }
-      );
+      })
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
-      }
-
-      const data = await res.json()
-      console.log('Success:', data);
-
-
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
+      .catch(error => {
+        console.error('Error uploading file:', error);
+      });
   };
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
+  };
+
+  const handleDeleteFile = (e) => {
+    e.preventDefault()
+    setSelectedFile(null);
+    // Clear the input field value
+    // Clear selectedFile state
   };
 
   // const handleUpload = async (e, id) => {
@@ -578,100 +578,115 @@ const DiscussionIinc = () => {
                   <div className="chat-body flex-grow-1" >
                     <div className="container-fluid">
                       <div className="messages-container py-5">
-                        {discussionMessages.map((item) =>
-                          <div key={item._id} className={item.sender.sender === 'You' ? 'd-flex flex-column align-items-end' : 'd-flex flex-column align-items-start'}>
-                            {item.type === 'text' ? (
-                              <>
-                                <div className={`message-box message-width ${item.sender.sender === 'You' ? 'message-right' : 'message-left'} mb-3`}>
-                                  <div className="message-inner">
-                                    <p className="mb-0">
-                                      {item.message}
-                                    </p>
-                                  </div>
+                        {
+                          discussionMessages?.discuss?.map((item) =>
+                            <div key={item._id} className={item.sender.sender === 'You' ? 'd-flex flex-column align-items-end' : 'd-flex flex-column align-items-start'}>
+                              {item.type === 'text' ? (
+                                <>
+                                  <div className={`message-box message-width ${item.sender.sender === 'You' ? 'message-right' : 'message-left'} mb-3`}>
+                                    <div className="message-inner">
+                                      <p className="mb-0">
+                                        {item.message}
+                                      </p>
+                                    </div>
 
-                                </div>
-                                <p className="message-user mt-1">
-                                  {item.sender.sender} <i className="bi bi-dot"></i> {item.time_sent}
-                                </p>
-                              </>
-                            ) : item.type === 'meeting' ? (
-                              <div className="receiver d-flex flex-column align-items-end">
-                                <div className="message-box message-width px-0 mb-3">
-                                  <div className="card">
-                                    <div className="card-body">
-                                      <h6 className="text-medium text-center">Scheduled Meeting</h6>
-                                      <div>
-                                        <div className="mb-3">
-                                          <label className="form-label">Title</label>
-                                          <input type="text" className="form-control form-control-height" value={item.message.title || item.message.meeting_title} disabled />
-                                        </div>
-                                        <div className="mb-3">
-                                          <label className="form-label">Date</label>
-                                          <input type="text" className="form-control form-control-height" value={item.message.date || item.message.meeting_date} disabled />
-                                        </div>
-                                        <div className="mb-3">
-                                          <label className="form-label">Location</label>
-                                          <input type="text" className="form-control form-control-height" value={item.message.location || item.message.meeting_location} disabled />
-                                        </div>
-                                        <div className="row">
-                                          <div className="col-lg-6">
-                                            <div className="mb-3">
-                                              <label className="form-label">Start</label>
-                                              <input type="text" className="form-control form-control-height" value={item.message.start_time || item.message.meeting_start_time} disabled />
-                                            </div>
-                                          </div>
-                                          <div className="col-lg-6">
-                                            <div className="mb-3">
-                                              <label className="form-label">End</label>
-                                              <input type="text" className="form-control form-control-height" value={item.message.end_time || item.message.meeting_end_time} disabled />
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
                                   </div>
-                                </div>
-                              </div>
-                            ) : item.type === 'poll' ? (
-                              <div className="receiver d-flex flex-column align-items-end">
-                                <div className="message-box message-width progress-poll px-0 mb-3">
-                                  <div className="card">
-                                    <div className="card-body">
-                                      <p className="text-medium text-center">{item.message.question}</p>
-                                      {item.message.options && item.message.options.map((option, index) => (
-                                        <div key={index} className="form-check d-flex align-items-center gap-10 mb-1">
-                                          <input className="form-check-input" type="radio" name={`poll-${item._id}`} id={`poll-${item._id}-${option}`} onClick={() => handleVote(item._id, option)} />
-                                          <label className="form-check-label w-100" htmlFor={`poll-${item._id}-${option}`}>
-                                            <span className="text-medium">{option.charAt(0).toUpperCase() + option.slice(1)}</span>
-                                            <div className="progress progress-height " role="progressbar" aria-valuenow={0} aria-valuemin="0" aria-valuemax="100">
-                                              <div className="progress-bar bg-success" style={{ width: "0%" }}></div>
-                                            </div>
-                                            <span className="d-block text-end text-medium">0%</span>
-                                          </label>
-                                        </div>
-                                      ))}
-                                      <div className="d-flex align-items-center gap-10 justify-content-center mt-3">
-                                        <div className="avatars margin-unset">
-                                          {item.message.vote_results && Object.values(item.message.vote_results).map((result, idx) =>
-                                            result.voters.map((voter, idy) => (
-                                              <div key={`${idx}-${idy}`} className="avatars__item">
-                                                <img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src={voter.photo} alt="" />
+                                  <p className="message-user mt-1">
+                                    {item.sender.sender} <i className="bi bi-dot"></i> {item.time_sent}
+                                  </p>
+                                </>
+                              ) : item.type === 'meeting' ? (
+                                <div className="receiver d-flex flex-column align-items-end">
+                                  <div className="message-box message-width px-0 mb-3">
+                                    <div className="card">
+                                      <div className="card-body">
+                                        <h6 className="text-medium text-center">Scheduled Meeting</h6>
+                                        <div>
+                                          <div className="mb-3">
+                                            <label className="form-label">Title</label>
+                                            <input type="text" className="form-control form-control-height" value={item.message.title || item.message.meeting_title} disabled />
+                                          </div>
+                                          <div className="mb-3">
+                                            <label className="form-label">Date</label>
+                                            <input type="text" className="form-control form-control-height" value={item.message.date || item.message.meeting_date} disabled />
+                                          </div>
+                                          <div className="mb-3">
+                                            <label className="form-label">Location</label>
+                                            <input type="text" className="form-control form-control-height" value={item.message.location || item.message.meeting_location} disabled />
+                                          </div>
+                                          <div className="row">
+                                            <div className="col-lg-6">
+                                              <div className="mb-3">
+                                                <label className="form-label">Start</label>
+                                                <input type="text" className="form-control form-control-height" value={item.message.start_time || item.message.meeting_start_time} disabled />
                                               </div>
-                                            ))
-                                          )}
-                                          <div className="avatars__item d-flex justify-content-center align-items-center ft-sm text-medium">
-                                            +10
+                                            </div>
+                                            <div className="col-lg-6">
+                                              <div className="mb-3">
+                                                <label className="form-label">End</label>
+                                                <input type="text" className="form-control form-control-height" value={item.message.end_time || item.message.meeting_end_time} disabled />
+                                              </div>
+                                            </div>
                                           </div>
                                         </div>
-                                        <p className="mb-0"><a href="#" className="text-medium text-main-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#resultsModal">View results</a></p>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            ) : null}
-                          </div>
-                        )}
+                              ) : item.type === 'poll' ? (
+                                <div className="receiver d-flex flex-column align-items-end">
+                                  <div className="message-box message-width progress-poll px-0 mb-3">
+                                    <div className="card">
+                                      <div className="card-body">
+                                        <p className="text-medium text-center">{item.message.question}</p>
+                                        {item.message.options && item.message.options.map((option, index) => (
+                                          <div key={index} className="form-check d-flex align-items-center gap-10 mb-1">
+                                            <input className="form-check-input" type="radio" name={`poll-${item._id}`} id={`poll-${item._id}-${option}`} onClick={() => handleVote(item._id, option)} />
+                                            <label className="form-check-label w-100" htmlFor={`poll-${item._id}-${option}`}>
+                                              <span className="text-medium">{option.charAt(0).toUpperCase() + option.slice(1)}</span>
+                                              <div className="progress progress-height " role="progressbar" aria-valuenow={0} aria-valuemin="0" aria-valuemax="100">
+                                                <div className="progress-bar bg-success" style={{ width: "0%" }}></div>
+                                              </div>
+                                              <span className="d-block text-end text-medium">0%</span>
+                                            </label>
+                                          </div>
+                                        ))}
+                                        <div className="d-flex align-items-center gap-10 justify-content-center mt-3">
+                                          <div className="avatars margin-unset">
+                                            {item.message.vote_results && Object.values(item.message.vote_results).map((result, idx) =>
+                                              result.voters.map((voter, idy) => (
+                                                <div key={`${idx}-${idy}`} className="avatars__item">
+                                                  <img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src={voter.photo} alt="" />
+                                                </div>
+                                              ))
+                                            )}
+                                            <div className="avatars__item d-flex justify-content-center align-items-center ft-sm text-medium">
+                                              +10
+                                            </div>
+                                          </div>
+                                          <p className="mb-0"><a href="#" className="text-medium text-main-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#resultsModal">View results</a></p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : item.type === 'file' ? (
+                                <div className="receiver d-flex flex-column align-items-end">
+                                  <div className="message-box message-width message-right mb-3">
+                                    <div className="d-flex align-items-center mb-2">
+                                      <div className="text-center me-2 flex-shrink-0">
+                                        <img src="images/pdf-icon.svg" className="img-fluid" />
+                                      </div>
+                                      <div>
+                                        <p className="text-bold mb-1">{item.message.name}</p>
+                                        <p className="font-sm text-muted mb-0">11 Sep, 2023 | 12:24pm . 13MB</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : null}
+                            </div>
+                          )}
                       </div>
                     </div>
                   </div>
@@ -822,7 +837,7 @@ const DiscussionIinc = () => {
                       <img
                         src="/images/multiply.svg"
                         className="img-fluid"
-                        alt="close"
+                        alt="close" onClick={handleRemovedetails}
                       />
                     </a>
                   </div>
@@ -843,7 +858,7 @@ const DiscussionIinc = () => {
                       <img
                         src="/images/multiply.svg"
                         className="img-fluid"
-                        alt="close"
+                        alt="close" onClick={handleRemovedetails}
                       />
                     </a>
                   </div>
@@ -1365,7 +1380,6 @@ const DiscussionIinc = () => {
           <div className="modal-content p-lg-4 border-0">
             <div className="modal-header justify-content-between">
               <h1 className="modal-title fs-5">Upload Documents</h1>
-
               <div className="gap-10 d-flex align-items-center">
                 <button
                   className="btn btn btn-size btn-main-outline-primary px-3"
@@ -1374,8 +1388,13 @@ const DiscussionIinc = () => {
                 >
                   Back
                 </button>
-
-                <button className="btn btn-main-primary btn-size px-3" onClick={(e) => handleUpload(e, id)}>
+                <button
+                  className="btn btn-main-primary btn-size px-3"
+                  onClick={(e) => handleUpload(e, id)}
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  disabled={!selectedFile}
+                >
                   Save
                 </button>
               </div>
@@ -1389,10 +1408,11 @@ const DiscussionIinc = () => {
                     onChange={handleFileChange}
                     id="add_doc"
                     className="d-none"
+
                   />
                   <div className="mb-4">
                     <div className="btn-flat text-main-primary text-decoration-none cursor-pointer">
-                      Add document{" "}
+                      Add document{' '}
                       <img
                         src="/images/button-icon-1.svg"
                         className="img-fluid"
@@ -1402,158 +1422,37 @@ const DiscussionIinc = () => {
                   </div>
                 </label>
 
-                <div className="d-flex align-items-center justify-content-between mb-4">
-                  <div className="d-flex align-items-center">
-                    <div className="text-center me-2 flex-shrink-0">
-                      <img
-                        src="/images/file_upload_states.svg"
-                        className="img-fluid" alt=""
-                        style={{ height: "40px" }}
-                      />
+                {selectedFile && (
+                  <div className="d-flex align-items-center justify-content-between mb-4">
+                    <div className="d-flex align-items-center">
+                      <div className="text-center me-2 flex-shrink-0">
+                        <img
+                          src="/images/file_upload_states.svg"
+                          className="img-fluid"
+                          alt=""
+                          style={{ height: '40px' }}
+                        />
+                      </div>
+                      <div>
+                        <p className="text-bold mb-1">{selectedFile.name}</p>
+                        <p className="font-sm text-muted mb-0">
+                          Doc format . Max. 5MB
+                        </p>
+                      </div>
                     </div>
                     <div>
-                      <p className="text-bold mb-1">Document Name</p>
-                      <p className="font-sm text-muted mb-0">
-                        Doc format . Max. 5MB
-                      </p>
+
+                      <a href="">
+                        <img
+                          src="/images/multiply_2.svg"
+                          className="img-fluid"
+                          alt="close"
+                          onClick={handleDeleteFile}
+                        />
+                      </a>
                     </div>
                   </div>
-
-                  <div>
-                    <button className="btn btn-main-primary btn-size">
-                      Upload
-                    </button>
-                  </div>
-                </div>
-
-                <div className="d-flex align-items-center justify-content-between mb-4">
-                  <div className="d-flex align-items-center">
-                    <div className="text-center me-2 flex-shrink-0">
-                      <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
-                    </div>
-                    <div>
-                      <p className="text-bold mb-1">Submission Letter.pdf</p>
-                      <p className="font-sm text-muted mb-0">
-                        11 Sep, 2023 | 12:24pm . 13MB
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="d-flex align-items-center gap-10">
-                    <div
-                      className="spinner-border text-main-primary"
-                      role="status"
-                    >
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-
-                    <a href="#">
-                      <img
-                        src="/images/multiply_2.svg"
-                        className="img-fluid"
-                        alt="close"
-                      />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="d-flex align-items-center justify-content-between mb-4">
-                  <div className="d-flex align-items-center">
-                    <div className="text-center me-2 flex-shrink-0">
-                      <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
-                    </div>
-                    <div>
-                      <p className="text-bold mb-1">Submission Letter.pdf</p>
-                      <p className="font-sm text-muted mb-0">
-                        11 Sep, 2023 | 12:24pm . 13MB
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="d-flex align-items-center gap-10">
-                    <div
-                      className="spinner-border text-main-primary"
-                      role="status"
-                    >
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-
-                    <a href="#">
-                      <img
-                        src="/images/multiply_2.svg"
-                        className="img-fluid"
-                        alt="close"
-                      />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="d-flex align-items-center justify-content-between mb-4">
-                  <div className="d-flex align-items-center">
-                    <div className="text-center me-2 flex-shrink-0">
-                      <img src="/images/pdf-icon.svg" className="img-fluid" alt="" />
-                    </div>
-                    <div>
-                      <p className="text-bold mb-1">Submission Letter.pdf</p>
-                      <p className="font-sm text-muted mb-0">
-                        11 Sep, 2023 | 12:24pm . 13MB
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="d-flex align-items-center gap-10">
-                    <div
-                      className="spinner-border text-main-primary"
-                      role="status"
-                    >
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-
-                    <a href="#">
-                      <img
-                        src="/images/multiply_2.svg"
-                        className="img-fluid"
-                        alt="close"
-                      />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="d-flex align-items-center justify-content-between mb-4">
-                  <div className="d-flex align-items-center">
-                    <div className="text-center me-2 flex-shrink-0">
-                      <img
-                        src="/images/file_upload_states_1.svg"
-                        className="img-fluid" alt=""
-                        style={{ height: "40px" }}
-                      />
-                    </div>
-                    <div>
-                      <p className="text-bold mb-1">Submission Letter.pdf</p>
-                      <p className="font-sm text-muted mb-0">
-                        11 Sep, 2023 | 12:24pm . 13MB
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="d-flex align-items-center gap-10">
-                    <a href="#">
-                      <img
-                        src="/images/bin_3.svg"
-                        className="img-fluid"
-                        alt="bin"
-                      />
-                    </a>
-
-                    <a href="#">
-                      <img
-                        src="/images/download_2.svg"
-                        className="img-fluid"
-                        alt="download"
-                      />
-                    </a>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

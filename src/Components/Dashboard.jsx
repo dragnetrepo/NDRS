@@ -10,6 +10,7 @@ const Dashboard = () => {
   const [user, setuser] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [documents, setDocuments] = useState([])
+  const [dashboard, setDashboard] = useState([])
   const [sidebar, setsidebar] = useState(true)
 
   const toggleSideBar = () => {
@@ -40,9 +41,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchdata()
-    fetchDiscussions();
-    fetchNotifications()
-    fetchDocuments()
+    fetchDashboard()
   }, []);
 
 
@@ -72,35 +71,16 @@ const Dashboard = () => {
     }
   };
 
-  const fetchNotifications = async () => {
-    const token = localStorage.getItem("token");
-
+  const fetchDashboard = async () => {
     try {
 
-      const res = await fetch(`${baseUrl}/api/notifications`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch data.");
-
-      const data = await res.json();
-      setNotifications(data.data);
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
-  const fetchDiscussions = async () => {
-    try {
       const token = localStorage.getItem("token");
 
       if (!token) {
         throw new Error("User is not logged in."); // Handle case where user is not logged in
       }
 
-      const res = await fetch(baseUrl + "/api/case/discussions", {
+      const res = await fetch(baseUrl + "/api/dashboard", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -111,33 +91,7 @@ const Dashboard = () => {
       }
 
       const data = await res.json();
-      setDiscussions(data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  };
-
-  const fetchDocuments = async () => {
-    try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        throw new Error("User is not logged in."); // Handle case where user is not logged in
-      }
-
-      const res = await fetch(baseUrl + "/api/documents/all", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
-      }
-
-      const data = await res.json();
-      setDocuments(data.data);
+      setDashboard(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -181,7 +135,7 @@ const Dashboard = () => {
                                   </div>
                                   <div className="ms-2 flex-grow-1">
                                     <h5 className="mb-0">
-                                      View Pending Disputes (43)
+                                      View Pending Disputes ({dashboard.pending_disputes ? dashboard.pending_disputes.count : 0})
                                     </h5>
                                   </div>
                                 </div>
@@ -302,84 +256,38 @@ const Dashboard = () => {
 
                       <div className="card p-lg-1 mb-5">
                         <div className="card-body p-0">
-                          <div className="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
-                            <div className="position-relative">
-                              <div className="avatar-sm flex-shrink-0">
-                                <img
-                                  src="/images/ipman-logo.svg"
-                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                  alt="Avatar"
-                                />
-                              </div>
-                            </div>
-                            <div className="ms-2 flex-grow-1">
-                              <div className="mb-2 d-flex align-items-center">
-                                <p className="mb-0">
-                                  <strong style={{ fontWeight: 'bold' }}>
-                                    Atoyebi Damola (Ministry Admin)
-                                  </strong>{" "}
-                                  added you as <strong style={{ fontWeight: 'bold' }}>Concilliator</strong> for{" "}
-                                  <strong style={{ fontWeight: 'bold' }}>Dispute Case 124</strong>
-                                </p>
-                              </div>
 
-                              <div className="">
-                                <p className="mb-0">2 hours ago</p>
-                              </div>
-                            </div>
-                          </div>
+                          {dashboard?.recent_notifications?.data?.length > 0 ? (
+                            dashboard?.recent_notifications?.data.slice(0, 3).map((item) =>
+                              <div className="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4" key={item._id}>
+                                <div className="position-relative">
+                                  <div className="avatar-sm flex-shrink-0">
+                                    <img
+                                      src={item.photo || '/images/download.png'}
+                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                      alt="Avatar"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="ms-2 flex-grow-1">
+                                  <div className="mb-2 d-flex align-items-center">
+                                    <p className="mb-0">
+                                      <strong>{item.message}</strong>
+                                    </p>
+                                  </div>
 
-                          <div className="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
-                            <div className="position-relative">
-                              <div className="avatar-sm flex-shrink-0">
-                                <img
-                                  src="/images/ipman-logo.svg"
-                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                  alt="Avatar"
-                                />
+                                  <div className="">
+                                    <p className="mb-0">{item.date}</p>
+                                  </div>
+                                </div>
                               </div>
+                            )) : (
+                            <div className="d-flex justify-content-center align-items-center">
+                              <h5>No Notifications Yet</h5>
                             </div>
-                            <div className="ms-2 flex-grow-1">
-                              <div className="mb-2 d-flex align-items-center">
-                                <p className="mb-0">
-                                  <strong>John Balami</strong> (IAP/Tribunal)
-                                  has given a <strong>Binding Decision</strong>{" "}
-                                  for <strong>Dispute Case 124</strong>
-                                </p>
-                              </div>
 
-                              <div className="">
-                                <p className="mb-0">2 hours ago</p>
-                              </div>
-                            </div>
-                          </div>
+                          )}
 
-                          <div className="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4">
-                            <div className="position-relative">
-                              <div className="avatar-sm flex-shrink-0">
-                                <img
-                                  src="/images/ipman-logo.svg"
-                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                  alt="Avatar"
-                                />
-                              </div>
-                            </div>
-                            <div className="ms-2 flex-grow-1">
-                              <div className="mb-2 d-flex align-items-center">
-                                <p className="mb-0">
-                                  <strong>
-                                    Atoyebi Damola (Ministry Admin)
-                                  </strong>{" "}
-                                  shared a document for{" "}
-                                  <strong>Dispute Case 124</strong>
-                                </p>
-                              </div>
-
-                              <div className="">
-                                <p className="mb-0">2 hours ago</p>
-                              </div>
-                            </div>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -396,8 +304,8 @@ const Dashboard = () => {
                         </div>
                         <div className="card dash-card">
                           <div className="card-body">
-                            {discussion.length > 0 ? (
-                              discussion.slice(0, 4).map((item) => (
+                            {dashboard?.recent_messages?.data?.length > 0 ? (
+                              dashboard?.recent_messages?.data.slice(0, 4).map((item) => (
                                 <div className="d-flex avatar-holder my-4" key={item._id}>
                                   <div className="position-relative">
                                     <div className="avatar-sm flex-shrink-0">
@@ -415,7 +323,7 @@ const Dashboard = () => {
                                           {item.sender.sender}
                                         </div>
                                         <span className="card-text-sm ms-2">
-                                          DS131
+                                          {item.case_no}
                                         </span>
                                       </div>
                                       <span className="text-main-primary ft-sm-only">
@@ -424,10 +332,10 @@ const Dashboard = () => {
                                     </div>
                                     <div className="d-flex justify-content-between align-items-start">
                                       <p className="mb-0 action line-clamp-2">
-                                        {item.last_message}
+                                        {item.message}
                                       </p>
                                       <span className="badge rounded-pill text-bg-main">
-                                        4
+                                        {item.unread_messages}
                                       </span>
                                     </div>
                                   </div>
@@ -455,8 +363,8 @@ const Dashboard = () => {
                         </div>
                         <div className="card dash-card">
                           <div className="card-body">
-                            {documents.length > 0 ? (
-                              documents.slice(0, 4).map((item) =>
+                            {dashboard?.recent_documents?.data?.length > 0 ? (
+                              dashboard?.recent_documents?.data.slice(0, 4).map((item) =>
                                 <div className="d-flex avatar-holder my-4" key={item._id}>
                                   <div className="position-relative">
                                     <div className="flex-shrink-0">
@@ -473,13 +381,13 @@ const Dashboard = () => {
                                         {item.name}
                                       </div>{" "}
                                       <span className="card-text-sm ms-2">
-                                        DS131
+                                        {item.case_no}
                                       </span>
                                     </div>
 
                                     <div className="d-flex justify-content-between align-items-center">
                                       <p className="mb-0">
-                                        {item.last_modified}{" "}
+                                        {item.time_modified}{" "}
                                         <i className="bi bi-dot"></i>{" "}
                                         <span className="text-medium">{item.size}</span>
                                       </p>
