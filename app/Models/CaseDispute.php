@@ -16,6 +16,11 @@ class CaseDispute extends Model
         "internally resolved", "concilliation", "voting for panel", "resolved", "internal resolution", "pending approval", "arbitration", "court decision"
     ];
 
+    public const ARRAY_OF_CASE_TYPES = [
+        "wage and benefit disputes", "work hours and leave", "workplace health and safety", "discrimination and harassment", "unfair dismissals", "contractual disputes",
+        "union representation issues", "workplace restructuring", "employee rights and entitlement", "management and employee relation"
+    ];
+
     public function scopePending($query)
     {
         return $query->where("status", "pending approval");

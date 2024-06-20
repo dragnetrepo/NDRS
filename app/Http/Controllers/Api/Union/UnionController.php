@@ -156,6 +156,17 @@ class UnionController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function sample_csv_file()
+    {
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["message"] = "Sample CSV file retrieved";
+        $this->response["data"] = [
+            "sample_csv" => asset("csv-templates/sample-union-invite-csv.csv")
+        ];
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function edit(CreateUnionRequest $request, $union)
     {
         $user = $request->user();
@@ -243,12 +254,6 @@ class UnionController extends Controller
                                 "union_id" => $union->id,
                                 "status" => "active",
                             ]);
-
-                            if ($role) {
-                                if (!$user->hasRole($role->name)) {
-                                    $user->assignRole($role->name);
-                                }
-                            }
 
                             $this->response["message"] = "User added to this Union successfully!";
                             $this->response["status"] = Response::HTTP_OK;

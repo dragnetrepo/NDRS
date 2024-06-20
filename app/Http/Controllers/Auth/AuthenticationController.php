@@ -76,13 +76,6 @@ class AuthenticationController extends Controller
                     ]);
 
                     if ($user) {
-                        $get_role = Role::where("id", $get_invite->role_id)->first();
-                        if ($get_role) {
-                            if (!$user->hasRole($get_role->name)) {
-                                $user->assignRole($get_role->name);
-                            }
-                        }
-
                         // Add user to their union/branch
                         UnionUserRole::updateOrCreate([
                             "user_id" => $user->id,
@@ -221,12 +214,6 @@ class AuthenticationController extends Controller
             $role = Role::where("name", "staff")->first();
 
             if ($role) {
-                if ($role) {
-                    if (!$user->hasRole($role->name)) {
-                        $user->assignRole($role->name);
-                    }
-                }
-
                 UnionUserRole::create([
                     "user_id" => $user->id,
                     "role_id" => $role->id,

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Industry;
+use App\Models\UnionUserRole;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -194,12 +195,7 @@ class PopulateDefaultValuesInTables extends Command
             $get_role = Role::where("name", "ministry admin")->where("guard_name", "sanctum")->first();
 
             if ($get_role) {
-                if ($user = User::where("email", "admin@ndrs.com")->first()) {
-                    if (!$user->hasRole($get_role->name)) {
-                        $user->assignRole($get_role->name);
-                    }
-                }
-                else {
+                if (!($user = User::where("email", "admin@ndrs.com")->first())) {
                     $user = User::create([
                         "first_name" => "NDRS",
                         "last_name" => "Admin",
@@ -209,8 +205,14 @@ class PopulateDefaultValuesInTables extends Command
                         "status" => "active",
                         "password" => Hash::make("passndrs12word#")
                     ]);
+                }
 
-                    $user->assignRole($get_role->name);
+                if (!UnionUserRole::where("user_id", $user->id)->exists()) {
+                    UnionUserRole::create([
+                        "user_id" => $user->id,
+                        "role_id" => $get_role->id,
+                        "status" => "active",
+                    ]);
                 }
             }
         }

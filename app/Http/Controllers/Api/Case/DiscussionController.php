@@ -32,7 +32,7 @@ class DiscussionController extends Controller
         $admin_user = user_is_admin();
         $user_id = request()->user()->id;
 
-        $group_discussions = CaseDiscussion::when((!$admin_user && false), function($query) use ($user_id) {
+        $group_discussions = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
             })->orWhereHas('dispute', function($sub_query) use ($user_id) {
@@ -74,19 +74,26 @@ class DiscussionController extends Controller
 
                 if ($last_msg) {
                     $user = $last_msg->user;
-
-                    if ($user) {
-                        if ($user->id == $user_id) {
-                            $sender_info = [
-                                "sender" => "You",
-                                "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
-                            ];
-                        }
-                        else {
-                            $sender_info = [
-                                "sender" => trim($user->first_name.' '.$user->last_name),
-                                "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
-                            ];
+                    if ($discussion->case_id) {
+                        $sender_info = [
+                            "sender" => trim($user->first_name.' '.$user->last_name),
+                            "photo" => get_model_file_from_disk($discussion->dispute->union_data->logo, "union_logos"),
+                        ];
+                    }
+                    else {
+                        if ($user) {
+                            if ($user->id == $user_id) {
+                                $sender_info = [
+                                    "sender" => "You",
+                                    "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
+                                ];
+                            }
+                            else {
+                                $sender_info = [
+                                    "sender" => trim($user->first_name.' '.$user->last_name),
+                                    "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
+                                ];
+                            }
                         }
                     }
                 }
@@ -118,16 +125,18 @@ class DiscussionController extends Controller
         $admin_user = user_is_admin();
         $user_id = request()->user()->id;
 
-        $discussion = CaseDiscussion::when((!$admin_user && false), function($query) use ($user_id) {
+        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
+            })->orWhereHas('dispute', function($sub_query) use ($user_id) {
+                $sub_query->where("created_by", $user_id);
             });
         })
         ->where("id", $discussion)
         ->first();
 
         if ($discussion) {
-            $messages = CaseDiscussionMessage::where("cd_id", $discussion->id)->orderBy("id", "asc")->paginate(50);
+            $messages = CaseDiscussionMessage::where("cd_id", $discussion->id)->orderBy("id", "asc")->paginate(200);
             $data = [];
 
             if ($messages->isNotEmpty()) {
@@ -181,8 +190,9 @@ class DiscussionController extends Controller
                                         }
                                     }
 
+                                    $poll_count = CaseDiscussionAction::where("cdm_id", $message->id)->where("action", "vote")->where("response", $option)->count();
                                     $options[$option] = [
-                                        "percentage" => ((CaseDiscussionAction::where("cdm_id", $message->id)->where("action", "vote")->where("response", $option)->count()/$all_votes) * 100)."%",
+                                        "percentage" => $poll_count ? (($poll_count/$all_votes) * 100)."%" : "0%",
                                         "voters" => $voters,
                                     ];
                                 }
@@ -190,8 +200,8 @@ class DiscussionController extends Controller
                             $message_data = [
                                 "message" => [
                                     "question" => $poll_information["question"],
-                                    "options" => $options,
-                                    "vote_results"
+                                    "options" => $poll_information["options"],
+                                    "vote_results" => $options
                                 ],
                                 "type" => "poll",
                             ];
@@ -223,6 +233,16 @@ class DiscussionController extends Controller
                     }
                 }
 
+                $discuss_info = [];
+                $dispute = $discussion->dispute;
+                if ($dispute) {
+                    $discuss_info = [
+                        "sender" => trim($dispute->name),
+                        "photo" => get_model_file_from_disk($dispute->logo, "union_logos"),
+                    ];
+                }
+                $this->response["discuss_info"] = $discuss_info;
+
                 $this->response["message"] = "Messages from chat retrieved";
             }
         }
@@ -238,9 +258,11 @@ class DiscussionController extends Controller
         $admin_user = user_is_admin();
         $user_id = request()->user()->id;
 
-        $discussion = CaseDiscussion::when((!$admin_user && false), function($query) use ($user_id) {
+        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
+            })->orWhereHas('dispute', function($sub_query) use ($user_id) {
+                $sub_query->where("created_by", $user_id);
             });
         })
         ->where("id", $discussion)
@@ -325,9 +347,11 @@ class DiscussionController extends Controller
         $user_id = request()->user()->id;
         $form_error_msg = [];
 
-        $discussion = CaseDiscussion::when((!$admin_user && false), function($query) use ($user_id) {
+        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
+            })->orWhereHas('dispute', function($sub_query) use ($user_id) {
+                $sub_query->where("created_by", $user_id);
             });
         })
         ->where("id", $discussion)
@@ -397,9 +421,11 @@ class DiscussionController extends Controller
         $user_id = request()->user()->id;
         $form_error_msg = [];
 
-        $discussion = CaseDiscussion::when((!$admin_user && false), function($query) use ($user_id) {
+        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
                 $sub_query->where("user_id", $user_id);
+            })->orWhereHas('dispute', function($sub_query) use ($user_id) {
+                $sub_query->where("created_by", $user_id);
             });
         })
         ->where("id", $discussion)

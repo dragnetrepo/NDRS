@@ -66,9 +66,10 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::prefix("union")->group(function(){
                 Route::controller(UnionController::class)->group(function(){
                     Route::get('{union}', "read")->name("read-by-id");
-                    Route::post('create', "create")->name("create");
-                    Route::post('bulk/create', "bulk_create")->name("bulk-create");
-                    Route::post('edit/{union}', "edit")->name("edit");
+                    Route::post('create', "create")->name("create")->middleware("custom_user_permission:create unions");
+                    Route::post('bulk/create', "bulk_create")->name("bulk-create")->middleware("custom_user_permission:create unions");
+                    Route::post('edit/{union}', "edit")->name("edit")->middleware("custom_user_permission:edit unions");
+                    Route::get("/sample-csv", "sample_csv_file")->name("sample-csv-file")->middleware("custom_user_permission:create unions");
                     Route::post('send-invite/{union}', "send_invite")->name("send-invite");
                     Route::get('get-admins/{union}', "get_admins")->name("get-admins");
                     Route::delete('remove-admin/{union}', "remove_admin")->name("delete-admin");
@@ -77,8 +78,8 @@ Route::name("api.")->middleware(['cors'])->group(function () {
 
                 Route::prefix("branch")->controller(UnionBranchController::class,)->name("branch.")->group(function(){
                     Route::get('{branch}', "read")->name("read-by-id");
-                    Route::post('create', "create")->name("create");
-                    Route::post('edit/{branch}', "edit")->name("edit");
+                    Route::post('create', "create")->name("create")->middleware("custom_user_permission:create branches");
+                    Route::post('edit/{branch}', "edit")->name("edit")->middleware("custom_user_permission:edit branches");
                     Route::post('{branch}/send-invite', "send_invite")->name("send-invite");
                     Route::get('get-admins/{branch}', "get_admins")->name("get-admins");
                     Route::delete('remove-admin/{branch}', "remove_admin")->name("delete-admin");
@@ -86,9 +87,9 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                 });
 
                 Route::prefix("sub-branch")->controller(UnionSubBranchController::class)->name("branch.")->group(function(){
-                    Route::get('{sub_branch}', "create")->name("create");
-                    Route::post('create', "create")->name("create");
-                    Route::post('edit/{sub_branch}', "edit")->name("edit");
+                    Route::get('{sub_branch}', "read")->name("read-by-id");
+                    Route::post('create', "create")->name("create")->middleware("custom_user_permission:create sub branches");
+                    Route::post('edit/{sub_branch}', "edit")->name("edit")->middleware("custom_user_permission:edit sub branches");
                     Route::post('{sub_branch}/send-invite', "send_invite")->name("send-invite");
                     Route::get('get-admins/{sub_branch}', "get_admins")->name("get-admins");
                     Route::get('get-single-admin/{sub_branch}', "read_admin")->name("get-single-admin");
@@ -107,35 +108,41 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                 Route::get("disputes/{status?}", "index")->name("index");
                 Route::get("roles", "roles")->name("roles");
                 Route::get("read/{case_id}", "read")->name("read");
-                Route::post("create", "create")->name("create");
+                Route::post("create", "create")->name("create")->middleware("custom_user_permission:create dispute");
                 Route::post("edit/{case_id}", "edit")->name("edit");
-                Route::get("involved-parties/{case_id}", "involved_parties")->name("involved-parties");
-                Route::post("invite-party/{case_id}", "invite_party")->name("invite-party");
-                Route::post("resend-invite/{case_id}", "invite_party")->name("resend-invite-party");
-                Route::post("suspend-invited-party/{case_id}", "suspend_invite_party")->name("suspend-invite");
-                Route::delete("delete-invited-party/{case_id}", "delete_invite_party")->name("delete-invite");
-                Route::get("get-invites", "get_invites")->name("get-invites");
+                Route::middleware("custom_user_permission:invite dispute participants")->group(function(){
+                    Route::get("involved-parties/{case_id}", "involved_parties")->name("involved-parties");
+                    Route::post("invite-party/{case_id}", "invite_party")->name("invite-party");
+                    Route::post("resend-invite/{case_id}", "invite_party")->name("resend-invite-party");
+                    Route::post("suspend-invited-party/{case_id}", "suspend_invite_party")->name("suspend-invite");
+                    Route::delete("delete-invited-party/{case_id}", "delete_invite_party")->name("delete-invite");
+                    Route::get("get-invites", "get_invites")->name("get-invites");
+                });
                 Route::post("invite-response/{case_id}", "invite_response")->name("invite-response");
-                Route::post("change-status/{case_id}", "update_case_status")->name("change-status");
+                Route::post("change-status/{case_id}", "update_case_status")->name("change-status")->middleware("custom_user_permission:change dispute case status");
             });
 
             Route::prefix("{case_id}")->group(function(){
                 Route::controller(DocumentController::class)->name("documents.")->group(function(){
                     Route::get("documents", "index")->name("index");
-                    Route::post("add-document", "add_document")->name("add");
-                    Route::delete("delete-document", "delete_document")->name("delete");
                     Route::get("folder-documents/{folder_id}", "index")->name("folder-documents");
+                    Route::middleware("custom_user_permission:create dispute")->group(function(){
+                        Route::post("add-document", "add_document")->name("add");
+                        Route::delete("delete-document", "delete_document")->name("delete");
+                    });
                 });
 
                 Route::controller(FolderController::class)->name("folders.")->group(function(){
                     Route::get("folders", "index")->name("index");
-                    Route::post("create-folder", "create_folder")->name("create");
-                    Route::post("rename-folder", "rename_folder")->name("rename");
-                    Route::delete("delete-folder", "delete_folder")->name("delete");
+                    Route::middleware("custom_user_permission:create dispute")->group(function(){
+                        Route::post("create-folder", "create_folder")->name("create");
+                        Route::post("rename-folder", "rename_folder")->name("rename");
+                        Route::delete("delete-folder", "delete_folder")->name("delete");
+                    });
                 });
             });
 
-            Route::prefix("discussions")->controller(DiscussionController::class)->name("discussion.")->group(function(){
+            Route::prefix("discussions")->middleware("custom_user_permission:participate in resolution")->controller(DiscussionController::class)->name("discussion.")->group(function(){
                 Route::get("/{case_id?}", "index")->name("index");
                 Route::get("/{discussion}/messages", "get_messages")->name("index");
                 Route::post("/{discussion}/send-message", "send_message")->name("send-message");
@@ -150,17 +157,21 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::get("/admin-roles", "admin_roles")->name("admin-roles");
             Route::get("/settlement-roles", "settlement_roles")->name("settlement-roles");
             Route::get("/permissions", "permissions")->name("permissions");
-            Route::post("/create-role", "create_role")->name("create-role");
-            Route::post("/restore-role-default", "restore_role_default")->name("restore-role-default");
             Route::get("/get-roles", "get_roles")->name("get-roles");
-            Route::post("/update-permission", "update_role_permission")->name("add-role-permission");
+            Route::middleware("custom_user_permission:edit roles and permissions")->group(function(){
+                Route::post("/create-role", "create_role")->name("create-role");
+                Route::post("/restore-role-default", "restore_role_default")->name("restore-role-default");
+                Route::post("/update-permission", "update_role_permission")->name("add-role-permission");
+            });
 
-            Route::get("/sample-csv", "sample_csv_file")->name("sample-csv-file");
-            Route::post("/send-invite", "send_invite")->name("send-invite");
-            Route::post("/bulk/send-invite", "bulk_send_invite")->name("bulk-send-invite");
+            Route::middleware("custom_user_permission:invite users")->group(function(){
+                Route::get("/sample-csv", "sample_csv_file")->name("sample-csv-file");
+                Route::post("/send-invite", "send_invite")->name("send-invite");
+                Route::post("/bulk/send-invite", "bulk_send_invite")->name("bulk-send-invite");
+            });
 
-            Route::post("/refer-case/{user}", "refer_case")->name("refer-case");
-            Route::post("/change-status/{user}", "change_status")->name("change-admin-status");
+            Route::post("/refer-case/{user}", "refer_case")->name("refer-case")->middleware("custom_user_permission:assign users cases");
+            Route::post("/change-status/{user}", "change_status")->name("change-admin-status")->middleware("custom_user_permission:edit users status");
 
             Route::get("/get-board-of-enquiries", "get_board_enquiry")->name("view-body-members");
             Route::post("/create-board-of-enquiry", "create_board_enquiry")->name("create-board-of-enquiry");
@@ -173,7 +184,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
 
         Route::prefix("notifications")->controller(NotificationController::class)->name("notification.")->group(function() {
             Route::get("/", "index")->name("index");
-            Route::get("/cases/{case}", "index")->name("cases");
+            Route::get("/cases/{case}", "index")->name("cases")->middleware("custom_user_permission:view dispute notifications");
             Route::get("/status/{status}", "index")->name("status");
             Route::post("/mark-as-read", "mark_as_read")->name("mark-as-read");
             Route::get("/settings", "settings")->name("settings");
@@ -212,6 +223,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
 
         Route::get("dashboard", [DashboardController::class, "index"])->name("dashboard");
         Route::get("search", [DashboardController::class, "search"])->name("search");
+        Route::get("reports", [DashboardController::class, "reports"])->name("reports")->middleware("custom_user_permission:view reports");
         Route::get("get-industries", [UserController::class, "industries"])->name("industries");
         Route::get("/settings/{auth}", [NotificationController::class, "settings"])->name("auth-settings");
         Route::post("/send-message", [ProfileController::class, "send_message"])->name("send-message");

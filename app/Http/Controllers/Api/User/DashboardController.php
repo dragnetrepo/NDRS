@@ -74,7 +74,7 @@ class DashboardController extends Controller
 
         if ($recent_discussions->isNotEmpty()) {
             foreach ($recent_discussions as $discussion) {
-                $data["pending_disputes"]["data"][] = $this->prepare_messages_data($discussion, $user_id);
+                $data["recent_messages"]["data"][] = $this->prepare_messages_data($discussion, $user_id);
             }
         }
 
@@ -83,6 +83,7 @@ class DashboardController extends Controller
         if ($recent_notifications->isNotEmpty()) {
             foreach ($recent_notifications as $notification) {
                 $data["recent_notifications"]["data"][] = [
+                    "_id" => $notification->id,
                     "message" => $notification->message,
                     "is_read" => $notification->is_read,
                     "date" => Carbon::parse($notification->created_at)->diffForHumans(),
@@ -320,6 +321,11 @@ class DashboardController extends Controller
         $this->response["message"] = "Search results retrieved";
 
         return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function reports(Request $request)
+    {
+        $data = [];
     }
 
     private function prepare_messages_data(CaseDiscussionMessage $discussion, int $user_id): array
