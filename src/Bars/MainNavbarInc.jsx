@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 
 const MainNavbarInc = ({ sidebar }) => {
+  const location = useLocation();
+  const { pathname } = location;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -106,32 +109,35 @@ const MainNavbarInc = ({ sidebar }) => {
             <ul className="navbar-nav flex-column sidebar-list border-bottom py-3">
               <li className="nav-item">
                 <Link
-                  className="nav-link nav-active"
+                  className={`nav-link ${pathname === '/dashboard' ? 'nav-active' : ''}`}
                   aria-current="page"
                   to="/dashboard"
                 >
                   <img src="/images/home.svg" className="img-fluid" alt="" /> Dashboard
                 </Link>
               </li>
-
               <li className="nav-item">
-                <Link className="nav-link" to="/Disputes">
-                  <img src="/images/suitcase.svg" className="img-fluid" alt="" />{" "}
-                  Disputes
+                <Link
+                  className={`nav-link ${pathname === '/Disputes' ? 'nav-active' : ''}`}
+                  to="/Disputes"
+                >
+                  <img src="/images/suitcase.svg" className="img-fluid" alt="" /> Disputes
                 </Link>
               </li>
-
               <li className="nav-item">
-                <Link className="nav-link" to="/discussions">
-                  <img src="/images/chats.svg" className="img-fluid" alt="" />{" "}
-                  Discussions
+                <Link
+                  className={`nav-link ${pathname === '/discussions' ? 'nav-active' : ''}`}
+                  to="/discussions"
+                >
+                  <img src="/images/chats.svg" className="img-fluid" alt="" /> Discussions
                 </Link>
               </li>
-
               <li className="nav-item">
-                <Link className="nav-link" to="/documents">
-                  <img src="/images/folder.svg" className="img-fluid" alt="" />{" "}
-                  Documents
+                <Link
+                  className={`nav-link ${pathname === '/documents' ? 'nav-active' : ''}`}
+                  to="/documents"
+                >
+                  <img src="/images/folder.svg" className="img-fluid" alt="" /> Documents
                 </Link>
               </li>
             </ul>
@@ -140,29 +146,23 @@ const MainNavbarInc = ({ sidebar }) => {
 
             <ul className="navbar-nav flex-column sidebar-list list-unstyled py-3 flex-grow-1">
               <li className="nav-item">
-                <Link className="nav-link" aria-current="page" to="/users">
-                  <img src="/images/users.svg" className="img-fluid" alt="" /> Users &
-                  Groups
+                <Link className={`nav-link ${pathname === '/users' ? 'nav-active' : ''}`} aria-current="page" to="/users">
+                  <img src="/images/users.svg" className="img-fluid" alt="" /> Users & Groups
                 </Link>
               </li>
-
               <li className="nav-item">
-                <Link className="nav-link" to="/Unions">
+                <Link className={`nav-link ${pathname === '/Unions' ? 'nav-active' : ''}`} to="/Unions">
                   <img src="/images/branch.svg" className="img-fluid" alt="" /> Unions
                 </Link>
               </li>
-
               <li className="nav-item">
-                <Link className="nav-link" to="/notifications">
-                  <img src="/images/bell.svg" className="img-fluid" alt="" />{" "}
-                  Notifications
+                <Link className={`nav-link ${pathname === '/notifications' ? 'nav-active' : ''}`} to="/notifications">
+                  <img src="/images/bell.svg" className="img-fluid" alt="" /> Notifications
                 </Link>
               </li>
-
               <li className="nav-item">
-                <Link className="nav-link" to="/reports">
-                  <img src="/images/clipboard.svg" className="img-fluid" alt="" />{" "}
-                  Reports
+                <Link className={`nav-link ${pathname === '/reports' ? 'nav-active' : ''}`} to="/reports">
+                  <img src="/images/clipboard.svg" className="img-fluid" alt="" /> Reports
                 </Link>
               </li>
             </ul>
@@ -170,27 +170,18 @@ const MainNavbarInc = ({ sidebar }) => {
             <div>
               <ul className="navbar-nav flex-column sidebar-list py-3">
                 <li className="nav-item">
-                  <Link
-                    className="nav-link"
-                    aria-current="page"
-                    to="/helpSupport"
-                  >
-                    <img src="/images/headphones.svg" className="img-fluid" alt="" />{" "}
-                    Help & Support
+                  <Link className={`nav-link ${pathname === '/helpSupport' ? 'nav-active' : ''}`} aria-current="page" to="/helpSupport">
+                    <img src="/images/headphones.svg" className="img-fluid" alt="" /> Help & Support
                   </Link>
                 </li>
-
                 <li className="nav-item">
-                  <Link className="nav-link" to="/settings">
-                    <img src="/images/settings.svg" className="img-fluid" alt="" />{" "}
-                    Settings
+                  <Link className={`nav-link ${pathname === '/settings' ? 'nav-active' : ''}`} to="/settings">
+                    <img src="/images/settings.svg" className="img-fluid" alt="" /> Settings
                   </Link>
                 </li>
-
                 <li className="nav-item" onClick={handleClick}>
-                  <Link className="nav-link" to="/">
-                    <img src="/images/log-out.svg" className="img-fluid" alt="" /> Log
-                    out
+                  <Link className={`nav-link ${pathname === '/login' ? 'nav-active' : ''}`} to="/login">
+                    <img src="/images/log-out.svg" className="img-fluid" alt="" /> Log out
                   </Link>
                 </li>
               </ul>

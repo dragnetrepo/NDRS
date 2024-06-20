@@ -196,13 +196,21 @@ const Users = () => {
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
+
       }
 
       const data = await response.json();
 
+
       toast.success("User Invite has been sent!");
+      setUsers({
+        email: "",
+        role: "",
+        case_id: "",
+      })
     } catch (error) {
       console.error("Error fetching data:", error);
+      toast.error('Email has already been used or invalid Email!')
     }
   };
 
@@ -588,7 +596,7 @@ const Users = () => {
                                     aria-controls="v-pills-bulk"
                                     aria-selected="true"
                                   >
-                                    Bulk Union upload
+                                    Bulk User/ Group invite
                                   </button>
 
                                   <button
@@ -601,7 +609,7 @@ const Users = () => {
                                     aria-controls="v-pills-single"
                                     aria-selected="false"
                                   >
-                                    Single Union upload
+                                    single User/ Group invite
                                   </button>
                                 </div>
                               </div>
@@ -807,6 +815,7 @@ const Users = () => {
                                                   className="form-select form-control-height"
                                                   name="role"
                                                   onChange={onHandleChangeUser}
+                                                  value={users.role}
                                                 >
                                                   <option>
                                                     Type or select a user type
@@ -833,6 +842,7 @@ const Users = () => {
                                                   className="form-select form-control-height"
                                                   name="case_id"
                                                   onChange={onHandleChangeUser}
+                                                  value={users.case_id}
                                                 >
                                                   <option>
                                                     Type or select a dispute

@@ -23,13 +23,12 @@ const DiscussionIinc = () => {
   const [meetingStartTime, setMeetingStartTime] = useState("");
   const [meetingEndTime, setMeetingEndTime] = useState("");
   const messagesEndRef = useRef(null);
-  const [status, setStatus] = useState("concilliation");
+  const [status, setStatus] = useState("");
   const [resolution, setResolution] = useState("");
   const [summary, setSummary] = useState("");
   const modalRef = useRef(null);
   const [sidebar, setsidebar] = useState(true);
   const [removeDetails, setRemoveDetails] = useState(true);
-  const navigate = useNavigate();
 
   const toggleSideBar = () => {
     setsidebar(!sidebar);
@@ -402,12 +401,13 @@ const DiscussionIinc = () => {
       .then((response) => {
         if (response.ok) {
           setSelectedFile(null);
+          fetchDiscussionsMessages(id);
           // Optionally, you can handle UI updates or closing the modal here
-          navigate(`/discussionsDetails/${id}`);
         } else {
           throw new Error("Upload failed");
         }
       })
+
       .catch((error) => {
         console.error("Error uploading file:", error);
       });
@@ -419,7 +419,9 @@ const DiscussionIinc = () => {
 
   const handleDeleteFile = (e) => {
     e.preventDefault();
-    setSelectedFile(null); // Clear selectedFile state
+    setSelectedFile(null);
+    // Clear the input field value
+    // Clear selectedFile state
   };
 
   // const handleUpload = async (e, id) => {
@@ -787,7 +789,8 @@ const DiscussionIinc = () => {
                                         {item.message.name}
                                       </p>
                                       <p className="font-sm text-muted mb-0">
-                                        11 Sep, 2023 | 12:24pm . 13MB
+                                        11 Sep, 2023 | 12:24pm .{" "}
+                                        {item.message.size}
                                       </p>
                                     </div>
                                   </div>
@@ -966,6 +969,7 @@ const DiscussionIinc = () => {
                         src="/images/multiply.svg"
                         className="img-fluid"
                         alt="close"
+                        onClick={handleRemovedetails}
                       />
                     </a>
                   </div>
@@ -993,6 +997,7 @@ const DiscussionIinc = () => {
                         src="/images/multiply.svg"
                         className="img-fluid"
                         alt="close"
+                        onClick={handleRemovedetails}
                       />
                     </a>
                   </div>
@@ -1283,6 +1288,7 @@ const DiscussionIinc = () => {
                 <button
                   onClick={(e) => handleStatus(e, id)}
                   className="btn btn-main-primary btn-size px-3"
+                  disabled={!status || !summary || !resolution}
                 >
                   Save
                 </button>
@@ -1576,7 +1582,7 @@ const DiscussionIinc = () => {
                   onClick={(e) => handleUpload(e, id)}
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  disabled
+                  disabled={!selectedFile}
                 >
                   Save
                 </button>
