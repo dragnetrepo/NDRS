@@ -35,7 +35,10 @@
                                 </div>
 
                                 <div class="mt-4">
-                                    <button class="btn btn-size btn-main-primary w-100">Log in</button>
+                                    <button class="btn btn-size btn-main-primary w-100">Log in <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    </button>
                                 </div>
                             </form>
 
