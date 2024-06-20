@@ -6,6 +6,10 @@
   --grey-3: #002b22;
   --dark-1: var(--dark-1);
 }
+.nav-active {
+  font-weight: bold; /* Example of active style */
+  color: blue; /* Example of active style */
+}
 
 html {
   font-size: 14px;

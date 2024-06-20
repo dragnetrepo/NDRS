@@ -308,7 +308,7 @@ const Unions = () => {
 																		<div className="card mb-4">
 																			<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
 																				<h3 className="mb-lg-0 mb-3">
-																					Bulk Invites
+																					Bulk Union Upload
 																				</h3>
 																			</div>
 																			<div className="card-body p-4">

@@ -25,7 +25,7 @@ const DiscussionIinc = () => {
   const [meetingStartTime, setMeetingStartTime] = useState("");
   const [meetingEndTime, setMeetingEndTime] = useState("");
   const messagesEndRef = useRef(null);
-  const [status, setStatus] = useState('concilliation');
+  const [status, setStatus] = useState('');
   const [resolution, setResolution] = useState('');
   const [summary, setSummary] = useState('');
   const modalRef = useRef(null);
@@ -421,6 +421,7 @@ const DiscussionIinc = () => {
       .then(response => {
         if (response.ok) {
           setSelectedFile(null);
+          fetchDiscussionsMessages(id)
           // Optionally, you can handle UI updates or closing the modal here
 
         } else {
@@ -578,115 +579,114 @@ const DiscussionIinc = () => {
                   <div className="chat-body flex-grow-1" >
                     <div className="container-fluid">
                       <div className="messages-container py-5">
-                        {
-                          discussionMessages?.discuss?.map((item) =>
-                            <div key={item._id} className={item.sender.sender === 'You' ? 'd-flex flex-column align-items-end' : 'd-flex flex-column align-items-start'}>
-                              {item.type === 'text' ? (
-                                <>
-                                  <div className={`message-box message-width ${item.sender.sender === 'You' ? 'message-right' : 'message-left'} mb-3`}>
-                                    <div className="message-inner">
-                                      <p className="mb-0">
-                                        {item.message}
-                                      </p>
-                                    </div>
+                        {discussionMessages.map((item) =>
+                          <div key={item._id} className={item.sender.sender === 'You' ? 'd-flex flex-column align-items-end' : 'd-flex flex-column align-items-start'}>
+                            {item.type === 'text' ? (
+                              <>
+                                <div className={`message-box message-width ${item.sender.sender === 'You' ? 'message-right' : 'message-left'} mb-3`}>
+                                  <div className="message-inner">
+                                    <p className="mb-0">
+                                      {item.message}
+                                    </p>
+                                  </div>
 
-                                  </div>
-                                  <p className="message-user mt-1">
-                                    {item.sender.sender} <i className="bi bi-dot"></i> {item.time_sent}
-                                  </p>
-                                </>
-                              ) : item.type === 'meeting' ? (
-                                <div className="receiver d-flex flex-column align-items-end">
-                                  <div className="message-box message-width px-0 mb-3">
-                                    <div className="card">
-                                      <div className="card-body">
-                                        <h6 className="text-medium text-center">Scheduled Meeting</h6>
-                                        <div>
-                                          <div className="mb-3">
-                                            <label className="form-label">Title</label>
-                                            <input type="text" className="form-control form-control-height" value={item.message.title || item.message.meeting_title} disabled />
-                                          </div>
-                                          <div className="mb-3">
-                                            <label className="form-label">Date</label>
-                                            <input type="text" className="form-control form-control-height" value={item.message.date || item.message.meeting_date} disabled />
-                                          </div>
-                                          <div className="mb-3">
-                                            <label className="form-label">Location</label>
-                                            <input type="text" className="form-control form-control-height" value={item.message.location || item.message.meeting_location} disabled />
-                                          </div>
-                                          <div className="row">
-                                            <div className="col-lg-6">
-                                              <div className="mb-3">
-                                                <label className="form-label">Start</label>
-                                                <input type="text" className="form-control form-control-height" value={item.message.start_time || item.message.meeting_start_time} disabled />
-                                              </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                              <div className="mb-3">
-                                                <label className="form-label">End</label>
-                                                <input type="text" className="form-control form-control-height" value={item.message.end_time || item.message.meeting_end_time} disabled />
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
                                 </div>
-                              ) : item.type === 'poll' ? (
-                                <div className="receiver d-flex flex-column align-items-end">
-                                  <div className="message-box message-width progress-poll px-0 mb-3">
-                                    <div className="card">
-                                      <div className="card-body">
-                                        <p className="text-medium text-center">{item.message.question}</p>
-                                        {item.message.options && item.message.options.map((option, index) => (
-                                          <div key={index} className="form-check d-flex align-items-center gap-10 mb-1">
-                                            <input className="form-check-input" type="radio" name={`poll-${item._id}`} id={`poll-${item._id}-${option}`} onClick={() => handleVote(item._id, option)} />
-                                            <label className="form-check-label w-100" htmlFor={`poll-${item._id}-${option}`}>
-                                              <span className="text-medium">{option.charAt(0).toUpperCase() + option.slice(1)}</span>
-                                              <div className="progress progress-height " role="progressbar" aria-valuenow={0} aria-valuemin="0" aria-valuemax="100">
-                                                <div className="progress-bar bg-success" style={{ width: "0%" }}></div>
-                                              </div>
-                                              <span className="d-block text-end text-medium">0%</span>
-                                            </label>
-                                          </div>
-                                        ))}
-                                        <div className="d-flex align-items-center gap-10 justify-content-center mt-3">
-                                          <div className="avatars margin-unset">
-                                            {item.message.vote_results && Object.values(item.message.vote_results).map((result, idx) =>
-                                              result.voters.map((voter, idy) => (
-                                                <div key={`${idx}-${idy}`} className="avatars__item">
-                                                  <img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src={voter.photo} alt="" />
-                                                </div>
-                                              ))
-                                            )}
-                                            <div className="avatars__item d-flex justify-content-center align-items-center ft-sm text-medium">
-                                              +10
-                                            </div>
-                                          </div>
-                                          <p className="mb-0"><a href="#" className="text-medium text-main-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#resultsModal">View results</a></p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : item.type === 'file' ? (
-                                <div className="receiver d-flex flex-column align-items-end">
-                                  <div className="message-box message-width message-right mb-3">
-                                    <div className="d-flex align-items-center mb-2">
-                                      <div className="text-center me-2 flex-shrink-0">
-                                        <img src="images/pdf-icon.svg" className="img-fluid" />
-                                      </div>
+                                <p className="message-user mt-1">
+                                  {item.sender.sender} <i className="bi bi-dot"></i> {item.time_sent}
+                                </p>
+                              </>
+                            ) : item.type === 'meeting' ? (
+                              <div className="receiver d-flex flex-column align-items-end">
+                                <div className="message-box message-width px-0 mb-3">
+                                  <div className="card">
+                                    <div className="card-body">
+                                      <h6 className="text-medium text-center">Scheduled Meeting</h6>
                                       <div>
-                                        <p className="text-bold mb-1">{item.message.name}</p>
-                                        <p className="font-sm text-muted mb-0">11 Sep, 2023 | 12:24pm . 13MB</p>
+                                        <div className="mb-3">
+                                          <label className="form-label">Title</label>
+                                          <input type="text" className="form-control form-control-height" value={item.message.title || item.message.meeting_title} disabled />
+                                        </div>
+                                        <div className="mb-3">
+                                          <label className="form-label">Date</label>
+                                          <input type="text" className="form-control form-control-height" value={item.message.date || item.message.meeting_date} disabled />
+                                        </div>
+                                        <div className="mb-3">
+                                          <label className="form-label">Location</label>
+                                          <input type="text" className="form-control form-control-height" value={item.message.location || item.message.meeting_location} disabled />
+                                        </div>
+                                        <div className="row">
+                                          <div className="col-lg-6">
+                                            <div className="mb-3">
+                                              <label className="form-label">Start</label>
+                                              <input type="text" className="form-control form-control-height" value={item.message.start_time || item.message.meeting_start_time} disabled />
+                                            </div>
+                                          </div>
+                                          <div className="col-lg-6">
+                                            <div className="mb-3">
+                                              <label className="form-label">End</label>
+                                              <input type="text" className="form-control form-control-height" value={item.message.end_time || item.message.meeting_end_time} disabled />
+                                            </div>
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              ) : null}
-                            </div>
-                          )}
+                              </div>
+                            ) : item.type === 'poll' ? (
+                              <div className="receiver d-flex flex-column align-items-end">
+                                <div className="message-box message-width progress-poll px-0 mb-3">
+                                  <div className="card">
+                                    <div className="card-body">
+                                      <p className="text-medium text-center">{item.message.question}</p>
+                                      {item.message.options && item.message.options.map((option, index) => (
+                                        <div key={index} className="form-check d-flex align-items-center gap-10 mb-1">
+                                          <input className="form-check-input" type="radio" name={`poll-${item._id}`} id={`poll-${item._id}-${option}`} onClick={() => handleVote(item._id, option)} />
+                                          <label className="form-check-label w-100" htmlFor={`poll-${item._id}-${option}`}>
+                                            <span className="text-medium">{option.charAt(0).toUpperCase() + option.slice(1)}</span>
+                                            <div className="progress progress-height " role="progressbar" aria-valuenow={0} aria-valuemin="0" aria-valuemax="100">
+                                              <div className="progress-bar bg-success" style={{ width: "0%" }}></div>
+                                            </div>
+                                            <span className="d-block text-end text-medium">0%</span>
+                                          </label>
+                                        </div>
+                                      ))}
+                                      <div className="d-flex align-items-center gap-10 justify-content-center mt-3">
+                                        <div className="avatars margin-unset">
+                                          {item.message.vote_results && Object.values(item.message.vote_results).map((result, idx) =>
+                                            result.voters.map((voter, idy) => (
+                                              <div key={`${idx}-${idy}`} className="avatars__item">
+                                                <img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src={voter.photo} alt="" />
+                                              </div>
+                                            ))
+                                          )}
+                                          <div className="avatars__item d-flex justify-content-center align-items-center ft-sm text-medium">
+                                            +10
+                                          </div>
+                                        </div>
+                                        <p className="mb-0"><a href="#" className="text-medium text-main-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#resultsModal">View results</a></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : item.type === 'file' ? (
+                              <div className="receiver d-flex flex-column align-items-end">
+                                <div className="message-box message-width message-right mb-3">
+                                  <div className="d-flex align-items-center mb-2">
+                                    <div className="text-center me-2 flex-shrink-0">
+                                      <img src="images/pdf-icon.svg" className="img-fluid" />
+                                    </div>
+                                    <div>
+                                      <p className="text-bold mb-1">{item.message.name}</p>
+                                      <p className="font-sm text-muted mb-0">11 Sep, 2023 | 12:24pm . {item.message.size}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : null}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1111,7 +1111,7 @@ const DiscussionIinc = () => {
                 >
                   Cancel
                 </button>
-                <button onClick={(e) => handleStatus(e, id)} className="btn btn-main-primary btn-size px-3">
+                <button onClick={(e) => handleStatus(e, id)} className="btn btn-main-primary btn-size px-3" disabled={!status || !summary || !resolution}>
                   Save
                 </button>
               </div>
