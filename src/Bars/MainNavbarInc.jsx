@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 
 const MainNavbarInc = ({ sidebar }) => {
   const location = useLocation();
   const { pathname } = location;
   const navigate = useNavigate();
+
 
   useEffect(() => {
     // Retrieve the token from localStorage
@@ -104,41 +105,43 @@ const MainNavbarInc = ({ sidebar }) => {
               aria-label="Close"
             ></i>
           </div>
-
           <div className="offcanvas-body flex-column custom-offcanvas-h">
             <ul className="navbar-nav flex-column sidebar-list border-bottom py-3">
               <li className="nav-item">
-                <Link
-                  className={`nav-link ${pathname === '/dashboard' ? 'nav-active' : ''}`}
-                  aria-current="page"
+                <NavLink
+                  className="nav-link"
+                  activeclassname="nav-active"
                   to="/dashboard"
                 >
                   <img src="/images/home.svg" className="img-fluid" alt="" /> Dashboard
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link
-                  className={`nav-link ${pathname === '/Disputes' ? 'nav-active' : ''}`}
+                <NavLink
+                  className="nav-link"
+                  activeclassname="nav-active"
                   to="/Disputes"
                 >
                   <img src="/images/suitcase.svg" className="img-fluid" alt="" /> Disputes
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link
-                  className={`nav-link ${pathname === '/discussions' ? 'nav-active' : ''}`}
+                <NavLink
+                  className="nav-link"
+                  activeclassname="nav-active"
                   to="/discussions"
                 >
                   <img src="/images/chats.svg" className="img-fluid" alt="" /> Discussions
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link
-                  className={`nav-link ${pathname === '/documents' ? 'nav-active' : ''}`}
+                <NavLink
+                  className="nav-link"
+                  activeclassname="nav-active"
                   to="/documents"
                 >
                   <img src="/images/folder.svg" className="img-fluid" alt="" /> Documents
-                </Link>
+                </NavLink>
               </li>
             </ul>
 
@@ -146,47 +149,76 @@ const MainNavbarInc = ({ sidebar }) => {
 
             <ul className="navbar-nav flex-column sidebar-list list-unstyled py-3 flex-grow-1">
               <li className="nav-item">
-                <Link className={`nav-link ${pathname === '/users' ? 'nav-active' : ''}`} aria-current="page" to="/users">
+                <NavLink
+                  className="nav-link"
+                  activeclassname="nav-active"
+                  to="/users"
+                >
                   <img src="/images/users.svg" className="img-fluid" alt="" /> Users & Groups
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${pathname === '/Unions' ? 'nav-active' : ''}`} to="/Unions">
+                <NavLink
+                  className="nav-link"
+                  activeclassname="nav-active"
+                  to="/Unions"
+                >
                   <img src="/images/branch.svg" className="img-fluid" alt="" /> Unions
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${pathname === '/notifications' ? 'nav-active' : ''}`} to="/notifications">
+                <NavLink
+                  className="nav-link"
+                  activeclassname="nav-active"
+                  to="/notifications"
+                >
                   <img src="/images/bell.svg" className="img-fluid" alt="" /> Notifications
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${pathname === '/reports' ? 'nav-active' : ''}`} to="/reports">
+                <NavLink
+                  className="nav-link"
+                  activeclassname="nav-active"
+                  to="/reports"
+                >
                   <img src="/images/clipboard.svg" className="img-fluid" alt="" /> Reports
-                </Link>
+                </NavLink>
               </li>
             </ul>
 
             <div>
               <ul className="navbar-nav flex-column sidebar-list py-3">
                 <li className="nav-item">
-                  <Link className={`nav-link ${pathname === '/helpSupport' ? 'nav-active' : ''}`} aria-current="page" to="/helpSupport">
+                  <NavLink
+                    className="nav-link"
+                    activeclassname="nav-active"
+                    to="/helpSupport"
+                  >
                     <img src="/images/headphones.svg" className="img-fluid" alt="" /> Help & Support
-                  </Link>
+                  </NavLink>
                 </li>
                 <li className="nav-item">
-                  <Link className={`nav-link ${pathname === '/settings' ? 'nav-active' : ''}`} to="/settings">
+                  <NavLink
+                    className="nav-link"
+                    activeclassname="nav-active"
+                    to="/settings"
+                  >
                     <img src="/images/settings.svg" className="img-fluid" alt="" /> Settings
-                  </Link>
+                  </NavLink>
                 </li>
                 <li className="nav-item" onClick={handleClick}>
-                  <Link className={`nav-link ${pathname === '/login' ? 'nav-active' : ''}`} to="/login">
+                  <NavLink
+                    className="nav-link"
+                    activeclassname="nav-active"
+                    to="/login"
+                  >
                     <img src="/images/log-out.svg" className="img-fluid" alt="" /> Log out
-                  </Link>
+                  </NavLink>
                 </li>
               </ul>
             </div>
           </div>
+
         </div>
       </div>
     </nav>
