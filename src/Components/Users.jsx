@@ -609,7 +609,7 @@ const Users = () => {
                                     aria-controls="v-pills-single"
                                     aria-selected="false"
                                   >
-                                    single User/ Group invite
+                                    Single User/ Group invite
                                   </button>
                                 </div>
                               </div>

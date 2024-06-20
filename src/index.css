@@ -6,10 +6,6 @@
   --grey-3: #002b22;
   --dark-1: var(--dark-1);
 }
-.nav-active {
-  font-weight: bold; /* Example of active style */
-  color: blue; /* Example of active style */
-}
 
 html {
   font-size: 14px;
@@ -401,6 +397,12 @@ h6 {
 
 .margin-top-negative {
   margin-top: -35px;
+}
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link.show {
+  background-color: #e8f7e6;
+  color: #547d74;
+  border-radius: 10px;
 }
 
 .custom-tab.nav-underline .nav-link.active,
