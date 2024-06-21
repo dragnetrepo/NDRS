@@ -243,9 +243,13 @@ const Users = () => {
         throw new Error("Network response was not ok");
       }
 
+
       const data = await response.json();
 
       toast.success("Board of Enquire has been created successfully!");
+      setboardOfEnquire({
+        name: ''
+      })
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -301,10 +305,13 @@ const Users = () => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-
+      fetchdata()
       const data = await response.json();
+      setcustomRole({
+        name: ''
+      })
 
-      window.location.reload();
+      // window.location.reload();
       toast.success("custom role has been created!");
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -5773,7 +5780,9 @@ const Users = () => {
 
                 <button
                   className="btn btn-main-primary btn-size px-3"
-                  onClick={handleSubmit}
+
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
                 >
                   Finish
                 </button>
@@ -5813,7 +5822,7 @@ const Users = () => {
 
                 <div className="col-lg-2 offset-lg-3">
                   <div className="d-flex align-items-center justify-content-between gap-15">
-                    <a href="#" className="btn btn-size btn-main-primary">
+                    <a href="" className="btn btn-size btn-main-primary" onClick={handleSubmit} disabled={!boardOfEnquire.name}>
                       Send Invite
                     </a>
                   </div>
@@ -5822,7 +5831,7 @@ const Users = () => {
 
               <div className="row">
                 <div className="col-lg-12">
-                  <table className="table table-list">
+                  {/* <table className="table table-list">
                     <thead className="table-light">
                       <tr>
                         <th scope="col">Name</th>
@@ -5876,7 +5885,7 @@ const Users = () => {
                         <td>Pending</td>
                       </tr>
                     </tbody>
-                  </table>
+                  </table> */}
                   <table className="table table-list">
                     <thead className="table-light">
                       <tr>
@@ -5940,7 +5949,8 @@ const Users = () => {
                   className="btn btn-main-primary btn-size px-3"
                   data-bs-target="#permissionModal"
                   data-bs-toggle="modal"
-                  onClick={CreateCustomRole}
+
+                  disabled={!customRole.name}
                 >
                   Next
                 </button>
@@ -5954,6 +5964,7 @@ const Users = () => {
                     className="form-control form-control-height"
                     placeholder="Enter custom role"
                     name="name"
+                    value={customRole.name}
                     onChange={onHandleCustomRole}
                   />
                 </div>
@@ -5990,7 +6001,9 @@ const Users = () => {
                   Back
                 </button>
 
-                <button className="btn btn-main-primary btn-size px-3">
+                <button className="btn btn-main-primary btn-size px-3"
+                  data-bs-dismiss="modal"
+                  aria-label="Close" onClick={CreateCustomRole}>
                   Finish
                 </button>
               </div>
