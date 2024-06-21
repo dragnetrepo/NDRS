@@ -4,10 +4,13 @@ import TopBarInc from "../Bars/TopBarInc";
 import PasswordSet from "./PasswordSet";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { ClipLoader } from "react-spinners";
+
 
 const Settings = () => {
 	const navigate = useNavigate();
 	const user_avatar = "/images/unilag.svg";
+	const [isLoading, setIsLoading] = useState(true);
 	const [avatarImage, setAvatarImage] = useState(user_avatar);
 	const [user, setuser] = useState({
 		first_name: "",
@@ -144,6 +147,8 @@ const Settings = () => {
 			setuser(data.data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
+		} finally {
+			setIsLoading(false)
 		}
 	};
 
@@ -410,181 +415,188 @@ const Settings = () => {
 																			</a>
 																		</div>
 																	</div>
-																	<div className="card-body p-4">
-																		<form>
-																			<div className="row mt-4">
-																				<div className="col-lg-3 mb-lg-0 mb-4">
-																					<label
-																						htmlFor="profile"
-																						className="position-relative"
-																					>
-																						<input
-																							type="file"
-																							id="profile"
-																							name="display_picture"
-																							style={{ display: "none" }}
-																							onChange={handleAvatarChange}
-																						/>
+																	{isLoading ? (
+																		<div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+																			<ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+																		</div>
+																	) : (
+																		<div className="card-body p-4">
+																			<form>
+																				<div className="row mt-4">
+																					<div className="col-lg-3 mb-lg-0 mb-4">
+																						<label
+																							htmlFor="profile"
+																							className="position-relative"
+																						>
+																							<input
+																								type="file"
+																								id="profile"
+																								name="display_picture"
+																								style={{ display: "none" }}
+																								onChange={handleAvatarChange}
+																							/>
 
-																						<div className="main-avatar mx-auto">
+																							<div className="main-avatar mx-auto">
+																								<img
+																									src={
+																										user.display_picture ||
+																										'/images/download.png'
+																									}
+																									className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+																								/>
+																							</div>
+
 																							<img
-																								src={
-																									user.display_picture ||
-																									'/images/download.png'
-																								}
-																								className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+																								src="/images/close-x.svg"
+																								className="img-fluid remove-profile cursor-pointer" alt=""
+																							/>
+																						</label>
+																					</div>
+
+																					<div className="col-lg-9">
+																						<div className="mb-4">
+																							<label className="form-label">
+																								First name
+																							</label>
+																							<input
+																								type="text"
+																								className="form-control form-control-height"
+																								name="first_name"
+																								placeholder="Enter your first name"
+																								value={user.first_name}
+																								onChange={onHandleChange}
 																							/>
 																						</div>
-
-																						<img
-																							src="/images/close-x.svg"
-																							className="img-fluid remove-profile cursor-pointer" alt=""
-																						/>
-																					</label>
-																				</div>
-
-																				<div className="col-lg-9">
-																					<div className="mb-4">
-																						<label className="form-label">
-																							First name
-																						</label>
-																						<input
-																							type="text"
-																							className="form-control form-control-height"
-																							name="first_name"
-																							placeholder="Enter your first name"
-																							value={user.first_name}
-																							onChange={onHandleChange}
-																						/>
-																					</div>
-																					<div className="mb-4">
-																						<label className="form-label">
-																							Surname
-																						</label>
-																						<input
-																							type="text"
-																							className="form-control form-control-height"
-																							name="last_name"
-																							placeholder="Enter your surname"
-																							value={user.last_name}
-																							onChange={onHandleChange}
-																						/>
-																					</div>
-																					<div className="mb-4">
-																						<label className="form-label">
-																							Phone Number
-																						</label>
-																						<input
-																							type="text"
-																							className="form-control form-control-height"
-																							name="phone"
-																							placeholder="Enter your phone number"
-																							value={user.phone}
-																							onChange={onHandleChange}
-																						/>
-																					</div>
-																					<div className="mb-4">
-																						<label className="form-label">
-																							Email address
-																						</label>
-																						<input
-																							type="email"
-																							className="form-control form-control-height"
-																							name="email"
-																							placeholder="Enter your phone number"
-																							value={user.email}
-																							onChange={onHandleChange}
-																						/>
-																					</div>
-																					<div className="mb-4">
-																						<label className="form-label">
-																							Contact address
-																						</label>
-																						<input
-																							type="text"
-																							className="form-control form-control-height"
-																							name="contact_address"
-																							placeholder="Enter your phone number"
-																							value={user.contact_address}
-																							onChange={onHandleChange}
-																						/>
-																					</div>
-																					<div className="mb-4">
-																						<label className="form-label">
-																							Union
-																						</label>
-																						<input
-																							type="text"
-																							className="form-control form-control-height"
-																							placeholder="Enter your phone number"
-																							value="ASUU"
-																							disabled
-																							onChange={onHandleChange}
-																						/>
-																					</div>
-																					<div className="mb-4">
-																						<label className="form-label">
-																							Union branch
-																						</label>
-																						<input
-																							type="text"
-																							className="form-control form-control-height"
-																							placeholder="Enter your phone number"
-																							value="Lagos"
-																							disabled
-																							onChange={onHandleChange}
-																						/>
-																					</div>
-																					<div className="mb-4">
-																						<label className="form-label">
-																							Sub branch
-																						</label>
-																						<input
-																							type="text"
-																							className="form-control form-control-height"
-																							placeholder="Enter your phone number"
-																							value="University of Lagos"
-																							disabled
-																							onChange={onHandleChange}
-																						/>
-																						<a
-																							href="#"
-																							className="text-main-primary"
-																							data-bs-toggle="modal"
-																							data-bs-target="#orgModal"
-																						>
-																							<p className="mb-0 mt-1">
-																								Request to change organization
-																							</p>
-																						</a>
-																					</div>
-																					<div className="mb-4">
-																						<label className="form-label">
-																							Role
-																						</label>
-																						<input
-																							type="text"
-																							className="form-control form-control-height"
-																							placeholder="Enter your phone number"
-																							value="Organization Admin"
-																							disabled
-																							onChange={onHandleChange}
-																						/>
-																						<a
-																							href="#"
-																							className="text-main-primary"
-																							data-bs-toggle="modal"
-																							data-bs-target="#roleModal"
-																						>
-																							<p className="mb-0 mt-1">
-																								Request new role
-																							</p>
-																						</a>
+																						<div className="mb-4">
+																							<label className="form-label">
+																								Surname
+																							</label>
+																							<input
+																								type="text"
+																								className="form-control form-control-height"
+																								name="last_name"
+																								placeholder="Enter your surname"
+																								value={user.last_name}
+																								onChange={onHandleChange}
+																							/>
+																						</div>
+																						<div className="mb-4">
+																							<label className="form-label">
+																								Phone Number
+																							</label>
+																							<input
+																								type="text"
+																								className="form-control form-control-height"
+																								name="phone"
+																								placeholder="Enter your phone number"
+																								value={user.phone}
+																								onChange={onHandleChange}
+																							/>
+																						</div>
+																						<div className="mb-4">
+																							<label className="form-label">
+																								Email address
+																							</label>
+																							<input
+																								type="email"
+																								className="form-control form-control-height"
+																								name="email"
+																								placeholder="Enter your phone number"
+																								value={user.email}
+																								onChange={onHandleChange}
+																							/>
+																						</div>
+																						<div className="mb-4">
+																							<label className="form-label">
+																								Contact address
+																							</label>
+																							<input
+																								type="text"
+																								className="form-control form-control-height"
+																								name="contact_address"
+																								placeholder="Enter your phone number"
+																								value={user.contact_address}
+																								onChange={onHandleChange}
+																							/>
+																						</div>
+																						<div className="mb-4">
+																							<label className="form-label">
+																								Union
+																							</label>
+																							<input
+																								type="text"
+																								className="form-control form-control-height"
+																								placeholder="Enter your phone number"
+																								value="ASUU"
+																								disabled
+																								onChange={onHandleChange}
+																							/>
+																						</div>
+																						<div className="mb-4">
+																							<label className="form-label">
+																								Union branch
+																							</label>
+																							<input
+																								type="text"
+																								className="form-control form-control-height"
+																								placeholder="Enter your phone number"
+																								value="Lagos"
+																								disabled
+																								onChange={onHandleChange}
+																							/>
+																						</div>
+																						<div className="mb-4">
+																							<label className="form-label">
+																								Sub branch
+																							</label>
+																							<input
+																								type="text"
+																								className="form-control form-control-height"
+																								placeholder="Enter your phone number"
+																								value="University of Lagos"
+																								disabled
+																								onChange={onHandleChange}
+																							/>
+																							<a
+																								href="#"
+																								className="text-main-primary"
+																								data-bs-toggle="modal"
+																								data-bs-target="#orgModal"
+																							>
+																								<p className="mb-0 mt-1">
+																									Request to change organization
+																								</p>
+																							</a>
+																						</div>
+																						<div className="mb-4">
+																							<label className="form-label">
+																								Role
+																							</label>
+																							<input
+																								type="text"
+																								className="form-control form-control-height"
+																								placeholder="Enter your phone number"
+																								value="Organization Admin"
+																								disabled
+																								onChange={onHandleChange}
+																							/>
+																							<a
+																								href="#"
+																								className="text-main-primary"
+																								data-bs-toggle="modal"
+																								data-bs-target="#roleModal"
+																							>
+																								<p className="mb-0 mt-1">
+																									Request new role
+																								</p>
+																							</a>
+																						</div>
 																					</div>
 																				</div>
-																			</div>
-																		</form>
-																	</div>
+																			</form>
+																		</div>
+																	)}
+
 																</div>
 
 																<div className="card delete-card">

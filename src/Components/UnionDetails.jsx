@@ -3,10 +3,13 @@ import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
 import { Link, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import { ClipLoader } from "react-spinners";
 
 const UnionDetails = () => {
   const { id } = useParams();
   const user_avatar = "/images/unilag.svg";
+  const [isLoading, setIsLoading] = useState(true);
+
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const [roles, setRoles] = useState([]);
   const [unions, setunions] = useState({
@@ -62,6 +65,8 @@ const UnionDetails = () => {
       setunions(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -162,7 +167,7 @@ const UnionDetails = () => {
     setUsers({ ...users, [e.target.name]: e.target.value });
   };
 
-  const handleSendInvite = async (e, id, unions, setunions) => {
+  const handleSendInvite = async (e, id) => {
     e.preventDefault();
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -179,13 +184,17 @@ const UnionDetails = () => {
       if (!res.ok) {
         throw new Error("Failed to fetch data."); // Handle failed request
       }
-
+      setUsers({
+        email: '',
+        role: ''
+      })
       const data = await res.json();
       // setGetDisputes(data.data);
-      toast("union invite has been sent!");
-      window.location.reload();
+      toast.success("union invite has been sent!");
+      // window.location.reload();
     } catch (error) {
       console.error("Error fetching data:", error.message);
+      toast.error('failed to send invite')
     }
   };
 
@@ -205,167 +214,150 @@ const UnionDetails = () => {
                   <h2>Branches</h2>
                 </div>
               </div>
+              {isLoading ? (
+                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                  <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+                </div>
+              ) : (
+                <div className="content-main">
+                  <div className="container">
+                    <div className="row py-4">
+                      <div className="col-lg-10">
+                        <div className="d-flex gap-15">
+                          <div>
+                            <a
+                              href="#"
+                              className="text-muted-4 text-decoration-none"
+                            >
+                              <i className="bi bi-arrow-left"></i> Go back
+                            </a>
+                          </div>
 
-              <div className="content-main">
-                <div className="container">
-                  <div className="row py-4">
-                    <div className="col-lg-10">
-                      <div className="d-flex gap-15">
-                        <div>
-                          <a
-                            href="#"
-                            className="text-muted-4 text-decoration-none"
-                          >
-                            <i className="bi bi-arrow-left"></i> Go back
-                          </a>
+                          <nav aria-label="breadcrumb">
+                            <ol className="breadcrumb">
+                              <li className="breadcrumb-item">
+                                <a
+                                  href="#"
+                                  className="text-main-primary text-decoration-none"
+                                >
+                                  All Unions
+                                </a>
+                              </li>
+                              <li
+                                className="breadcrumb-item active"
+                                aria-current="page"
+                              >
+                                {unions.name}
+                              </li>
+                            </ol>
+                          </nav>
                         </div>
 
-                        <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb">
-                            <li className="breadcrumb-item">
-                              <a
-                                href="#"
-                                className="text-main-primary text-decoration-none"
-                              >
-                                All Unions
-                              </a>
-                            </li>
-                            <li
-                              className="breadcrumb-item active"
-                              aria-current="page"
-                            >
-                              {unions.name}
-                            </li>
-                          </ol>
-                        </nav>
-                      </div>
-
-                      <div className="d-flex justify-content-between align-items-center avatar-icon w-100 my-5">
-                        <div className="d-flex avatar-holder">
-                          <div className="position-relative">
-                            <div className="avatar-md flex-shrink-0">
-                              <img
-                                src={unions.logo}
-                                className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                alt="Avatar"
-                              />
+                        <div className="d-flex justify-content-between align-items-center avatar-icon w-100 my-5">
+                          <div className="d-flex avatar-holder">
+                            <div className="position-relative">
+                              <div className="avatar-md flex-shrink-0">
+                                <img
+                                  src={unions.logo}
+                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                  alt="Avatar"
+                                />
+                              </div>
+                            </div>
+                            <div className="ms-2 flex-grow-1">
+                              <h3 className="mb-2 bold-text">{unions.name}</h3>
+                              <p className="mb-0 text-muted-3">
+                                {unions.acronym || ""}
+                              </p>
                             </div>
                           </div>
-                          <div className="ms-2 flex-grow-1">
-                            <h3 className="mb-2 bold-text">{unions.name}</h3>
-                            <p className="mb-0 text-muted-3">
-                              {unions.acronym || ""}
-                            </p>
-                          </div>
                         </div>
-                      </div>
 
-                      <div className="d-flex align-items-center gap-15 mb-5">
-                        <Link
-                          to={`/branches/${id}`}
-                          style={{ textDecoration: "none" }}
-                        >
-                          <button
-                            className="btn btn-size btn-main-primary"
-                            type="button"
+                        <div className="d-flex align-items-center gap-15 mb-5">
+                          <Link
+                            to={`/branches/${id}`}
+                            style={{ textDecoration: "none" }}
                           >
-                            Create Branch
-                          </button>
-                        </Link>
-                      </div>
-
-                      <div
-                        className="accordion accordion-expand"
-                        id="accordionUnion"
-                      >
-                        <div className="accordion-item mb-3">
-                          <h2 className="accordion-header">
                             <button
-                              className="accordion-button heading-4 text-grey"
+                              className="btn btn-size btn-main-primary"
                               type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapseOne"
-                              aria-expanded="true"
-                              aria-controls="collapseOne"
                             >
-                              {unions.acronym || unions.name} Branches
+                              Create Branch
                             </button>
-                          </h2>
-                          <div
-                            id="collapseOne"
-                            className="accordion-collapse collapse show"
-                            data-bs-parent="#accordionUnion"
-                          >
-                            <div className="accordion-body">
-                              <div className="row my-4">
-                                <div className="col-lg-5">
-                                  <div className="input-group">
-                                    <span className="input-group-text bg-transparent">
-                                      <img
-                                        src="/images/search.svg"
-                                        className="img-fluid"
-                                        alt="search"
-                                      />
-                                    </span>
-                                    <input
-                                      type="search"
-                                      className="form-control border-start-0 form-control-height"
-                                      placeholder="Search here..."
-                                    />
-                                  </div>
-                                </div>
+                          </Link>
+                        </div>
 
-                                <div className="col-lg-7">
-                                  <div className="d-flex align-items-center justify-content-between gap-15">
-                                    <div className="d-flex">
-                                      <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+                        <div
+                          className="accordion accordion-expand"
+                          id="accordionUnion"
+                        >
+                          <div className="accordion-item mb-3">
+                            <h2 className="accordion-header">
+                              <button
+                                className="accordion-button heading-4 text-grey"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne"
+                                aria-expanded="true"
+                                aria-controls="collapseOne"
+                              >
+                                {unions.acronym || unions.name} Branches
+                              </button>
+                            </h2>
+                            <div
+                              id="collapseOne"
+                              className="accordion-collapse collapse show"
+                              data-bs-parent="#accordionUnion"
+                            >
+                              <div className="accordion-body">
+                                <div className="row my-4">
+                                  <div className="col-lg-5">
+                                    <div className="input-group">
+                                      <span className="input-group-text bg-transparent">
                                         <img
-                                          src="/images/filter.svg"
-                                          className="img-fluid" alt=""
-                                        />{" "}
-                                        A-Z
-                                      </a>
-
-                                      <button className="btn btn-size btn-main-outline-primary px-3">
-                                        <i className="bi bi-cloud-download me-2"></i>{" "}
-                                        Export CSV
-                                      </button>
+                                          src="/images/search.svg"
+                                          className="img-fluid"
+                                          alt="search"
+                                        />
+                                      </span>
+                                      <input
+                                        type="search"
+                                        className="form-control border-start-0 form-control-height"
+                                        placeholder="Search here..."
+                                      />
                                     </div>
+                                  </div>
 
-                                    <p className="text-end mb-0 file-count">
-                                      Branches: {branches.length}
-                                    </p>
+                                  <div className="col-lg-7">
+                                    <div className="d-flex align-items-center justify-content-between gap-15">
+                                      <div className="d-flex">
+                                        <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+                                          <img
+                                            src="/images/filter.svg"
+                                            className="img-fluid" alt=""
+                                          />{" "}
+                                          A-Z
+                                        </a>
+
+                                        <button className="btn btn-size btn-main-outline-primary px-3">
+                                          <i className="bi bi-cloud-download me-2"></i>{" "}
+                                          Export CSV
+                                        </button>
+                                      </div>
+
+                                      <p className="text-end mb-0 file-count">
+                                        Branches: {branches.length}
+                                      </p>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
 
-                              <div className="row">
-                                <div className="col-lg-12">
-                                  <table className="table table-list">
-                                    <thead className="table-light">
-                                      <tr>
-                                        <th scope="col">
-                                          <div>
-                                            <input
-                                              className="form-check-input"
-                                              type="checkbox"
-                                              id="checkboxNoLabel"
-                                              value=""
-                                              aria-label="..."
-                                            />
-                                          </div>
-                                        </th>
-                                        <th scope="col">Unions</th>
-                                        <th scope="col">Assigned Admin</th>
-                                        <th scope="col">No of branches</th>
-                                        <th scope="col">Date added</th>
-                                        <th scope="col"></th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {branches.map((branch) => (
-                                        <tr key={branch._id}>
-                                          <td>
+                                <div className="row">
+                                  <div className="col-lg-12">
+                                    <table className="table table-list">
+                                      <thead className="table-light">
+                                        <tr>
+                                          <th scope="col">
                                             <div>
                                               <input
                                                 className="form-check-input"
@@ -375,39 +367,60 @@ const UnionDetails = () => {
                                                 aria-label="..."
                                               />
                                             </div>
-                                          </td>
-
-                                          <td>
-                                            <div
-                                              className="d-flex align-items-center avatar-holder"
-                                              key={branch.id}
-                                            >
-                                              <div className="position-relative">
-                                                <div className="avatar-sm flex-shrink-0">
-                                                  <img
-                                                    src="/images/nnpc.svg"
-                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                    alt="Avatar"
-                                                  />
-                                                </div>
+                                          </th>
+                                          <th scope="col">Unions</th>
+                                          <th scope="col">Assigned Admin</th>
+                                          <th scope="col">No of branches</th>
+                                          <th scope="col">Date added</th>
+                                          <th scope="col"></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {branches.map((branch) => (
+                                          <tr key={branch._id}>
+                                            <td>
+                                              <div>
+                                                <input
+                                                  className="form-check-input"
+                                                  type="checkbox"
+                                                  id="checkboxNoLabel"
+                                                  value=""
+                                                  aria-label="..."
+                                                />
                                               </div>
-                                              <div className="ms-2 flex-grow-1">
-                                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                                  <div className="mb-0 d-flex align-items-center">
-                                                    <div className="heading-text">
-                                                      {branch.name}
-                                                      <span className="text-muted-3">
-                                                        ({branch.acronym})
-                                                      </span>
+                                            </td>
+
+                                            <td>
+                                              <div
+                                                className="d-flex align-items-center avatar-holder"
+                                                key={branch.id}
+                                              >
+                                                <div className="position-relative">
+                                                  <div className="avatar-sm flex-shrink-0">
+                                                    <img
+                                                      src="/images/nnpc.svg"
+                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                      alt="Avatar"
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="ms-2 flex-grow-1">
+                                                  <div className="d-flex justify-content-between align-items-center mb-2">
+                                                    <div className="mb-0 d-flex align-items-center">
+                                                      <div className="heading-text">
+                                                        {branch.name}
+                                                        <span className="text-muted-3">
+                                                          ({branch.acronym})
+                                                        </span>
+                                                      </div>
                                                     </div>
                                                   </div>
                                                 </div>
                                               </div>
-                                            </div>
-                                          </td>
+                                            </td>
 
-                                          <td>
-                                            {/* <div className="avatars">
+                                            <td>
+                                              {/* <div className="avatars">
                                               <div className="dropdown">
                                                 <a
                                                   href="#"
@@ -1024,238 +1037,238 @@ const UnionDetails = () => {
                                                 </ul>
                                               </div>
                                             </div> */}<p>no admin has been invited</p>
-                                          </td>
+                                            </td>
 
-                                          <td>{branch.industry}</td>
-                                          <td>{branch.date_added}</td>
+                                            <td>{branch.industry}</td>
+                                            <td>{branch.date_added}</td>
 
-                                          <td>
-                                            <div className="dropdown">
-                                              <button
-                                                className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-                                                type="button"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                              >
-                                                <img
-                                                  src="/images/dots-v.svg"
-                                                  className="img-fluid"
-                                                  alt="dot-v"
-                                                />
-                                              </button>
-                                              <ul
-                                                className="dropdown-menu border-radius action-menu-2"
-                                              // onClick={onUnionBranches3}
-                                              >
-                                                <li>
-                                                  <Link
-                                                    to={`/SubBranch/${branch._id}`}
-                                                    className="dropdown-item"
-                                                  >
-                                                    View details
-                                                  </Link>
-                                                </li>
-                                              </ul>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
+                                            <td>
+                                              <div className="dropdown">
+                                                <button
+                                                  className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                                                  type="button"
+                                                  data-bs-toggle="dropdown"
+                                                  aria-expanded="false"
+                                                >
+                                                  <img
+                                                    src="/images/dots-v.svg"
+                                                    className="img-fluid"
+                                                    alt="dot-v"
+                                                  />
+                                                </button>
+                                                <ul
+                                                  className="dropdown-menu border-radius action-menu-2"
+                                                // onClick={onUnionBranches3}
+                                                >
+                                                  <li>
+                                                    <Link
+                                                      to={`/SubBranch/${branch._id}`}
+                                                      className="dropdown-item"
+                                                    >
+                                                      View details
+                                                    </Link>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="accordion-item mb-3">
-                          <h2 className="accordion-header">
-                            <button
-                              className="accordion-button collapsed heading-4 text-grey"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapseTwo"
-                              aria-expanded="false"
-                              aria-controls="collapseTwo"
+                          <div className="accordion-item mb-3">
+                            <h2 className="accordion-header">
+                              <button
+                                className="accordion-button collapsed heading-4 text-grey"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo"
+                                aria-expanded="false"
+                                aria-controls="collapseTwo"
+                              >
+                                {unions.acronym || unions.name} Profile
+                              </button>
+                            </h2>
+                            <div
+                              id="collapseTwo"
+                              className="accordion-collapse collapse"
+                              data-bs-parent="#accordionUnion"
                             >
-                              {unions.acronym || unions.name} Profile
-                            </button>
-                          </h2>
-                          <div
-                            id="collapseTwo"
-                            className="accordion-collapse collapse"
-                            data-bs-parent="#accordionUnion"
-                          >
-                            <div className="accordion-body">
-                              <div className="mb-3">
-                                <a
-                                  href="#"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#editModal2"
-                                  className="btn btn-size btn-main-primary d-inline-flex"
-                                >
-                                  Edit Union
-                                </a>
-                              </div>
+                              <div className="accordion-body">
+                                <div className="mb-3">
+                                  <a
+                                    href="#"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editModal2"
+                                    className="btn btn-size btn-main-primary d-inline-flex"
+                                  >
+                                    Edit Union
+                                  </a>
+                                </div>
 
-                              <form>
-                                <div className="row mt-4">
-                                  <div className="col-lg-3 mb-lg-0 mb-4">
-                                    <label className="form-label d-block">
-                                      Logo
-                                    </label>
-                                    <label
-                                      htmlFor="profile"
-                                      className="position-relative"
-                                    >
-                                      <input
-                                        type="file"
-                                        id="profile"
-                                        style={{ display: "none" }}
-                                        name="logo"
-                                      />
+                                <form>
+                                  <div className="row mt-4">
+                                    <div className="col-lg-3 mb-lg-0 mb-4">
+                                      <label className="form-label d-block">
+                                        Logo
+                                      </label>
+                                      <label
+                                        htmlFor="profile"
+                                        className="position-relative"
+                                      >
+                                        <input
+                                          type="file"
+                                          id="profile"
+                                          style={{ display: "none" }}
+                                          name="logo"
+                                        />
 
-                                      <div className="main-avatar mx-auto">
-                                        <img
-                                          src={unions.logo}
-                                          className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+                                        <div className="main-avatar mx-auto">
+                                          <img
+                                            src={unions.logo}
+                                            className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+                                          />
+                                        </div>
+                                      </label>
+                                    </div>
+
+                                    <div className="col-lg-9">
+                                      <div className="mb-4">
+                                        <label className="form-label">
+                                          Union Name
+                                        </label>
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-height"
+                                          value={unions.name}
+                                          name="name"
+                                          disabled
                                         />
                                       </div>
-                                    </label>
-                                  </div>
+                                      <div className="mb-4">
+                                        <label className="form-label">
+                                          Union Acronym (if applicable)
+                                        </label>
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-height"
+                                          value={unions.acronym}
+                                          name="acronym"
+                                          disabled
+                                        />
+                                      </div>
+                                      <div className="mb-4">
+                                        <label className="form-label">
+                                          Industry
+                                        </label>
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-height"
+                                          disabled
+                                          name="industry"
+                                          value={unions.industry}
+                                        />
+                                      </div>
+                                      <div className="mb-4">
+                                        <label className="form-label">
+                                          Headquarters
+                                        </label>
+                                        <input
+                                          type="email"
+                                          className="form-control form-control-height"
+                                          disabled
+                                          name="headquarters"
+                                          value={unions.headquarters}
+                                        />
+                                      </div>
+                                      <div className="mb-4">
+                                        <label className="form-label">
+                                          Phone number
+                                        </label>
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-height"
+                                          disabled
+                                          name="phone"
+                                          value={unions.phone}
+                                        />
+                                      </div>
+                                      <div className="mb-4">
+                                        <label className="form-label">
+                                          About
+                                        </label>
 
-                                  <div className="col-lg-9">
-                                    <div className="mb-4">
-                                      <label className="form-label">
-                                        Union Name
-                                      </label>
-                                      <input
-                                        type="text"
-                                        className="form-control form-control-height"
-                                        value={unions.name}
-                                        name="name"
-                                        disabled
-                                      />
-                                    </div>
-                                    <div className="mb-4">
-                                      <label className="form-label">
-                                        Union Acronym (if applicable)
-                                      </label>
-                                      <input
-                                        type="text"
-                                        className="form-control form-control-height"
-                                        value={unions.acronym}
-                                        name="acronym"
-                                        disabled
-                                      />
-                                    </div>
-                                    <div className="mb-4">
-                                      <label className="form-label">
-                                        Industry
-                                      </label>
-                                      <input
-                                        type="text"
-                                        className="form-control form-control-height"
-                                        disabled
-                                        name="industry"
-                                        value={unions.industry}
-                                      />
-                                    </div>
-                                    <div className="mb-4">
-                                      <label className="form-label">
-                                        Headquarters
-                                      </label>
-                                      <input
-                                        type="email"
-                                        className="form-control form-control-height"
-                                        disabled
-                                        name="headquarters"
-                                        value={unions.headquarters}
-                                      />
-                                    </div>
-                                    <div className="mb-4">
-                                      <label className="form-label">
-                                        Phone number
-                                      </label>
-                                      <input
-                                        type="text"
-                                        className="form-control form-control-height"
-                                        disabled
-                                        name="phone"
-                                        value={unions.phone}
-                                      />
-                                    </div>
-                                    <div className="mb-4">
-                                      <label className="form-label">
-                                        About
-                                      </label>
-
-                                      <textarea
-                                        className="form-control"
-                                        rows="4"
-                                        disabled
-                                        value={unions.about}
-                                        name="about"
-                                      ></textarea>
-                                    </div>
-                                    <div className="mb-4">
-                                      <label className="form-label">
-                                        Founded in
-                                      </label>
-                                      <input
-                                        type="text"
-                                        className="form-control form-control-height"
-                                        value={unions.founded_in}
-                                        name="founded_in"
-                                        disabled
-                                      />
+                                        <textarea
+                                          className="form-control"
+                                          rows="4"
+                                          disabled
+                                          value={unions.about}
+                                          name="about"
+                                        ></textarea>
+                                      </div>
+                                      <div className="mb-4">
+                                        <label className="form-label">
+                                          Founded in
+                                        </label>
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-height"
+                                          value={unions.founded_in}
+                                          name="founded_in"
+                                          disabled
+                                        />
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </form>
+                                </form>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="accordion-item mb-3">
-                          <h2 className="accordion-header">
-                            <button
-                              className="accordion-button collapsed heading-4 text-grey"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapseThree"
-                              aria-expanded="false"
-                              aria-controls="collapseThree"
+                          <div className="accordion-item mb-3">
+                            <h2 className="accordion-header">
+                              <button
+                                className="accordion-button collapsed heading-4 text-grey"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseThree"
+                                aria-expanded="false"
+                                aria-controls="collapseThree"
+                              >
+                                {unions.acronym || unions.name} Admins
+                              </button>
+                            </h2>
+                            <div
+                              id="collapseThree"
+                              className="accordion-collapse collapse"
+                              data-bs-parent="#accordionUnion"
                             >
-                              {unions.acronym || unions.name} Admins
-                            </button>
-                          </h2>
-                          <div
-                            id="collapseThree"
-                            className="accordion-collapse collapse"
-                            data-bs-parent="#accordionUnion"
-                          >
-                            <div className="accordion-body">
-                              <div className="mb-3">
-                                <a
-                                  href=""
-                                  className="btn btn-size btn-main-primary d-inline-flex"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#inviteModal"
-                                >
-                                  Invite Admins
-                                </a>
-                              </div>
+                              <div className="accordion-body">
+                                <div className="mb-3">
+                                  <a
+                                    href=""
+                                    className="btn btn-size btn-main-primary d-inline-flex"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#inviteModal"
+                                  >
+                                    Invite Admins
+                                  </a>
+                                </div>
 
-                              <table className="table table-list">
-                                <thead className="table-light">
-                                  <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Date added</th>
-                                    <th scope="col">Role</th>
-                                    <th scope="col">Actions</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {/* <tr>
+                                <table className="table table-list">
+                                  <thead className="table-light">
+                                    <tr>
+                                      <th scope="col">Name</th>
+                                      <th scope="col">Date added</th>
+                                      <th scope="col">Role</th>
+                                      <th scope="col">Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {/* <tr>
                                     <td scope="row">
                                       <div className="d-flex avatar-holder">
                                         <div className="position-relative">
@@ -1498,183 +1511,184 @@ const UnionDetails = () => {
                                       </div>
                                     </td>
                                   </tr> */}
-                                  <tr>
-                                    <td>
-                                      <p className="m-3">No admin has been invited</p>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="accordion-item mb-3">
-                          <h2 className="accordion-header">
-                            <button
-                              className="accordion-button collapsed heading-4 text-grey"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapseFour"
-                              aria-expanded="false"
-                              aria-controls="collapseFour"
-                            >
-                              {unions.acronym || unions.name} Disputes
-                            </button>
-                          </h2>
-                          <div
-                            id="collapseFour"
-                            className="accordion-collapse collapse"
-                            data-bs-parent="#accordionUnion"
-                          >
-                            <div className="accordion-body">
-                              <div className="table-responsive">
-                                <table className="table table-list">
-                                  <thead className="table-light">
                                     <tr>
-                                      <th scope="col">Filing Date</th>
-                                      <th scope="col">Case Number</th>
-                                      <th scope="col">Involved Parties</th>
-                                      <th
-                                        scope="col"
-                                        style={{ width: "200px" }}
-                                      >
-                                        Case Title
-                                      </th>
-                                      <th scope="col">Case Status</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <td>Feb 4 2023</td>
-                                      <td scope="row">DS139</td>
                                       <td>
-                                        <div className="mb-2">
-                                          <div className="d-flex align-items-center avatar-holder">
-                                            <div className="position-relative">
-                                              <div className="avatar-sm flex-shrink-0">
-                                                <img
-                                                  src="/images/nnpc.svg"
-                                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                  alt="Avatar"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div className="ms-2 d-flex flex-grow-1 text-muted-3">
-                                              <p className="text-truncate mb-0 max-200">
-                                                ASUU Awka Ibom{" "}
-                                              </p>
-                                              <span>(NNPC)</span>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className="mb-2">
-                                          <div className="d-flex align-items-center avatar-holder">
-                                            <div className="position-relative">
-                                              <div className="avatar-sm flex-shrink-0">
-                                                <img
-                                                  src="/images/ipman.svg"
-                                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                  alt="Avatar"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div className="ms-2 d-flex flex-grow-1 text-muted-3">
-                                              <p className="text-truncate mb-0 max-200">
-                                                ASUU Ibadan
-                                              </p>
-                                              <span>(IPMAN)</span>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </td>
-                                      <td>
-                                        Production Sharing Contracts (PSCs) 2024
-                                      </td>
-                                      <td>
-                                        <img
-                                          src="/images/Internally-resolved.svg"
-                                          className="img-fluid"
-                                          alt="internally resolved"
-                                        />
-                                      </td>
-                                    </tr>
-
-                                    <tr>
-                                      <td>Feb 4 2023</td>
-                                      <td scope="row">DS139</td>
-                                      <td>
-                                        <div className="mb-2">
-                                          <div className="d-flex align-items-center avatar-holder">
-                                            <div className="position-relative">
-                                              <div className="avatar-sm flex-shrink-0">
-                                                <img
-                                                  src="/images/nnpc.svg"
-                                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                  alt="Avatar"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div className="ms-2 d-flex flex-grow-1 text-muted-3">
-                                              <p className="text-truncate mb-0 max-200">
-                                                ASUU Awka Ibom{" "}
-                                              </p>
-                                              <span>(NNPC)</span>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className="mb-2">
-                                          <div className="d-flex align-items-center avatar-holder">
-                                            <div className="position-relative">
-                                              <div className="avatar-sm flex-shrink-0">
-                                                <img
-                                                  src="/images/ipman.svg"
-                                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                  alt="Avatar"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div className="ms-2 d-flex flex-grow-1 text-muted-3">
-                                              <p className="text-truncate mb-0 max-200">
-                                                ASUU Ibadan
-                                              </p>
-                                              <span>(IPMAN)</span>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className="mb-2">
-                                          <div className="d-flex align-items-center avatar-holder">
-                                            <div className="position-relative">
-                                              <div className="avatar-sm flex-shrink-0">
-                                                <img
-                                                  src="/images/nnpc.svg"
-                                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                  alt="Avatar"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div className="ms-2 d-flex flex-grow-1 text-muted-3">
-                                              <p className="text-truncate mb-0 max-200">
-                                                ASUU Awka Ibom{" "}
-                                              </p>
-                                              <span>(NNPC)</span>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </td>
-                                      <td>
-                                        Production Sharing Contracts (PSCs) 2024
-                                      </td>
-                                      <td>
-                                        <img
-                                          src="/images/Internally-resolved.svg"
-                                          className="img-fluid"
-                                          alt="internally resolved"
-                                        />
+                                        <p className="m-3">No admin has been invited</p>
                                       </td>
                                     </tr>
                                   </tbody>
                                 </table>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="accordion-item mb-3">
+                            <h2 className="accordion-header">
+                              <button
+                                className="accordion-button collapsed heading-4 text-grey"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseFour"
+                                aria-expanded="false"
+                                aria-controls="collapseFour"
+                              >
+                                {unions.acronym || unions.name} Disputes
+                              </button>
+                            </h2>
+                            <div
+                              id="collapseFour"
+                              className="accordion-collapse collapse"
+                              data-bs-parent="#accordionUnion"
+                            >
+                              <div className="accordion-body">
+                                <div className="table-responsive">
+                                  <table className="table table-list">
+                                    <thead className="table-light">
+                                      <tr>
+                                        <th scope="col">Filing Date</th>
+                                        <th scope="col">Case Number</th>
+                                        <th scope="col">Involved Parties</th>
+                                        <th
+                                          scope="col"
+                                          style={{ width: "200px" }}
+                                        >
+                                          Case Title
+                                        </th>
+                                        <th scope="col">Case Status</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>Feb 4 2023</td>
+                                        <td scope="row">DS139</td>
+                                        <td>
+                                          <div className="mb-2">
+                                            <div className="d-flex align-items-center avatar-holder">
+                                              <div className="position-relative">
+                                                <div className="avatar-sm flex-shrink-0">
+                                                  <img
+                                                    src="/images/nnpc.svg"
+                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                    alt="Avatar"
+                                                  />
+                                                </div>
+                                              </div>
+                                              <div className="ms-2 d-flex flex-grow-1 text-muted-3">
+                                                <p className="text-truncate mb-0 max-200">
+                                                  ASUU Awka Ibom{" "}
+                                                </p>
+                                                <span>(NNPC)</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className="mb-2">
+                                            <div className="d-flex align-items-center avatar-holder">
+                                              <div className="position-relative">
+                                                <div className="avatar-sm flex-shrink-0">
+                                                  <img
+                                                    src="/images/ipman.svg"
+                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                    alt="Avatar"
+                                                  />
+                                                </div>
+                                              </div>
+                                              <div className="ms-2 d-flex flex-grow-1 text-muted-3">
+                                                <p className="text-truncate mb-0 max-200">
+                                                  ASUU Ibadan
+                                                </p>
+                                                <span>(IPMAN)</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td>
+                                          Production Sharing Contracts (PSCs) 2024
+                                        </td>
+                                        <td>
+                                          <img
+                                            src="/images/Internally-resolved.svg"
+                                            className="img-fluid"
+                                            alt="internally resolved"
+                                          />
+                                        </td>
+                                      </tr>
+
+                                      <tr>
+                                        <td>Feb 4 2023</td>
+                                        <td scope="row">DS139</td>
+                                        <td>
+                                          <div className="mb-2">
+                                            <div className="d-flex align-items-center avatar-holder">
+                                              <div className="position-relative">
+                                                <div className="avatar-sm flex-shrink-0">
+                                                  <img
+                                                    src="/images/nnpc.svg"
+                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                    alt="Avatar"
+                                                  />
+                                                </div>
+                                              </div>
+                                              <div className="ms-2 d-flex flex-grow-1 text-muted-3">
+                                                <p className="text-truncate mb-0 max-200">
+                                                  ASUU Awka Ibom{" "}
+                                                </p>
+                                                <span>(NNPC)</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className="mb-2">
+                                            <div className="d-flex align-items-center avatar-holder">
+                                              <div className="position-relative">
+                                                <div className="avatar-sm flex-shrink-0">
+                                                  <img
+                                                    src="/images/ipman.svg"
+                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                    alt="Avatar"
+                                                  />
+                                                </div>
+                                              </div>
+                                              <div className="ms-2 d-flex flex-grow-1 text-muted-3">
+                                                <p className="text-truncate mb-0 max-200">
+                                                  ASUU Ibadan
+                                                </p>
+                                                <span>(IPMAN)</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className="mb-2">
+                                            <div className="d-flex align-items-center avatar-holder">
+                                              <div className="position-relative">
+                                                <div className="avatar-sm flex-shrink-0">
+                                                  <img
+                                                    src="/images/nnpc.svg"
+                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                    alt="Avatar"
+                                                  />
+                                                </div>
+                                              </div>
+                                              <div className="ms-2 d-flex flex-grow-1 text-muted-3">
+                                                <p className="text-truncate mb-0 max-200">
+                                                  ASUU Awka Ibom{" "}
+                                                </p>
+                                                <span>(NNPC)</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td>
+                                          Production Sharing Contracts (PSCs) 2024
+                                        </td>
+                                        <td>
+                                          <img
+                                            src="/images/Internally-resolved.svg"
+                                            className="img-fluid"
+                                            alt="internally resolved"
+                                          />
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -1683,7 +1697,7 @@ const UnionDetails = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </main>
 
             <footer>
@@ -1911,6 +1925,7 @@ const UnionDetails = () => {
                       placeholder="Type an email to send an invite"
                       name="email"
                       onChange={onHandleChangeUser}
+                      value={users.email}
                     />
                   </div>
                 </div>
@@ -1921,6 +1936,7 @@ const UnionDetails = () => {
                       className="form-control form-control-height w-50"
                       name="role"
                       onChange={onHandleChangeUser}
+                      value={users.role}
                       defaultValue=""
                     >
                       <option value="" hidden>
@@ -1936,6 +1952,7 @@ const UnionDetails = () => {
                     <a
                       href=""
                       className="btn btn-size btn-main-primary"
+                      disabled={!users.email || !users.role}
                       onClick={(e) =>
                         handleSendInvite(
                           e,
@@ -1945,6 +1962,8 @@ const UnionDetails = () => {
                           setUsers
                         )
                       }
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
                     >
                       Send Invite
                     </a>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import TopBarInc from "../Bars/TopBarInc";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import { Link } from "react-router-dom";
+import { HashLoader } from 'react-spinners';
 
 const Dashboard = () => {
   const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -12,6 +13,8 @@ const Dashboard = () => {
   const [documents, setDocuments] = useState([])
   const [dashboard, setDashboard] = useState([])
   const [sidebar, setsidebar] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const toggleSideBar = () => {
     setsidebar(!sidebar)
@@ -42,6 +45,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchdata()
     fetchDashboard()
+
   }, []);
 
 
@@ -95,6 +99,9 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
+    finally {
+      setIsLoading(false)
+    }
   };
 
 
@@ -108,314 +115,319 @@ const Dashboard = () => {
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
             {/* <?php include "./components/top-bar.inc.php"; ?> */}
             <TopBarInc toggleSideBar={toggleSideBar} />
-
-            <main className="admin-content">
-              <div className="header-box py-5">
-                <div className="container">
-                  <p>{formattedDate}</p>
-                  <h2>Good afternoon, {user.first_name}</h2>
-                </div>
+            {isLoading ? (
+              <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                <HashLoader color="#36D7B7" loading={isLoading} size={50} />
               </div>
+            ) : (
+              <main className="admin-content">
+                <div className="header-box py-5">
+                  <div className="container">
+                    <p>{formattedDate}</p>
+                    <h2>Good afternoon, {user.first_name}</h2>
+                  </div>
+                </div>
 
-              <div className="content-main py-5">
-                <div className="container">
-                  <div className="row">
-                    <div className="col-lg-8">
-                      <div className="row mb-5">
-                        <div className="col-lg-4 mb-lg-0 mb-3">
-                          <a href="/disputes" className="text-decoration-none">
-                            <div className="card dash-card bg-custom-color-2 h-100 border-0">
-                              <div className="card-body">
-                                <div className="d-flex avatar-holder align-items-center mb-3">
-                                  <div className="position-relative flex-shrink-0">
-                                    <img
-                                      src="/images/dispute-icon.svg"
-                                      className="img-fluid" alt=""
-                                    />
+                <div className="content-main py-5">
+                  <div className="container">
+                    <div className="row">
+                      <div className="col-lg-8">
+                        <div className="row mb-5">
+                          <div className="col-lg-4 mb-lg-0 mb-3">
+                            <a href="/disputes" className="text-decoration-none">
+                              <div className="card dash-card bg-custom-color-2 h-100 border-0">
+                                <div className="card-body">
+                                  <div className="d-flex avatar-holder align-items-center mb-3">
+                                    <div className="position-relative flex-shrink-0">
+                                      <img
+                                        src="/images/dispute-icon.svg"
+                                        className="img-fluid" alt=""
+                                      />
+                                    </div>
+                                    <div className="ms-2 flex-grow-1">
+                                      <h5 className="mb-0">
+                                        View Pending Disputes ({dashboard.pending_disputes ? dashboard.pending_disputes.count : 0})
+                                      </h5>
+                                    </div>
                                   </div>
-                                  <div className="ms-2 flex-grow-1">
-                                    <h5 className="mb-0">
-                                      View Pending Disputes ({dashboard.pending_disputes ? dashboard.pending_disputes.count : 0})
-                                    </h5>
-                                  </div>
+                                  <p className="mb-2">
+                                    View all pending dispute requests
+                                  </p>
+
+                                  <p className="action mb-0">View disputes</p>
                                 </div>
-                                <p className="mb-2">
-                                  View all pending dispute requests
-                                </p>
-
-                                <p className="action mb-0">View disputes</p>
                               </div>
-                            </div>
-                          </a>
-                        </div>
+                            </a>
+                          </div>
 
-                        <div className="col-lg-4 mb-lg-0 mb-3">
-                          <Link
-                            to="/unions"
-                            className="text-decoration-none"
-                          >
-                            <div className="card dash-card bg-custom-color-2 h-100 border-0">
-                              <div className="card-body">
-                                <div className="d-flex avatar-holder align-items-center mb-3">
-                                  <div className="position-relative flex-shrink-0">
-                                    <img
-                                      src="/images/union-icon.svg"
-                                      className="img-fluid" alt=""
-                                    />
+                          <div className="col-lg-4 mb-lg-0 mb-3">
+                            <Link
+                              to="/unions"
+                              className="text-decoration-none"
+                            >
+                              <div className="card dash-card bg-custom-color-2 h-100 border-0">
+                                <div className="card-body">
+                                  <div className="d-flex avatar-holder align-items-center mb-3">
+                                    <div className="position-relative flex-shrink-0">
+                                      <img
+                                        src="/images/union-icon.svg"
+                                        className="img-fluid" alt=""
+                                      />
+                                    </div>
+                                    <div className="ms-2 flex-grow-1">
+                                      <h5 className="mb-0">Create Unions</h5>
+                                    </div>
                                   </div>
-                                  <div className="ms-2 flex-grow-1">
-                                    <h5 className="mb-0">Create Unions</h5>
-                                  </div>
+                                  <p className="mb-2">
+                                    Create Unions and invite their respective
+                                    admins
+                                  </p>
+
+                                  <p className="action mb-0">Create Unions</p>
                                 </div>
-                                <p className="mb-2">
-                                  Create Unions and invite their respective
-                                  admins
-                                </p>
-
-                                <p className="action mb-0">Create Unions</p>
                               </div>
-                            </div>
-                          </Link>
-                        </div>
+                            </Link>
+                          </div>
 
-                        <div className="col-lg-4 mb-lg-0 mb-3">
-                          <a href="/users" className="text-decoration-none">
-                            <div className="card dash-card bg-custom-color-2 h-100 border-0">
-                              <div className="card-body">
-                                <div className="d-flex avatar-holder align-items-center mb-3">
-                                  <div className="position-relative flex-shrink-0">
-                                    <img
-                                      src="/images/userz-icon.svg"
-                                      className="img-fluid" alt=""
-                                    />
+                          <div className="col-lg-4 mb-lg-0 mb-3">
+                            <a href="/users" className="text-decoration-none">
+                              <div className="card dash-card bg-custom-color-2 h-100 border-0">
+                                <div className="card-body">
+                                  <div className="d-flex avatar-holder align-items-center mb-3">
+                                    <div className="position-relative flex-shrink-0">
+                                      <img
+                                        src="/images/userz-icon.svg"
+                                        className="img-fluid" alt=""
+                                      />
+                                    </div>
+                                    <div className="ms-2 flex-grow-1">
+                                      <h5 className="mb-0">Invite Users</h5>
+                                    </div>
                                   </div>
-                                  <div className="ms-2 flex-grow-1">
-                                    <h5 className="mb-0">Invite Users</h5>
-                                  </div>
+                                  <p className="mb-2">
+                                    Invite users individually or in bulk to NDRS
+                                  </p>
+
+                                  <p className="action mb-0">Invite users</p>
                                 </div>
-                                <p className="mb-2">
-                                  Invite users individually or in bulk to NDRS
-                                </p>
-
-                                <p className="action mb-0">Invite users</p>
                               </div>
-                            </div>
-                          </a>
-                        </div>
-                      </div>
-
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <h4 className="mb-0 heading-4">Reports</h4>
-                        <Link
-                          to="/reports"
-                          className="text-main-primary text-decoration-none text-medium"
-                        >
-                          Show all
-                        </Link>
-                      </div>
-
-                      <div className="card p-lg-4 mb-5">
-                        <div className="card-body">
-                          <div className="row align-items-center">
-                            <div className="col-lg-4">
-                              <h3 className="chart-text">
-                                There has been a{" "}
-                                <span className="text-main-primary">
-                                  32% decrease
-                                </span>{" "}
-                                in total time of Dispute Resolutions over the
-                                past{" "}
-                                <span className="text-main-primary">
-                                  1 year
-                                </span>
-                              </h3>
-                            </div>
-
-                            <div className="col-lg-8">
-                              <img
-                                src="/images/bar-chart.svg"
-                                className="img-fluid"
-                                alt="bar-chart"
-                              />
-
-
-                            </div>
+                            </a>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <h4 className="mb-0 heading-4">Notifications</h4>
-                        <Link
-                          to="/notifications"
-                          className="text-main-primary text-decoration-none text-medium"
-                        >
-                          Show all
-                        </Link>
-                      </div>
-
-                      <div className="card p-lg-1 mb-5">
-                        <div className="card-body p-0">
-
-                          {dashboard?.recent_notifications?.data?.length > 0 ? (
-                            dashboard?.recent_notifications?.data.slice(0, 3).map((item) =>
-                              <div className="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4" key={item._id}>
-                                <div className="position-relative">
-                                  <div className="avatar-sm flex-shrink-0">
-                                    <img
-                                      src={item.photo || '/images/download.png'}
-                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                      alt="Avatar"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="ms-2 flex-grow-1">
-                                  <div className="mb-2 d-flex align-items-center">
-                                    <p className="mb-0">
-                                      <strong>{item.message}</strong>
-                                    </p>
-                                  </div>
-
-                                  <div className="">
-                                    <p className="mb-0">{item.date}</p>
-                                  </div>
-                                </div>
-                              </div>
-                            )) : (
-                            <div className="d-flex justify-content-center align-items-center">
-                              <h5>No Notifications Yet</h5>
-                            </div>
-
-                          )}
-
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-lg-4">
-                      <div className="mb-4">
                         <div className="d-flex justify-content-between align-items-center mb-2">
-                          <h4 className="mb-0 heading-4">Recent Discussions</h4>
+                          <h4 className="mb-0 heading-4">Reports</h4>
                           <Link
-                            to="/discussions"
+                            to="/reports"
                             className="text-main-primary text-decoration-none text-medium"
                           >
                             Show all
                           </Link>
                         </div>
-                        <div className="card dash-card">
+
+                        <div className="card p-lg-4 mb-5">
                           <div className="card-body">
-                            {dashboard?.recent_messages?.data?.length > 0 ? (
-                              dashboard?.recent_messages?.data.slice(0, 4).map((item) => (
-                                <div className="d-flex avatar-holder my-4" key={item._id}>
+                            <div className="row align-items-center">
+                              <div className="col-lg-4">
+                                <h3 className="chart-text">
+                                  There has been a{" "}
+                                  <span className="text-main-primary">
+                                    32% decrease
+                                  </span>{" "}
+                                  in total time of Dispute Resolutions over the
+                                  past{" "}
+                                  <span className="text-main-primary">
+                                    1 year
+                                  </span>
+                                </h3>
+                              </div>
+
+                              <div className="col-lg-8">
+                                <img
+                                  src="/images/bar-chart.svg"
+                                  className="img-fluid"
+                                  alt="bar-chart"
+                                />
+
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                          <h4 className="mb-0 heading-4">Notifications</h4>
+                          <Link
+                            to="/notifications"
+                            className="text-main-primary text-decoration-none text-medium"
+                          >
+                            Show all
+                          </Link>
+                        </div>
+
+                        <div className="card p-lg-1 mb-5">
+                          <div className="card-body p-0">
+
+                            {dashboard?.recent_notifications?.data?.length > 0 ? (
+                              dashboard?.recent_notifications?.data.slice(0, 3).map((item) =>
+                                <div className="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4" key={item._id}>
                                   <div className="position-relative">
                                     <div className="avatar-sm flex-shrink-0">
                                       <img
-                                        src={item.sender.photo || '/images/download.png'}
+                                        src={item.photo || '/images/download.png'}
                                         className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                         alt="Avatar"
                                       />
                                     </div>
                                   </div>
                                   <div className="ms-2 flex-grow-1">
-                                    <div className="d-flex justify-content-between align-items-center mb-2">
-                                      <div className="mb-0 d-flex align-items-center">
-                                        <div className="heading-text text-truncate max-150">
-                                          {item.sender.sender}
-                                        </div>
-                                        <span className="card-text-sm ms-2">
-                                          {item.case_no}
-                                        </span>
-                                      </div>
-                                      <span className="text-main-primary ft-sm-only">
-                                        {item.time_sent}
-                                      </span>
-                                    </div>
-                                    <div className="d-flex justify-content-between align-items-start">
-                                      <p className="mb-0 action line-clamp-2">
-                                        {item.message}
+                                    <div className="mb-2 d-flex align-items-center">
+                                      <p className="mb-0">
+                                        <strong>{item.message}</strong>
                                       </p>
-                                      <span className="badge rounded-pill text-bg-main">
-                                        {item.unread_messages}
-                                      </span>
+                                    </div>
+
+                                    <div className="">
+                                      <p className="mb-0">{item.date}</p>
                                     </div>
                                   </div>
                                 </div>
-                              ))
-                            ) : (
-                              <div className="d-flex align-items-center justify-content-center">
-                                <h5>No Discussions Yet.</h5>
+                              )) : (
+                              <div className="d-flex justify-content-center align-items-center">
+                                <h5>No Notifications Yet</h5>
                               </div>
+
                             )}
 
                           </div>
                         </div>
                       </div>
+                      <div className="col-lg-4">
+                        <div className="mb-4">
+                          <div className="d-flex justify-content-between align-items-center mb-2">
+                            <h4 className="mb-0 heading-4">Recent Discussions</h4>
+                            <Link
+                              to="/discussions"
+                              className="text-main-primary text-decoration-none text-medium"
+                            >
+                              Show all
+                            </Link>
+                          </div>
+                          <div className="card dash-card">
+                            <div className="card-body">
+                              {dashboard?.recent_messages?.data?.length > 0 ? (
+                                dashboard?.recent_messages?.data.slice(0, 4).map((item) => (
+                                  <div className="d-flex avatar-holder my-4" key={item._id}>
+                                    <div className="position-relative">
+                                      <div className="avatar-sm flex-shrink-0">
+                                        <img
+                                          src={item.sender.photo || '/images/download.png'}
+                                          className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                          alt="Avatar"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="ms-2 flex-grow-1">
+                                      <div className="d-flex justify-content-between align-items-center mb-2">
+                                        <div className="mb-0 d-flex align-items-center">
+                                          <div className="heading-text text-truncate max-150">
+                                            {item.sender.sender}
+                                          </div>
+                                          <span className="card-text-sm ms-2">
+                                            {item.case_no}
+                                          </span>
+                                        </div>
+                                        <span className="text-main-primary ft-sm-only">
+                                          {item.time_sent}
+                                        </span>
+                                      </div>
+                                      <div className="d-flex justify-content-between align-items-start">
+                                        <p className="mb-0 action line-clamp-2">
+                                          {item.message}
+                                        </p>
+                                        <span className="badge rounded-pill text-bg-main">
+                                          {item.unread_messages}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="d-flex align-items-center justify-content-center">
+                                  <h5>No Discussions Yet.</h5>
+                                </div>
+                              )}
 
-                      <div className="mb-4">
-                        <div className="d-flex justify-content-between align-items-center mb-2">
-                          <h4 className="mb-0 heading-4">Recent Documents</h4>
-                          <Link
-                            to="/documents"
-                            className="text-main-primary text-decoration-none text-medium"
-                          >
-                            Show all
-                          </Link>
+                            </div>
+                          </div>
                         </div>
-                        <div className="card dash-card">
-                          <div className="card-body">
-                            {dashboard?.recent_documents?.data?.length > 0 ? (
-                              dashboard?.recent_documents?.data.slice(0, 4).map((item) =>
-                                <div className="d-flex avatar-holder my-4" key={item._id}>
-                                  <div className="position-relative">
-                                    <div className="flex-shrink-0">
+
+                        <div className="mb-4">
+                          <div className="d-flex justify-content-between align-items-center mb-2">
+                            <h4 className="mb-0 heading-4">Recent Documents</h4>
+                            <Link
+                              to="/documents"
+                              className="text-main-primary text-decoration-none text-medium"
+                            >
+                              Show all
+                            </Link>
+                          </div>
+                          <div className="card dash-card">
+                            <div className="card-body">
+                              {dashboard?.recent_documents?.data?.length > 0 ? (
+                                dashboard?.recent_documents?.data.slice(0, 4).map((item) =>
+                                  <div className="d-flex avatar-holder my-4" key={item._id}>
+                                    <div className="position-relative">
+                                      <div className="flex-shrink-0">
+                                        <img
+                                          src="/images/pdf-icon.svg"
+                                          className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                          alt="PDF"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="ms-2 flex-grow-1">
+                                      <div className="mb-2 d-flex align-items-center">
+                                        <div className="heading-text text-truncate max-150">
+                                          {item.name}
+                                        </div>{" "}
+                                        <span className="card-text-sm ms-2">
+                                          {item.case_no}
+                                        </span>
+                                      </div>
+
+                                      <div className="d-flex justify-content-between align-items-center">
+                                        <p className="mb-0">
+                                          {item.time_modified}{" "}
+                                          <i className="bi bi-dot"></i>{" "}
+                                          <span className="text-medium">{item.size}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="avatar-sm flex-shrink-0">
                                       <img
-                                        src="/images/pdf-icon.svg"
+                                        src="/images/union-3.svg"
                                         className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                        alt="PDF"
+                                        alt="Avatar"
                                       />
                                     </div>
                                   </div>
-                                  <div className="ms-2 flex-grow-1">
-                                    <div className="mb-2 d-flex align-items-center">
-                                      <div className="heading-text text-truncate max-150">
-                                        {item.name}
-                                      </div>{" "}
-                                      <span className="card-text-sm ms-2">
-                                        {item.case_no}
-                                      </span>
-                                    </div>
-
-                                    <div className="d-flex justify-content-between align-items-center">
-                                      <p className="mb-0">
-                                        {item.time_modified}{" "}
-                                        <i className="bi bi-dot"></i>{" "}
-                                        <span className="text-medium">{item.size}</span>
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <div className="avatar-sm flex-shrink-0">
-                                    <img
-                                      src="/images/union-3.svg"
-                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                      alt="Avatar"
-                                    />
-                                  </div>
+                                )) : (
+                                <div className="d-flex justify-content-center align-items-center">
+                                  <h5>No Documents Yet</h5>
                                 </div>
-                              )) : (
-                              <div className="d-flex justify-content-center align-items-center">
-                                <h5>No Documents Yet</h5>
-                              </div>
 
-                            )}
+                              )}
 
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </main>
+              </main>)}
+
 
             <footer>
               <div className="container">

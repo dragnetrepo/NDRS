@@ -84,12 +84,12 @@ const Reports = () => {
                           </div>
 
                           <div className="mb-3 d-flex align-items-center gap-10">
-                            <h3 className="report-card-count mb-0">64</h3>
+                            <h3 className="report-card-count mb-0">0</h3>
                           </div>
 
                           <div className="d-flex align-items-center gap-15">
                             <div className="badge-custom badge-success">
-                              <i className="bi bi-arrow-up"></i> 10
+                              <i className="bi bi-arrow-up"></i> 0
                             </div>
 
                             <span className="text-medium report-text-sub">
@@ -115,7 +115,7 @@ const Reports = () => {
                           </div>
 
                           <div className="mb-3 d-flex align-items-center gap-10">
-                            <h3 className="report-card-count mb-0">4.3</h3>
+                            <h3 className="report-card-count mb-0">0</h3>
                             <span className="report-card-review">
                               (34 reviews)
                             </span>
@@ -123,7 +123,7 @@ const Reports = () => {
 
                           <div className="d-flex align-items-center gap-15">
                             <div className="badge-custom badge-success">
-                              <i className="bi bi-arrow-up"></i> 10
+                              <i className="bi bi-arrow-up"></i> 0
                             </div>
 
                             <span className="text-medium report-text-sub">
@@ -149,12 +149,12 @@ const Reports = () => {
                           </div>
 
                           <div className="mb-3 d-flex align-items-center gap-10">
-                            <h3 className="report-card-count mb-0">63</h3>
+                            <h3 className="report-card-count mb-0">0</h3>
                           </div>
 
                           <div className="d-flex align-items-center gap-15">
                             <div className="badge-custom badge-success">
-                              <i className="bi bi-arrow-up"></i> 10
+                              <i className="bi bi-arrow-up"></i> 0
                             </div>
 
                             <span className="text-medium report-text-sub">
@@ -180,12 +180,12 @@ const Reports = () => {
                           </div>
 
                           <div className="mb-3 d-flex align-items-center gap-10">
-                            <h3 className="report-card-count mb-0">63</h3>
+                            <h3 className="report-card-count mb-0">0</h3>
                           </div>
 
                           <div className="d-flex align-items-center gap-15">
                             <div className="badge-custom badge-success">
-                              <i className="bi bi-arrow-up"></i> 10
+                              <i className="bi bi-arrow-up"></i> 0
                             </div>
 
                             <span className="text-medium report-text-sub">
@@ -211,12 +211,12 @@ const Reports = () => {
                           </div>
 
                           <div className="mb-3 d-flex align-items-center gap-10">
-                            <h3 className="report-card-count mb-0">21</h3>
+                            <h3 className="report-card-count mb-0">0</h3>
                           </div>
 
                           <div className="d-flex align-items-center gap-15">
                             <div className="badge-custom badge-success">
-                              <i className="bi bi-arrow-up"></i> 10
+                              <i className="bi bi-arrow-up"></i> 0
                             </div>
 
                             <span className="text-medium report-text-sub">

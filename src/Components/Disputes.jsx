@@ -418,7 +418,7 @@ const Disputes = () => {
 																							value={disputes.summary}
 																							onChange={onHandleChange}
 																						></textarea>
-																						<p className="text-danger">Input must be at least 10 characters</p>
+																						{disputes.summary.length <= 10 && <p className="text-danger">Input must be at least 10 characters</p>}
 																					</div>
 																					<div className="mb-4">
 																						<label className="form-label">Background Information</label>
@@ -429,7 +429,7 @@ const Disputes = () => {
 																							value={disputes.background_info}
 																							onChange={onHandleChange}
 																						></textarea>
-																						<p className="text-danger">Input must be at least 10 characters</p>
+																						{disputes.background_info.length <= 10 && <p className="text-danger">Input must be at least 10 characters</p>}
 																					</div>
 																					<div className="mb-4">
 																						<label className="form-label">Relief sought</label>
@@ -440,7 +440,7 @@ const Disputes = () => {
 																							value={disputes.relief_sought}
 																							onChange={onHandleChange}
 																						></textarea>
-																						<p className="text-danger">Input must be at least 10 characters</p>
+																						{disputes.relief_sought.length <= 10 && <p className="text-danger">Input must be at least 10 characters</p>}
 																					</div>
 																					<div className="mb-4">
 																						<label className="form-label">Specific concerns</label>
@@ -451,7 +451,7 @@ const Disputes = () => {
 																							value={disputes.specific_claims}
 																							onChange={onHandleChange}
 																						></textarea>
-																						<p className="text-danger">Input must be at least 10 characters</p>
+																						{disputes.specific_claims.length <= 10 && <p className="text-danger">Input must be at least 10 characters</p>}
 																					</div>
 																					<div className="mb-4">
 																						<label className="form-label">Negotiation terms</label>
@@ -462,7 +462,7 @@ const Disputes = () => {
 																							value={disputes.negotiation_terms}
 																							onChange={onHandleChange}
 																						></textarea>
-																						<p className="text-danger">Input must be at least 10 characters</p>
+																						{disputes.negotiation_terms.length <= 10 && <p className="text-danger">Input must be at least 10 characters</p>}
 																					</div>
 																				</div>
 

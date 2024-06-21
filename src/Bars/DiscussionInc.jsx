@@ -1,10 +1,12 @@
 import { type } from "@testing-library/user-event/dist/type";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 
 
 const DiscussionIinc = () => {
   const [discussion, setDiscussions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   // const [discussionMessages, setDiscussionsMessages] = useState([]);
   // const [messages, setMessages] = useState({
   //   type: "",
@@ -40,6 +42,9 @@ const DiscussionIinc = () => {
 
     } catch (error) {
       console.error("Error fetching data:", error.message);
+    }
+    finally {
+      setIsLoading(false)
     }
   };
 
@@ -116,94 +121,101 @@ const DiscussionIinc = () => {
 
   return (
     <>
-      <div className="discussion-section d-flex">
-        <div className="discuss-1 flex-shrink-0 border-end px-2 pt-3">
-          <div className="input-group">
-            <span className="input-group-text bg-transparent">
-              <img
-                src="/images/search.svg"
-                className="img-fluid"
-                alt="search"
+      {isLoading ? (
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+          <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+        </div>
+      ) : (
+        <div className="discussion-section d-flex">
+          <div className="discuss-1 flex-shrink-0 border-end px-2 pt-3">
+            <div className="input-group">
+              <span className="input-group-text bg-transparent">
+                <img
+                  src="/images/search.svg"
+                  className="img-fluid"
+                  alt="search"
+                />
+              </span>
+              <input
+                type="search"
+                className="form-control border-start-0 form-control-height"
+                placeholder="Search"
               />
-            </span>
-            <input
-              type="search"
-              className="form-control border-start-0 form-control-height"
-              placeholder="Search"
-            />
-          </div>
+            </div>
 
-          <div className="chat-height">
-            {discussion.map((item) => (
-              <Link to={`/discussionsDetails/${item._id}`} className="text-decoration-none" key={item._id}>
-                <div className="d-flex avatar-holder py-4 border-bottom">
+
+
+            <div className="chat-height">
+              {discussion.map((item) => (
+                <Link to={`/discussionsDetails/${item._id}`} className="text-decoration-none" key={item._id}>
+                  <div className="d-flex avatar-holder py-4 border-bottom">
+                    <div className="position-relative">
+                      <div className="avatar-sm flex-shrink-0">
+                        <img
+                          src={item.sender.photo || '/images/download.png'}
+                          className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                          alt="Avatar"
+                        />
+                      </div>
+                    </div>
+                    <div className="ms-2 flex-grow-1">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <div className="mb-0 d-flex align-items-center">
+                          <div className="heading-text text-truncate max-150">
+                            {item.title}
+                          </div>
+                        </div>
+
+                        <span className="text-main-primary ft-sm-only">
+                          {item.time_sent}
+                        </span>
+                      </div>
+                      <div className="d-flex justify-content-between align-items-start">
+                        <p className="mb-0 text-muted-3 line-clamp-2">
+                          {item.sender.sender ? `${item.sender.sender} : ${item.
+                            last_message
+                            } ` : ''}
+
+                        </p>
+                        <span className="badge rounded-pill text-bg-main">4</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+
+            </div>
+          </div>
+          <div className="discuss-2 flex-grow-1 border-end">
+            <div className="chat-box d-flex flex-column h-100">
+              <div className="chat-header sticky-top bg-custom-color-2 px-3 py-2">
+                <div className="d-flex align-items-center avatar-holder avatar-chat cursor-pointer">
                   <div className="position-relative">
                     <div className="avatar-sm flex-shrink-0">
                       <img
-                        src={item.sender.photo || '/images/download.png'}
+                        src="/images/download.png"
                         className="img-fluid object-position-center object-fit-cover w-100 h-100"
                         alt="Avatar"
                       />
                     </div>
                   </div>
-                  <div className="ms-2 flex-grow-1">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <div className="mb-0 d-flex align-items-center">
-                        <div className="heading-text text-truncate max-150">
-                          {item.title}
-                        </div>
-                      </div>
 
-                      <span className="text-main-primary ft-sm-only">
-                        {item.time_sent}
-                      </span>
-                    </div>
-                    <div className="d-flex justify-content-between align-items-start">
-                      <p className="mb-0 text-muted-3 line-clamp-2">
-                        {item.sender.sender}{` : `}
-                        {item.
-                          last_message
-                        }
-                      </p>
-                      <span className="badge rounded-pill text-bg-main">4</span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-
-          </div>
-        </div>
-        <div className="discuss-2 flex-grow-1 border-end">
-          <div className="chat-box d-flex flex-column h-100">
-            <div className="chat-header sticky-top bg-custom-color-2 px-3 py-2">
-              <div className="d-flex align-items-center avatar-holder avatar-chat cursor-pointer">
-                <div className="position-relative">
-                  <div className="avatar-sm flex-shrink-0">
-                    <img
-                      src="/images/download.png"
-                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                      alt="Avatar"
-                    />
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <div className="chat-body flex-grow-1">
-              <div className="container-fluid">
-                <div className="d-flex align-items-center justify-content-center" style={{
-                  height: '400px'
-                }}
-                >
-                  <h3>Start a conversation
-                  </h3>
                 </div>
               </div>
-            </div>
 
-            {/* <div className="chat-footer d-flex align-items-center justify-content-between bg-custom-color-2 px-3 gap-15 py-2">
+              <div className="chat-body flex-grow-1">
+                <div className="container-fluid">
+                  <div className="d-flex align-items-center justify-content-center" style={{
+                    height: '400px'
+                  }}
+                  >
+                    <h3>Start a conversation
+                    </h3>
+                  </div>
+                </div>
+              </div>
+
+              {/* <div className="chat-footer d-flex align-items-center justify-content-between bg-custom-color-2 px-3 gap-15 py-2">
               <a href="#">
                 <img src="/images/file-upload.svg" className="img-fluid" />
               </a>
@@ -296,9 +308,9 @@ const DiscussionIinc = () => {
                 <img src="/images/send.svg" className="img-fluid" />
               </a>
             </div> */}
+            </div>
           </div>
-        </div>
-        {/* <div className="discuss-3 flex-shrink-0 p-3">
+          {/* <div className="discuss-3 flex-shrink-0 p-3">
           <div className="d-flex justify-content-between align-items-center avatar-icon w-100 mb-4">
             <div className="d-flex avatar-holder">
               <div className="position-relative">
@@ -511,8 +523,8 @@ const DiscussionIinc = () => {
             </div>
           </div>
         </div> */}
-      </div>
-
+        </div>
+      )}
 
     </>
   );
