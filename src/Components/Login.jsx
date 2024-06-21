@@ -1,11 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AppContext } from "../App";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { ClipLoader } from "react-spinners";
+
 
 function Login() {
   const { passwordField, setPasswordField } = useContext(AppContext);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
   // useEffect(() => {
 
   // }, [passwordField])
@@ -16,6 +20,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true)
 
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -30,6 +35,10 @@ function Login() {
       if (!response.ok) {
         throw new Error("Login failed");
       }
+      setPasswordField({
+        email: '',
+        password: ''
+      })
 
       // Assuming the response contains a JSON object with a token
       const data = await response.json();
@@ -46,8 +55,25 @@ function Login() {
     } catch (error) {
       console.error("Error logging in:", error);
       toast.error("Email or Password is incorrect");
+    } finally {
+      setIsLoading(false)
+    }
+
+  };
+
+  const handleViewPassword = (e) => {
+    e.preventDefault();
+    let password_field = e.target.closest('.input-group').querySelector('input');
+    let attribute_name = password_field.getAttribute("type");
+
+    if (attribute_name === "password") {
+      password_field.setAttribute("type", "text");
+    }
+    else {
+      password_field.setAttribute("type", "password");
     }
   };
+
   return (
     <>
       <div className="auth-container d-flex align-items-center justify-content-center vh-100">
@@ -97,9 +123,10 @@ function Login() {
                           className="form-control border-end-0 form-control-height"
                           name="password"
                           placeholder="Type in your password"
+                          value={passwordField.password}
                           onChange={onHandleChange}
                         />
-                        <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
+                        <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right" onClick={(e) => handleViewPassword(e)}>
                           <img src="/images/eye.svg" className="img-fluid" alt="" />
                         </span>
                       </div>
@@ -115,8 +142,8 @@ function Login() {
                     </div>
 
                     <div className="mt-4">
-                      <button className="btn btn-size btn-main-primary w-100">
-                        Log in
+                      <button className="btn btn-size btn-main-primary w-100" disabled={isLoading} >
+                        {isLoading ? <ClipLoader color="#547d74" size={20} /> : 'Log in'}
                       </button>
                     </div>
                   </form>

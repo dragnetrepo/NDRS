@@ -134,6 +134,7 @@ const MainNavbarInc = ({ sidebar }) => {
                   <img src="/images/chats.svg" className="img-fluid" alt="" /> Discussions
                 </NavLink>
               </li>
+
               <li className="nav-item">
                 <NavLink
                   className="nav-link"

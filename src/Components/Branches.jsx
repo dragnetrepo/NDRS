@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
+import { ClipLoader } from "react-spinners";
+
 
 const Branches = () => {
   const { id } = useParams();
   const user_avatar = "/images/download.png";
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const [unions, setunions] = useState([]);
+  const [unionName, setUnionName] = useState([]);
   const [branches, setbranches] = useState([]);
   const [branch, setBranch] = useState({
     union: id,
@@ -21,6 +24,7 @@ const Branches = () => {
     logo: "",
   });
   const [sidebar, setsidebar] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleSideBar = () => {
     setsidebar(!sidebar)
@@ -52,6 +56,7 @@ const Branches = () => {
       }
 
       const data = await res.json();
+      setunions(data.data)
 
     } catch (error) {
       console.error("Error fetching data:", error.message);
@@ -82,6 +87,8 @@ const Branches = () => {
 
     } catch (error) {
       console.error("Error fetching data:", error.message);
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -554,7 +561,7 @@ const Branches = () => {
                                                     </tr>
                                                   </thead>
                                                   <tbody>
-                                                    <tr>
+                                                    {/* <tr>
                                                       <td scope="row">
                                                         <div className="d-flex avatar-holder">
                                                           <div className="position-relative">
@@ -599,53 +606,13 @@ const Branches = () => {
                                                           />
                                                         </button>
                                                       </td>
-                                                    </tr>
+                                                    </tr> */}
 
-                                                    <tr>
-                                                      <td scope="row">
-                                                        <div className="d-flex avatar-holder">
-                                                          <div className="position-relative">
-                                                            <div className="avatar-sm flex-shrink-0">
-                                                              <img
-                                                                src="/images/avatar-2.svg"
-                                                                className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                                alt="Avatar"
-                                                              />
-                                                            </div>
-                                                          </div>
-                                                          <div className="ms-2 flex-grow-1">
-                                                            <h5 className="mb-0">
-                                                              Salim Mustapha
-                                                            </h5>
-                                                            <p className="mb-0 text-muted-3">
-                                                              salimmusty@gmail.com
-                                                            </p>
-                                                          </div>
-                                                        </div>
-                                                      </td>
-                                                      <td>Feb 4 2023</td>
-                                                      <td>
-                                                        <img
-                                                          src="/images/claimant.svg"
-                                                          className="img-fluid"
-                                                          alt="claimant"
-                                                        />
+                                                    <tr >
+                                                      <td scope="row ">
+                                                        No admin yet
                                                       </td>
 
-                                                      <td>
-                                                        <button
-                                                          className="btn btn-size btn-outline-light text-medium no-caret"
-                                                          type="button"
-                                                          data-bs-toggle="modal"
-                                                          data-bs-target="#removeModal"
-                                                        >
-                                                          <img
-                                                            src="/images/bin_2.svg"
-                                                            className="img-fluid"
-                                                            alt="dot-v"
-                                                          />
-                                                        </button>
-                                                      </td>
                                                     </tr>
                                                   </tbody>
                                                 </table>
@@ -660,83 +627,66 @@ const Branches = () => {
                               </div>
                             </div>
                           </div>
-
-                          <div
-                            className="tab-pane fade"
-                            id="pills-document"
-                            role="tabpanel"
-                            aria-labelledby="pills-document-tab"
-                            tabIndex="0"
-                          >
-                            <div className="row my-4">
-                              <div className="col-lg-5">
-                                <div className="input-group">
-                                  <span className="input-group-text bg-transparent">
-                                    <img
-                                      src="/images/search.svg"
-                                      className="img-fluid"
-                                      alt="search"
-                                    />
-                                  </span>
-                                  <input
-                                    type="search"
-                                    className="form-control border-start-0 form-control-height"
-                                    placeholder="Search here..."
-                                  />
-                                </div>
-                              </div>
-
-                              <div className="col-lg-7">
-                                <div className="d-flex align-items-center justify-content-between gap-15">
-                                  <div className="d-flex">
-                                    <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
-                                      <img
-                                        src="/images/filter.svg"
-                                        className="img-fluid" alt=""
-                                      />{" "}
-                                      A-Z
-                                    </a>
-
-                                    <button className="btn btn-size btn-main-outline-primary px-3">
-                                      <i className="bi bi-cloud-download me-2"></i>{" "}
-                                      Export CSV
-                                    </button>
-                                  </div>
-
-                                  <p className="text-end mb-0 file-count">
-                                    Unions: 64
-                                  </p>
-                                </div>
-                              </div>
+                          {isLoading ? (
+                            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                              <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
                             </div>
+                          ) : (
+                            <div
+                              className="tab-pane fade"
+                              id="pills-document"
+                              role="tabpanel"
+                              aria-labelledby="pills-document-tab"
+                              tabIndex="0"
+                            >
+                              <div className="row my-4">
+                                <div className="col-lg-5">
+                                  <div className="input-group">
+                                    <span className="input-group-text bg-transparent">
+                                      <img
+                                        src="/images/search.svg"
+                                        className="img-fluid"
+                                        alt="search"
+                                      />
+                                    </span>
+                                    <input
+                                      type="search"
+                                      className="form-control border-start-0 form-control-height"
+                                      placeholder="Search here..."
+                                    />
+                                  </div>
+                                </div>
 
-                            <div className="row">
-                              <div className="col-lg-12">
-                                <table className="table table-list">
-                                  <thead className="table-light">
-                                    <tr>
-                                      <th scope="col">
-                                        <div>
-                                          <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                                            id="checkboxNoLabel"
-                                            value=""
-                                            aria-label="..."
-                                          />
-                                        </div>
-                                      </th>
-                                      <th scope="col">Unions</th>
-                                      <th scope="col">Assigned Admin</th>
-                                      <th scope="col">Industry</th>
-                                      <th scope="col">Date added</th>
-                                      <th scope="col">Actions</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {branches.map((item) => (
-                                      <tr key={item._id}>
-                                        <td>
+                                <div className="col-lg-7">
+                                  <div className="d-flex align-items-center justify-content-between gap-15">
+                                    <div className="d-flex">
+                                      <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+                                        <img
+                                          src="/images/filter.svg"
+                                          className="img-fluid" alt=""
+                                        />{" "}
+                                        A-Z
+                                      </a>
+
+                                      <button className="btn btn-size btn-main-outline-primary px-3">
+                                        <i className="bi bi-cloud-download me-2"></i>{" "}
+                                        Export CSV
+                                      </button>
+                                    </div>
+
+                                    <p className="text-end mb-0 file-count">
+                                      Unions: {branches?.length}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="row">
+                                <div className="col-lg-12">
+                                  <table className="table table-list">
+                                    <thead className="table-light">
+                                      <tr>
+                                        <th scope="col">
                                           <div>
                                             <input
                                               className="form-check-input"
@@ -746,38 +696,59 @@ const Branches = () => {
                                               aria-label="..."
                                             />
                                           </div>
-                                        </td>
-
-                                        <td>
-                                          <div
-                                            className="d-flex align-items-center avatar-holder"
-                                            key={item._id}
-                                          >
-                                            <div className="position-relative">
-                                              <div className="avatar-sm flex-shrink-0">
-                                                <img
-                                                  src="/images/nnpc.svg"
-                                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                  alt="Avatar"
-                                                />
-                                              </div>
+                                        </th>
+                                        <th scope="col">Unions</th>
+                                        <th scope="col">Assigned Admin</th>
+                                        <th scope="col">Industry</th>
+                                        <th scope="col">Date added</th>
+                                        <th scope="col">Actions</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {branches.map((item) => (
+                                        <tr key={item._id}>
+                                          <td>
+                                            <div>
+                                              <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id="checkboxNoLabel"
+                                                value=""
+                                                aria-label="..."
+                                              />
                                             </div>
-                                            <div className="ms-2 flex-grow-1">
-                                              <div className="d-flex justify-content-between align-items-center mb-2">
-                                                <div className="mb-0 d-flex align-items-center">
-                                                  <div className="heading-text">
-                                                    {item.name}
-                                                    <span className="text-muted-3">
-                                                      ({item.acronym})
-                                                    </span>
+                                          </td>
+
+                                          <td>
+                                            <div
+                                              className="d-flex align-items-center avatar-holder"
+                                              key={item._id}
+                                            >
+                                              <div className="position-relative">
+                                                <div className="avatar-sm flex-shrink-0">
+                                                  <img
+                                                    src="/images/nnpc.svg"
+                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                    alt="Avatar"
+                                                  />
+                                                </div>
+                                              </div>
+                                              <div className="ms-2 flex-grow-1">
+                                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                                  <div className="mb-0 d-flex align-items-center">
+                                                    <div className="heading-text">
+                                                      {item.name}
+                                                      <span className="text-muted-3">
+                                                        ({item.acronym})
+                                                      </span>
+                                                    </div>
                                                   </div>
                                                 </div>
                                               </div>
                                             </div>
-                                          </div>
-                                        </td>
+                                          </td>
 
-                                        {/* <td>
+                                          {/* <td>
                                           <div className="avatars">
                                             <div className="dropdown">
                                               <a
@@ -1396,49 +1367,50 @@ const Branches = () => {
                                             </div>
                                           </div>
                                         </td> */}
-                                        <td>
-                                          <p className="">No admin added</p>
-                                        </td>
+                                          <td>
+                                            <p className="">No admin added</p>
+                                          </td>
 
-                                        <td>{item.industry}</td>
-                                        <td>{item.date_added}</td>
+                                          <td>{item.industry}</td>
+                                          <td>{item.date_added}</td>
 
-                                        <td>
-                                          <div className="dropdown">
-                                            <button
-                                              className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-                                              type="button"
-                                              data-bs-toggle="dropdown"
-                                              aria-expanded="false"
-                                            >
-                                              <img
-                                                src="/images/dots-v.svg"
-                                                className="img-fluid"
-                                                alt="dot-v"
-                                              />
-                                            </button>
-                                            <ul
-                                              className="dropdown-menu border-radius action-menu-2"
-                                            // onClick={onUniones3}
-                                            >
-                                              <li>
-                                                <a
-                                                  className="dropdown-item"
-                                                  href=""
-                                                >
-                                                  View Details
-                                                </a>
-                                              </li>
-                                            </ul>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                                          <td>
+                                            <div className="dropdown">
+                                              <button
+                                                className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                              >
+                                                <img
+                                                  src="/images/dots-v.svg"
+                                                  className="img-fluid"
+                                                  alt="dot-v"
+                                                />
+                                              </button>
+                                              <ul
+                                                className="dropdown-menu border-radius action-menu-2"
+                                              // onClick={onUniones3}
+                                              >
+                                                <li>
+                                                  <Link
+                                                    to={`/SubBranch/${item._id}`}
+                                                    className="dropdown-item"
+                                                  >
+                                                    View details
+                                                  </Link>
+                                                </li>
+                                              </ul>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                     </div>

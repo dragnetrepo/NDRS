@@ -5,8 +5,10 @@ import DiscussionInc from "../Bars/DiscussionInc";
 
 
 
+
 const Discussions = () => {
   const [sidebar, setsidebar] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleSideBar = () => {
     setsidebar(!sidebar)

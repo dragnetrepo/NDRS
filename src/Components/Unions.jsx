@@ -4,6 +4,7 @@ import TopBarInc from "../Bars/TopBarInc";
 import { AppContext } from "../App";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { ClipLoader } from "react-spinners";
 
 
 const Unions = () => {
@@ -15,6 +16,8 @@ const Unions = () => {
 	const [roles, setRoles] = useState([]);
 	const [unionsList, setUnionsList] = useState([]);
 	const [uploadStatus, setUploadStatus] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
+
 	const [industries, setIndustries] = useState([])
 	const [unionInvite, seUnionInvite] = useState({
 		email: "",
@@ -78,6 +81,8 @@ const Unions = () => {
 			setUnionsList(data.data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
+		} finally {
+			setIsLoading(false)
 		}
 	};
 
@@ -145,12 +150,23 @@ const Unions = () => {
 			if (!response.ok) {
 				throw new Error("Network response was not ok");
 			}
-
+			fetchdata();
+			setUnions({
+				name: "",
+				acronym: "",
+				industry: "",
+				headquarters: "",
+				phone: "",
+				about: "",
+				founded_in: "",
+				logo: "",
+			})
 			const data = await response.json();
 			toast.success("Union has been created successfully!");
-			window.location.reload();
+			// window.location.reload();
 		} catch (error) {
 			console.error("Error fetching data:", error);
+			toast.error('Failed to create union!')
 		}
 	};
 
@@ -451,7 +467,7 @@ const Unions = () => {
 																					Single Union upload
 																				</h3>
 
-																				<a href="" className="btn btn-size btn-main-primary" onClick={handleSubmit}>
+																				<a href="" className="btn btn-size btn-main-primary" onClick={handleSubmit} disabled={!unions.name || !unions.acronym || !unions.phone || !unions.about || !unions.headquarters || !unions.founded_in || !unions.industry}>
 																					Complete Upload
 																				</a>
 																			</div>
@@ -464,14 +480,15 @@ const Unions = () => {
 																									Union Logo
 																								</label>
 																								<label
-																									htmlFor="profile"
+																									htmlFor="logo"
 																									className="position-relative"
 																								>
 																									<input
 																										type="file"
-																										id="profile"
+																										id="logo"
 																										style={{ display: "none" }}
 																										name="logo"
+
 																										onChange={
 																											handleAvatarChange
 																										}
@@ -479,7 +496,7 @@ const Unions = () => {
 
 																									<div className="main-avatar mx-auto">
 																										<img
-																											src={avatarImage}
+																											src={unions.logo || '/images/download.png'}
 																											className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
 																										/>
 																									</div>
@@ -499,6 +516,7 @@ const Unions = () => {
 																									className="form-control form-control-height"
 																									placeholder=""
 																									name="name"
+																									value={unions.name}
 																									onChange={onHandleChange}
 																								/>
 																							</div>
@@ -512,6 +530,7 @@ const Unions = () => {
 																									className="form-control form-control-height"
 																									placeholder=""
 																									name="acronym"
+																									value={unions.acronym}
 																									onChange={onHandleChange}
 																								/>
 																							</div>
@@ -525,14 +544,15 @@ const Unions = () => {
 																									className="form-control form-control-height"
 																									placeholder=""
 																									name="founded_in"
+																									value={unions.founded_in}
 																									onChange={onHandleChange}
 																								/>
 																							</div>
 
 																							<div className="mb-4">
 																								<label className="form-label">Industry</label>
-																								<select className="form-control form-control-height" id="industriy" name="industry" onChange={onHandleChange}>
-																									<option value="default" disabled >--Choose--</option>
+																								<select className="form-control form-control-height" id="industriy" name="industry" onChange={onHandleChange} value={unions.industry}>
+																									<option value="default"  >--Choose--</option>
 																									{industries.map((item) =>
 																										<option value={item._id} key={item._id}>{item.name}</option>
 																									)}
@@ -548,6 +568,7 @@ const Unions = () => {
 																									className="form-control form-control-height"
 																									placeholder=""
 																									name="headquarters"
+																									value={unions.headquarters}
 																									onChange={onHandleChange}
 																								/>
 																							</div>
@@ -561,6 +582,7 @@ const Unions = () => {
 																									className="form-control form-control-height"
 																									placeholder=""
 																									name="phone"
+																									value={unions.phone}
 																									onChange={onHandleChange}
 																								/>
 																							</div>
@@ -573,6 +595,7 @@ const Unions = () => {
 																									className="form-control"
 																									rows="4"
 																									name="about"
+																									value={unions.about}
 																									onChange={onHandleChange}
 																								></textarea>
 																							</div>
@@ -672,83 +695,66 @@ const Unions = () => {
 															</div>
 														</div>
 													</div>
-
-													<div
-														className="tab-pane fade"
-														id="pills-document"
-														role="tabpanel"
-														aria-labelledby="pills-document-tab"
-														tabIndex="0"
-													>
-														<div className="row my-4">
-															<div className="col-lg-5 mb-lg-0 mb-3">
-																<div className="input-group">
-																	<span className="input-group-text bg-transparent">
-																		<img
-																			src="/images/search.svg"
-																			className="img-fluid"
-																			alt="search"
-																		/>
-																	</span>
-																	<input
-																		type="search"
-																		className="form-control border-start-0 form-control-height"
-																		placeholder="Search here..."
-																	/>
-																</div>
-															</div>
-
-															<div className="col-lg-7">
-																<div className="d-flex align-items-center justify-content-between gap-15">
-																	<div className="d-flex gap-10">
-																		<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
-																			<img
-																				src="/images/filter.svg"
-																				className="img-fluid" alt=""
-																			/>{" "}
-																			A-Z
-																		</a>
-
-																		<button className="btn btn-size btn-main-outline-primary px-3">
-																			<i className="bi bi-cloud-download me-2"></i>{" "}
-																			Export CSV
-																		</button>
-																	</div>
-
-																	<p className="text-end mb-0 file-count">
-																		Unions: {unionsList.length}
-																	</p>
-																</div>
-															</div>
+													{isLoading ? (
+														<div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+															<ClipLoader color="#36D7B7" loading={isLoading} size={50} />
 														</div>
+													) : (
+														<div
+															className="tab-pane fade"
+															id="pills-document"
+															role="tabpanel"
+															aria-labelledby="pills-document-tab"
+															tabIndex="0"
+														>
+															<div className="row my-4">
+																<div className="col-lg-5 mb-lg-0 mb-3">
+																	<div className="input-group">
+																		<span className="input-group-text bg-transparent">
+																			<img
+																				src="/images/search.svg"
+																				className="img-fluid"
+																				alt="search"
+																			/>
+																		</span>
+																		<input
+																			type="search"
+																			className="form-control border-start-0 form-control-height"
+																			placeholder="Search here..."
+																		/>
+																	</div>
+																</div>
 
-														<div className="row">
-															<div className="col-lg-12">
-																<table className="table table-list">
-																	<thead className="table-light">
-																		<tr>
-																			<th scope="col">
-																				<div>
-																					<input
-																						className="form-check-input"
-																						type="checkbox"
-																						id="checkboxNoLabel"
-																						value=""
-																						aria-label="..."
-																					/>
-																				</div>
-																			</th>
-																			<th scope="col">Unions</th>
-																			<th scope="col">Assigned Admin</th>
-																			<th scope="col">Industry</th>
-																			<th scope="col">Date added</th>
-																			<th scope="col">Actions</th>
-																		</tr>
-																	</thead>
-																	<tbody>
-																		{unionsList.map((union) => (
-																			<tr key={union._id}>
-																				<td>
+																<div className="col-lg-7">
+																	<div className="d-flex align-items-center justify-content-between gap-15">
+																		<div className="d-flex gap-10">
+																			<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+																				<img
+																					src="/images/filter.svg"
+																					className="img-fluid" alt=""
+																				/>{" "}
+																				A-Z
+																			</a>
+
+																			<button className="btn btn-size btn-main-outline-primary px-3">
+																				<i className="bi bi-cloud-download me-2"></i>{" "}
+																				Export CSV
+																			</button>
+																		</div>
+
+																		<p className="text-end mb-0 file-count">
+																			Unions: {unionsList.length}
+																		</p>
+																	</div>
+																</div>
+															</div>
+
+															<div className="row">
+																<div className="col-lg-12">
+																	<table className="table table-list">
+																		<thead className="table-light">
+																			<tr>
+																				<th scope="col">
 																					<div>
 																						<input
 																							className="form-check-input"
@@ -758,36 +764,58 @@ const Unions = () => {
 																							aria-label="..."
 																						/>
 																					</div>
-																				</td>
-																				<td>
-																					<div className="d-flex align-items-center avatar-holder">
-																						<div className="position-relative">
-																							<div className="avatar-sm flex-shrink-0">
-																								<img
-																									src={union.logo}
-																									className="img-fluid object-position-center object-fit-cover w-100 h-100"
-																									alt="Avatar"
-																								/>
-																							</div>
+																				</th>
+																				<th scope="col">Unions</th>
+																				<th scope="col">Assigned Admin</th>
+																				<th scope="col">Industry</th>
+																				<th scope="col">Date added</th>
+																				<th scope="col">Actions</th>
+																			</tr>
+																		</thead>
+
+																		<tbody>
+																			{unionsList.map((union) => (
+																				<tr key={union._id}>
+																					<td>
+																						<div>
+																							<input
+																								className="form-check-input"
+																								type="checkbox"
+																								id="checkboxNoLabel"
+																								value=""
+																								aria-label="..."
+																							/>
 																						</div>
-																						<div className="ms-2 flex-grow-1">
-																							<div className="d-flex justify-content-between align-items-center mb-2">
-																								<div className="mb-0 d-flex align-items-center">
-																									<div className="heading-text">
-																										{union.name}{" "}
-																										<span className="text-muted-3">
-																											{" "}
-																											{union.acronym}
-																										</span>
+																					</td>
+																					<td>
+																						<div className="d-flex align-items-center avatar-holder">
+																							<div className="position-relative">
+																								<div className="avatar-sm flex-shrink-0">
+																									<img
+																										src={union.logo}
+																										className="img-fluid object-position-center object-fit-cover w-100 h-100"
+																										alt="Avatar"
+																									/>
+																								</div>
+																							</div>
+																							<div className="ms-2 flex-grow-1">
+																								<div className="d-flex justify-content-between align-items-center mb-2">
+																									<div className="mb-0 d-flex align-items-center">
+																										<div className="heading-text">
+																											{union.name}{" "}
+																											<span className="text-muted-3">
+																												{" "}
+																												{union.acronym}
+																											</span>
+																										</div>
 																									</div>
 																								</div>
 																							</div>
 																						</div>
-																					</div>
-																				</td>
+																					</td>
 
-																				<td>
-																					{/* <div className="avatars">
+																					<td>
+																						{/* <div className="avatars">
 																						<div className="dropdown">
 																							<a
 																								href="#"
@@ -1404,38 +1432,38 @@ const Unions = () => {
 																							</ul>
 																						</div>
 																					</div> */}<p>No admin added</p>
-																				</td>
+																					</td>
 
-																				<td>{union.industry}</td>
-																				<td>{union.date_added}</td>
-																				<td>
-																					<div className="dropdown">
-																						<button
-																							className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																							type="button"
-																							data-bs-toggle="dropdown"
-																							aria-expanded="false"
-																							data-bs-auto-close="outside"
-																						>
-																							<img
-																								src="/images/dots-v.svg"
-																								className="img-fluid"
-																								alt="dots"
-																							/>
-																						</button>
-																						<ul className="dropdown-menu border-radius action-menu-2">
-																							<li>
-																								<Link
-																									to={`/UnionDetails/${union._id}`}
-																									className="dropdown-item"
-																								>
-																									View details
-																								</Link>
-																							</li>
-																						</ul>
-																					</div>
-																				</td>
-																				{/* <td>
+																					<td>{union.industry}</td>
+																					<td>{union.date_added}</td>
+																					<td>
+																						<div className="dropdown">
+																							<button
+																								className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+																								type="button"
+																								data-bs-toggle="dropdown"
+																								aria-expanded="false"
+																								data-bs-auto-close="outside"
+																							>
+																								<img
+																									src="/images/dots-v.svg"
+																									className="img-fluid"
+																									alt="dots"
+																								/>
+																							</button>
+																							<ul className="dropdown-menu border-radius action-menu-2">
+																								<li>
+																									<Link
+																										to={`/UnionDetails/${union._id}`}
+																										className="dropdown-item"
+																									>
+																										View details
+																									</Link>
+																								</li>
+																							</ul>
+																						</div>
+																					</td>
+																					{/* <td>
 																<button
 																	className="btn btn-size btn-outline-light text-medium no-caret"
 																	type="button"
@@ -1453,13 +1481,16 @@ const Unions = () => {
 																
 																</button>
 																</td> */}
-																			</tr>
-																		))}
-																	</tbody>
-																</table>
+																				</tr>
+																			))}
+																		</tbody>
+
+
+																	</table>
+																</div>
 															</div>
 														</div>
-													</div>
+													)}
 												</div>
 											</div>
 										</div>

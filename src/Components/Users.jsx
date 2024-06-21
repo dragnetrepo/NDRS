@@ -2,12 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
 import toast from "react-hot-toast";
+import { ClipLoader } from "react-spinners";
+
 
 const Users = () => {
   const [roles, setRoles] = useState([]);
   const [getBoardOfEnquire, setGetBoardOfEnquire] = useState([]);
   const [getDisputes, setGetDisputes] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   // const [bulkUpload, setBulkUpload] = useState({
   //   file: "",
   // });
@@ -270,6 +273,9 @@ const Users = () => {
       setRoles(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
+    }
+    finally {
+      setIsLoading(false)
     }
   };
 
@@ -5190,138 +5196,144 @@ const Users = () => {
                                 </button>
                               </div>
                             </div>
-
-                            <div className="row">
-                              <div className="col-lg-9">
-                                <div
-                                  className="accordion accordion-expand mt-4"
-                                  id="accordionHelp2"
-                                >
-                                  {roles.map((role, roleIndex) => (
-                                    <div
-                                      className="accordion-item mb-3"
-                                      key={role._id}
-                                    >
-                                      <h2 className="accordion-header">
-                                        <button
-                                          className="accordion-button custom-text-3"
-                                          type="button"
-                                          data-bs-toggle="collapse"
-                                          data-bs-target={`#collapseOne${role._id}`}
-                                          aria-expanded={
-                                            roleIndex === 0 ? "true" : "false"
-                                          }
-                                          aria-controls={`collapseOne${role._id}`}
-                                        >
-                                          {role.name}
-                                        </button>
-                                      </h2>
+                            {isLoading ? (
+                              <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                                <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+                              </div>
+                            ) : (
+                              <div className="row">
+                                <div className="col-lg-9">
+                                  <div
+                                    className="accordion accordion-expand mt-4"
+                                    id="accordionHelp2"
+                                  >
+                                    {roles.map((role, roleIndex) => (
                                       <div
-                                        id={`collapseOne${role._id}`}
-                                        className={`accordion-collapse collapse ${roleIndex === 0 ? "show" : ""
-                                          }`}
-                                        data-bs-parent="#accordionHelp2"
+                                        className="accordion-item mb-3"
+                                        key={role._id}
                                       >
-                                        <div className="mb-3 py-3 px-4 bg-light">
-                                          <a
-                                            href="#"
-                                            className="btn btn-size btn-outline-danger d-inline-flex"
-                                            name="role_id"
-                                            onClick={(e) =>
-                                              restoreDefault(
-                                                e,
-                                                role._id,
-                                                roles,
-                                                setRoles
-                                              )
+                                        <h2 className="accordion-header">
+                                          <button
+                                            className="accordion-button custom-text-3"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target={`#collapseOne${role._id}`}
+                                            aria-expanded={
+                                              roleIndex === 0 ? "true" : "false"
                                             }
+                                            aria-controls={`collapseOne${role._id}`}
                                           >
-                                            Restore default
-                                          </a>
-                                        </div>
-                                        <div className="accordion-body">
-                                          {Object.entries(role.permissions).map(
-                                            (
-                                              [category, permissions],
-                                              categoryIndex
-                                            ) => (
-                                              <div
-                                                className="card card-box-view mb-4"
-                                                key={category}
-                                              >
-                                                <div className="card-body p-4">
-                                                  <div className="row align-items-center">
-                                                    <div className="col-lg-7">
-                                                      <div className="text-start mb-lg-0 mb-3">
-                                                        <h4>
-                                                          {category.replace(
-                                                            /_/g,
-                                                            " & "
-                                                          )}
-                                                        </h4>
-                                                        <p className="mb-0 text-muted-3">
-                                                          {
-                                                            permissions[0]
-                                                              .group_description
-                                                          }
-                                                        </p>
+                                            {role.name}
+                                          </button>
+                                        </h2>
+                                        <div
+                                          id={`collapseOne${role._id}`}
+                                          className={`accordion-collapse collapse ${roleIndex === 0 ? "show" : ""
+                                            }`}
+                                          data-bs-parent="#accordionHelp2"
+                                        >
+                                          <div className="mb-3 py-3 px-4 bg-light">
+                                            <a
+                                              href="#"
+                                              className="btn btn-size btn-outline-danger d-inline-flex"
+                                              name="role_id"
+                                              onClick={(e) =>
+                                                restoreDefault(
+                                                  e,
+                                                  role._id,
+                                                  roles,
+                                                  setRoles
+                                                )
+                                              }
+                                            >
+                                              Restore default
+                                            </a>
+                                          </div>
+                                          <div className="accordion-body">
+                                            {Object.entries(role.permissions).map(
+                                              (
+                                                [category, permissions],
+                                                categoryIndex
+                                              ) => (
+                                                <div
+                                                  className="card card-box-view mb-4"
+                                                  key={category}
+                                                >
+                                                  <div className="card-body p-4">
+                                                    <div className="row align-items-center">
+                                                      <div className="col-lg-7">
+                                                        <div className="text-start mb-lg-0 mb-3">
+                                                          <h4>
+                                                            {category.replace(
+                                                              /_/g,
+                                                              " & "
+                                                            )}
+                                                          </h4>
+                                                          <p className="mb-0 text-muted-3">
+                                                            {
+                                                              permissions[0]
+                                                                .group_description
+                                                            }
+                                                          </p>
+                                                        </div>
                                                       </div>
-                                                    </div>
-                                                    <div className="col-lg-5">
-                                                      <div className="d-flex flex-column gap-10">
-                                                        {permissions.map(
-                                                          (
-                                                            permission,
-                                                            permissionIndex
-                                                          ) => (
-                                                            <div
-                                                              className="form-check d-flex align-items-center form-switch"
-                                                              key={
-                                                                permission._id
-                                                              }
-                                                            >
-                                                              <input
-                                                                className="form-check-input"
-                                                                type="checkbox"
-                                                                role="switch"
-                                                                id={`flexSwitchCheckChecked_${permission._id}`}
-                                                                checked={
-                                                                  permission.has_permission ===
-                                                                  1
+                                                      <div className="col-lg-5">
+                                                        <div className="d-flex flex-column gap-10">
+                                                          {permissions.map(
+                                                            (
+                                                              permission,
+                                                              permissionIndex
+                                                            ) => (
+                                                              <div
+                                                                className="form-check d-flex align-items-center form-switch"
+                                                                key={
+                                                                  permission._id
                                                                 }
-                                                                onChange={() =>
-                                                                  handleCheckboxChange(
-                                                                    roleIndex,
-                                                                    category,
-                                                                    permissionIndex
-                                                                  )
-                                                                }
-                                                              />
-                                                              <label
-                                                                className="form-check-label ms-4"
-                                                                htmlFor={`flexSwitchCheckChecked_${permission._id}`}
                                                               >
-                                                                {
-                                                                  permission.name
-                                                                }
-                                                              </label>
-                                                            </div>
-                                                          )
-                                                        )}
+                                                                <input
+                                                                  className="form-check-input"
+                                                                  type="checkbox"
+                                                                  role="switch"
+                                                                  id={`flexSwitchCheckChecked_${permission._id}`}
+                                                                  checked={
+                                                                    permission.has_permission ===
+                                                                    1
+                                                                  }
+                                                                  onChange={() =>
+                                                                    handleCheckboxChange(
+                                                                      roleIndex,
+                                                                      category,
+                                                                      permissionIndex
+                                                                    )
+                                                                  }
+                                                                />
+                                                                <label
+                                                                  className="form-check-label ms-4"
+                                                                  htmlFor={`flexSwitchCheckChecked_${permission._id}`}
+                                                                >
+                                                                  {
+                                                                    permission.name
+                                                                  }
+                                                                </label>
+                                                              </div>
+                                                            )
+                                                          )}
+                                                        </div>
                                                       </div>
                                                     </div>
                                                   </div>
                                                 </div>
-                                              </div>
-                                            )
-                                          )}
+                                              )
+                                            )}
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  ))}
+                                    ))}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            )}
+
                           </div>
                         </div>
                       </div>

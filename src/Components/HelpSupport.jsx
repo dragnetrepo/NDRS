@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
 import { Link } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 
 const HelpSupport = () => {
   const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -9,6 +10,8 @@ const HelpSupport = () => {
   const [categories, setCategories] = useState([])
   const [categoryPost, setCategoryPost] = useState([])
   const [post, setPost] = useState([])
+  const [isLoading, setIsLoading] = useState(true);
+
   const [sidebar, setsidebar] = useState(true)
 
   const toggleSideBar = () => {
@@ -39,6 +42,8 @@ const HelpSupport = () => {
       setCategories(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -120,34 +125,39 @@ const HelpSupport = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="row mt-4">
-                        {categories.map((item) =>
-                          <div className="col-lg-6 mb-4" key={item._id}>
-                            <Link
-                              to={`/helpSupport/${item._id}`}
-                              className="text-decoration-none"
-                            >
-                              <div className="card h-100 heading-card card-hover p-3">
-                                <div className="card-body">
-                                  <img
-                                    src="/images/help.svg"
-                                    className="img-fluid mb-3" alt=""
-                                  />
+                      {isLoading ? (
+                        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                          <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+                        </div>
+                      ) : (
+                        <div className="row mt-4">
+                          {categories.map((item) =>
+                            <div className="col-lg-6 mb-4" key={item._id}>
+                              <Link
+                                to={`/helpSupport/${item._id}`}
+                                className="text-decoration-none"
+                              >
+                                <div className="card h-100 heading-card card-hover p-3">
+                                  <div className="card-body">
+                                    <img
+                                      src="/images/help.svg"
+                                      className="img-fluid mb-3" alt=""
+                                    />
 
-                                  <h3>{item.title}</h3>
-                                  <p className="help-text">
-                                    {item.description}
-                                  </p>
+                                    <h3>{item.title}</h3>
+                                    <p className="help-text">
+                                      {item.description}
+                                    </p>
 
-                                  <p className="help-text-sub">{item.no_of_posts} articles</p>
+                                    <p className="help-text-sub">{item.no_of_posts} articles</p>
+                                  </div>
                                 </div>
-                              </div>
-                            </Link>
-                          </div>
-                        )}
+                              </Link>
+                            </div>
+                          )}
 
 
-                        {/* <div className="col-lg-6 mb-4">
+                          {/* <div className="col-lg-6 mb-4">
                           <Link
                             to="/HelpSupport2"
                             className="text-decoration-none"
@@ -264,7 +274,9 @@ const HelpSupport = () => {
                             </div>
                           </Link>
                         </div> */}
-                      </div>
+                        </div>
+                      )}
+
                     </div>
                   </div>
                 </div>
