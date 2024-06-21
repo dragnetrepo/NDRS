@@ -17,7 +17,6 @@ const Unions = () => {
 	const [unionsList, setUnionsList] = useState([]);
 	const [uploadStatus, setUploadStatus] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
-
 	const [industries, setIndustries] = useState([])
 	const [unionInvite, seUnionInvite] = useState({
 		email: "",
@@ -109,6 +108,36 @@ const Unions = () => {
 			setIndustries(data.data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
+		}
+	};
+
+	const handleDownload = async () => {
+		try {
+			const response = await fetch(
+				"https://phpstack-1245936-4460801.cloudwaysapps.com/dev/api/union/sample-csv",
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+
+			const data = await response.json();
+			// const url = window.URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = data.data.sample_csv;
+			a.download = data.data.sample_csv; // Specify the file name
+			document.body.appendChild(a);
+			a.click();
+			a.remove();
+		} catch (error) {
+			console.error("Error downloading the file:", error);
 		}
 	};
 
@@ -340,6 +369,7 @@ const Unions = () => {
 																					</div>
 																					<div className="col-lg-5 offset-lg-2">
 																						<button className="btn btn-main-outline-primary btn-size"
+																							onClick={handleDownload}
 																						>
 																							Download CSV template
 																						</button>
@@ -601,7 +631,7 @@ const Unions = () => {
 																							</div>
 
 																							<div className="mb-4">
-																								<div className="d-flex justify-content-between align-items-center">
+																								{/* <div className="d-flex justify-content-between align-items-center">
 																									<label className="form-label">
 																										Unions Admins
 																									</label>
@@ -614,9 +644,9 @@ const Unions = () => {
 																										Add Admin{" "}
 																										<i className="bi bi-plus"></i>
 																									</a>
-																								</div>
+																								</div> */}
 																								<div className="table-responsive">
-																									<table className="table table-list">
+																									{/* <table className="table table-list">
 																										<thead className="table-light">
 																											<tr>
 																												<th scope="col">Name</th>
@@ -674,14 +704,14 @@ const Unions = () => {
 																													</button>
 																												</td>
 																											</tr> */}
-																											<tr>
+																									{/* <tr>
 																												<td>
 																													<p className="m-3">No admin has been invited</p>
 																												</td>
-																											</tr>
+																											</tr> */}
 
-																										</tbody>
-																									</table>
+																									{/* </tbody> */}
+																									{/* </table>  */}
 																								</div>
 
 																							</div>
