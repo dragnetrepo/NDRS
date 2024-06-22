@@ -272,7 +272,7 @@
                                                                                             <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                 <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                 <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                 <div class="collapse" id="collapseStatus">
@@ -399,7 +399,7 @@
                                                                                             <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                 <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                 <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                 <div class="collapse" id="collapseStatus">
@@ -526,7 +526,7 @@
                                                                                             <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                 <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                 <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                 <div class="collapse" id="collapseStatus">
@@ -739,7 +739,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -924,7 +924,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -1109,7 +1109,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -1294,7 +1294,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -1479,7 +1479,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -1664,7 +1664,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -2152,7 +2152,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -2547,7 +2547,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -2942,7 +2942,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                         <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                         <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -3337,7 +3337,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -3797,7 +3797,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -4192,7 +4192,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -4587,7 +4587,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                         <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                         <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -4982,7 +4982,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -5442,7 +5442,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -5837,7 +5837,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -6232,7 +6232,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                         <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                         <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -6627,7 +6627,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -7087,7 +7087,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -7482,7 +7482,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -7877,7 +7877,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                         <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                         <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -8272,7 +8272,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -8732,7 +8732,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -9127,7 +9127,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -9522,7 +9522,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                         <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                         <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -9917,7 +9917,7 @@
                                                                                                     <ul class="dropdown-menu border-radius action-menu-2">
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
                                                                                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-                                                                                                        <li><a href="view-members.php" class="dropdown-item">View Members</a></li>
+                                                                                                        <li><a href="view-members.php" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
                                                                                                         <li><a href="" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
                                                                                                         <li><a class="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i class="bi bi-chevron-down"></i></a></li>
                                                                                                         <div class="collapse" id="collapseStatus">
@@ -12205,6 +12205,124 @@
                                             </div>
                                         </td>
                                         <td>Pending</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <table class="table table-list">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Date added</th>
+                                        <th scope="col">Role</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="card no-admin-card rounded-0">
+                                <div class="card-body d-flex align-items-center justify-content-center">
+                                    <div class="text-center">
+                                        <h4 class="">No board members</h4>
+
+                                        <p class="text-muted-3">Enter an admins email and role to send invite</p>
+
+                                        <div class="text-center">
+                                            <img src="images/no-found.svg" class="img-fluid" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Modal -->
+    <div class="modal fade" id="boardModal2" tabindex="-1" aria-labelledby="boardModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content p-lg-4 border-0">
+                <div class="modal-header justify-content-between">
+                    <h1 class="modal-title fs-5">{{Board of Enquiry}} Members</h1>
+                   
+                    <div class="gap-10 d-flex align-items-center">
+                        <button class="btn btn btn-size btn-main-outline-primary px-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+
+                        <button class="btn btn-main-primary btn-size px-3">Finish</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <label class="form-label">Name of {{Board of Enquiry}}</label>
+                            <input type="text" class="form-control form-control-height" placeholder="Health issues in South South" disabled>
+                        </div>
+                    </div>
+                    <div class="row my-4">
+                        <div class="col-lg-7">
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent">
+                                    <img src="images/search.svg" class="img-fluid" alt="search">
+                                </span>
+                                <input type="search" class="form-control border-start-0 form-control-height" placeholder="Type an email to invite">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 offset-lg-3">
+                            <div class="d-flex align-items-center justify-content-between gap-15">
+                                <a href="#" class="btn btn-size btn-main-primary">Send Invite</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table class="table table-list">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Date added</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td scope="row">
+                                            <div class="d-flex avatar-holder">
+                                                <div class="position-relative">
+                                                    
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <img src="images/avatar-2.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
+                                                    </div>
+                                                </div>
+                                                <div class="ms-2 flex-grow-1">
+                                                    <h5 class="mb-0">Salim Mustapha</h5>
+                                                    <p class="mb-0 text-muted-3">salimmusty@gmail.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Feb 4 2023</td>
+                                        <td><a class="text-danger">Remove member</a></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td scope="row">
+                                            <div class="d-flex avatar-holder">
+                                                <div class="position-relative">
+                                                    
+                                                    <div class="avatar-sm flex-shrink-0">
+                                                        <img src="images/avatar-2.svg" class="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar">
+                                                    </div>
+                                                </div>
+                                                <div class="ms-2 flex-grow-1">
+                                                    <h5 class="mb-0">Salim Mustapha</h5>
+                                                    <p class="mb-0 text-muted-3">salimmusty@gmail.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Pending</td>
+                                        <td><a class="text-danger">Remove member</a></td>
                                     </tr>
 
                                 </tbody>
