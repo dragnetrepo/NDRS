@@ -14,7 +14,7 @@ html {
 body {
   background-color: #fafafa;
   font-family: "Inter", sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 1rem;
   position: relative;
   color: var(--grey-2); 
@@ -833,7 +833,7 @@ tr {
 
 .heading-text{
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 20.3px;
   color: #001A14;
 }
