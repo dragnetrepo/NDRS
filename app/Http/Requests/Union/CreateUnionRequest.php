@@ -27,7 +27,7 @@ class CreateUnionRequest extends FormRequest
         $rules = [
             "name" => "required|string|min:3|max:191",
             "acronym" => "nullable|string|min:2|max:191",
-            "industry" => "required|integer",
+            "industry_id" => "required|integer",
             "headquarters" => "required|string|min:3",
             "phone" => "required|string|min:3",
             "about" => "required|string|min:3",

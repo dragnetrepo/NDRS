@@ -36,6 +36,14 @@ class PopulateDefaultValuesInTables extends Command
     {
         if (time() < strtotime(PopulateDefaultValuesInTables::TIME_TO_RUN)) {
             $user_roles = [
+                "claimant" => [
+                    "display_name" => "Claimants",
+                    "type" => "dispute",
+                ],
+                "respondent" => [
+                    "display_name" => "Respondents",
+                    "type" => "dispute",
+                ],
                 "ministry admin" => [
                     "display_name" => "Ministry Admin",
                     "type" => "admin",

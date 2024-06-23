@@ -62,6 +62,7 @@ class UnionBranchController extends Controller
                     "acronym" => $union_branch->acronym,
                     "about" => $union_branch->description,
                     "phone" => $union_branch->phone,
+                    "industry_id" => $union_branch->industry->id ?? "",
                     "industry" => $union_branch->industry->name ?? "",
                     "headquarters" => $union_branch->headquarters,
                     "founded_in" => $union_branch->founded_in,
@@ -93,8 +94,8 @@ class UnionBranchController extends Controller
                 "acronym" => $union_branch->acronym,
                 "about" => $union_branch->description,
                 "phone" => $union_branch->phone,
+                "industry_id" => $union_branch->industry->id ?? "",
                 "industry" => $union_branch->industry->name ?? "",
-                "headquarters" => $union_branch->headquarters,
                 "founded_in" => $union_branch->founded_in,
                 "logo" => get_model_file_from_disk($union_branch->logo ?? "", "union_branch_logos"),
                 "date_added" => $union_branch->created_at->format("M d Y"),
@@ -126,8 +127,9 @@ class UnionBranchController extends Controller
                     "union_id" => $union->id,
                     "name" => $request->name,
                     "acronym" => $request->acronym ?? '',
+                    "phone" => $request->phone,
                     "founded_in" => $request->founded_in,
-                    "industry_id" => $request->industry,
+                    "industry_id" => $request->industry_id,
                     "description" => $request->about,
                     "logo" => $file_name,
                 ]);
@@ -160,7 +162,8 @@ class UnionBranchController extends Controller
         if ($union_branch) {
             $union_branch->name = $request->name;
             $union_branch->acronym = $request->acronym ?? '';
-            $union_branch->industry_id = $request->industry;
+            $union_branch->phone = $request->phone;
+            $union_branch->industry_id = $request->industry_id;
             $union_branch->description = $request->about;
             $union_branch->founded_in = $request->founded_in;
             $file_name = $union_branch->logo;

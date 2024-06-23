@@ -62,8 +62,8 @@ class UnionSubBranchController extends Controller
                     "acronym" => $union_sub_branch->acronym,
                     "about" => $union_sub_branch->description,
                     "phone" => $union_sub_branch->phone,
+                    "industry_id" => $union_sub_branch->industry->id ?? "",
                     "industry" => $union_sub_branch->industry->name ?? "",
-                    "headquarters" => $union_sub_branch->headquarters,
                     "founded_in" => $union_sub_branch->founded_in,
                     "logo" => get_model_file_from_disk($union_sub_branch->logo ?? "", "union_sub_branch_logos"),
                     "assigned_admins" => $assigned_admins,
@@ -93,8 +93,8 @@ class UnionSubBranchController extends Controller
                 "acronym" => $union_sub_branch->acronym,
                 "about" => $union_sub_branch->description,
                 "phone" => $union_sub_branch->phone,
+                "industry_id" => $union_sub_branch->industry->id ?? "",
                 "industry" => $union_sub_branch->industry->name ?? "",
-                "headquarters" => $union_sub_branch->headquarters,
                 "founded_in" => $union_sub_branch->founded_in,
                 "logo" => get_model_file_from_disk($union_sub_branch->logo ?? "", "union_sub_branch_logos"),
             ];
@@ -131,8 +131,9 @@ class UnionSubBranchController extends Controller
                         "branch_id" => $union_branch->id,
                         "name" => $request->name,
                         "acronym" => $request->acronym ?? '',
+                        "phone" => $request->phone,
                         "founded_in" => $request->founded_in,
-                        "industry_id" => $request->industry,
+                        "industry_id" => $request->industry_id,
                         "description" => $request->about,
                         "logo" => $file_name,
                     ]);
@@ -169,7 +170,8 @@ class UnionSubBranchController extends Controller
         if ($union_sub_branch) {
             $union_sub_branch->name = $request->name;
             $union_sub_branch->acronym = $request->acronym ?? '';
-            $union_sub_branch->industry_id = $request->industry;
+            $union_sub_branch->phone = $request->phone;
+            $union_sub_branch->industry_id = $request->industry_id;
             $union_sub_branch->description = $request->about;
             $union_sub_branch->founded_in = $request->founded_in;
             $file_name = $union_sub_branch->logo;

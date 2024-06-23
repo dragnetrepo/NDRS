@@ -62,6 +62,7 @@ class UnionController extends Controller
                     "acronym" => $union->acronym,
                     "about" => $union->description,
                     "phone" => $union->phone,
+                    "industry_id" => $union->industry->id ?? "",
                     "industry" => $union->industry->name ?? "",
                     "headquarters" => $union->headquarters,
                     "founded_in" => $union->founded_in,
@@ -91,6 +92,7 @@ class UnionController extends Controller
                 "acronym" => $union->acronym,
                 "about" => $union->description,
                 "phone" => $union->phone,
+                "industry_id" => $union->industry->id ?? "",
                 "industry" => $union->industry->name ?? "",
                 "headquarters" => $union->headquarters,
                 "founded_in" => $union->founded_in,
@@ -123,7 +125,7 @@ class UnionController extends Controller
                 "founded_in" => $request->founded_in,
                 "phone" => $request->phone,
                 "headquarters" => $request->headquarters,
-                "industry_id" => $request->industry,
+                "industry_id" => $request->industry_id,
                 "description" => $request->about,
                 "logo" => $file_name,
             ]);
@@ -175,7 +177,7 @@ class UnionController extends Controller
         if ($union) {
             $union->name = $request->name;
             $union->acronym = $request->acronym ?? '';
-            $union->industry_id = $request->industry;
+            $union->industry_id = $request->industry_id;
             $union->headquarters = $request->headquarters;
             $union->phone = $request->phone;
             $union->description = $request->about;
