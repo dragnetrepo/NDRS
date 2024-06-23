@@ -690,7 +690,7 @@ if (!function_exists("unread_messages_count")) {
     function unread_messages_count($discussion_id, $user_id) {
         $last_read_msg = get_last_read_message($discussion_id, $user_id);
 
-        return CaseDiscussionMessage::where("user_id", $user_id)->where("cd_id", $discussion_id)->where("id", ">", $last_read_msg)->count();
+        return CaseDiscussionMessage::where("user_id", "<>", $user_id)->where("cd_id", $discussion_id)->where("id", ">", $last_read_msg)->count();
     }
 }
 
@@ -698,7 +698,7 @@ if (!function_exists("get_discussion_files")) {
     function get_discussion_files(CaseDiscussion $discussion, $user_id = 0) {
         $data = [];
         $messages = CaseDiscussionMessage::where("cd_id", $discussion->id)
-                    ->when($user_id && false, function($query) use ($user_id) {
+                    ->when($user_id, function($query) use ($user_id) {
                         $query->where("user_id", $user_id);
                     })
                     ->where("message_type", "file")
