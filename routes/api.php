@@ -65,7 +65,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
         Route::name("union.")->group(function () {
             Route::prefix("union")->group(function(){
                 Route::controller(UnionController::class)->group(function(){
-                    Route::get('{union}', "read")->name("read-by-id");
+                    Route::get('{union}', "read")->name("read-by-id")->where('union', '[0-9]+');
                     Route::post('create', "create")->name("create")->middleware("custom_user_permission:create unions");
                     Route::post('bulk/create', "bulk_create")->name("bulk-create")->middleware("custom_user_permission:create unions");
                     Route::post('edit/{union}', "edit")->name("edit")->middleware("custom_user_permission:edit unions");
@@ -107,25 +107,30 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             Route::controller(DisputesController::class)->name("disputes.")->group(function(){
                 Route::get("disputes/{status?}", "index")->name("index");
                 Route::get("roles", "roles")->name("roles");
-                Route::get("read/{case_id}", "read")->name("read");
+                Route::get("read/{case_id}", "read")->name("read")->where('case_id', '[0-9]+');
                 Route::post("create", "create")->name("create")->middleware("custom_user_permission:create dispute");
-                Route::post("edit/{case_id}", "edit")->name("edit");
+                Route::post("edit/{case_id}", "edit")->name("edit")->where('case_id', '[0-9]+');
                 Route::middleware("custom_user_permission:invite dispute participants")->group(function(){
-                    Route::get("involved-parties/{case_id}", "involved_parties")->name("involved-parties");
-                    Route::post("invite-party/{case_id}", "invite_party")->name("invite-party");
-                    Route::post("resend-invite/{case_id}", "invite_party")->name("resend-invite-party");
-                    Route::post("suspend-invited-party/{case_id}", "suspend_invite_party")->name("suspend-invite");
-                    Route::delete("delete-invited-party/{case_id}", "delete_invite_party")->name("delete-invite");
+                    Route::get("involved-parties/{case_id}", "involved_parties")->name("involved-parties")->where('case_id', '[0-9]+');
+                    Route::post("invite-party/{case_id}", "invite_party")->name("invite-party")->where('case_id', '[0-9]+');
+                    Route::post("resend-invite/{case_id}", "invite_party")->name("resend-invite-party")->where('case_id', '[0-9]+');
+                    Route::post("suspend-invited-party/{case_id}", "suspend_invite_party")->name("suspend-invite")->where('case_id', '[0-9]+');
+                    Route::delete("delete-invited-party/{case_id}", "delete_invite_party")->name("delete-invite")->where('case_id', '[0-9]+');
                     Route::get("get-invites", "get_invites")->name("get-invites");
                 });
-                Route::post("invite-response/{case_id}", "invite_response")->name("invite-response");
-                Route::post("change-status/{case_id}", "update_case_status")->name("change-status")->middleware("custom_user_permission:change dispute case status");
+                Route::post("invite-response/{case_id}", "invite_response")->name("invite-response")->where('case_id', '[0-9]+');
+                Route::post("approve-case/{case_id}", "approve_case")->name("approve-case")->middleware("custom_user_permission:approve dispute")->where('case_id', '[0-9]+');
+
+                Route::middleware("custom_user_permission:change dispute case status")->group(function(){
+                    Route::get("get-statuses", "get_case_status")->name("get-statuses");
+                    Route::post("change-status/{case_id}", "update_case_status")->name("change-status")->where('case_id', '[0-9]+');
+                });
             });
 
             Route::prefix("{case_id}")->group(function(){
                 Route::controller(DocumentController::class)->name("documents.")->group(function(){
                     Route::get("documents", "index")->name("index");
-                    Route::get("folder-documents/{folder_id}", "index")->name("folder-documents");
+                    Route::get("folder-documents/{folder_id}", "index")->name("folder-documents")->where('folder_id', '[0-9]+');
                     Route::middleware("custom_user_permission:create dispute")->group(function(){
                         Route::post("add-document", "add_document")->name("add");
                         Route::delete("delete-document", "delete_document")->name("delete");
@@ -143,11 +148,13 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             });
 
             Route::prefix("discussions")->middleware("custom_user_permission:participate in resolution")->controller(DiscussionController::class)->name("discussion.")->group(function(){
-                Route::get("/{case_id?}", "index")->name("index");
-                Route::get("/{discussion}/messages", "get_messages")->name("index");
-                Route::post("/{discussion}/send-message", "send_message")->name("send-message");
-                Route::post("/{discussion}/vote-poll", "vote_on_poll")->name("poll-vote");
-                Route::post("/{discussion}/upload-document", "upload_document")->name("document-upload");
+                Route::get("/{case_id?}", "index")->name("index")->where('case_id', '[0-9]+');
+                Route::get("/{discussion}/messages", "get_messages")->name("index")->where('discussion', '[0-9]+');
+                Route::post("/{discussion}/send-message", "send_message")->name("send-message")->where('discussion', '[0-9]+');
+                Route::get("/{discussion}/get-poll-result", "get_poll_result")->name("get-poll-votes")->where('discussion', '[0-9]+');
+                Route::post("/{discussion}/vote-poll", "vote_on_poll")->name("poll-vote")->where('discussion', '[0-9]+');
+                Route::post("/{discussion}/upload-document", "upload_document")->name("document-upload")->where('discussion', '[0-9]+');
+                Route::get("/{discussion}/get-user", "get_user")->name("get-poll-votes")->where('discussion', '[0-9]+');
             });
         });
 
@@ -184,7 +191,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
 
         Route::prefix("notifications")->controller(NotificationController::class)->name("notification.")->group(function() {
             Route::get("/", "index")->name("index");
-            Route::get("/cases/{case}", "index")->name("cases")->middleware("custom_user_permission:view dispute notifications");
+            Route::get("/cases/{case}", "index")->name("cases")->middleware("custom_user_permission:view dispute notifications")->where('case', '[0-9]+');
             Route::get("/status/{status}", "index")->name("status");
             Route::post("/mark-as-read", "mark_as_read")->name("mark-as-read");
             Route::get("/settings", "settings")->name("settings");
@@ -216,7 +223,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
             });
 
             Route::controller(DocumentController::class)->group(function(){
-                Route::get("/all/{folder_id?}", "index")->name("index");
+                Route::get("/all/{folder_id?}", "index")->name("index")->where('folder_id', '[0-9]+');
                 Route::post("add", "add_document")->name("add");
             });
         });

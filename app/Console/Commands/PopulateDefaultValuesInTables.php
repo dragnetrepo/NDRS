@@ -124,16 +124,22 @@ class PopulateDefaultValuesInTables extends Command
             ];
 
             $industries = [
-                "Agriculture Industry",
-                "Real Estate/Construction",
-                "Consumer Goods",
-                "Healthcare",
-                "Industrial Goods",
-                "Information And Communications Technology ICT",
-                "Natural Resources",
-                "Oil And Gas",
-                "Services",
-                "Utilities",
+                "Oil and Gas Industry",
+                "Agriculture",
+                "Manufacturing,",
+                "Mining",
+                "Telecommunications",
+                "Financial Services",
+                "Construction",
+                "Real Estate",
+                "Transportation and Logistics",
+                "Information and Communication Technology (ICT)",
+                "Entertainment and Media",
+                "Tourism and Hospitality",
+                "Healthcare and Pharmaceuticals",
+                "Education",
+                "Energy",
+                "Retail and Wholesale Trade",
             ];
 
             foreach ($user_roles as $name => $role_details) {

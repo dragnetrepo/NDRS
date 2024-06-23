@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CaseDiscussion;
 use App\Models\CaseDiscussionAction;
 use App\Models\CaseDiscussionMessage;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -72,28 +73,26 @@ class DiscussionController extends Controller
                     $message_content = "- Document";
                 }
 
-                if ($last_msg) {
-                    $user = $last_msg->user;
-                    if ($discussion->case_id) {
-                        $sender_info = [
-                            "sender" => trim($user->first_name.' '.$user->last_name),
-                            "photo" => get_model_file_from_disk($discussion->dispute->union_data->logo, "union_logos"),
-                        ];
-                    }
-                    else {
-                        if ($user) {
-                            if ($user->id == $user_id) {
-                                $sender_info = [
-                                    "sender" => "You",
-                                    "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
-                                ];
-                            }
-                            else {
-                                $sender_info = [
-                                    "sender" => trim($user->first_name.' '.$user->last_name),
-                                    "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
-                                ];
-                            }
+                $user = $last_msg->user ?? null;
+                if ($discussion->case_id) {
+                    $sender_info = [
+                        "sender" => trim($user ? ($user->first_name.' '.$user->last_name) : ""),
+                        "photo" => get_model_file_from_disk($discussion->dispute->union_data->logo, "union_logos"),
+                    ];
+                }
+                elseif ($last_msg) {
+                    if ($user) {
+                        if ($user->id == $user_id) {
+                            $sender_info = [
+                                "sender" => "You",
+                                "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
+                            ];
+                        }
+                        else {
+                            $sender_info = [
+                                "sender" => trim($user->first_name.' '.$user->last_name),
+                                "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
+                            ];
                         }
                     }
                 }
@@ -103,6 +102,7 @@ class DiscussionController extends Controller
                     "type" => $discussion->type,
                     "title" => $discussion->title,
                     "last_message" => $message_content,
+                    "unread_messages" => unread_messages_count($discussion->id, request()->user()->id),
                     "time_sent" => $last_msg ? $last_msg->created_at->format("h:i") : "",
                     "sender" => $sender_info,
                 ];
@@ -125,15 +125,7 @@ class DiscussionController extends Controller
         $admin_user = user_is_admin();
         $user_id = request()->user()->id;
 
-        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
-            $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
-                $sub_query->where("user_id", $user_id);
-            })->orWhereHas('dispute', function($sub_query) use ($user_id) {
-                $sub_query->where("created_by", $user_id);
-            });
-        })
-        ->where("id", $discussion)
-        ->first();
+        $discussion = $this->get_discussion($discussion);
 
         if ($discussion) {
             $messages = CaseDiscussionMessage::where("cd_id", $discussion->id)->orderBy("id", "asc")->paginate(200);
@@ -149,15 +141,22 @@ class DiscussionController extends Controller
                         ];
                     }
                     elseif ($message->message_type == "file") {
-                        $file_information = unserialize($message->content);
+                        $file_information = [];
+                        $db_file_information = unserialize($message->content);
 
-                        foreach ($file_information as $key => $file) {
-                            $file_information[$key]["path"] = get_model_file_from_disk($file["path"], "case_discussion_documents");
+                        foreach ($db_file_information as $key => $file) {
+                            $db_file_information[$key]["path"] = get_model_file_from_disk($file["path"], "case_discussion_documents");
+                            $db_file_information[$key]["size"] = format_bytes($file["size"]);
+
+                            foreach ($db_file_information[$key] as $dis_key => $dis_value) {
+                                $file_information[$dis_key] = $dis_value;
+                            }
                         }
 
                         $message_data = [
                             "message" => $file_information,
                             "type" => "file",
+                            "datetime" => $message->created_at->format("d M Y | h:i"),
                         ];
                     }
                     elseif ($message->message_type == "scheduler") {
@@ -207,6 +206,18 @@ class DiscussionController extends Controller
                             ];
                         }
                     }
+                    elseif ($message->message_type == "status update") {
+                        $db_status_information = unserialize($message->content);
+                        $db_status_information = (object) $db_status_information;
+                        $message_data = [
+                            "message" => [
+                                "summary" => $db_status_information->summary,
+                                "resolution_reached" => $db_status_information->resolution_reached,
+                                "status" => $db_status_information->status
+                            ],
+                            "type" => "status update",
+                        ];
+                    }
 
                     if (!empty($message_data)) {
                         $user = $message->user;
@@ -215,12 +226,14 @@ class DiscussionController extends Controller
                             if ($user->id == $user_id) {
                                 $sender_info = [
                                     "sender" => "You",
+                                    "_id" => $user->id,
                                     "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
                                 ];
                             }
                             else {
                                 $sender_info = [
                                     "sender" => trim($user->first_name.' '.$user->last_name),
+                                    "_id" => $user->id,
                                     "photo" => get_model_file_from_disk($user->display_picture, "profile_photos"),
                                 ];
                             }
@@ -233,18 +246,19 @@ class DiscussionController extends Controller
                     }
                 }
 
-                $discuss_info = [];
-                $dispute = $discussion->dispute;
-                if ($dispute) {
-                    $discuss_info = [
-                        "sender" => trim($dispute->name),
-                        "photo" => get_model_file_from_disk($dispute->logo, "union_logos"),
-                    ];
-                }
-                $this->response["discuss_info"] = $discuss_info;
-
-                $this->response["message"] = "Messages from chat retrieved";
+                record_last_read_message($discussion->id, $user_id, $messages->last()->id);
             }
+            $discuss_info = [];
+            $dispute = $discussion->dispute;
+            if ($dispute) {
+                $discuss_info = [
+                    "group_name" => trim($discussion->title),
+                    "group_photo" => get_model_file_from_disk($discussion->dispute->union_data->logo, "union_logos"),
+                ];
+            }
+
+            $this->response["discuss_info"] = $discuss_info;
+            $this->response["message"] = "Messages from chat retrieved";
         }
 
         $this->response["status"] = Response::HTTP_OK;
@@ -255,18 +269,9 @@ class DiscussionController extends Controller
 
     public function send_message(Request $request, $discussion)
     {
-        $admin_user = user_is_admin();
         $user_id = request()->user()->id;
 
-        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
-            $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
-                $sub_query->where("user_id", $user_id);
-            })->orWhereHas('dispute', function($sub_query) use ($user_id) {
-                $sub_query->where("created_by", $user_id);
-            });
-        })
-        ->where("id", $discussion)
-        ->first();
+        $discussion = $discussion = $this->get_discussion($discussion);
 
         $validator = Validator::make($request->all(), [
             "type" => "required|in:text,poll,meeting",
@@ -341,21 +346,59 @@ class DiscussionController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function get_poll_result(Request $request, $discussion)
+    {
+        $discussion = $this->get_discussion($discussion);
+
+        if ($discussion) {
+            $message = CaseDiscussionMessage::where("cd_id", $discussion->id)->where("id", $request->message_id)->where("message_type", "poll")->first();
+
+            if ($message) {
+                $poll_information = unserialize($message->content);
+
+                if (count($poll_information)) {
+                    if (count($poll_information["options"])) {
+                        $all_votes = CaseDiscussionAction::where("cdm_id", $message->id)->where("action", "vote")->count();
+
+                        foreach ($poll_information["options"] as $option) {
+                            $voters = [];
+                            $votes = CaseDiscussionAction::where("cdm_id", $message->id)->where("action", "vote")->where("response", $option)->get();
+
+                            if ($votes->isNotEmpty()) {
+                                foreach ($votes as $vote) {
+                                    if (!$poll_information["anon_voting"]) {
+                                        $voters[] = get_model_file_from_disk($vote->user->display_picture, "profile_photos");
+                                    }
+                                    else {
+                                        $voters[] = "";
+                                    }
+                                }
+                            }
+
+                            $poll_count = CaseDiscussionAction::where("cdm_id", $message->id)->where("action", "vote")->where("response", $option)->count();
+                            $options[$option] = [
+                                "percentage" => $poll_count ? (($poll_count/$all_votes) * 100)."%" : "0%",
+                                "voters" => $voters,
+                            ];
+                        }
+                    }
+
+                    $this->response["message"] = "Messages from chat retrieved";
+                    $this->response["status"] = Response::HTTP_OK;
+                    $this->response["data"] = $options;
+                }
+            }
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function vote_on_poll(Request $request, $discussion)
     {
-        $admin_user = user_is_admin();
         $user_id = request()->user()->id;
         $form_error_msg = [];
 
-        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
-            $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
-                $sub_query->where("user_id", $user_id);
-            })->orWhereHas('dispute', function($sub_query) use ($user_id) {
-                $sub_query->where("created_by", $user_id);
-            });
-        })
-        ->where("id", $discussion)
-        ->first();
+        $discussion = $this->get_discussion($discussion);
 
         $validator = Validator::make($request->all(), [
             "poll_id" => "required|integer",
@@ -384,6 +427,7 @@ class DiscussionController extends Controller
                         else {
                             CaseDiscussionAction::create([
                                 "cdm_id" => $poll_message->id,
+                                "cd_id" => $poll_message->cd_id,
                                 "user_id" => $user_id,
                                 "action" => "vote",
                                 "response" => $request->poll_value,
@@ -415,21 +459,58 @@ class DiscussionController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function get_user(Request $request, $discussion)
+    {
+        $user_id = $request->user_id;
+        $discussion = $this->get_discussion($discussion);
+        $view_user = false;
+        $role_in_dispute = "";
+
+        if ($user_id) {
+            $dispute = $discussion->dispute;
+
+            if ($dispute) {
+                if ($dispute->created_by = $user_id) {
+                    $view_user = true;
+                    $role_in_dispute = "Claimant";
+                }
+                else {
+                    $view_user = $dispute->involved_parties->where("user_id", $user_id)->first();
+                }
+
+                if ($view_user) {
+                    $user = User::find($user_id);
+
+                    if ($user) {
+                        $role_in_dispute = $role_in_dispute ? $role_in_dispute : $view_user->role->name;
+                        $org_key = "name";
+                        $organization = get_user_organization_name($user);
+                        $organization_name = (count($organization) && isset($organization[$org_key])) ? "(".$organization[$org_key].")" : "";
+
+                        $this->response["message"] = "User details retrieved";
+                        $this->response["status"] = Response::HTTP_OK;
+                        $this->response["data"] = [
+                            "photo" => get_model_file_from_disk($user->photo, "profile_photos"),
+                            "email" => $user->email,
+                            "phone" => $user->phone,
+                            "role_in_dispute" => $role_in_dispute,
+                            "name_organisation" => trim($user->first_name.' '.$user->last_name.' '.$organization_name),
+                            "files" => get_discussion_files($discussion, $user->id)
+                        ];
+                    }
+                }
+            }
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function upload_document(Request $request, $discussion)
     {
-        $admin_user = user_is_admin();
         $user_id = request()->user()->id;
         $form_error_msg = [];
 
-        $discussion = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
-            $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
-                $sub_query->where("user_id", $user_id);
-            })->orWhereHas('dispute', function($sub_query) use ($user_id) {
-                $sub_query->where("created_by", $user_id);
-            });
-        })
-        ->where("id", $discussion)
-        ->first();
+        $discussion = $this->get_discussion($discussion);
 
         $validator = Validator::make($request->all(), [
             "document" => "required|file|max:10240",
@@ -483,5 +564,21 @@ class DiscussionController extends Controller
         }
 
         return response()->json($this->response, $this->response["status"]);
+    }
+
+    private function get_discussion(int $discussion)
+    {
+        $admin_user = user_is_admin();
+        $user_id = request()->user()->id;
+
+        return CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
+            $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
+                $sub_query->where("user_id", $user_id);
+            })->orWhereHas('dispute', function($sub_query) use ($user_id) {
+                $sub_query->where("created_by", $user_id);
+            });
+        })
+        ->where("id", $discussion)
+        ->first();
     }
 }

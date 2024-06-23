@@ -353,7 +353,7 @@ class DashboardController extends Controller
         }
 
         $message_data["sender"] = $sender_info;
-        $message_data["unread_messages"] = 0;
+        $message_data["unread_messages"] = unread_messages_count($discussion->id, $user_id);
         $message_data["case_no"] = $discussion->discussion->dispute->case_no ?? "";
         $message_data["time_sent"] = $discussion->created_at->format("h:i");
 

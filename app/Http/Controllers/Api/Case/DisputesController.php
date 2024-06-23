@@ -7,6 +7,7 @@ use App\Http\Requests\Case\DisputeRequest;
 use App\Http\Requests\Case\InvitePartyRequest;
 use App\Http\Requests\Case\InviteResponseRequest;
 use App\Models\CaseAccusedUnion;
+use App\Models\CaseDiscussionMessage;
 use App\Models\CaseDispute;
 use App\Models\CaseDisputeStatusHistory;
 use App\Models\CaseRoles;
@@ -63,6 +64,7 @@ class DisputesController extends Controller
                     "specific_claims" => $dispute->specific_claims,
                     "negotiation_terms" => $dispute->negotiation_terms,
                     "status" => $dispute->status,
+                    "status_img" => asset("images/".make_slug($dispute->status).".svg"),
                     "involved_parties" => [
                         "claimant" => [
                             "name" => $dispute->union_data->name,
@@ -106,6 +108,7 @@ class DisputesController extends Controller
                 "specific_claims" => $dispute->specific_claims,
                 "negotiation_terms" => $dispute->negotiation_terms,
                 "status" => $dispute->status,
+                "status_img" => asset("images/".make_slug($dispute->status).".svg"),
                 "involved_parties" => [
                     "claimant" => [
                         "name" => $dispute->union_data->name,
@@ -225,6 +228,60 @@ class DisputesController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function approve_case(Request $request, $case_id)
+    {
+        $status = strtolower($request->status);
+        $form_error_msg = [];
+        $user_id = request()->user()->id;
+
+        $dispute = get_case_dispute($case_id, $user_id);
+
+        if ($dispute) {
+            $previous_status = $dispute->status;
+            if ($previous_status == "pending approval") {
+                $current_status = "concilliation";
+
+                $dispute->status = $status;
+                if ($dispute->save()) {
+                    create_dispute_group($dispute);
+
+                    CaseDisputeStatusHistory::create([
+                        "case_id" => $dispute->id,
+                        "user_id" => $user_id,
+                        "previous_status" => $previous_status,
+                        "current_status" => $current_status,
+                    ]);
+
+                    $this->response["status"] = Response::HTTP_OK;
+                    $this->response["message"] = "Case status has been approved successfully!";
+                }
+            }
+            else {
+                $form_error_msg["status"] = ["Case is currently not pending"];
+            }
+        }
+        else {
+            $this->response["message"] = 'The case you are trying to approve does not exist in our records.';
+        }
+
+        if (!empty($form_error_msg)) {
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+            $this->response["message"] = 'Validation errors';
+            $this->response["error"] = $form_error_msg;
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function get_case_status()
+    {
+        $this->response["data"] = CaseDispute::ARRAY_OF_CASE_STATUS;
+        $this->response["message"] = "Retrieved list of case statuses";
+        $this->response["status"] = Response::HTTP_OK;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function update_case_status(Request $request, $case_id)
     {
         $status = strtolower($request->status);
@@ -234,29 +291,55 @@ class DisputesController extends Controller
         $dispute = get_case_dispute($case_id, $user_id);
 
         if ($dispute) {
-            if (in_array($status, CaseDispute::ARRAY_OF_CASE_STATUS)) {
+            $validator = Validator::make($request->all(), [
+                "status" => "required|in:".implode(",", CaseDispute::ARRAY_OF_CASE_STATUS),
+                "resolution_reached" => "required|in:yes,no",
+                "summary" => "required|min:10",
+                "discussion_id" => "required|integer"
+            ]);
+
+            if ($validator->fails()) {
+                $this->response["message"] = "Validation errors";
+                $this->response["error"] = $validator->errors();
+                $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+            }
+            else {
                 $previous_status = $dispute->status;
                 $current_status = $status;
 
-                if ($previous_status == "pending approval") {
-                    create_dispute_group($dispute);
+                if ($previous_status != "pending approval") {
+                    $dispute->status = $status;
+                    $dispute->save();
+
+                    CaseDisputeStatusHistory::create([
+                        "case_id" => $dispute->id,
+                        "user_id" => $user_id,
+                        "previous_status" => $previous_status,
+                        "current_status" => $current_status,
+                    ]);
+
+                    $message_data = [
+                        "summary" => $request->summary,
+                        "resolution_reached" => $request->resolution_reached,
+                        "status" => $status
+                    ];
+
+                    CaseDiscussionMessage::create([
+                        "cd_id" => $request->discussion_id,
+                        "user_id" => $user_id,
+                        "message_type" => "status update",
+                        "content" => serialize($message_data),
+                    ]);
+
+                    $this->response["status"] = Response::HTTP_OK;
+                    $this->response["message"] = "Case status has been updated successfully!";
+                }
+                else {
+
                 }
 
-                $dispute->status = $status;
-                $dispute->save();
 
-                CaseDisputeStatusHistory::create([
-                    "case_id" => $dispute->id,
-                    "user_id" => $user_id,
-                    "previous_status" => $previous_status,
-                    "current_status" => $current_status,
-                ]);
-
-                $this->response["status"] = Response::HTTP_OK;
-                $this->response["message"] = "Case status has been updated successfully!";
-            }
-            else {
-                $form_error_msg["status"] = ["An invalid status has been selected"];
+                $form_error_msg["status"] = ["This case status cannot be updated as it is still pending"];
             }
         }
         else {

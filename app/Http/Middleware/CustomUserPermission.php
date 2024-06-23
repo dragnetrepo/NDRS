@@ -52,7 +52,7 @@ class CustomUserPermission
         }
         else {
             // Get user role
-            $user_role = UnionUserRole::where("user_id", $user_id)->first();
+            $user_role = UnionUserRole::where("user_id", $user_id)->where("status", "active")->first();
 
             if ($user_role) {
                 $role = Role::find($user_role->role_id);
