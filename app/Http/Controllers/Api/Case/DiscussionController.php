@@ -466,11 +466,11 @@ class DiscussionController extends Controller
         $view_user = false;
         $role_in_dispute = "";
 
-        if ($user_id) {
+        if ($discussion && $user_id) {
             $dispute = $discussion->dispute;
 
             if ($dispute) {
-                if ($dispute->created_by = $user_id) {
+                if ($dispute->created_by == $user_id) {
                     $view_user = true;
                     $role_in_dispute = "Claimant";
                 }

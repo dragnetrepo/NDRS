@@ -27,7 +27,7 @@ class CreateUnionSubBranchRequest extends FormRequest
         $rules =  [
             "name" => "required|string|min:3|max:191",
             "acronym" => "nullable|string|min:3|max:191",
-            "industry" => "required|string|min:3",
+            "industry" => "required|integer",
             "about" => "required|string|min:3",
             "founded_in" => "required|string|min:3",
         ];

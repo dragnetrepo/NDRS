@@ -10,7 +10,6 @@ use App\Models\CaseAccusedUnion;
 use App\Models\CaseDiscussionMessage;
 use App\Models\CaseDispute;
 use App\Models\CaseDisputeStatusHistory;
-use App\Models\CaseRoles;
 use App\Models\CaseUserRoles;
 use App\Models\OutgoingMessages;
 use App\Models\Union;
@@ -275,8 +274,17 @@ class DisputesController extends Controller
 
     public function get_case_status()
     {
-        $this->response["data"] = CaseDispute::ARRAY_OF_CASE_STATUS;
+        $this->response["data"] = CaseDispute::ARRAY_OF_ALLOWED_CASE_STATUS_UPDATE;
         $this->response["message"] = "Retrieved list of case statuses";
+        $this->response["status"] = Response::HTTP_OK;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function get_case_types()
+    {
+        $this->response["data"] = CaseDispute::ARRAY_OF_CASE_TYPES;
+        $this->response["message"] = "Retrieved list of case types";
         $this->response["status"] = Response::HTTP_OK;
 
         return response()->json($this->response, $this->response["status"]);
@@ -364,7 +372,7 @@ class DisputesController extends Controller
             foreach ($roles as $role) {
                 $data[] = [
                     "_id" => $role->id,
-                    "name" => ucwords($role->name),
+                    "name" => ucwords($role->display_name),
                 ];
             }
         }

@@ -109,6 +109,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                 Route::get("roles", "roles")->name("roles");
                 Route::get("read/{case_id}", "read")->name("read")->where('case_id', '[0-9]+');
                 Route::post("create", "create")->name("create")->middleware("custom_user_permission:create dispute");
+                Route::get("get-types", "get_case_types")->name("get-types")->middleware("custom_user_permission:create dispute");
                 Route::post("edit/{case_id}", "edit")->name("edit")->where('case_id', '[0-9]+');
                 Route::middleware("custom_user_permission:invite dispute participants")->group(function(){
                     Route::get("involved-parties/{case_id}", "involved_parties")->name("involved-parties")->where('case_id', '[0-9]+');
