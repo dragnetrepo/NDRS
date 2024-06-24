@@ -127,34 +127,14 @@ const Unions = () => {
 	};
 
 	const handleDownload = async () => {
-		try {
-			const response = await fetch(
-				"https://phpstack-1245936-4460801.cloudwaysapps.com/dev/api/union/sample-csv",
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
-			);
 
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
+		const link = document.createElement("a");
+		link.href = "/unions-sample.csv";
+		link.download = "unions-sample.csv";
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
 
-			const data = await response.json();
-			console.log(data);
-			// const url = window.URL.createObjectURL(blob);
-			const a = document.createElement("a");
-			a.href = data.data.sample_csv;
-			a.download = data.data.sample_csv; // Specify the file name
-			document.body.appendChild(a);
-			a.click();
-			a.remove();
-		} catch (error) {
-			console.error("Error downloading the file:", error);
-		}
 	};
 
 	const onHandleChange = (e) => {

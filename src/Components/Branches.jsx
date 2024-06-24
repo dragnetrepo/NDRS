@@ -543,7 +543,7 @@ const Branches = () => {
                                               <div className="position-relative">
                                                 <div className="avatar-sm flex-shrink-0">
                                                   <img
-                                                    src="/images/nnpc.svg"
+                                                    src={item.logo}
                                                     className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                                     alt="Avatar"
                                                   />
