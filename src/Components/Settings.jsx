@@ -181,8 +181,9 @@ const Settings = () => {
 			const data = await res.json();
 			setuser(data);
 			// setAvatarImage(data.display_picture || user_avatar);
-
-			window.location.reload();
+			fetchdata()
+			toast.success('Profile has been updated!')
+			// window.location.reload();
 		} catch (error) {
 			console.error("Error updating profile:", error.message);
 		}

@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 
-
 const Branches = () => {
   const { id } = useParams();
   const user_avatar = "/images/download.png";
@@ -14,27 +13,30 @@ const Branches = () => {
   const [unions, setunions] = useState([]);
   const [unionName, setUnionName] = useState([]);
   const [branches, setbranches] = useState([]);
+  const [industries, setIndustries] = useState([]);
   const [branch, setBranch] = useState({
     union: id,
     name: "",
     acronym: "",
-    industry: "",
+    industry_id: "",
+
     about: "",
+    phone: "",
     founded_in: "",
     logo: "",
   });
-  const [sidebar, setsidebar] = useState(true)
+  const [sidebar, setsidebar] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
+    setsidebar(!sidebar);
+  };
 
   useEffect(() => {
     fetchdata(id);
+    fetchIndustries();
     fetchBranches(id);
   }, []);
-
 
   const fetchdata = async (id) => {
     try {
@@ -56,8 +58,33 @@ const Branches = () => {
       }
 
       const data = await res.json();
-      setunions(data.data)
+      setunions(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
 
+  const fetchIndustries = async () => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + "/api/get-industries", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setIndustries(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -84,17 +111,15 @@ const Branches = () => {
 
       const data = await res.json();
       setbranches(data.data);
-
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
   const onHandleChange = (e) => {
     setBranch({ ...branch, [e.target.name]: e.target.value });
-
   };
 
   const handleAvatarChange = (e) => {
@@ -106,7 +131,6 @@ const Branches = () => {
     setAvatarImage(image);
 
     setBranch((prevFormData) => ({ ...prevFormData, logo: file }));
-
   };
 
   const handleSubmit = async (e) => {
@@ -132,10 +156,22 @@ const Branches = () => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+      setBranch({
+        name: "",
+        acronym: "",
+        industry_id: "",
+
+        about: "",
+        phone: "",
+        founded_in: "",
+        logo: "",
+      });
+      setAvatarImage("/images/download.png");
+      fetchBranches(id);
 
       const data = await response.json();
       toast.success("Branch has been created successfully!");
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -149,7 +185,6 @@ const Branches = () => {
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
             <main className="admin-content">
               <div className="header-box py-5">
@@ -214,20 +249,7 @@ const Branches = () => {
                                   aria-orientation="vertical"
                                 >
                                   <button
-                                    className="nav-link tab-v text-start active"
-                                    id="v-pills-bulk-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#v-pills-bulk"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="v-pills-bulk"
-                                    aria-selected="true"
-                                  >
-                                    Bulk Branch upload
-                                  </button>
-
-                                  <button
-                                    className="nav-link tab-v text-start"
+                                    className="nav-link tab-v text-start show active"
                                     id="v-pills-single-tab"
                                     data-bs-toggle="pill"
                                     data-bs-target="#v-pills-single"
@@ -248,134 +270,6 @@ const Branches = () => {
                                 >
                                   <div
                                     className="tab-pane fade show active"
-                                    id="v-pills-bulk"
-                                    role="tabpanel"
-                                    aria-labelledby="v-pills-bulk-tab"
-                                    tabIndex="0"
-                                  >
-                                    <div className="card mb-4">
-                                      <div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-                                        <h3 className="mb-lg-0 mb-3">
-                                          Bulk Invites
-                                        </h3>
-                                      </div>
-                                      <div className="card-body p-4">
-                                        <div className="row mb-4">
-                                          <div className="col-lg-5 mb-lg-0 mb-3">
-                                            <h6 className="step-text">Step 1.</h6>
-                                            <p className="text-muted-3">
-                                              Download the CSV template for any
-                                              user type or settlement bodies
-                                            </p>
-                                          </div>
-                                          <div className="col-lg-5 offset-lg-2">
-                                            <button className="btn btn-main-outline-primary btn-size">
-                                              Download CSV template
-                                            </button>
-                                          </div>
-                                        </div>
-
-                                        <div className="row mb-4">
-                                          <div className="col-lg-5 mb-lg-0 mb-3">
-                                            <h6 className="step-text">Step 2.</h6>
-                                            <p className="text-muted-3">
-                                              Fill in the users details into the
-                                              CSV file
-                                            </p>
-                                          </div>
-                                          <div className="col-lg-5 offset-lg-2">
-                                            <img
-                                              src="/images/csv.png"
-                                              className="img-fluid" alt=""
-
-                                            />
-                                          </div>
-                                        </div>
-
-                                        <div className="row mb-4">
-                                          <div className="col-lg-5 mb-lg-0 mb-3">
-                                            <h6 className="step-text">Step 3.</h6>
-                                            <p className="text-muted-3">
-                                              Upload the filled CSV file
-                                            </p>
-                                          </div>
-                                          <div className="col-lg-5 offset-lg-2">
-                                            <div className="upload-box text-center px-3 py-4">
-                                              <div className="text-center mb-2">
-                                                <img
-                                                  src="/images/file_upload_states.svg"
-                                                  className="img-fluid" alt=""
-                                                />
-                                              </div>
-                                              <p className="text-muted-3 mb-1">
-                                                Drag and drop to upload
-                                              </p>
-                                              <p className="font-sm text-muted">
-                                                CSV (max. 50mb)
-                                              </p>
-
-                                              <img
-                                                src="/images/or-line.svg"
-                                                className="img-fluid" alt=""
-                                              />
-
-                                              <div className="mt-3">
-                                                <button className="btn btn-main-primary btn-size mx-auto">
-                                                  <i className="bi bi-upload me-2"></i>{" "}
-                                                  Upload filled CSV
-                                                </button>
-                                              </div>
-                                            </div>
-                                            <div className="upload-box upload-box-success text-center px-3 py-4">
-                                              <div className="text-center mb-2">
-                                                <img
-                                                  src="/images/uploaded.svg"
-                                                  className="img-fluid" alt=""
-                                                />
-                                              </div>
-                                              <p className="text-dark text-medium mb-1">
-                                                Ministry Admins
-                                              </p>
-                                              <p className="font-sm text-muted">
-                                                CSV 2.63mb
-                                              </p>
-
-                                              <p className="text-medium">
-                                                <a
-                                                  href="#"
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#previewModal"
-                                                  className="text-decoration-none text-main-primary"
-                                                >
-                                                  <img
-                                                    src="/images/eyes.svg"
-                                                    className="img-fluid" alt=""
-                                                  />{" "}
-                                                  Preview Sent Invites
-                                                </a>
-                                              </p>
-
-                                              <p className="text-medium">
-                                                <a
-                                                  href="#"
-                                                  className="text-decoration-none text-muted-3"
-                                                >
-                                                  <img
-                                                    src="/images/trash-bin.svg"
-                                                    className="img-fluid" alt=""
-                                                  />{" "}
-                                                  Clear Upload
-                                                </a>
-                                              </p>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    className="tab-pane fade"
                                     id="v-pills-single"
                                     role="tabpanel"
                                     aria-labelledby="v-pills-single-tab"
@@ -391,6 +285,13 @@ const Branches = () => {
                                           href=""
                                           className="btn btn-size btn-main-primary"
                                           onClick={handleSubmit}
+                                          disabled={
+                                            !branch.name ||
+                                            !branch.founded_in ||
+                                            !branch.industry_id ||
+                                            !branch.phone ||
+                                            !branch.about
+                                          }
                                         >
                                           Save
                                         </a>
@@ -422,6 +323,7 @@ const Branches = () => {
                                                   placeholder="Enter branch name"
                                                   name="name"
                                                   onChange={onHandleChange}
+                                                  value={branch.name}
                                                 />
                                               </div>
                                               <div className="mb-4">
@@ -444,14 +346,20 @@ const Branches = () => {
 
                                                   <div className="main-avatar mx-auto">
                                                     <img
-                                                      src={avatarImage}
-                                                      className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+                                                      src={
+                                                        avatarImage ||
+                                                        "/images/download.png" ||
+                                                        branch.logo
+                                                      }
+                                                      className="img-fluid object-fit-cover object-position-center w-100 h-100"
+                                                      alt=""
                                                     />
                                                   </div>
 
                                                   <img
                                                     src="/images/close-x.svg"
-                                                    className="img-fluid remove-profile cursor-pointer" alt=""
+                                                    className="img-fluid remove-profile cursor-pointer"
+                                                    alt=""
                                                   />
                                                 </label>
                                               </div>
@@ -462,8 +370,9 @@ const Branches = () => {
                                                 <input
                                                   type="text"
                                                   className="form-control form-control-height"
-                                                  placeholder="Enter branch location"
+                                                  placeholder="Enter branch Acronym"
                                                   name="acronym"
+                                                  value={branch.acronym}
                                                   onChange={onHandleChange}
                                                 />
                                               </div>
@@ -475,8 +384,9 @@ const Branches = () => {
                                                 <input
                                                   type="text"
                                                   className="form-control form-control-height"
-                                                  placeholder="Enter branch phone numbers"
+                                                  placeholder="founded in"
                                                   name="founded_in"
+                                                  value={branch.founded_in}
                                                   onChange={onHandleChange}
                                                 />
                                               </div>
@@ -485,27 +395,25 @@ const Branches = () => {
                                                 <label className="form-label">
                                                   Industry
                                                 </label>
-                                                <input
-                                                  type="text"
+                                                <select
                                                   className="form-control form-control-height"
-                                                  placeholder=""
-                                                  name="industry"
-
+                                                  id="industriy"
+                                                  name="industry_id"
                                                   onChange={onHandleChange}
-                                                />
-                                              </div>
-
-                                              <div className="mb-4">
-                                                <label className="form-label">
-                                                  Headquarters
-                                                </label>
-                                                <input
-                                                  type="text"
-                                                  className="form-control form-control-height"
-                                                  placeholder=""
-                                                  name="headquarters"
-                                                  onChange={onHandleChange}
-                                                />
+                                                  value={branch.industry_id}
+                                                >
+                                                  <option value="default">
+                                                    --Choose--
+                                                  </option>
+                                                  {industries.map((item) => (
+                                                    <option
+                                                      value={item._id}
+                                                      key={item._id}
+                                                    >
+                                                      {item.name}
+                                                    </option>
+                                                  ))}
+                                                </select>
                                               </div>
 
                                               <div className="mb-4">
@@ -517,6 +425,7 @@ const Branches = () => {
                                                   className="form-control form-control-height"
                                                   placeholder=""
                                                   name="phone"
+                                                  value={branch.phone}
                                                   onChange={onHandleChange}
                                                 />
                                               </div>
@@ -529,93 +438,9 @@ const Branches = () => {
                                                   className="form-control"
                                                   rows="4"
                                                   name="about"
+                                                  value={branch.about}
                                                   onChange={onHandleChange}
                                                 ></textarea>
-                                              </div>
-
-                                              <div className="mb-4">
-                                                <div className="d-flex justify-content-between align-items-center">
-                                                  <label className="form-label">
-                                                    Unions Admins
-                                                  </label>
-                                                  <a
-                                                    href="#"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#inviteModal"
-                                                    className="text-main-primary text-medium text-decoration-none"
-                                                  >
-                                                    Add Admin{" "}
-                                                    <i className="bi bi-plus"></i>
-                                                  </a>
-                                                </div>
-
-                                                <table className="table table-list">
-                                                  <thead className="table-light">
-                                                    <tr>
-                                                      <th scope="col">Name</th>
-                                                      <th scope="col">
-                                                        Joined
-                                                      </th>
-                                                      <th scope="col">Role</th>
-                                                      <th scope="col"></th>
-                                                    </tr>
-                                                  </thead>
-                                                  <tbody>
-                                                    {/* <tr>
-                                                      <td scope="row">
-                                                        <div className="d-flex avatar-holder">
-                                                          <div className="position-relative">
-                                                            <div className="avatar-sm flex-shrink-0">
-                                                              <img
-                                                                src="/images/avatar-2.svg"
-                                                                className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                                alt="Avatar"
-                                                              />
-                                                            </div>
-                                                          </div>
-                                                          <div className="ms-2 flex-grow-1">
-                                                            <h5 className="mb-0">
-                                                              Salim Mustapha
-                                                            </h5>
-                                                            <p className="mb-0 text-muted-3">
-                                                              salimmusty@gmail.com
-                                                            </p>
-                                                          </div>
-                                                        </div>
-                                                      </td>
-                                                      <td>Feb 4 2023</td>
-                                                      <td>
-                                                        <img
-                                                          src="/images/claimant.svg"
-                                                          className="img-fluid"
-                                                          alt="claimant"
-                                                        />
-                                                      </td>
-
-                                                      <td>
-                                                        <button
-                                                          className="btn btn-size btn-outline-light text-medium no-caret"
-                                                          type="button"
-                                                          data-bs-toggle="modal"
-                                                          data-bs-target="#removeModal"
-                                                        >
-                                                          <img
-                                                            src="/images/bin_2.svg"
-                                                            className="img-fluid"
-                                                            alt="dot-v"
-                                                          />
-                                                        </button>
-                                                      </td>
-                                                    </tr> */}
-
-                                                    <tr >
-                                                      <td scope="row ">
-                                                        No admin yet
-                                                      </td>
-
-                                                    </tr>
-                                                  </tbody>
-                                                </table>
                                               </div>
                                             </div>
                                           </div>
@@ -628,8 +453,15 @@ const Branches = () => {
                             </div>
                           </div>
                           {isLoading ? (
-                            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-                              <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+                            <div
+                              className="d-flex justify-content-center align-items-center"
+                              style={{ minHeight: "80vh" }}
+                            >
+                              <ClipLoader
+                                color="#36D7B7"
+                                loading={isLoading}
+                                size={50}
+                              />
                             </div>
                           ) : (
                             <div
@@ -663,7 +495,8 @@ const Branches = () => {
                                       <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
                                         <img
                                           src="/images/filter.svg"
-                                          className="img-fluid" alt=""
+                                          className="img-fluid"
+                                          alt=""
                                         />{" "}
                                         A-Z
                                       </a>
@@ -727,7 +560,7 @@ const Branches = () => {
                                               <div className="position-relative">
                                                 <div className="avatar-sm flex-shrink-0">
                                                   <img
-                                                    src="/images/nnpc.svg"
+                                                    src={item.logo}
                                                     className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                                     alt="Avatar"
                                                   />
@@ -1390,11 +1223,11 @@ const Branches = () => {
                                               </button>
                                               <ul
                                                 className="dropdown-menu border-radius action-menu-2"
-                                              // onClick={onUniones3}
+                                                // onClick={onUniones3}
                                               >
                                                 <li>
                                                   <Link
-                                                    to={`/SubBranch/${item._id}`}
+                                                    to={`/branchDetails/${item._id}`}
                                                     className="dropdown-item"
                                                   >
                                                     View details
@@ -1470,26 +1303,44 @@ const Branches = () => {
 
                 <div className="col-lg-5">
                   <div className="d-flex align-items-center justify-content-between gap-15">
-                    <select className="form-control form-control-height w-50" defaultValue="">
+                    <select
+                      className="form-control form-control-height w-50"
+                      defaultValue=""
+                    >
                       <option value="" disabled hidden>
                         Select role
                       </option>
                       <option value="Claimants">Claimants</option>
                       <option value="Respondents">Respondents</option>
                       <option value="Ministry Admin">Ministry Admin</option>
-                      <option value="National Union Admin">National Union Admin</option>
-                      <option value="Union Branch Admin">Union Branch Admin</option>
-                      <option value="Employers">Employers (Companies & Organizations)</option>
+                      <option value="National Union Admin">
+                        National Union Admin
+                      </option>
+                      <option value="Union Branch Admin">
+                        Union Branch Admin
+                      </option>
+                      <option value="Employers">
+                        Employers (Companies & Organizations)
+                      </option>
                       <option value="Staff">Staff (Union Members)</option>
-                      <option value="Conciliators & Arbitrators">Conciliators & Arbitrators</option>
+                      <option value="Conciliators & Arbitrators">
+                        Conciliators & Arbitrators
+                      </option>
                       <option value="Mediators">Mediators</option>
-                      <option value="Industrial Arbitration Panel">Industrial Arbitration Panel (Tribunal)</option>
+                      <option value="Industrial Arbitration Panel">
+                        Industrial Arbitration Panel (Tribunal)
+                      </option>
                       <option value="Board of Enquiry">Board of Enquiry</option>
-                      <option value="National Industrial Courts">National Industrial Courts</option>
+                      <option value="National Industrial Courts">
+                        National Industrial Courts
+                      </option>
                     </select>
 
-
-                    <a href="#" className="btn btn-size btn-main-primary" disabled>
+                    <a
+                      href="#"
+                      className="btn btn-size btn-main-primary"
+                      disabled
+                    >
                       Send Invite
                     </a>
                   </div>
@@ -1555,7 +1406,10 @@ const Branches = () => {
                             </button>
                             <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a className="dropdown-item" href="disputesDetails">
+                                <a
+                                  className="dropdown-item"
+                                  href="disputesDetails"
+                                >
                                   View details
                                 </a>
                               </li>
@@ -1609,7 +1463,10 @@ const Branches = () => {
                             </button>
                             <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a className="dropdown-item" href="disputesDetails">
+                                <a
+                                  className="dropdown-item"
+                                  href="disputesDetails"
+                                >
                                   View details
                                 </a>
                               </li>
@@ -1663,7 +1520,10 @@ const Branches = () => {
                             </button>
                             <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a className="dropdown-item" href="disputesDetails">
+                                <a
+                                  className="dropdown-item"
+                                  href="disputesDetails"
+                                >
                                   View details
                                 </a>
                               </li>
@@ -1717,7 +1577,10 @@ const Branches = () => {
                             </button>
                             <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a className="dropdown-item" href="disputesDetails">
+                                <a
+                                  className="dropdown-item"
+                                  href="disputesDetails"
+                                >
                                   View details
                                 </a>
                               </li>
@@ -1747,7 +1610,11 @@ const Branches = () => {
                         </p>
 
                         <div className="text-center">
-                          <img src="/images/no-found.svg" className="img-fluid" alt="" />
+                          <img
+                            src="/images/no-found.svg"
+                            className="img-fluid"
+                            alt=""
+                          />
                         </div>
                       </div>
                     </div>
@@ -1816,7 +1683,9 @@ const Branches = () => {
           <div className="modal-content p-lg-4 border-0">
             <div className="modal-header">
               <div>
-                <h1 className="modal-title mb-1 fs-5">Preview Uploaded Unions</h1>
+                <h1 className="modal-title mb-1 fs-5">
+                  Preview Uploaded Unions
+                </h1>
                 <p className="text-muted-3">Unions: 43</p>
               </div>
               <button
@@ -1907,10 +1776,12 @@ const Branches = () => {
 
               <div className="d-flex align-items-center gap-10">
                 <button className="btn btn-outline-light text-medium">
-                  <img src="/images/prev.svg" className="img-fluid" alt="" /> Previous
+                  <img src="/images/prev.svg" className="img-fluid" alt="" />{" "}
+                  Previous
                 </button>
                 <button className="btn btn-outline-light text-medium">
-                  Next <img src="/images/next.svg" className="img-fluid" alt="" />
+                  Next{" "}
+                  <img src="/images/next.svg" className="img-fluid" alt="" />
                 </button>
               </div>
             </div>

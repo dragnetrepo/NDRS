@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import CreateAccount from "./Components/CreateAccount";
 import Index from "./Components/Index";
 import Verification from "./Components/Verification";
@@ -36,6 +36,9 @@ import Users from "./Components/Users";
 import Branches from "./Components/Branches";
 import SubBranch from "./Components/SubBranch";
 import Error404 from "./Components/Error404";
+import BranchDetails from "./Components/BranchDetails";
+import SubBranchDetails from "./Components/SubBranchDetails";
+
 // import LandingPage from "./Components/Index";
 
 export const AppContext = createContext();
@@ -158,8 +161,10 @@ const App = () => {
           <Route path="/Notifications" element={<Notifications />} />
           <Route path="/Users" element={<Users />} />
           <Route path="/Branches" element={<Branches />} />
+          <Route path="/BranchDetails/:id" element={<BranchDetails />} />
           <Route path="/Branches/:id" element={<Branches />} />
           <Route path="/SubBranch/:id" element={<SubBranch />} />
+          <Route path="/subBranchDetails/:id" element={<SubBranchDetails />} />
 
           <Route path="/*" element={<Error404 />} />
         </Routes>

@@ -40,6 +40,32 @@ const Documents = () => {
     fetchDocuments()
   }, []);
 
+  const [isAscending, setIsAscending] = useState(true);
+
+  const sortDocuments = () => {
+    const sortedItems = [...documents].sort((a, b) => {
+      if (isAscending) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    setDocuments(sortedItems);
+    setIsAscending(!isAscending);
+  };
+
+  const sortFolders = () => {
+    const sortedItems = [...folders].sort((a, b) => {
+      if (isAscending) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    setFolders(sortedItems);
+    setIsAscending(!isAscending);
+  };
+
   const onHandleChange = (e) => {
     setcaseFolder({ ...caseFolder, [e.target.name]: e.target.value });
   };
@@ -253,14 +279,14 @@ const Documents = () => {
                                           a new folder
                                         </p>
                                       </div>
-
+                                      {/* 
                                       <button
                                         className="btn btn-size btn-main-primary px-3"
                                         data-bs-toggle="modal"
                                         data-bs-target="#folderModal"
                                       >
                                         Create Folder
-                                      </button>
+                                      </button> */}
                                     </div>
                                     <div className="card-body p-4">
                                       <div className="row mt-2 mb-4">
@@ -283,7 +309,7 @@ const Documents = () => {
 
                                         <div className="col-lg-6">
                                           <div className="d-flex align-items-center justify-content-between gap-15">
-                                            <a className="btn btn-size btn-outline-light text-medium px-3">
+                                            <a className="btn btn-size btn-outline-light text-medium px-3" onClick={sortFolders}>
                                               <img
                                                 src="/images/sort.svg"
                                                 className="img-fluid me-2" alt=""
@@ -392,7 +418,7 @@ const Documents = () => {
 
                                         <div className="col-lg-6">
                                           <div className="d-flex align-items-center justify-content-between gap-15">
-                                            <a className="btn btn-size btn-outline-light text-medium px-3">
+                                            <a className="btn btn-size btn-outline-light text-medium px-3" onClick={sortDocuments}>
                                               <img
                                                 src="/images/sort.svg"
                                                 className="img-fluid me-2"

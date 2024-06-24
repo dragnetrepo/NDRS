@@ -88,7 +88,7 @@ const Notifications = () => {
       setLoading(false);
     }
   };
-  console.log(notifications);
+
 
   useEffect(() => {
     if (!token) {

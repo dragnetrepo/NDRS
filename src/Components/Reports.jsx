@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
-
+import MyChartComponent from "../Bars/MyChartComponent";
 
 const Reports = () => {
-  const [sidebar, setsidebar] = useState(true)
+  const [sidebar, setsidebar] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
+    setsidebar(!sidebar);
+  };
 
   return (
     <>
@@ -18,7 +18,6 @@ const Reports = () => {
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
 
             <main className="admin-content">
@@ -54,7 +53,8 @@ const Reports = () => {
                           <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
                             <img
                               src="/images/filter.svg"
-                              className="img-fluid" alt=""
+                              className="img-fluid"
+                              alt=""
                             />{" "}
                             Last 30 days
                           </a>
@@ -301,7 +301,8 @@ const Reports = () => {
                                   Max
                                 </button>
                               </div>
-                              <canvas id="myChart3"></canvas>
+                              {/* <canvas id="myChart3"></canvas> */}
+                              <MyChartComponent />
                             </div>
                           </div>
                         </div>

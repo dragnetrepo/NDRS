@@ -144,6 +144,7 @@ const Disputes = () => {
 
 			const data = await response.json();
 			dispute_id = data.data._id;
+			fetchDisputes()
 
 			if (dispute_id) {
 				toast.success("Dispute has been created successfully!");
@@ -166,6 +167,31 @@ const Disputes = () => {
 			window.location.reload();
 		}
 	}
+
+	const [isAscending, setIsAscending] = useState(true);
+
+	const sortDisputes = () => {
+		const sortedItems = [...getDisputes].sort((a, b) => {
+			if (isAscending) {
+				return a.case_no.localeCompare(b.case_no);
+			} else {
+				return b.case_no.localeCompare(a.case_no);
+			}
+		});
+		setGetDisputes(sortedItems);
+		setIsAscending(!isAscending);
+	};
+	const sortPendingDisputes = () => {
+		const sortedItems = [...getPendingDisputes].sort((a, b) => {
+			if (isAscending) {
+				return a.case_no.localeCompare(b.case_no);
+			} else {
+				return b.case_no.localeCompare(a.case_no);
+			}
+		});
+		setGetPendingDisputes(sortedItems);
+		setIsAscending(!isAscending);
+	};
 
 	const fetchDisputes = async () => {
 		try {
@@ -517,7 +543,7 @@ const Disputes = () => {
 																					<img src="/images/filter.svg" className="img-fluid me-2" alt="" />{" "} Filters
 																				</a>
 
-																				<button className="btn btn-size btn-outline-light text-medium px-4">
+																				<button className="btn btn-size btn-outline-light text-medium px-4" onClick={sortDisputes}>
 																					<img src="/images/sort.svg" className="img-fluid me-2" alt="" />{" "} Sort
 																				</button>
 
@@ -643,7 +669,7 @@ const Disputes = () => {
 																					<img src="/images/filter.svg" className="img-fluid me-2" alt="" />{" "} Filters
 																				</a>
 
-																				<button className="btn btn-size btn-outline-light text-medium px-4">
+																				<button className="btn btn-size btn-outline-light text-medium px-4" onClick={sortPendingDisputes}>
 																					<img src="/images/sort.svg" className="img-fluid me-2" alt="" />{" "} Sort
 																				</button>
 

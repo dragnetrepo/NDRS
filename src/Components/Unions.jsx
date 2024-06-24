@@ -36,6 +36,20 @@ const Unions = () => {
 	}, []);
 
 
+	const [isAscending, setIsAscending] = useState(true);
+
+	const sortunions = () => {
+		const sortedItems = [...unionsList].sort((a, b) => {
+			if (isAscending) {
+				return a.name.localeCompare(b.name);
+			} else {
+				return b.name.localeCompare(a.name);
+			}
+		});
+		setUnionsList(sortedItems);
+		setIsAscending(!isAscending);
+	};
+
 	const fetchRoles = async () => {
 		try {
 			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -77,6 +91,7 @@ const Unions = () => {
 			}
 
 			const data = await res.json();
+
 			setUnionsList(data.data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
@@ -129,6 +144,7 @@ const Unions = () => {
 			}
 
 			const data = await response.json();
+			console.log(data);
 			// const url = window.URL.createObjectURL(blob);
 			const a = document.createElement("a");
 			a.href = data.data.sample_csv;
@@ -183,13 +199,14 @@ const Unions = () => {
 			setUnions({
 				name: "",
 				acronym: "",
-				industry: "",
+				industry_id: "",
 				headquarters: "",
 				phone: "",
 				about: "",
 				founded_in: "",
 				logo: "",
 			})
+			setAvatarImage('/images/download.png')
 			const data = await response.json();
 			toast.success("Union has been created successfully!");
 			// window.location.reload();
@@ -247,6 +264,7 @@ const Unions = () => {
 			}
 
 			const data = await response.json();
+			toast.success('your union has been updated')
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
@@ -497,7 +515,7 @@ const Unions = () => {
 																					Single Union upload
 																				</h3>
 
-																				<a href="" className="btn btn-size btn-main-primary" onClick={handleSubmit} disabled={!unions.name || !unions.acronym || !unions.phone || !unions.about || !unions.headquarters || !unions.founded_in || !unions.industry}>
+																				<a href="" className="btn btn-size btn-main-primary" onClick={handleSubmit} disabled={!unions.name || !unions.acronym || !unions.phone || !unions.about || !unions.headquarters || !unions.founded_in || !unions.industry_id}>
 																					Complete Upload
 																				</a>
 																			</div>
@@ -526,7 +544,7 @@ const Unions = () => {
 
 																									<div className="main-avatar mx-auto">
 																										<img
-																											src={unions.logo || '/images/download.png'}
+																											src={avatarImage || '/images/download.png'}
 																											className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
 																										/>
 																									</div>
@@ -581,7 +599,7 @@ const Unions = () => {
 
 																							<div className="mb-4">
 																								<label className="form-label">Industry</label>
-																								<select className="form-control form-control-height" id="industriy" name="industry" onChange={onHandleChange} value={unions.industry}>
+																								<select className="form-control form-control-height" id="industriy" name="industry_id" onChange={onHandleChange} value={unions.industry_id}>
 																									<option value="default"  >--Choose--</option>
 																									{industries.map((item) =>
 																										<option value={item._id} key={item._id}>{item.name}</option>
@@ -758,7 +776,7 @@ const Unions = () => {
 																<div className="col-lg-7">
 																	<div className="d-flex align-items-center justify-content-between gap-15">
 																		<div className="d-flex gap-10">
-																			<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+																			<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3" onClick={sortunions}>
 																				<img
 																					src="/images/filter.svg"
 																					className="img-fluid" alt=""
