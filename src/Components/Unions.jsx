@@ -6,461 +6,495 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 
-
 const Unions = () => {
+  const user_avatar = "/images/download.png";
+  const fileInputRef = useRef(null);
+  const [avatarImage, setAvatarImage] = useState(user_avatar);
+  const { unions, setUnions } = useContext(AppContext);
+  const [roles, setRoles] = useState([]);
+  const [unionsList, setUnionsList] = useState([]);
+  const [uploadStatus, setUploadStatus] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [industries, setIndustries] = useState([]);
+  const [unionInvite, seUnionInvite] = useState({
+    email: "",
+    role: "",
+  });
+  const [sidebar, setsidebar] = useState(true);
 
-	const user_avatar = "/images/download.png";
-	const fileInputRef = useRef(null);
-	const [avatarImage, setAvatarImage] = useState(user_avatar);
-	const { unions, setUnions } = useContext(AppContext);
-	const [roles, setRoles] = useState([]);
-	const [unionsList, setUnionsList] = useState([]);
-	const [uploadStatus, setUploadStatus] = useState(null);
-	const [isLoading, setIsLoading] = useState(true);
-	const [industries, setIndustries] = useState([])
-	const [unionInvite, seUnionInvite] = useState({
-		email: "",
-		role: "",
-	});
-	const [sidebar, setsidebar] = useState(true)
+  const toggleSideBar = () => {
+    setsidebar(!sidebar);
+  };
 
-	const toggleSideBar = () => {
-		setsidebar(!sidebar)
-	}
+  useEffect(() => {
+    fetchdata();
+    fetchIndustries();
+    fetchRoles();
+  }, []);
 
+  const [isAscending, setIsAscending] = useState(true);
 
-	useEffect(() => {
-		fetchdata();
-		fetchIndustries()
-		fetchRoles()
-	}, []);
+  const sortunions = () => {
+    const sortedItems = [...unionsList].sort((a, b) => {
+      if (isAscending) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    setUnionsList(sortedItems);
+    setIsAscending(!isAscending);
+  };
 
+  const fetchRoles = async () => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
 
-	const [isAscending, setIsAscending] = useState(true);
+      const res = await fetch(baseUrl + "/api/users/get-roles", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-	const sortunions = () => {
-		const sortedItems = [...unionsList].sort((a, b) => {
-			if (isAscending) {
-				return a.name.localeCompare(b.name);
-			} else {
-				return b.name.localeCompare(a.name);
-			}
-		});
-		setUnionsList(sortedItems);
-		setIsAscending(!isAscending);
-	};
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
 
-	const fetchRoles = async () => {
-		try {
-			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const data = await res.json();
+      setRoles(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
 
-			const res = await fetch(baseUrl + "/api/users/get-roles", {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-			});
+  const fetchdata = async () => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
 
-			if (!res.ok) {
-				throw new Error("Failed to fetch data."); // Handle failed request
-			}
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
 
-			const data = await res.json();
-			setRoles(data.data);
-		} catch (error) {
-			console.error("Error fetching data:", error.message);
-		}
-	};
+      const res = await fetch(baseUrl + "/api/get-unions", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-	const fetchdata = async () => {
-		try {
-			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-			const token = localStorage.getItem("token");
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
 
-			if (!token) {
-				throw new Error("User is not logged in."); // Handle case where user is not logged in
-			}
+      const data = await res.json();
 
-			const res = await fetch(baseUrl + "/api/get-unions", {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+      setUnionsList(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-			if (!res.ok) {
-				throw new Error("Failed to fetch data."); // Handle failed request
-			}
+  const fetchIndustries = async () => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
 
-			const data = await res.json();
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
 
-			setUnionsList(data.data);
-		} catch (error) {
-			console.error("Error fetching data:", error.message);
-		} finally {
-			setIsLoading(false)
-		}
-	};
+      const res = await fetch(baseUrl + "/api/get-industries", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-	const fetchIndustries = async () => {
-		try {
-			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-			const token = localStorage.getItem("token");
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
 
-			if (!token) {
-				throw new Error("User is not logged in."); // Handle case where user is not logged in
-			}
+      const data = await res.json();
+      setIndustries(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
 
-			const res = await fetch(baseUrl + "/api/get-industries", {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+  const handleDownload = async () => {
+    const link = document.createElement("a");
+    link.href = "/unions-sample.csv";
+    link.download = "unions-sample.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
-			if (!res.ok) {
-				throw new Error("Failed to fetch data."); // Handle failed request
-			}
+  const onHandleChange = (e) => {
+    setUnions({ ...unions, [e.target.name]: e.target.value });
+  };
 
-			const data = await res.json();
-			setIndustries(data.data);
-		} catch (error) {
-			console.error("Error fetching data:", error.message);
-		}
-	};
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
 
-	const handleDownload = async () => {
-		try {
-			const response = await fetch(
-				"https://phpstack-1245936-4460801.cloudwaysapps.com/dev/api/union/sample-csv",
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}
-			);
+    const image = URL.createObjectURL(file);
+    setAvatarImage(image);
 
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
+    setUnions((prevFormData) => ({ ...prevFormData, logo: file }));
+  };
 
-			const data = await response.json();
-			console.log(data);
-			// const url = window.URL.createObjectURL(blob);
-			const a = document.createElement("a");
-			a.href = data.data.sample_csv;
-			a.download = data.data.sample_csv; // Specify the file name
-			document.body.appendChild(a);
-			a.click();
-			a.remove();
-		} catch (error) {
-			console.error("Error downloading the file:", error);
-		}
-	};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-	const onHandleChange = (e) => {
-		setUnions({ ...unions, [e.target.name]: e.target.value });
-	};
+    try {
+      const formData = new FormData(); // Create FormData object
 
-	const handleAvatarChange = (e) => {
-		const file = e.target.files[0];
-		const formData = new FormData();
-		formData.append("file", file);
+      // Append each field from the unions state to the FormData object
+      Object.entries(unions).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
 
-		const image = URL.createObjectURL(file);
-		setAvatarImage(image);
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const response = await fetch(baseUrl + "/api/union/create", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData, // Pass FormData object as the body
+      });
 
-		setUnions((prevFormData) => ({ ...prevFormData, logo: file }));
-	};
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      fetchdata();
+      setUnions({
+        name: "",
+        acronym: "",
+        industry_id: "",
+        headquarters: "",
+        phone: "",
+        about: "",
+        founded_in: "",
+        logo: "",
+      });
+      setAvatarImage("/images/download.png");
+      const data = await response.json();
+      toast.success("Union has been created successfully!");
+      // window.location.reload();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Failed to create union!");
+    }
+  };
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
+  const onHandleChangeUnion = (e) => {
+    seUnionInvite({ ...unionInvite, [e.target.name]: e.target.value });
+  };
 
-		try {
-			const formData = new FormData(); // Create FormData object
+  const handleDelete = async (e, id, unionsList, setUnionsList) => {
+    e.preventDefault();
 
-			// Append each field from the unions state to the FormData object
-			Object.entries(unions).forEach(([key, value]) => {
-				formData.append(key, value);
-			});
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const response = await fetch(baseUrl + `/api/union/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(unionsList),
+      });
 
-			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-			const response = await fetch(baseUrl + "/api/union/create", {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-				body: formData, // Pass FormData object as the body
-			});
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
 
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-			fetchdata();
-			setUnions({
-				name: "",
-				acronym: "",
-				industry_id: "",
-				headquarters: "",
-				phone: "",
-				about: "",
-				founded_in: "",
-				logo: "",
-			})
-			setAvatarImage('/images/download.png')
-			const data = await response.json();
-			toast.success("Union has been created successfully!");
-			// window.location.reload();
-		} catch (error) {
-			console.error("Error fetching data:", error);
-			toast.error('Failed to create union!')
-		}
-	};
+      const data = await response.json();
+      setUnionsList((prevUnionsList) =>
+        prevUnionsList.filter((union) => union.id !== id)
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-	const onHandleChangeUnion = (e) => {
-		seUnionInvite({ ...unionInvite, [e.target.name]: e.target.value });
-	};
+  const handleUpdate = async (e, id) => {
+    e.preventDefault();
 
-	const handleDelete = async (e, id, unionsList, setUnionsList) => {
-		e.preventDefault();
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const response = await fetch(baseUrl + `/api/union/edit/${id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(unions),
+      });
 
-		try {
-			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-			const response = await fetch(baseUrl + `/api/union/delete/${id}`, {
-				method: "DELETE",
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-				body: JSON.stringify(unionsList),
-			});
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
 
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
+      const data = await response.json();
+      toast.success("your union has been updated");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-			const data = await response.json();
-			setUnionsList((prevUnionsList) =>
-				prevUnionsList.filter((union) => union.id !== id)
-			);
-		} catch (error) {
-			console.error("Error fetching data:", error);
-		}
-	};
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
 
-	const handleUpdate = async (e, id) => {
-		e.preventDefault();
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === "text/csv") {
+      const formData = new FormData();
+      formData.append("file", file);
 
-		try {
-			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-			const response = await fetch(baseUrl + `/api/union/edit/${id}`, {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-				body: JSON.stringify(unions),
-			});
+      try {
+        const baseUrl =
+          "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+        const response = await fetch(baseUrl + "/api/union/bulk/create", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          method: "POST",
+          body: formData,
+        });
 
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
+        if (response.ok) {
+          setUploadStatus("Upload successful!");
+          const result = await response.json();
+          toast.success("unions have been uploaded succesfully!");
+        } else {
+          setUploadStatus("Upload failed.");
+          toast.error("Failed to upload unions!");
+          console.error("Upload error:", response.statusText);
+        }
+      } catch (error) {
+        setUploadStatus("Upload failed.");
 
-			const data = await response.json();
-			toast.success('your union has been updated')
-		} catch (error) {
-			console.error("Error fetching data:", error);
-		}
-	};
+        console.error("Upload error:", error);
+      }
 
-	const handleButtonClick = () => {
-		fileInputRef.current.click();
-	};
+      fileInputRef.current.value = "";
+    } else {
+      alert("Please upload a valid CSV file.");
+    }
+  };
+  // handleUpdate();
 
-	const handleFileChange = async (event) => {
-		const file = event.target.files[0];
-		if (file && file.type === "text/csv") {
-			const formData = new FormData();
-			formData.append("file", file);
+  return (
+    <>
+      <div className="main-admin-container bg-light dark-mode-active">
+        <div className="d-flex flex-column flex-lg-row h-lg-100">
+          <MainNavbarInc sidebar={sidebar} />
 
-			try {
-				const baseUrl =
-					"https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-				const response = await fetch(baseUrl + "/api/union/bulk/create", {
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-					method: "POST",
-					body: formData,
-				});
+          <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
+            <TopBarInc toggleSideBar={toggleSideBar} />
+            <main className="admin-content">
+              <div className="header-box py-5">
+                <div className="container">
+                  <h2>Unions</h2>
+                </div>
+              </div>
 
-				if (response.ok) {
-					setUploadStatus("Upload successful!");
-					const result = await response.json();
-					toast.success("unions have been uploaded succesfully!");
-				} else {
-					setUploadStatus("Upload failed.");
-					toast.error("Failed to upload unions!");
-					console.error("Upload error:", response.statusText);
-				}
-			} catch (error) {
-				setUploadStatus("Upload failed.");
+              <div className="content-main">
+                <div className="container">
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <div className="margin-top-negative">
+                        <ul
+                          className="nav custom-tab nav-underline mb-3"
+                          id="pills-tab"
+                          role="tablist"
+                        >
+                          <li className="nav-item" role="presentation">
+                            <button
+                              className="nav-link active"
+                              id="pills-folder-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#pills-folder"
+                              type="button"
+                              role="tab"
+                              aria-controls="pills-folder"
+                              aria-selected="true"
+                            >
+                              Create
+                            </button>
+                          </li>
+                          <li className="nav-item" role="presentation">
+                            <button
+                              className="nav-link"
+                              id="pills-document-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#pills-document"
+                              type="button"
+                              role="tab"
+                              aria-controls="pills-document"
+                              aria-selected="false"
+                            >
+                              All Unions
+                            </button>
+                          </li>
+                        </ul>
 
-				console.error("Upload error:", error);
-			}
+                        <div className="tab-content" id="pills-tabContent">
+                          <div
+                            className="tab-pane fade show active"
+                            id="pills-folder"
+                            role="tabpanel"
+                            aria-labelledby="pills-folder-tab"
+                            tabIndex="0"
+                          >
+                            <div className="row my-4">
+                              <div className="col-lg-3">
+                                <div
+                                  className="nav flex-column tab-item nav-pills gap-10"
+                                  id="v-pills-tab"
+                                  role="tablist"
+                                  aria-orientation="vertical"
+                                >
+                                  <button
+                                    className="nav-link tab-v text-start active"
+                                    id="v-pills-bulk-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#v-pills-bulk"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="v-pills-bulk"
+                                    aria-selected="true"
+                                  >
+                                    Bulk Union upload
+                                  </button>
 
-			fileInputRef.current.value = "";
-		} else {
-			alert("Please upload a valid CSV file.");
-		}
-	};
-	// handleUpdate();
+                                  <button
+                                    className="nav-link tab-v text-start"
+                                    id="v-pills-single-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#v-pills-single"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="v-pills-single"
+                                    aria-selected="false"
+                                  >
+                                    Single Union upload
+                                  </button>
+                                </div>
+                              </div>
 
-	return (
-		<>
-			<div className="main-admin-container bg-light dark-mode-active">
-				<div className="d-flex flex-column flex-lg-row h-lg-100">
-					<MainNavbarInc sidebar={sidebar} />
+                              <div className="col-lg-9">
+                                <div
+                                  className="tab-content"
+                                  id="v-pills-tabContent"
+                                >
+                                  <div
+                                    className="tab-pane fade show active"
+                                    id="v-pills-bulk"
+                                    role="tabpanel"
+                                    aria-labelledby="v-pills-bulk-tab"
+                                    tabIndex="0"
+                                  >
+                                    <div className="card mb-4">
+                                      <div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
+                                        <h3 className="mb-lg-0 mb-3">
+                                          Bulk Union Upload
+                                        </h3>
+                                      </div>
+                                      <div className="card-body p-4">
+                                        <div className="row mb-4">
+                                          <div className="col-lg-5 mb-lg-0 mb-3">
+                                            <h6 className="step-text">
+                                              Step 1.
+                                            </h6>
+                                            <p className="text-muted-3">
+                                              Download the CSV template for any
+                                              user type or settlement bodies
+                                            </p>
+                                          </div>
+                                          <div className="col-lg-5 offset-lg-2">
+                                            <button
+                                              className="btn btn-main-outline-primary btn-size"
+                                              onClick={handleDownload}
+                                            >
+                                              Download CSV template
+                                            </button>
+                                          </div>
+                                        </div>
 
-					<div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
+                                        <div className="row mb-4">
+                                          <div className="col-lg-5 mb-lg-0 mb-3">
+                                            <h6 className="step-text">
+                                              Step 2.
+                                            </h6>
+                                            <p className="text-muted-3">
+                                              Fill in the users details into the
+                                              CSV file
+                                            </p>
+                                          </div>
+                                          <div className="col-lg-5 offset-lg-2">
+                                            <img
+                                              src="/images/csv.png"
+                                              className="img-fluid"
+                                              alt=""
+                                            />
+                                          </div>
+                                        </div>
 
-						<TopBarInc toggleSideBar={toggleSideBar} />
-						<main className="admin-content">
-							<div className="header-box py-5">
-								<div className="container">
-									<h2>Unions</h2>
-								</div>
-							</div>
+                                        <div className="row mb-4">
+                                          <div className="col-lg-5 mb-lg-0 mb-3">
+                                            <h6 className="step-text">
+                                              Step 3.
+                                            </h6>
+                                            <p className="text-muted-3">
+                                              Upload the filled CSV file
+                                            </p>
+                                          </div>
+                                          <div className="col-lg-5 offset-lg-2">
+                                            <div className="upload-box text-center px-3 py-4">
+                                              <div className="text-center mb-2">
+                                                <img
+                                                  src="/images/file_upload_states.svg"
+                                                  className="img-fluid"
+                                                  alt=""
+                                                />
+                                              </div>
+                                              <p className="text-muted-3 mb-1">
+                                                Drag and drop to upload
+                                              </p>
+                                              <p className="font-sm text-muted">
+                                                CSV (max. 50mb)
+                                              </p>
 
-							<div className="content-main">
-								<div className="container">
-									<div className="row">
-										<div className="col-lg-12">
-											<div className="margin-top-negative">
-												<ul className="nav custom-tab nav-underline mb-3" id="pills-tab" role="tablist">
-													<li className="nav-item" role="presentation">
-														<button className="nav-link active" id="pills-folder-tab" data-bs-toggle="pill" data-bs-target="#pills-folder" type="button" role="tab" aria-controls="pills-folder" aria-selected="true">
-															Create
-														</button>
-													</li>
-													<li className="nav-item" role="presentation">
-														<button className="nav-link" id="pills-document-tab" data-bs-toggle="pill" data-bs-target="#pills-document" type="button" role="tab" aria-controls="pills-document" aria-selected="false">
-															All Unions
-														</button>
-													</li>
-												</ul>
-
-												<div className="tab-content" id="pills-tabContent">
-													<div className="tab-pane fade show active" id="pills-folder" role="tabpanel" aria-labelledby="pills-folder-tab" tabIndex="0" >
-														<div className="row my-4">
-															<div className="col-lg-3">
-																<div className="nav flex-column tab-item nav-pills gap-10" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-																	<button className="nav-link tab-v text-start active" id="v-pills-bulk-tab" data-bs-toggle="pill" data-bs-target="#v-pills-bulk" type="button" role="tab" aria-controls="v-pills-bulk" aria-selected="true">
-																		Bulk Union upload
-																	</button>
-
-																	<button className="nav-link tab-v text-start" id="v-pills-single-tab" data-bs-toggle="pill" data-bs-target="#v-pills-single" type="button" role="tab" aria-controls="v-pills-single" aria-selected="false">
-																		Single Union upload
-																	</button>
-																</div>
-															</div>
-
-															<div className="col-lg-9">
-																<div
-																	className="tab-content"
-																	id="v-pills-tabContent"
-																>
-																	<div className="tab-pane fade show active" id="v-pills-bulk" role="tabpanel" aria-labelledby="v-pills-bulk-tab" tabIndex="0">
-																		<div className="card mb-4">
-																			<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-																				<h3 className="mb-lg-0 mb-3">
-																					Bulk Union Upload
-																				</h3>
-																			</div>
-																			<div className="card-body p-4">
-																				<div className="row mb-4">
-																					<div className="col-lg-5 mb-lg-0 mb-3">
-																						<h6 className="step-text">
-																							Step 1.
-																						</h6>
-																						<p className="text-muted-3">
-																							Download the CSV template for any
-																							user type or settlement bodies
-																						</p>
-																					</div>
-																					<div className="col-lg-5 offset-lg-2">
-																						<button className="btn btn-main-outline-primary btn-size"
-																							onClick={handleDownload}
-																						>
-																							Download CSV template
-																						</button>
-																					</div>
-																				</div>
-
-																				<div className="row mb-4">
-																					<div className="col-lg-5 mb-lg-0 mb-3">
-																						<h6 className="step-text">
-																							Step 2.
-																						</h6>
-																						<p className="text-muted-3">
-																							Fill in the users details into the
-																							CSV file
-																						</p>
-																					</div>
-																					<div className="col-lg-5 offset-lg-2">
-																						<img
-																							src="/images/csv.png"
-																							className="img-fluid" alt=""
-																						/>
-																					</div>
-																				</div>
-
-																				<div className="row mb-4">
-																					<div className="col-lg-5 mb-lg-0 mb-3">
-																						<h6 className="step-text">
-																							Step 3.
-																						</h6>
-																						<p className="text-muted-3">
-																							Upload the filled CSV file
-																						</p>
-																					</div>
-																					<div className="col-lg-5 offset-lg-2">
-																						<div className="upload-box text-center px-3 py-4">
-																							<div className="text-center mb-2">
-																								<img
-																									src="/images/file_upload_states.svg"
-																									className="img-fluid" alt=""
-																								/>
-																							</div>
-																							<p className="text-muted-3 mb-1">
-																								Drag and drop to upload
-																							</p>
-																							<p className="font-sm text-muted">
-																								CSV (max. 50mb)
-																							</p>
-
-																							<img
-																								src="/images/or-line.svg"
-																								className="img-fluid" alt=""
-																							/>
-																							<div className="mt-3">
-																								<input
-																									type="file"
-																									id="profile"
-																									ref={fileInputRef}
-																									style={{
-																										visibility: "hidden",
-																										height: "0",
-																									}}
-																									onChange={handleFileChange}
-																								/>
-																								<button
-																									className="btn btn-main-primary btn-size mx-auto"
-																									onClick={handleButtonClick}
-																								>
-																									<i className="bi bi-upload me-2"></i>{" "}
-																									Upload filled CSV
-																								</button>
-																							</div>
-																						</div>
-																						{/* <div className="upload-box upload-box-success text-center px-3 py-4">
+                                              <img
+                                                src="/images/or-line.svg"
+                                                className="img-fluid"
+                                                alt=""
+                                              />
+                                              <div className="mt-3">
+                                                <input
+                                                  type="file"
+                                                  id="profile"
+                                                  ref={fileInputRef}
+                                                  style={{
+                                                    visibility: "hidden",
+                                                    height: "0",
+                                                  }}
+                                                  onChange={handleFileChange}
+                                                />
+                                                <button
+                                                  className="btn btn-main-primary btn-size mx-auto"
+                                                  onClick={handleButtonClick}
+                                                >
+                                                  <i className="bi bi-upload me-2"></i>{" "}
+                                                  Upload filled CSV
+                                                </button>
+                                              </div>
+                                            </div>
+                                            {/* <div className="upload-box upload-box-success text-center px-3 py-4">
 																							<div className="text-center mb-2">
 																								<img
 																									src="/images/uploaded.svg"
@@ -502,154 +536,191 @@ const Unions = () => {
 																								</a>
 																							</p>
 																						</div> */}
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
 
-																	<div className="tab-pane fade" id="v-pills-single" role="tabpanel" aria-labelledby="v-pills-single-tab" tabIndex="0">
-																		<div className="card mb-4">
-																			<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-																				<h3 className="mb-lg-0 mb-3">
-																					Single Union upload
-																				</h3>
+                                  <div
+                                    className="tab-pane fade"
+                                    id="v-pills-single"
+                                    role="tabpanel"
+                                    aria-labelledby="v-pills-single-tab"
+                                    tabIndex="0"
+                                  >
+                                    <div className="card mb-4">
+                                      <div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
+                                        <h3 className="mb-lg-0 mb-3">
+                                          Single Union upload
+                                        </h3>
 
-																				<a href="" className="btn btn-size btn-main-primary" onClick={handleSubmit} disabled={!unions.name || !unions.acronym || !unions.phone || !unions.about || !unions.headquarters || !unions.founded_in || !unions.industry_id}>
-																					Complete Upload
-																				</a>
-																			</div>
-																			<div className="card-body p-4">
-																				<form>
-																					<div className="row mt-4">
-																						<div className="col-lg-12">
-																							<div className="mb-4">
-																								<label className="form-label d-block">
-																									Union Logo
-																								</label>
-																								<label
-																									htmlFor="logo"
-																									className="position-relative"
-																								>
-																									<input
-																										type="file"
-																										id="logo"
-																										style={{ display: "none" }}
-																										name="logo"
+                                        <a
+                                          href=""
+                                          className="btn btn-size btn-main-primary"
+                                          onClick={handleSubmit}
+                                          disabled={
+                                            !unions.name ||
+                                            !unions.acronym ||
+                                            !unions.phone ||
+                                            !unions.about ||
+                                            !unions.headquarters ||
+                                            !unions.founded_in ||
+                                            !unions.industry_id
+                                          }
+                                        >
+                                          Complete Upload
+                                        </a>
+                                      </div>
+                                      <div className="card-body p-4">
+                                        <form>
+                                          <div className="row mt-4">
+                                            <div className="col-lg-12">
+                                              <div className="mb-4">
+                                                <label className="form-label d-block">
+                                                  Union Logo
+                                                </label>
+                                                <label
+                                                  htmlFor="logo"
+                                                  className="position-relative"
+                                                >
+                                                  <input
+                                                    type="file"
+                                                    id="logo"
+                                                    style={{ display: "none" }}
+                                                    name="logo"
+                                                    onChange={
+                                                      handleAvatarChange
+                                                    }
+                                                  />
 
-																										onChange={
-																											handleAvatarChange
-																										}
-																									/>
+                                                  <div className="main-avatar mx-auto">
+                                                    <img
+                                                      src={
+                                                        avatarImage ||
+                                                        "/images/download.png"
+                                                      }
+                                                      className="img-fluid object-fit-cover object-position-center w-100 h-100"
+                                                      alt=""
+                                                    />
+                                                  </div>
 
-																									<div className="main-avatar mx-auto">
-																										<img
-																											src={avatarImage || '/images/download.png'}
-																											className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
-																										/>
-																									</div>
+                                                  <img
+                                                    src="/images/close-x.svg"
+                                                    className="img-fluid remove-profile cursor-pointer"
+                                                  />
+                                                </label>
+                                              </div>
+                                              <div className="mb-4">
+                                                <label className="form-label">
+                                                  Union name
+                                                </label>
+                                                <input
+                                                  type="text"
+                                                  className="form-control form-control-height"
+                                                  placeholder=""
+                                                  name="name"
+                                                  value={unions.name}
+                                                  onChange={onHandleChange}
+                                                />
+                                              </div>
 
-																									<img
-																										src="/images/close-x.svg"
-																										className="img-fluid remove-profile cursor-pointer"
-																									/>
-																								</label>
-																							</div>
-																							<div className="mb-4">
-																								<label className="form-label">
-																									Union name
-																								</label>
-																								<input
-																									type="text"
-																									className="form-control form-control-height"
-																									placeholder=""
-																									name="name"
-																									value={unions.name}
-																									onChange={onHandleChange}
-																								/>
-																							</div>
+                                              <div className="mb-4">
+                                                <label className="form-label">
+                                                  Union Acronym (if applicable)
+                                                </label>
+                                                <input
+                                                  type="text"
+                                                  className="form-control form-control-height"
+                                                  placeholder=""
+                                                  name="acronym"
+                                                  value={unions.acronym}
+                                                  onChange={onHandleChange}
+                                                />
+                                              </div>
 
-																							<div className="mb-4">
-																								<label className="form-label">
-																									Union Acronym (if applicable)
-																								</label>
-																								<input
-																									type="text"
-																									className="form-control form-control-height"
-																									placeholder=""
-																									name="acronym"
-																									value={unions.acronym}
-																									onChange={onHandleChange}
-																								/>
-																							</div>
+                                              <div className="mb-4">
+                                                <label className="form-label">
+                                                  Founded in
+                                                </label>
+                                                <input
+                                                  type="text"
+                                                  className="form-control form-control-height"
+                                                  placeholder=""
+                                                  name="founded_in"
+                                                  value={unions.founded_in}
+                                                  onChange={onHandleChange}
+                                                />
+                                              </div>
 
-																							<div className="mb-4">
-																								<label className="form-label">
-																									Founded in
-																								</label>
-																								<input
-																									type="text"
-																									className="form-control form-control-height"
-																									placeholder=""
-																									name="founded_in"
-																									value={unions.founded_in}
-																									onChange={onHandleChange}
-																								/>
-																							</div>
+                                              <div className="mb-4">
+                                                <label className="form-label">
+                                                  Industry
+                                                </label>
+                                                <select
+                                                  className="form-control form-control-height"
+                                                  id="industriy"
+                                                  name="industry_id"
+                                                  onChange={onHandleChange}
+                                                  value={unions.industry_id}
+                                                >
+                                                  <option value="default">
+                                                    --Choose--
+                                                  </option>
+                                                  {industries.map((item) => (
+                                                    <option
+                                                      value={item._id}
+                                                      key={item._id}
+                                                    >
+                                                      {item.name}
+                                                    </option>
+                                                  ))}
+                                                </select>
+                                              </div>
 
-																							<div className="mb-4">
-																								<label className="form-label">Industry</label>
-																								<select className="form-control form-control-height" id="industriy" name="industry_id" onChange={onHandleChange} value={unions.industry_id}>
-																									<option value="default"  >--Choose--</option>
-																									{industries.map((item) =>
-																										<option value={item._id} key={item._id}>{item.name}</option>
-																									)}
-																								</select>
-																							</div>
+                                              <div className="mb-4">
+                                                <label className="form-label">
+                                                  Headquarters
+                                                </label>
+                                                <input
+                                                  type="text"
+                                                  className="form-control form-control-height"
+                                                  placeholder=""
+                                                  name="headquarters"
+                                                  value={unions.headquarters}
+                                                  onChange={onHandleChange}
+                                                />
+                                              </div>
 
-																							<div className="mb-4">
-																								<label className="form-label">
-																									Headquarters
-																								</label>
-																								<input
-																									type="text"
-																									className="form-control form-control-height"
-																									placeholder=""
-																									name="headquarters"
-																									value={unions.headquarters}
-																									onChange={onHandleChange}
-																								/>
-																							</div>
+                                              <div className="mb-4">
+                                                <label className="form-label">
+                                                  Phone
+                                                </label>
+                                                <input
+                                                  type="text"
+                                                  className="form-control form-control-height"
+                                                  placeholder=""
+                                                  name="phone"
+                                                  value={unions.phone}
+                                                  onChange={onHandleChange}
+                                                />
+                                              </div>
 
-																							<div className="mb-4">
-																								<label className="form-label">
-																									Phone
-																								</label>
-																								<input
-																									type="text"
-																									className="form-control form-control-height"
-																									placeholder=""
-																									name="phone"
-																									value={unions.phone}
-																									onChange={onHandleChange}
-																								/>
-																							</div>
+                                              <div className="mb-4">
+                                                <label className="form-label">
+                                                  About
+                                                </label>
+                                                <textarea
+                                                  className="form-control"
+                                                  rows="4"
+                                                  name="about"
+                                                  value={unions.about}
+                                                  onChange={onHandleChange}
+                                                ></textarea>
+                                              </div>
 
-																							<div className="mb-4">
-																								<label className="form-label">
-																									About
-																								</label>
-																								<textarea
-																									className="form-control"
-																									rows="4"
-																									name="about"
-																									value={unions.about}
-																									onChange={onHandleChange}
-																								></textarea>
-																							</div>
-
-																							<div className="mb-4">
-																								{/* <div className="d-flex justify-content-between align-items-center">
+                                              <div className="mb-4">
+                                                {/* <div className="d-flex justify-content-between align-items-center">
 																									<label className="form-label">
 																										Unions Admins
 																									</label>
@@ -663,8 +734,8 @@ const Unions = () => {
 																										<i className="bi bi-plus"></i>
 																									</a>
 																								</div> */}
-																								<div className="table-responsive">
-																									{/* <table className="table table-list">
+                                                <div className="table-responsive">
+                                                  {/* <table className="table table-list">
 																										<thead className="table-light">
 																											<tr>
 																												<th scope="col">Name</th>
@@ -722,148 +793,158 @@ const Unions = () => {
 																													</button>
 																												</td>
 																											</tr> */}
-																									{/* <tr>
+                                                  {/* <tr>
 																												<td>
 																													<p className="m-3">No admin has been invited</p>
 																												</td>
 																											</tr> */}
 
-																									{/* </tbody> */}
-																									{/* </table>  */}
-																								</div>
+                                                  {/* </tbody> */}
+                                                  {/* </table>  */}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {isLoading ? (
+                            <div
+                              className="d-flex justify-content-center align-items-center"
+                              style={{ minHeight: "80vh" }}
+                            >
+                              <ClipLoader
+                                color="#36D7B7"
+                                loading={isLoading}
+                                size={50}
+                              />
+                            </div>
+                          ) : (
+                            <div
+                              className="tab-pane fade"
+                              id="pills-document"
+                              role="tabpanel"
+                              aria-labelledby="pills-document-tab"
+                              tabIndex="0"
+                            >
+                              <div className="row my-4">
+                                <div className="col-lg-5 mb-lg-0 mb-3">
+                                  <div className="input-group">
+                                    <span className="input-group-text bg-transparent">
+                                      <img
+                                        src="/images/search.svg"
+                                        className="img-fluid"
+                                        alt="search"
+                                      />
+                                    </span>
+                                    <input
+                                      type="search"
+                                      className="form-control border-start-0 form-control-height"
+                                      placeholder="Search here..."
+                                    />
+                                  </div>
+                                </div>
 
-																							</div>
-																						</div>
-																					</div>
-																				</form>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-													{isLoading ? (
-														<div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-															<ClipLoader color="#36D7B7" loading={isLoading} size={50} />
-														</div>
-													) : (
-														<div
-															className="tab-pane fade"
-															id="pills-document"
-															role="tabpanel"
-															aria-labelledby="pills-document-tab"
-															tabIndex="0"
-														>
-															<div className="row my-4">
-																<div className="col-lg-5 mb-lg-0 mb-3">
-																	<div className="input-group">
-																		<span className="input-group-text bg-transparent">
-																			<img
-																				src="/images/search.svg"
-																				className="img-fluid"
-																				alt="search"
-																			/>
-																		</span>
-																		<input
-																			type="search"
-																			className="form-control border-start-0 form-control-height"
-																			placeholder="Search here..."
-																		/>
-																	</div>
-																</div>
+                                <div className="col-lg-7">
+                                  <div className="d-flex align-items-center justify-content-between gap-15">
+                                    <div className="d-flex gap-10">
+                                      <a
+                                        className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
+                                        onClick={sortunions}
+                                      >
+                                        <img
+                                          src="/images/filter.svg"
+                                          className="img-fluid"
+                                          alt=""
+                                        />{" "}
+                                        A-Z
+                                      </a>
 
-																<div className="col-lg-7">
-																	<div className="d-flex align-items-center justify-content-between gap-15">
-																		<div className="d-flex gap-10">
-																			<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3" onClick={sortunions}>
-																				<img
-																					src="/images/filter.svg"
-																					className="img-fluid" alt=""
-																				/>{" "}
-																				A-Z
-																			</a>
+                                      <button className="btn btn-size btn-main-outline-primary px-3">
+                                        <i className="bi bi-cloud-download me-2"></i>{" "}
+                                        Export CSV
+                                      </button>
+                                    </div>
 
-																			<button className="btn btn-size btn-main-outline-primary px-3">
-																				<i className="bi bi-cloud-download me-2"></i>{" "}
-																				Export CSV
-																			</button>
-																		</div>
+                                    <p className="text-end mb-0 file-count">
+                                      Unions: {unionsList.length}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
 
-																		<p className="text-end mb-0 file-count">
-																			Unions: {unionsList.length}
-																		</p>
-																	</div>
-																</div>
-															</div>
+                              <div className="row">
+                                <div className="col-lg-12">
+                                  <table className="table table-list">
+                                    <thead className="table-light">
+                                      <tr>
+                                        <th scope="col">
+                                          <div>
+                                            <input
+                                              className="form-check-input"
+                                              type="checkbox"
+                                              id="checkboxNoLabel"
+                                              value=""
+                                              aria-label="..."
+                                            />
+                                          </div>
+                                        </th>
+                                        <th scope="col">Unions</th>
+                                        <th scope="col">Assigned Admin</th>
+                                        <th scope="col">Industry</th>
+                                        <th scope="col">Date added</th>
+                                        <th scope="col">Actions</th>
+                                      </tr>
+                                    </thead>
 
-															<div className="row">
-																<div className="col-lg-12">
-																	<table className="table table-list">
-																		<thead className="table-light">
-																			<tr>
-																				<th scope="col">
-																					<div>
-																						<input
-																							className="form-check-input"
-																							type="checkbox"
-																							id="checkboxNoLabel"
-																							value=""
-																							aria-label="..."
-																						/>
-																					</div>
-																				</th>
-																				<th scope="col">Unions</th>
-																				<th scope="col">Assigned Admin</th>
-																				<th scope="col">Industry</th>
-																				<th scope="col">Date added</th>
-																				<th scope="col">Actions</th>
-																			</tr>
-																		</thead>
+                                    <tbody>
+                                      {unionsList.map((union) => (
+                                        <tr key={union._id}>
+                                          <td>
+                                            <div>
+                                              <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id="checkboxNoLabel"
+                                                value=""
+                                                aria-label="..."
+                                              />
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div className="d-flex align-items-center avatar-holder">
+                                              <div className="position-relative">
+                                                <div className="avatar-sm flex-shrink-0">
+                                                  <img
+                                                    src={union.logo}
+                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                    alt="Avatar"
+                                                  />
+                                                </div>
+                                              </div>
+                                              <div className="ms-2 flex-grow-1">
+                                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                                  <div className="mb-0 d-flex align-items-center">
+                                                    <div className="heading-text">
+                                                      {union.name}{" "}
+                                                      <span className="text-muted-3">
+                                                        {" "}
+                                                        {union.acronym}
+                                                      </span>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </td>
 
-																		<tbody>
-																			{unionsList.map((union) => (
-																				<tr key={union._id}>
-																					<td>
-																						<div>
-																							<input
-																								className="form-check-input"
-																								type="checkbox"
-																								id="checkboxNoLabel"
-																								value=""
-																								aria-label="..."
-																							/>
-																						</div>
-																					</td>
-																					<td>
-																						<div className="d-flex align-items-center avatar-holder">
-																							<div className="position-relative">
-																								<div className="avatar-sm flex-shrink-0">
-																									<img
-																										src={union.logo}
-																										className="img-fluid object-position-center object-fit-cover w-100 h-100"
-																										alt="Avatar"
-																									/>
-																								</div>
-																							</div>
-																							<div className="ms-2 flex-grow-1">
-																								<div className="d-flex justify-content-between align-items-center mb-2">
-																									<div className="mb-0 d-flex align-items-center">
-																										<div className="heading-text">
-																											{union.name}{" "}
-																											<span className="text-muted-3">
-																												{" "}
-																												{union.acronym}
-																											</span>
-																										</div>
-																									</div>
-																								</div>
-																							</div>
-																						</div>
-																					</td>
-
-																					<td>
-																						{/* <div className="avatars">
+                                          <td>
+                                            {/* <div className="avatars">
 																						<div className="dropdown">
 																							<a
 																								href="#"
@@ -1479,39 +1560,40 @@ const Unions = () => {
 																								</div>
 																							</ul>
 																						</div>
-																					</div> */}<p>No admin added</p>
-																					</td>
+																					</div> */}
+                                            <p>No admin added</p>
+                                          </td>
 
-																					<td>{union.industry}</td>
-																					<td>{union.date_added}</td>
-																					<td>
-																						<div className="dropdown">
-																							<button
-																								className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																								type="button"
-																								data-bs-toggle="dropdown"
-																								aria-expanded="false"
-																								data-bs-auto-close="outside"
-																							>
-																								<img
-																									src="/images/dots-v.svg"
-																									className="img-fluid"
-																									alt="dots"
-																								/>
-																							</button>
-																							<ul className="dropdown-menu border-radius action-menu-2">
-																								<li>
-																									<Link
-																										to={`/UnionDetails/${union._id}`}
-																										className="dropdown-item"
-																									>
-																										View details
-																									</Link>
-																								</li>
-																							</ul>
-																						</div>
-																					</td>
-																					{/* <td>
+                                          <td>{union.industry}</td>
+                                          <td>{union.date_added}</td>
+                                          <td>
+                                            <div className="dropdown">
+                                              <button
+                                                className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                                data-bs-auto-close="outside"
+                                              >
+                                                <img
+                                                  src="/images/dots-v.svg"
+                                                  className="img-fluid"
+                                                  alt="dots"
+                                                />
+                                              </button>
+                                              <ul className="dropdown-menu border-radius action-menu-2">
+                                                <li>
+                                                  <Link
+                                                    to={`/UnionDetails/${union._id}`}
+                                                    className="dropdown-item"
+                                                  >
+                                                    View details
+                                                  </Link>
+                                                </li>
+                                              </ul>
+                                            </div>
+                                          </td>
+                                          {/* <td>
 																<button
 																	className="btn btn-size btn-outline-light text-medium no-caret"
 																	type="button"
@@ -1529,96 +1611,110 @@ const Unions = () => {
 																
 																</button>
 																</td> */}
-																				</tr>
-																			))}
-																		</tbody>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </main>
 
+            <footer>
+              <div className="container">
+                <div className="row">
+                  <div className="col-lg-12"></div>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </div>
 
-																	</table>
-																</div>
-															</div>
-														</div>
-													)}
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</main>
+      {/* <!-- Modal --> */}
+      <div
+        className="modal fade"
+        id="inviteModal"
+        tabIndex="-1"
+        aria-labelledby="inviteModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered modal-lg">
+          <div className="modal-content p-lg-4 border-0">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5">Send invites</h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="row my-4">
+                <div className="col-lg-7">
+                  <div className="input-group">
+                    <span className="input-group-text bg-transparent">
+                      <img
+                        src="images/search.svg"
+                        className="img-fluid"
+                        alt="search"
+                      />
+                    </span>
+                    <input
+                      type="search"
+                      className="form-control border-start-0 form-control-height"
+                      placeholder="Type an email to send an invite"
+                      name="email"
+                      onChange={onHandleChangeUnion}
+                    />
+                  </div>
+                </div>
 
-						<footer>
-							<div className="container">
-								<div className="row">
-									<div className="col-lg-12"></div>
-								</div>
-							</div>
-						</footer>
-					</div>
-				</div>
-			</div>
+                <div className="col-lg-5">
+                  <div className="d-flex align-items-center justify-content-between gap-15">
+                    <select
+                      className="form-control form-control-height w-50"
+                      name="role"
+                      onChange={onHandleChangeUnion}
+                    >
+                      <option>--Choose--</option>
+                      {roles.map((role) => (
+                        <option key={role._id} value={role._id}>
+                          {role.name}
+                        </option>
+                      ))}
+                    </select>
 
-			{/* <!-- Modal --> */}
-			<div className="modal fade" id="inviteModal" tabIndex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
-				<div className="modal-dialog modal-dialog-centered modal-lg">
-					<div className="modal-content p-lg-4 border-0">
-						<div className="modal-header">
-							<h1 className="modal-title fs-5">Send invites</h1>
-							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div className="modal-body">
-							<div className="row my-4">
-								<div className="col-lg-7">
-									<div className="input-group">
-										<span className="input-group-text bg-transparent">
-											<img src="images/search.svg" className="img-fluid" alt="search" />
-										</span>
-										<input type="search" className="form-control border-start-0 form-control-height" placeholder="Type an email to send an invite"
-											name="email" onChange={onHandleChangeUnion} />
-									</div>
-								</div>
+                    <a href="#" className="btn btn-size btn-main-primary">
+                      Send Invite
+                    </a>
+                  </div>
+                </div>
+              </div>
 
-								<div className="col-lg-5">
-									<div className="d-flex align-items-center justify-content-between gap-15">
+              <p className="text-medium">Union Admins</p>
 
-										<select
-											className="form-control form-control-height w-50"
-											name="role"
-											onChange={onHandleChangeUnion}
-										>
-											<option>
-												--Choose--
-											</option>
-											{roles.map((role) => (
-												<option
-													key={role._id}
-													value={role._id}
-												>
-													{role.name}
-												</option>
-											))}
-										</select>
-
-										<a href="#" className="btn btn-size btn-main-primary">Send Invite</a>
-									</div>
-								</div>
-							</div>
-
-							<p className="text-medium">Union Admins</p>
-
-							<div className="row">
-								<div className="col-lg-12">
-									<table className="table table-list">
-										<thead className="table-light">
-											{/* <tr>
+              <div className="row">
+                <div className="col-lg-12">
+                  <table className="table table-list">
+                    <thead className="table-light">
+                      {/* <tr>
 												<th scope="col">Name</th>
 												<th scope="col">Date added</th>
 												<th scope="col">Role</th>
 												<th scope="col"></th>
 											</tr> */}
-										</thead>
-										<tbody>
-											{/* <tr>
+                    </thead>
+                    <tbody>
+                      {/* <tr>
 												<td scope="row">
 													<div className="d-flex avatar-holder">
 														<div className="position-relative">
@@ -1745,137 +1841,208 @@ const Unions = () => {
 													</div>
 												</td>
 											</tr> */}
-										</tbody>
-									</table>
-									<table className="table table-list">
-										<thead className="table-light">
-											<tr>
-												<th scope="col">Name</th>
-												<th scope="col">Date added</th>
-												<th scope="col">Role</th>
-												<th scope="col"></th>
-											</tr>
-										</thead>
-									</table>
-									<div className="card no-admin-card rounded-0">
-										<div className="card-body d-flex align-items-center justify-content-center">
-											<div className="text-center">
-												<h4 className="">No admins found</h4>
+                    </tbody>
+                  </table>
+                  <table className="table table-list">
+                    <thead className="table-light">
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Date added</th>
+                        <th scope="col">Role</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                  </table>
+                  <div className="card no-admin-card rounded-0">
+                    <div className="card-body d-flex align-items-center justify-content-center">
+                      <div className="text-center">
+                        <h4 className="">No admins found</h4>
 
-												<p className="text-muted-3">Enter an admins email and role to send invite</p>
+                        <p className="text-muted-3">
+                          Enter an admins email and role to send invite
+                        </p>
 
-												<div className="text-center">
-													<img src="images/no-found.svg" className="img-fluid" alt="" />
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+                        <div className="text-center">
+                          <img
+                            src="images/no-found.svg"
+                            className="img-fluid"
+                            alt=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-			{/* <!-- Modal --> */}
-			<div className="modal fade" id="removeModal" tabIndex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
-				<div className="modal-dialog modal-dialog-centered">
-					<div className="modal-content border-0 p-lg-4 p-3">
-						<div className="text-end">
-							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div className="modal-body">
-							<div className="text-center">
-								<img src="images/delete-icon.svg" className="img-fluid mb-3" alt="delete an account" />
-							</div>
-							<h1 className="heading modal-heading text-center mb-3">Are you sure you want send an invite to</h1>
-							<p className="mb-4 modal-text text-center">jamesomogiafo@gmail.com <span className="text-bold text-darken">as Union Branch Admin for</span> University of Lagos </p>
+      {/* <!-- Modal --> */}
+      <div
+        className="modal fade"
+        id="removeModal"
+        tabIndex="-1"
+        aria-labelledby="removeModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-0 p-lg-4 p-3">
+            <div className="text-end">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="text-center">
+                <img
+                  src="images/delete-icon.svg"
+                  className="img-fluid mb-3"
+                  alt="delete an account"
+                />
+              </div>
+              <h1 className="heading modal-heading text-center mb-3">
+                Are you sure you want send an invite to
+              </h1>
+              <p className="mb-4 modal-text text-center">
+                jamesomogiafo@gmail.com{" "}
+                <span className="text-bold text-darken">
+                  as Union Branch Admin for
+                </span>{" "}
+                University of Lagos{" "}
+              </p>
 
+              <button className="btn btn-size btn-main-danger w-100">
+                Yes, Remove Admin
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-							<button className="btn btn-size btn-main-danger w-100">Yes, Remove Admin</button>
-						</div>
-					</div>
-				</div>
-			</div>
+      {/* <!-- Modal --> */}
+      <div
+        className="modal fade"
+        id="previewModal"
+        tabIndex="-1"
+        aria-labelledby="previewModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered modal-xl">
+          <div className="modal-content p-lg-4 border-0">
+            <div className="modal-header">
+              <div>
+                <h1 className="modal-title mb-1 fs-5">
+                  Preview Uploaded Unions
+                </h1>
+                <p className="text-muted-3">Unions: 43</p>
+              </div>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <table className="table table-list">
+                <thead className="table-light">
+                  <tr>
+                    <th scope="col">
+                      <div>
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="checkboxNoLabel"
+                          value=""
+                          aria-label="..."
+                        />
+                      </div>
+                    </th>
+                    <th scope="col">Unions</th>
+                    <th scope="col">Industry</th>
+                    <th scope="col">Date added</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div>
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="checkboxNoLabel"
+                          value=""
+                          aria-label="..."
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <div className="d-flex align-items-center avatar-holder">
+                        <div className="position-relative">
+                          <div className="avatar-sm flex-shrink-0">
+                            <img
+                              src="images/ipman.svg"
+                              className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                              alt="Avatar"
+                            />
+                          </div>
+                        </div>
+                        <div className="ms-2 text-muted-3">
+                          <p className="text-darken mb-0">
+                            Nigeria Union of Petroleum and Natural Gas Workers
+                          </p>
+                          <span className="text-muted-3">(NUPENG)</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Oil & Gas</td>
+                    <td>Feb 4 2024</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="modal-footer d-flex justify-content-between align-items-center">
+              <p className="mb-0 text-muted">Page 1 of 30</p>
 
-			{/* <!-- Modal --> */}
-			<div className="modal fade" id="previewModal" tabIndex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
-				<div className="modal-dialog modal-dialog-centered modal-xl">
-					<div className="modal-content p-lg-4 border-0">
-						<div className="modal-header">
-							<div>
-								<h1 className="modal-title mb-1 fs-5">Preview Uploaded Unions</h1>
-								<p className="text-muted-3">Unions: 43</p>
-							</div>
-							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div className="modal-body">
-							<table className="table table-list">
-								<thead className="table-light">
-									<tr>
-										<th scope="col">
-											<div>
-												<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-											</div>
-										</th>
-										<th scope="col">Unions</th>
-										<th scope="col">Industry</th>
-										<th scope="col">Date added</th>
-									</tr>
-								</thead>
-								<tbody>
+              <nav aria-label="...">
+                <ul className="pagination pager mb-0">
+                  <li className="page-item active" aria-current="page">
+                    <span className="page-link">1</span>
+                  </li>
+                  <li className="page-item">
+                    <a className="page-link" href="#">
+                      2
+                    </a>
+                  </li>
+                  <li className="page-item">
+                    <a className="page-link" href="#">
+                      3
+                    </a>
+                  </li>
+                </ul>
+              </nav>
 
-									<tr>
-										<td>
-											<div>
-												<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-											</div>
-										</td>
-										<td>
-											<div className="d-flex align-items-center avatar-holder">
-												<div className="position-relative">
-													<div className="avatar-sm flex-shrink-0">
-														<img src="images/ipman.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-													</div>
-												</div>
-												<div className="ms-2 text-muted-3">
-													<p className="text-darken mb-0">Nigeria Union of Petroleum and Natural Gas Workers</p>
-													<span className="text-muted-3">(NUPENG)</span>
-												</div>
-											</div>
-										</td>
-										<td>
-											Oil & Gas
-										</td>
-										<td>Feb 4 2024</td>
-									</tr>
-
-								</tbody>
-							</table>
-						</div>
-						<div className="modal-footer d-flex justify-content-between align-items-center">
-							<p className="mb-0 text-muted">Page 1 of 30</p>
-
-							<nav aria-label="...">
-								<ul className="pagination pager mb-0">
-									<li className="page-item active" aria-current="page">
-										<span className="page-link">1</span>
-									</li>
-									<li className="page-item"><a className="page-link" href="#">2</a></li>
-									<li className="page-item"><a className="page-link" href="#">3</a></li>
-								</ul>
-							</nav>
-
-							<div className="d-flex align-items-center gap-10">
-								<button className="btn btn-outline-light text-medium"><img src="images/prev.svg" className="img-fluid" alt="" /> Previous</button>
-								<button className="btn btn-outline-light text-medium">Next <img src="images/next.svg" className="img-fluid" alt="" /></button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</>
-	);
+              <div className="d-flex align-items-center gap-10">
+                <button className="btn btn-outline-light text-medium">
+                  <img src="images/prev.svg" className="img-fluid" alt="" />{" "}
+                  Previous
+                </button>
+                <button className="btn btn-outline-light text-medium">
+                  Next{" "}
+                  <img src="images/next.svg" className="img-fluid" alt="" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Unions;
