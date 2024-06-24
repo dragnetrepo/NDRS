@@ -9,6 +9,7 @@ const UnionDetails = () => {
   const { id } = useParams();
   const user_avatar = "/images/unilag.svg";
   const [isLoading, setIsLoading] = useState(true);
+  const [industries, setIndustries] = useState([])
 
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const [roles, setRoles] = useState([]);
@@ -18,6 +19,7 @@ const UnionDetails = () => {
     industry: "",
     headquarters: "",
     phone: "",
+    industry_id: "",
     about: "",
     founded_in: "",
     logo: "",
@@ -35,12 +37,38 @@ const UnionDetails = () => {
 
 
 
-
   useEffect(() => {
     fetchdata(id);
     fetchBranches(id);
     fetchroles();
+    fetchIndustries()
   }, []);
+
+  const fetchIndustries = async () => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + "/api/get-industries", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setIndustries(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
 
   const fetchdata = async (id) => {
     try {
@@ -69,6 +97,7 @@ const UnionDetails = () => {
       setIsLoading(false)
     }
   };
+
 
   const fetchroles = async () => {
     try {
@@ -155,9 +184,9 @@ const UnionDetails = () => {
       if (!res.ok) {
         throw new Error("Failed to fetch data."); // Handle failed request
       }
-
+      fetchdata(id)
       const data = await res.json();
-      setunions(data);
+      toast.success('Union has been updated')
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -398,7 +427,7 @@ const UnionDetails = () => {
                                                 <div className="position-relative">
                                                   <div className="avatar-sm flex-shrink-0">
                                                     <img
-                                                      src="/images/nnpc.svg"
+                                                      src={branch.logo}
                                                       className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                                       alt="Avatar"
                                                     />
@@ -1062,7 +1091,7 @@ const UnionDetails = () => {
                                                 >
                                                   <li>
                                                     <Link
-                                                      to={`/SubBranch/${branch._id}`}
+                                                      to={`/branchDetails/${branch._id}`}
                                                       className="dropdown-item"
                                                     >
                                                       View details
@@ -1170,6 +1199,7 @@ const UnionDetails = () => {
                                           className="form-control form-control-height"
                                           disabled
                                           name="industry"
+                                          key={unions._id}
                                           value={unions.industry}
                                         />
                                       </div>
@@ -1773,7 +1803,8 @@ const UnionDetails = () => {
                 >
                   Save Changes
                 </a>
-                <a href="#" className="btn btn-size btn-main-primary">
+                <a href="#" className="btn btn-size btn-main-primary" data-bs-dismiss="modal"
+                  aria-label="Close">
                   Discard Changes
                 </a>
               </div>
@@ -1826,13 +1857,12 @@ const UnionDetails = () => {
                     </div>
                     <div className="mb-4">
                       <label className="form-label">Industry</label>
-                      <input
-                        type="text"
-                        className="form-control form-control-height"
-                        value={unions.industry}
-                        onChange={onHandleChange}
-                        name="industry"
-                      />
+                      <select className="form-control form-control-height" id="industriy" name="industry_id" onChange={onHandleChange} value={unions.industry_id}>
+                        <option value="default"  >--Choose--</option>
+                        {industries.map((item) =>
+                          <option value={item._id} key={item._id}>{item.name}</option>
+                        )}
+                      </select>
                     </div>
                     <div className="mb-4">
                       <label className="form-label">Headquarters</label>

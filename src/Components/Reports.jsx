@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
+import MyChartComponent from "../Bars/MyChartComponent";
 
 
 const Reports = () => {
@@ -267,41 +268,20 @@ const Reports = () => {
                         <div className="card-body">
                           <div className="row align-items-center">
                             <div className="col-lg-3">
-                              <h3 className="chart-text">
-                                There has been a{" "}
-                                <span className="text-main-primary">
-                                  32% decrease
-                                </span>{" "}
-                                in total time of Dispute Resolutions over the
-                                past{" "}
-                                <span className="text-main-primary">
-                                  1 year
-                                </span>
-                              </h3>
+                              <h3 className="chart-text">There has been a <span className="text-main-primary">32% decrease</span> in total time of Dispute Resolutions over the past <span className="text-main-primary">1 year</span></h3>
                             </div>
 
                             <div className="col-lg-8 offset-lg-1">
                               <div className="chart-tab d-flex align-items-center gap-10 justify-content-end mb-3">
-                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3">
-                                  1 week
-                                </button>
-                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3">
-                                  1 month
-                                </button>
-                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3">
-                                  4 months
-                                </button>
-                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3 active-date">
-                                  8 months
-                                </button>
-                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3">
-                                  1 year
-                                </button>
-                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3">
-                                  Max
-                                </button>
+                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3">1 week</button>
+                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3">1 month</button>
+                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3">4 months</button>
+                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3 active-date">8 months</button>
+                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3">1 year</button>
+                                <button className="btn btn-link ft-sm text-decoration-none text-muted-3">Max</button>
                               </div>
-                              <canvas id="myChart3"></canvas>
+                              {/* <canvas id="myChart3"></canvas> */}
+                              <MyChartComponent />
                             </div>
                           </div>
                         </div>
@@ -1107,6 +1087,7 @@ const Reports = () => {
           </div>
         </div>
       </div>
+
     </>
   );
 };

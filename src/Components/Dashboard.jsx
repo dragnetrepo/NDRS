@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import TopBarInc from "../Bars/TopBarInc";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import { Link } from "react-router-dom";
-import { HashLoader } from 'react-spinners';
+import { ClipLoader } from 'react-spinners';
+import MyChartComponent from "../Bars/MyChartComponent";
 
 const Dashboard = () => {
   const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -117,7 +118,7 @@ const Dashboard = () => {
             <TopBarInc toggleSideBar={toggleSideBar} />
             {isLoading ? (
               <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-                <HashLoader color="#36D7B7" loading={isLoading} size={50} />
+                <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
               </div>
             ) : (
               <main className="admin-content">
@@ -243,11 +244,11 @@ const Dashboard = () => {
                               </div>
 
                               <div className="col-lg-8">
-                                <img
+                                {/* <img
                                   src="/images/bar-chart.svg"
                                   className="img-fluid"
                                   alt="bar-chart"
-                                />
+                                /> */}<MyChartComponent />
 
 
                               </div>
