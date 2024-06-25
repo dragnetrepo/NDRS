@@ -25,17 +25,24 @@ class RegistrationForm extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             "first_name" => "required|string|min:3|max:191",
             "middle_name" => "nullable|string|min:3|max:191",
             "last_name" => "required|string|min:3|max:191",
             "phone" => "required|string|unique:users,phone",
             // "password" => ["required", Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised(), "confirmed"],
             "display_picture" => "nullable|file|mimes:png,jpg|max:2048",
-            "union" => "required|integer",
-            "union_branch" => "required|integer",
-            "organization" => "required|integer",
         ];
+
+        $role = get_user_roles(request()->user());
+
+        if (empty($role)) {
+            $rules["union"] = "required|integer";
+            $rules["union_branch"] = "required|integer";
+            $rules["organization"] = "required|integer";
+        }
+
+        return $rules;
     }
 
     public function failedValidation(Validator $validator)

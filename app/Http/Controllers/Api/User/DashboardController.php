@@ -369,6 +369,9 @@ class DashboardController extends Controller
         elseif ($discussion->message_type == "scheduler") {
             $message_data["message"] = $sender_info["sender"]." scheduled a new meeting on the chat";
         }
+        elseif ($discussion->message_type == "status update") {
+            $message_data["message"] = $sender_info["sender"]." updated dispute status on the chat";
+        }
         else {
             $message_data["message"] = " - - -";
         }

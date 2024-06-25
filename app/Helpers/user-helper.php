@@ -17,29 +17,36 @@ use Illuminate\Support\Facades\Storage;
 if (!function_exists("get_user_roles")) {
     function get_user_roles($user) {
         $roles_collection = [];
+        $fetch_multiple = false;
 
-        if ($user->hasAnyRole()) {
-            if ($user->member_role->isNotEmpty()) {
+        if ($user->member_role->count()) {
+            if ($fetch_multiple) {
                 foreach ($user->member_role as $key => $role) {
                     $roles_collection[$key] = [
                         "role_id" => $role->role_id,
-                        "role_name" => $role->role->name,
+                        "role_name" => $role->role->display_name,
+                        "union_id" => $role->union->id ?? 0,
+                        "union_name" => $role->union->name ?? "",
+                        "union_branch_id" => $role->union_branch->id ?? 0,
+                        "union_branch_name" => $role->union_branch->name ?? ($role->union ? "All Branches" : ""),
+                        "union_sub_branch_id" => $role->union_sub_branch->id ?? 0,
+                        "union_sub_branch_name" => $role->union_sub_branch->name ?? (($role->union || $role->union_branch) ? "All Sub Branches" : ""),
                     ];
-
-                    if ($role->union) {
-                        $roles_collection[$key]["union_id"] = $role->union->id;
-                        $roles_collection[$key]["union_name"] = $role->union->name;
-                    }
-
-                    if ($role->union_branch) {
-                        $roles_collection[$key]["union_branch_id"] = $role->union_branch->id;
-                        $roles_collection[$key]["union_branch_name"] = $role->union_branch->name;
-                    }
-
-                    if ($role->union_sub_branch) {
-                        $roles_collection[$key]["union_sub_branch_id"] = $role->union_sub_branch->id;
-                        $roles_collection[$key]["union_sub_branch_name"] = $role->union_sub_branch->name;
-                    }
+                }
+            }
+            else {
+                $role = $user->member_role->first();
+                if ($role) {
+                    $roles_collection = [
+                        "role_id" => $role->role_id,
+                        "role_name" => $role->role->display_name,
+                        "union_id" => $role->union->id ?? 0,
+                        "union_name" => $role->union->name ?? "",
+                        "union_branch_id" => $role->union_branch->id ?? 0,
+                        "union_branch_name" => $role->union_branch->name ?? ($role->union ? "All Branches" : ""),
+                        "union_sub_branch_id" => $role->union_sub_branch->id ?? 0,
+                        "union_sub_branch_name" => $role->union_sub_branch->name ?? (($role->union || $role->union_branch) ? "All Sub Branches" : ""),
+                    ];
                 }
             }
         }

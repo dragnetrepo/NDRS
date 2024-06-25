@@ -343,11 +343,8 @@ class DisputesController extends Controller
                     $this->response["message"] = "Case status has been updated successfully!";
                 }
                 else {
-
+                    $form_error_msg["status"] = ["This case status cannot be updated as it is still pending"];
                 }
-
-
-                $form_error_msg["status"] = ["This case status cannot be updated as it is still pending"];
             }
         }
         else {

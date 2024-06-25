@@ -72,6 +72,9 @@ class DiscussionController extends Controller
                 elseif ($last_msg && $last_msg->message_type == "file") {
                     $message_content = "- Document";
                 }
+                elseif ($last_msg && $last_msg->message_type == "status update") {
+                    $message_content = "- Updated dispute status";
+                }
 
                 $user = $last_msg->user ?? null;
                 if ($discussion->case_id) {
@@ -124,12 +127,13 @@ class DiscussionController extends Controller
         $this->response["message"] = "No data found";
         $admin_user = user_is_admin();
         $user_id = request()->user()->id;
+        $case_id = 0;
+        $discuss_info = [];
 
         $discussion = $this->get_discussion($discussion);
 
         if ($discussion) {
             $messages = CaseDiscussionMessage::where("cd_id", $discussion->id)->orderBy("id", "asc")->paginate(200);
-            $data = [];
 
             if ($messages->isNotEmpty()) {
                 foreach ($messages as $message) {
@@ -248,16 +252,19 @@ class DiscussionController extends Controller
 
                 record_last_read_message($discussion->id, $user_id, $messages->last()->id);
             }
-            $discuss_info = [];
             $dispute = $discussion->dispute;
+
             if ($dispute) {
                 $discuss_info = [
                     "group_name" => trim($discussion->title),
                     "group_photo" => get_model_file_from_disk($discussion->dispute->union_data->logo, "union_logos"),
                 ];
+
+                $case_id = $dispute->id;
             }
 
             $this->response["discuss_info"] = $discuss_info;
+            $this->response["case_id"] = $case_id;
             $this->response["message"] = "Messages from chat retrieved";
         }
 

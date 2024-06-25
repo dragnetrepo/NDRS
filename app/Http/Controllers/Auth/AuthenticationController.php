@@ -214,13 +214,15 @@ class AuthenticationController extends Controller
             $role = Role::where("name", "staff")->first();
 
             if ($role) {
-                UnionUserRole::create([
-                    "user_id" => $user->id,
-                    "role_id" => $role->id,
-                    "union_id" => $request->union,
-                    "branch_id" => $request->union_branch,
-                    "sub_branch_id" => $request->organization,
-                ]);
+                if (!UnionUserRole::where("user_id", $user->id)->exists()) {
+                    UnionUserRole::create([
+                        "user_id" => $user->id,
+                        "role_id" => $role->id,
+                        "union_id" => $request->union,
+                        "branch_id" => $request->union_branch,
+                        "sub_branch_id" => $request->organization,
+                    ]);
+                }
             }
 
             DB::commit();

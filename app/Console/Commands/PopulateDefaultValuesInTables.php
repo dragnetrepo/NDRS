@@ -27,7 +27,7 @@ class PopulateDefaultValuesInTables extends Command
      */
     protected $description = 'Command description';
 
-    public const TIME_TO_RUN = "2024-06-11 07:38AM";
+    public const TIME_TO_RUN = "2024-06-23 08:49PM";
 
     /**
      * Execute the console command.
@@ -134,7 +134,7 @@ class PopulateDefaultValuesInTables extends Command
             $industries = [
                 "Oil and Gas Industry",
                 "Agriculture",
-                "Manufacturing,",
+                "Manufacturing",
                 "Mining",
                 "Telecommunications",
                 "Financial Services",

@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-    @php $email_invite_url = url('/union-invite/'.$url_token); @endphp
+    @php $email_invite_url = env("WEBAPP_URL").('/union-invite/'.$url_token); @endphp
 
     <p>Hello, there</p>
     <p>We hope this email finds you well.</p>
