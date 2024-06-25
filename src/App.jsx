@@ -38,6 +38,8 @@ import SubBranch from "./Components/SubBranch";
 import Error404 from "./Components/Error404";
 import BranchDetails from "./Components/BranchDetails";
 import SubBranchDetails from "./Components/SubBranchDetails";
+import UnionInvite from "./Components/UnionInvite";
+import SendUnionInvite from "./Components/SendUnionInvite";
 
 // import LandingPage from "./Components/Index";
 
@@ -165,6 +167,8 @@ const App = () => {
           <Route path="/Branches/:id" element={<Branches />} />
           <Route path="/SubBranch/:id" element={<SubBranch />} />
           <Route path="/subBranchDetails/:id" element={<SubBranchDetails />} />
+          <Route path="/sendUnionInvite" element={<SendUnionInvite />} />
+          <Route path="/union-invite/:token" element={<UnionInvite />} />
 
           <Route path="/*" element={<Error404 />} />
         </Routes>

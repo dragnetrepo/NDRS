@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../App";
 import toast from "react-hot-toast";
+import AuthNavInc from "../Bars/AuthNavInc";
 
 const Recovery = () => {
   const { recovery, setRecovery } = useContext(AppContext);
@@ -32,12 +33,13 @@ const Recovery = () => {
       navigate("/PasswordSet2");
     } catch (error) {
       console.error("Error logging in:", error);
-      toast.error('Please enter a valid email or Phone number !')
+      toast.error("Please enter a valid email or Phone number !");
     }
   };
 
   return (
     <>
+      <AuthNavInc />
       <div className="auth-container d-flex align-items-center justify-content-center vh-100">
         <div className="container">
           <div className="row">
@@ -55,11 +57,7 @@ const Recovery = () => {
                     Select a recovery method
                   </h1>
 
-                  <form
-                    action=""
-                    method="post"
-                    onSubmit={handleSubmit}
-                  >
+                  <form action="" method="post" onSubmit={handleSubmit}>
                     <div className="mb-3">
                       <label className="form-label">Email address</label>
                       <input

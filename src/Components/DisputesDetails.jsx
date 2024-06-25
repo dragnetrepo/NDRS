@@ -141,9 +141,9 @@ const DisputesDetails = () => {
     }
   };
 
-  const handlechangeStatus = async (e, id) => {
+  const handleApproveCase = async (e, id) => {
     try {
-      const res = await fetch(baseUrl + `/api/case/change-status/${id}`, {
+      const res = await fetch(baseUrl + `/api/case/approve-case/${id}`, {
         method: "POST",
         headers: {
           "content-Type": "application/json",
@@ -157,6 +157,7 @@ const DisputesDetails = () => {
       }
 
       const data = await res.json();
+      fetchSingleDisputes(id);
       toast.success("Case has been Approved!");
     } catch (error) {
       console.error("Error fetching data:", error.message);
@@ -302,7 +303,7 @@ const DisputesDetails = () => {
                   <h2>
                     {getDisputes.case_no}{" "}
                     <img
-                      src="/images/conc.svg"
+                      src={getDisputes.status_img}
                       className="img-fluid"
                       alt="Conc"
                     />
@@ -443,7 +444,11 @@ const DisputesDetails = () => {
                                             href="#"
                                             className="btn btn-size btn-main-primary"
                                             onClick={(e) =>
-                                              handlechangeStatus(e, id)
+                                              handleApproveCase(e, id)
+                                            }
+                                            disabled={
+                                              getDisputes.status ===
+                                              "pending approval"
                                             }
                                           >
                                             Approved case
@@ -491,11 +496,9 @@ const DisputesDetails = () => {
                                                 Dispute status
                                               </label>
                                               <div>
-                                                <span className="text-muted-3">
-                                                  Ongoing
-                                                </span>{" "}
+                                                <span className="text-muted-3"></span>{" "}
                                                 <img
-                                                  src="/images/conc.svg"
+                                                  src={getDisputes.status_img}
                                                   className="img-fluid"
                                                   alt=""
                                                 />

@@ -1,8 +1,8 @@
-import React, { useContext, } from "react";
+import React, { useContext } from "react";
 import { AppContext } from "../App";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
+import AuthNavInc from "../Bars/AuthNavInc";
 
 const Verification = () => {
   const navigate = useNavigate();
@@ -68,6 +68,7 @@ const Verification = () => {
 
   return (
     <>
+      <AuthNavInc />
       <div className="auth-container d-flex align-items-center justify-content-center vh-100">
         <div className="container">
           <div className="row">
@@ -105,7 +106,8 @@ const Verification = () => {
                         <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
                           <img
                             src="/images/check-tick.svg"
-                            className="img-fluid" alt=""
+                            className="img-fluid"
+                            alt=""
                           />
                         </span>
                       </div>

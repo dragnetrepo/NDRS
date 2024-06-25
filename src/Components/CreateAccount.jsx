@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import { AppContext } from "../App";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import AuthNavInc from "../Bars/AuthNavInc";
 
 const CreateAccount = () => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const CreateAccount = () => {
 
   return (
     <>
+      <AuthNavInc />
       <div className="auth-container d-flex align-items-center justify-content-center vh-100">
         <div className="container">
           <div className="row">
