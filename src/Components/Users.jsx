@@ -3,13 +3,28 @@ import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
 import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
+import { Link, useNavigate } from "react-router-dom";
 
 const Users = () => {
+	const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
 	const [roles, setRoles] = useState([]);
 	const [getBoardOfEnquire, setGetBoardOfEnquire] = useState([]);
 	const [getDisputes, setGetDisputes] = useState([]);
+	const [getIndividualUsers, setIndividualUsers] = useState([]);
+	const [getAdminRoles, setAdminRoles] = useState([]);
+	const [getAdminRoleUsers, setAdminRoleUsers] = useState([]);
+	const [getSettlementBodies, setSettlementBodies] = useState([]);
+	const [getSettlementBodyUsers, setSettlementBodyUsers] = useState([]);
+	const [IndividualUser, setIndividualUser] = useState({
+		user_id: "",
+		user_name: "",
+		user_photo: "",
+	});
 	const [isChecked, setIsChecked] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isAdminLoading, setIsAdminLoading] = useState(true);
+	const [isSettlementBodyLoading, setIsSettlementBodyLoading] = useState(true);
+
 	// const [bulkUpload, setBulkUpload] = useState({
 	//   file: "",
 	// });
@@ -18,6 +33,9 @@ const Users = () => {
 		role: "",
 		case_id: "",
 	});
+
+	const [individualReferCase, setIndividualReferCase] = useState([]);
+
 	const [uploadStatus, setUploadStatus] = useState(null);
 
 	const [boardOfEnquire, setboardOfEnquire] = useState({
@@ -82,6 +100,9 @@ const Users = () => {
 	useEffect(() => {
 		fetchBoardOfEnquires();
 		fetchDisputes();
+		getAllIndividualUsers();
+		getAllAdminRoles();
+		getAllSettlementBodies();
 	}, []);
 
 	const onHandleChangeUser = (e) => {
@@ -464,12 +485,146 @@ const Users = () => {
 		setIsAscending(!isAscending);
 	};
 
-	// const [selectedStatus, setSelectedStatus] = useState("");
+	const getAllIndividualUsers = async () => {
+		try {
+			const token = localStorage.getItem("token");
 
-	const handleStatusChange = (e) => {
-		const status = e.target.id;
-		changeStatus(status);
-	};
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + "/api/users/all", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			setIndividualUsers(data.data);
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+	}
+
+	const getAllAdminRoles = async () => {
+		try {
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + "/api/users/admin-roles", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			setAdminRoles(data.data);
+			if (data.data.length) {
+				getAllAdminRoleUsers(data.data[0]._id);
+			}
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+	}
+
+	const getAllAdminRoleUsers = async (role_id) => {
+		setIsAdminLoading(true);
+
+		try {
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + `/api/users/role/${role_id}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			setAdminRoleUsers(data.data);
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+		finally {
+			setIsAdminLoading(false);
+		}
+	}
+
+	const getAllSettlementBodies = async () => {
+		try {
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + "/api/users/settlement-roles", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			setSettlementBodies(data.data);
+			if (data.data.length) {
+				getAllSettlementBodyUsers(data.data[0]._id);
+			}
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+	}
+
+	const getAllSettlementBodyUsers = async (sb_id) => {
+		setIsSettlementBodyLoading(true);
+
+		try {
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + `/api/users/role/${sb_id}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			setSettlementBodyUsers(data.data);
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+		finally {
+			setIsSettlementBodyLoading(false);
+		}
+	}
 
 	const changeStatus = async (e, id, status) => {
 		e.preventDefault();
@@ -498,6 +653,128 @@ const Users = () => {
 			console.error("Error fetching data:", error);
 		}
 	};
+
+	const selectAllDisputeCases = () => {
+		let disputeSelectAllCheckboes = document.getElementById("select-all-dispute");
+		if (disputeSelectAllCheckboes.checked == true) {
+			document.querySelectorAll(".all-dispute-selected").forEach(function (checkbox) {
+				if (!checkbox.checked) {
+					checkbox.checked = true;
+					updateCasesValue(checkbox.value);
+				}
+			});
+		} else {
+			document.querySelectorAll(".all-dispute-selected").forEach(function (checkbox) {
+				if (checkbox.checked) {
+					checkbox.checked = false;
+					updateCasesValue(checkbox.value);
+				}
+			});
+		}
+	}
+
+	const onHandleReferCaseSelect = (e, index) => {
+		updateCasesValue(e.target.value);
+	}
+
+	const updateCasesValue = (value) => {
+		setIndividualReferCase((individualReferCase) => {
+			if (individualReferCase.includes(value)) {
+				// Remove the value from the array
+				return individualReferCase.filter((item) => item !== value);
+			} else {
+				// Add the value to the array
+				return [...individualReferCase, value];
+			}
+		});
+	}
+
+	const handleIndividualUserInfo = (user) => {
+		setIndividualUser({
+			user_id: user._id,
+			user_name: user.name,
+			user_photo: user.photo
+		});
+	}
+
+	const handleIndividualCaseRefer = async () => {
+		try {
+			if (!individualReferCase.length) {
+				toast.error("Please select a case to refer to this user");
+				return;
+			}
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + `/api/users/refer-case/${IndividualUser.user_id}`, {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json',
+					'Accept': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({
+					cases: individualReferCase
+				})
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			toast.success(data.message);
+
+			document.querySelectorAll(".all-dispute-selected").forEach(function (checkbox) {
+				if (checkbox.checked) {
+					checkbox.checked = false;
+					updateCasesValue(checkbox.value);
+				}
+			});
+
+			let disputeSelectAllCheckboes = document.getElementById("select-all-dispute");
+			if (disputeSelectAllCheckboes.checked == true) {
+				disputeSelectAllCheckboes.checked = false;
+			}
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+	}
+
+	const handleUserStatusChange = async (user_id, status) => {
+		try {
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + `/api/users/change-status/${user_id}`, {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json',
+					'Accept': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({
+					status: status
+				})
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			toast.success(data.message);
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+	}
+
 	return (
 		<>
 			<div className="main-admin-container bg-light dark-mode-active">
@@ -563,7 +840,6 @@ const Users = () => {
 
 															<div className="col-lg-9">
 																<div className="tab-content" id="v-pills-tabContent">
-
 																	<div className="tab-pane fade show active" id="v-pills-bulk" role="tabpanel" aria-labelledby="v-pills-bulk-tab" tabIndex="0">
 																		<div className="card mb-4">
 																			<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
@@ -723,14 +999,12 @@ const Users = () => {
 
 																		</div>
 																	</div>
-
 																</div>
 															</div>
 														</div>
 													</div>
 
 													<div className="tab-pane fade" id="pills-individual" role="tabpanel" aria-labelledby="pills-individual-tab" tabIndex="0">
-
 														<div className="row mt-5">
 															<div className="col-lg-12">
 																<div className="card mb-4">
@@ -757,7 +1031,7 @@ const Users = () => {
 
 																					</div>
 
-																					<p className="text-end mb-0 file-count">All Individual users: 64</p>
+																					<p className="text-end mb-0 file-count">All Individual users: {getIndividualUsers.length}</p>
 																				</div>
 																			</div>
 																		</div>
@@ -772,7 +1046,7 @@ const Users = () => {
 																									<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
 																								</div>
 																							</th>
-																							<th scope="col">Ministry Admins</th>
+																							<th scope="col">Name</th>
 																							<th scope="col">Role</th>
 																							<th scope="col">Assigned Cases</th>
 																							<th scope="col">Date added</th>
@@ -780,389 +1054,88 @@ const Users = () => {
 																						</tr>
 																					</thead>
 																					<tbody>
-
-																						<tr>
-																							<td>
-																								<div>
-																									<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																								</div>
-																							</td>
-																							<td>
-																								<div className="d-flex align-items-center avatar-holder">
-																									<div className="position-relative">
-																										<div className="avatar-sm flex-shrink-0">
-																											<img src="images/user-photo.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																										</div>
+																						{getIndividualUsers.length ? getIndividualUsers.map((user) => (
+																							<tr key={user._id}>
+																								<td>
+																									<div>
+																										<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
 																									</div>
-																									<div className="ms-2 flex-grow-1">
-																										<div className="d-flex justify-content-between align-items-center mb-2">
+																								</td>
+																								<td>
+																									<div className="d-flex align-items-center avatar-holder">
+																										<div className="position-relative">
+																											<div className="avatar-sm flex-shrink-0">
+																												<img src={user.photo || 'images/download.png'} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																											</div>
+																										</div>
+																										<div className="ms-2 flex-grow-1">
+																											<div className="d-flex justify-content-between align-items-center mb-2">
 
-																											<div className="mb-0 d-flex align-items-center">
-																												<div className="heading-text text-truncate max-150">Bala Abdulkareem</div>
+																												<div className="mb-0 d-flex align-items-center">
+																													<div className="heading-text text-truncate max-150">{user.name}</div>
+																												</div>
 																											</div>
 																										</div>
 																									</div>
-																								</div>
-																							</td>
-																							<td>Ministry Admin</td>
-																							<td>12</td>
-																							<td>Feb 4 2023</td>
-																							<td>
-																								<div className="dropdown">
-																									<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																										<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																									</button>
-																									<ul className="dropdown-menu border-radius action-menu-2">
-																										<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																										<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																										<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																										<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																										<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																										<div className="collapse" id="collapseStatus">
-																											<ul className="list-unstyled">
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																										<li><h6 className="dropdown-header">Change Status</h6></li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																													<label className="form-check-label" htmlFor="active">
-																														Active
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																													<label className="form-check-label" htmlFor="suspended">
-																														Suspended
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																													<label className="form-check-label" htmlFor="deactivated">
-																														Deactivated
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																													<label className="form-check-label" htmlFor="pending">
-																														Pending
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																									</ul>
-																								</div>
-																							</td>
-																						</tr>
-
-																						<tr>
-																							<td>
-																								<div>
-																									<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																								</div>
-																							</td>
-																							<td>
-																								<div className="d-flex align-items-center avatar-holder">
-																									<div className="position-relative">
-																										<div className="avatar-sm flex-shrink-0">
-																											<img src="images/user-photo.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																										</div>
-																									</div>
-																									<div className="ms-2 flex-grow-1">
-																										<div className="d-flex justify-content-between align-items-center mb-2">
-
-																											<div className="mb-0 d-flex align-items-center">
-																												<div className="heading-text text-truncate max-150">Bala Abdulkareem</div>
+																								</td>
+																								<td>{user.role}</td>
+																								<td>{user.assigned_cases}</td>
+																								<td>{user.date_added}</td>
+																								<td>
+																									<div className="dropdown">
+																										<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+																											<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
+																										</button>
+																										<ul className="dropdown-menu border-radius action-menu-2">
+																											<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal" onClick={() => { handleIndividualUserInfo(user); }}>Refer to Dispute Case</a></li>
+																											<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
+																											<li><a href="javascript:void(0);" className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
+																											<div className="collapse" id="collapseStatus">
+																												<ul className="list-unstyled">
+																													<li>
+																														<a className="dropdown-item" href="javascript:void(0);" onClick={(e) => { handleUserStatusChange(user._id, `active`); }}>
+																															<div className="form-check">
+																																<input className="form-check-input cursor-pointer" type="radio" name="flexRadioDefault" id={`active-${user._id}`} checked={(user.status === 'active')} />
+																																<label className="form-check-label" htmlFor={`active-${user._id}`}>
+																																	Active
+																																</label>
+																															</div>
+																														</a>
+																													</li>
+																													<li>
+																														<a className="dropdown-item" href="javascript:void(0);" onClick={(e) => { handleUserStatusChange(user._id, `suspended`); }}>
+																															<div className="form-check">
+																																<input className="form-check-input" type="radio" name="flexRadioDefault" id={`suspended-${user._id}`} checked={(user.status === 'suspended')} />
+																																<label className="form-check-label" htmlFor={`suspended-${user._id}`}>
+																																	Suspended
+																																</label>
+																															</div>
+																														</a>
+																													</li>
+																													<li>
+																														<a className="dropdown-item" href="javascript:void(0);" onClick={(e) => { handleUserStatusChange(user._id, `deactivated`); }}>
+																															<div className="form-check">
+																																<input className="form-check-input" type="radio" name="flexRadioDefault" id={`deactivated-${user._id}`} checked={(user.status === 'deactivated')} />
+																																<label className="form-check-label" htmlFor={`deactivated-${user._id}`}>
+																																	Deactivated
+																																</label>
+																															</div>
+																														</a>
+																													</li>
+																												</ul>
 																											</div>
-																										</div>
+																										</ul>
 																									</div>
-																								</div>
-																							</td>
-																							<td>Employers</td>
-																							<td>12</td>
-																							<td>Feb 4 2023</td>
-																							<td>
-																								<div className="dropdown">
-																									<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																										<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																									</button>
-																									<ul className="dropdown-menu border-radius action-menu-2">
-																										<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																										<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																										<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																										<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																										<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																										<div className="collapse" id="collapseStatus">
-																											<ul className="list-unstyled">
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																										<li><h6 className="dropdown-header">Change Status</h6></li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																													<label className="form-check-label" htmlFor="active">
-																														Active
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																													<label className="form-check-label" htmlFor="suspended">
-																														Suspended
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																													<label className="form-check-label" htmlFor="deactivated">
-																														Deactivated
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																													<label className="form-check-label" htmlFor="pending">
-																														Pending
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																									</ul>
-																								</div>
-																							</td>
-																						</tr>
-
-																						<tr>
-																							<td>
-																								<div>
-																									<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																								</div>
-																							</td>
-																							<td>
-																								<div className="d-flex align-items-center avatar-holder">
-																									<div className="position-relative">
-																										<div className="avatar-sm flex-shrink-0">
-																											<img src="images/user-photo.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																										</div>
-																									</div>
-																									<div className="ms-2 flex-grow-1">
-																										<div className="d-flex justify-content-between align-items-center mb-2">
-
-																											<div className="mb-0 d-flex align-items-center">
-																												<div className="heading-text text-truncate max-150">Bala Abdulkareem</div>
-																											</div>
-																										</div>
-																									</div>
-																								</div>
-																							</td>
-																							<td>National Union Admin</td>
-																							<td>12</td>
-																							<td>Feb 4 2023</td>
-																							<td>
-																								<div className="dropdown">
-																									<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																										<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																									</button>
-																									<ul className="dropdown-menu border-radius action-menu-2">
-																										<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																										<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																										<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																										<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																										<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																										<div className="collapse" id="collapseStatus">
-																											<ul className="list-unstyled">
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																										<li><h6 className="dropdown-header">Change Status</h6></li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																													<label className="form-check-label" htmlFor="active">
-																														Active
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																													<label className="form-check-label" htmlFor="suspended">
-																														Suspended
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																													<label className="form-check-label" htmlFor="deactivated">
-																														Deactivated
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																										<li>
-																											<a className="dropdown-item" href="#">
-																												<div className="form-check">
-																													<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																													<label className="form-check-label" htmlFor="pending">
-																														Pending
-																													</label>
-																												</div>
-																											</a>
-																										</li>
-																									</ul>
-																								</div>
-																							</td>
-																						</tr>
-
-
+																								</td>
+																							</tr>
+																						)) : (
+																							<tr>
+																								<td id="pending-dispute-not-found" colSpan={6} className={`text-center d-none`}>
+																									<p><i className="fa fa-triangle-exclamation fa-2x text-warning"></i></p>
+																									<p className="h5">No users found</p>
+																								</td>
+																							</tr>
+																						)}
 																					</tbody>
 																				</table>
 																			</div>
@@ -1172,8171 +1145,140 @@ const Users = () => {
 																</div>
 															</div>
 														</div>
-
 													</div>
 
 													<div className="tab-pane fade" id="pills-claimants" role="tabpanel" aria-labelledby="pills-claimants-tab" tabIndex="0">
 														<div className="row mt-5">
 															<div className="col-lg-3">
-
 																<div className="nav flex-column tab-item nav-pills gap-10" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-
-																	<button className="nav-link tab-v text-start active" id="v-pills-ministry-tab" data-bs-toggle="pill" data-bs-target="#v-pills-ministry" type="button" role="tab" aria-controls="v-pills-ministry" aria-selected="true">Ministry Admins</button>
-
-																	<button className="nav-link tab-v text-start" id="v-pills-national-tab" data-bs-toggle="pill" data-bs-target="#v-pills-national" type="button" role="tab" aria-controls="v-pills-national" aria-selected="false">National Union Admins</button>
-
-																	<button className="nav-link tab-v text-start" id="v-pills-branch-tab" data-bs-toggle="pill" data-bs-target="#v-pills-branch" type="button" role="tab" aria-controls="v-pills-branch" aria-selected="false">Union Branch Admins</button>
-
-																	<button className="nav-link tab-v text-start" id="v-pills-employers-tab" data-bs-toggle="pill" data-bs-target="#v-pills-employers" type="button" role="tab" aria-controls="v-pills-employers" aria-selected="false">Employers </button>
-
-																	<button className="nav-link tab-v text-start" id="v-pills-staff-tab" data-bs-toggle="pill" data-bs-target="#v-pills-staff" type="button" role="tab" aria-controls="v-pills-staff" aria-selected="false">Staff (Employees)</button>
-
-																	<button className="nav-link tab-v text-start" id="v-pills-nonstaff-tab" data-bs-toggle="pill" data-bs-target="#v-pills-nonstaff" type="button" role="tab" aria-controls="v-pills-nonstaff" aria-selected="false">Non Union Members</button>
+																	{getAdminRoles.map((admin_role, index) => (
+																		<button className={`nav-link tab-v text-start ${index === 0 ? `active` : ``}`} id="v-pills-ministry-tab" data-bs-toggle="pill"
+																			data-bs-target="#v-pills-ministry" type="button" role="tab" aria-controls="v-pills-ministry"
+																			aria-selected="true" onClick={(e) => { getAllAdminRoleUsers(admin_role._id) }}>
+																			{admin_role.name}
+																		</button>
+																	))}
 																</div>
-
 															</div>
 
 															<div className="col-lg-9">
 																<div className="tab-content" id="v-pills-tabContent">
-
 																	<div className="tab-pane fade show active" id="v-pills-ministry" role="tabpanel" aria-labelledby="v-pills-ministry-tab" tabIndex="0">
-																		<div className="card mb-4">
-
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
-																						</div>
-																					</div>
-
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
-																							</div>
-
-																							<p className="text-end mb-0 file-count">Ministry Admins: 64</p>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">Ministry Admins</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="d-flex align-items-center avatar-holder">
-																											<div className="position-relative">
-																												<div className="avatar-sm flex-shrink-0">
-																													<img src="images/user-photo.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																												</div>
-																											</div>
-																											<div className="ms-2 flex-grow-1">
-																												<div className="d-flex justify-content-between align-items-center mb-2">
-
-																													<div className="mb-0 d-flex align-items-center">
-																														<div className="heading-text text-truncate max-150">Bala Abdulkareem</div>
-																													</div>
-																												</div>
-																											</div>
-																										</div>
-																									</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
+																		{isAdminLoading ? (
+																			<div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+																				<ClipLoader color="#36D7B7" loading={isAdminLoading} size={50} />
 																			</div>
-
-																		</div>
-																	</div>
-
-																	<div className="tab-pane fade" id="v-pills-national" role="tabpanel" aria-labelledby="v-pills-national-tab" tabIndex="0">
-																		<div className="card mb-4">
-
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
-																						</div>
-																					</div>
-
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
+																		) : (
+																			<div className="card mb-4">
+																				<div className="card-body p-4">
+																					<div className="row mt-2 mb-4">
+																						<div className="col-lg-5">
+																							<div className="input-group">
+																								<span className="input-group-text bg-transparent">
+																									<img src="images/search.svg" className="img-fluid" alt="search" />
+																								</span>
+																								<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
 																							</div>
-
-																							<p className="text-end mb-0 file-count">National Union Admins: 64</p>
 																						</div>
-																					</div>
-																				</div>
 
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">National Union Admins</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
+																						<div className="col-lg-7">
+																							<div className="d-flex align-items-center justify-content-between gap-15">
 
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="d-flex align-items-center avatar-holder">
-																											<div className="position-relative">
-																												<div className="avatar-sm flex-shrink-0">
-																													<img src="images/user-photo.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																												</div>
-																											</div>
-																											<div className="ms-2 flex-grow-1">
-																												<div className="d-flex justify-content-between align-items-center mb-2">
+																								<div className="d-flex">
 
-																													<div className="mb-0 d-flex align-items-center">
-																														<div className="heading-text text-truncate max-150">Bala Abdulkareem</div>
-																													</div>
-																												</div>
-																											</div>
-																										</div>
-																									</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
+																									<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
 
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
-																			</div>
+																									<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
 
-																		</div>
-																	</div>
+																								</div>
 
-																	<div className="tab-pane fade" id="v-pills-branch" role="tabpanel" aria-labelledby="v-pills-branch-tab" tabIndex="0">
-																		<div className="card mb-4">
-
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
-																						</div>
-																					</div>
-
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
+																								<p className="text-end mb-0 file-count">Users: {getAdminRoleUsers.length}</p>
 																							</div>
-
-																							<p className="text-end mb-0 file-count">Union Branch Admins: 64</p>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">Union Branch Admins</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="d-flex align-items-center avatar-holder">
-																											<div className="position-relative">
-																												<div className="avatar-sm flex-shrink-0">
-																													<img src="images/user-photo.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																												</div>
-																											</div>
-																											<div className="ms-2 flex-grow-1">
-																												<div className="d-flex justify-content-between align-items-center mb-2">
-
-																													<div className="mb-0 d-flex align-items-center">
-																														<div className="heading-text text-truncate max-150">Bala Abdulkareem</div>
-																													</div>
-																												</div>
-																											</div>
-																										</div>
-																									</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
-																			</div>
-
-																		</div>
-																	</div>
-
-																	<div className="tab-pane fade" id="v-pills-employers" role="tabpanel" aria-labelledby="v-pills-employer-tab" tabIndex="0">
-																		<div className="card mb-4">
-
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
 																						</div>
 																					</div>
 
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
-																							</div>
-
-																							<p className="text-end mb-0 file-count">Employers: 64</p>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">Employers</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="d-flex align-items-center avatar-holder">
-																											<div className="position-relative">
-																												<div className="avatar-sm flex-shrink-0">
-																													<img src="images/user-photo.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																												</div>
-																											</div>
-																											<div className="ms-2 flex-grow-1">
-																												<div className="d-flex justify-content-between align-items-center mb-2">
-
-																													<div className="mb-0 d-flex align-items-center">
-																														<div className="heading-text text-truncate max-150">Bala Abdulkareem</div>
-																													</div>
-																												</div>
-																											</div>
-																										</div>
-																									</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
-																			</div>
-
-																		</div>
-																	</div>
-
-																	<div className="tab-pane fade" id="v-pills-staff" role="tabpanel" aria-labelledby="v-pills-staff-tab" tabIndex="0">
-																		<div className="card mb-4">
-
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
-																						</div>
-																					</div>
-
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
-																							</div>
-
-																							<p className="text-end mb-0 file-count">Staff (Employees): 64</p>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">Staff (Employees)</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="d-flex align-items-center avatar-holder">
-																											<div className="position-relative">
-																												<div className="avatar-sm flex-shrink-0">
-																													<img src="images/user-photo.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																												</div>
-																											</div>
-																											<div className="ms-2 flex-grow-1">
-																												<div className="d-flex justify-content-between align-items-center mb-2">
-
-																													<div className="mb-0 d-flex align-items-center">
-																														<div className="heading-text text-truncate max-150">Bala Abdulkareem</div>
-																													</div>
-																												</div>
-																											</div>
-																										</div>
-																									</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
-																			</div>
-
-																		</div>
-																	</div>
-
-																	<div className="tab-pane fade" id="v-pills-nonstaff" role="tabpanel" aria-labelledby="v-pills-nonstaff-tab" tabIndex="0">
-																		<div className="card mb-4">
-
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
-																						</div>
-																					</div>
-
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
-																							</div>
-
-																							<p className="text-end mb-0 file-count">Non Union Members: 64</p>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">Non Union Members</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="d-flex align-items-center avatar-holder">
-																											<div className="position-relative">
-																												<div className="avatar-sm flex-shrink-0">
-																													<img src="images/user-photo.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																												</div>
-																											</div>
-																											<div className="ms-2 flex-grow-1">
-																												<div className="d-flex justify-content-between align-items-center mb-2">
-
-																													<div className="mb-0 d-flex align-items-center">
-																														<div className="heading-text text-truncate max-150">Bala Abdulkareem</div>
-																													</div>
-																												</div>
-																											</div>
-																										</div>
-																									</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
-																			</div>
-
-																		</div>
-																	</div>
-
-																</div>
-															</div>
-														</div>
-
-													</div>
-
-													<div className="tab-pane fade" id="pills-settlement" role="tabpanel" aria-labelledby="pills-settlement-tab" tabIndex="0">
-														<div className="row mt-5">
-															<div className="col-lg-3">
-
-																<div className="nav flex-column tab-item nav-pills gap-10" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-
-																	<button className="nav-link tab-v text-start active" id="v-pills-con-tab" data-bs-toggle="pill" data-bs-target="#v-pills-con" type="button" role="tab" aria-controls="v-pills-con" aria-selected="true">Conciliators & Arbitrators</button>
-
-																	<button className="nav-link tab-v text-start" id="v-pills-med-tab" data-bs-toggle="pill" data-bs-target="#v-pills-med" type="button" role="tab" aria-controls="v-pills-med" aria-selected="false">Mediators</button>
-
-																	<button className="nav-link tab-v text-start" id="v-pills-int-tab" data-bs-toggle="pill" data-bs-target="#v-pills-int" type="button" role="tab" aria-controls="v-pills-int" aria-selected="false">Internal Arbitration Panel </button>
-
-																	<button className="nav-link tab-v text-start" id="v-pills-board-tab" data-bs-toggle="pill" data-bs-target="#v-pills-board" type="button" role="tab" aria-controls="v-pills-board" aria-selected="false">Board of Enquiry</button>
-
-																	<button className="nav-link tab-v text-start" id="v-pills-ind-tab" data-bs-toggle="pill" data-bs-target="#v-pills-ind" type="button" role="tab" aria-controls="v-pills-ind" aria-selected="false">National Industrial Courts</button>
-																</div>
-
-															</div>
-
-															<div className="col-lg-9">
-																<div className="tab-content" id="v-pills-tabContent">
-
-																	<div className="tab-pane fade show active" id="v-pills-con" role="tabpanel" aria-labelledby="v-pills-con-tab" tabIndex="0">
-																		<div className="card mb-4">
-
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
-																						</div>
-																					</div>
-
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
-																							</div>
-
-																							<p className="text-end mb-0 file-count">Conciliators & Arbitrators: 42</p>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div className="row mb-4">
-																					<div className="col-lg-3 offset-lg-9">
-																						<button className="btn btn-main-primary btn-size w-100" data-bs-toggle="modal" data-bs-target="#boardModal">Create Board Profile</button>
-																					</div>
-																				</div>
-
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">Conciliators & Arbitrators</th>
-																									<th scope="col">Name</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/pending-icon.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/deactivated.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/suspending.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
-																			</div>
-
-																		</div>
-																	</div>
-
-																	<div className="tab-pane fade" id="v-pills-med" role="tabpanel" aria-labelledby="v-pills-med-tab" tabIndex="0">
-																		<div className="card mb-4">
-
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
-																						</div>
-																					</div>
-
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
-																							</div>
-
-																							<p className="text-end mb-0 file-count">Mediators: 42</p>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div className="row mb-4">
-																					<div className="col-lg-3 offset-lg-9">
-																						<button className="btn btn-main-primary btn-size w-100" data-bs-toggle="modal" data-bs-target="#boardModal">Create Board Profile</button>
-																					</div>
-																				</div>
-
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">Mediators</th>
-																									<th scope="col">Name</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/pending-icon.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/deactivated.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/suspending.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
-																			</div>
-
-																		</div>
-																	</div>
-
-																	<div className="tab-pane fade" id="v-pills-int" role="tabpanel" aria-labelledby="v-pills-int-tab" tabIndex="0">
-																		<div className="card mb-4">
-
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
-																						</div>
-																					</div>
-
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
-																							</div>
-
-																							<p className="text-end mb-0 file-count">Internal Arbitration Panel: 42</p>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div className="row mb-4">
-																					<div className="col-lg-3 offset-lg-9">
-																						<button className="btn btn-main-primary btn-size w-100" data-bs-toggle="modal" data-bs-target="#boardModal">Create Board Profile</button>
-																					</div>
-																				</div>
-
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">Internal Arbitration Panel </th>
-																									<th scope="col">Name</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/pending-icon.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/deactivated.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/suspending.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
-																			</div>
-
-																		</div>
-																	</div>
-
-																	<div className="tab-pane fade" id="v-pills-board" role="tabpanel" aria-labelledby="v-pills-board-tab" tabIndex="0">
-																		<div className="card mb-4">
-
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
-																						</div>
-																					</div>
-
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3" onClick={sortBoardOfEnquire}><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
-																							</div>
-
-																							<p className="text-end mb-0 file-count">Board of Enquires:  {getBoardOfEnquire.length}</p>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div className="row mb-4">
-																					<div className="col-lg-3 offset-lg-9">
-																						<button className="btn btn-main-primary btn-size w-100" data-bs-toggle="modal" data-bs-target="#boardModal">Create Board Profile</button>
-																					</div>
-																				</div>
-
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">Board of Enquiry</th>
-																									<th scope="col">Name</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-
-																								{/* <tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr> */}
-
-																								{/* <tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/pending-icon.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr> */}
-
-																								{/* <tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/deactivated.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr> */}
-
-																								{getBoardOfEnquire.map(
-																									(item) => (
-																										<tr key={item._id}>
+																					<div className="row">
+																						<div className="col-lg-12">
+																							<table className="table table-list">
+																								<thead className="table-light">
+																									<tr>
+																										<th scope="col">
+																											<div>
+																												<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
+																											</div>
+																										</th>
+																										<th scope="col">Name</th>
+																										<th scope="col">Assigned Cases</th>
+																										<th scope="col">Status</th>
+																										<th scope="col">Date added</th>
+																										<th scope="col">Actions</th>
+																									</tr>
+																								</thead>
+																								<tbody>
+																									{getAdminRoleUsers.length ? getAdminRoleUsers.map((user) => (
+																										<tr key={user._id}>
 																											<td>
 																												<div>
-																													<input
-																														className="form-check-input"
-																														type="checkbox"
-																														id="checkboxNoLabel"
-																														value=""
-																														aria-label="..."
-																													/>
+																													<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
 																												</div>
 																											</td>
 																											<td>
-																												{/* <div className="avatars">
-                                                          <div className="dropdown">
-                                                            <a
-                                                              href="#"
-                                                              className="avatars__item dropdown-toggle"
-                                                              type="button"
-                                                              data-bs-toggle="dropdown"
-                                                              aria-expanded="false"
-                                                            >
-                                                              <img
-                                                                className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                                                src="https://randomuser.me/api/portraits/women/65.jpg"
-                                                                alt=""
-                                                              />
-                                                            </a>
-                                                            <ul className="dropdown-menu action-menu border-radius">
-                                                              <img
-                                                                src="/images/pointer.svg"
-                                                                className="img-fluid pointer"
-                                                              />
-                                                              <div className="d-flex avatar-holder border-bottom py-4">
-                                                                <div className="position-relative">
-                                                                  <img
-                                                                    src="/images/Avatar-online-indicator.svg"
-                                                                    className="img-fluid indicator-avatar"
-                                                                    alt="indicator"
-                                                                  />
-                                                                  <div className="avatar-sm flex-shrink-0">
-                                                                    <img
-                                                                      src="https://randomuser.me/api/portraits/women/65.jpg"
-                                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                                      alt="Avatar"
-                                                                    />
-                                                                  </div>
-                                                                </div>
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <h5 className="mb-0">
-                                                                    Stephen
-                                                                    Ejiro
-                                                                  </h5>
-                                                                  <p className="mb-0 text-main-primary">
-                                                                    View profile
-                                                                  </p>
-                                                                </div>
-                                                              </div>
+																												<div className="d-flex align-items-center avatar-holder">
+																													<div className="position-relative">
+																														<div className="avatar-sm flex-shrink-0">
+																															<img src={user.photo || 'images/download.png'} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																														</div>
+																													</div>
+																													<div className="ms-2 flex-grow-1">
+																														<div className="d-flex justify-content-between align-items-center mb-2">
 
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/users.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Role in
-                                                                    dispute
-                                                                  </p>
-                                                                  <img
-                                                                    src="/images/claim.svg"
-                                                                     className="img-fluid" alt=""
-                                                                    alt="claimant"
-                                                                  />
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/user.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Name &
-                                                                    Organization
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    Stephen
-                                                                    Ejiro (Shafa
-                                                                    Abuja)
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/mail.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                /
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Email
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    stepheneji@nnpc.com
-                                                                  </p>
-                                                                </div>
-                                                                <img
-                                                                  src="/images/copy.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="copy"
-                                                                />
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/call.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Phone Number
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    08168141116
-                                                                  </p>
-                                                                </div>
-                                                                <img
-                                                                  src="/images/copy.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="copy"
-                                                                />
-                                                              </div>
-                                                            </ul>
-                                                          </div>
-                                                          <div className="dropdown">
-                                                            <a
-                                                              href="#"
-                                                              className="avatars__item dropdown-toggle"
-                                                              type="button"
-                                                              data-bs-toggle="dropdown"
-                                                              aria-expanded="false"
-                                                            >
-                                                              <img
-                                                                className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                                                src="https://randomuser.me/api/portraits/women/66.jpg"
-                                                                alt=""
-                                                              />
-                                                            </a>
-                                                            <ul className="dropdown-menu action-menu border-radius">
-                                                              <img
-                                                                src="/images/pointer.svg"
-                                                                className="img-fluid pointer"
-                                                              />
-                                                              <div className="d-flex avatar-holder border-bottom py-4">
-                                                                <div className="position-relative">
-                                                                  <img
-                                                                    src="/images/Avatar-online-indicator.svg"
-                                                                    className="img-fluid indicator-avatar"
-                                                                    alt="indicator"
-                                                                  />
-                                                                  <div className="avatar-sm flex-shrink-0">
-                                                                    <img
-                                                                      src="https://randomuser.me/api/portraits/women/66.jpg"
-                                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                                      alt="Avatar"
-                                                                    />
-                                                                  </div>
-                                                                </div>
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <h5 className="mb-0">
-                                                                    Stephen
-                                                                    Ejiro
-                                                                  </h5>
-                                                                  <p className="mb-0 text-main-primary">
-                                                                    View profile
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/users.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Role in
-                                                                    dispute
-                                                                  </p>
-                                                                  <img
-                                                                    src="/images/claim.svg"
-                                                                     className="img-fluid" alt=""
-                                                                    alt="claimant"
-                                                                  />
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/user.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Name &
-                                                                    Organization
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    Stephen
-                                                                    Ejiro (Shafa
-                                                                    Abuja)
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/mail.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Email
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    stepheneji@nnpc.com
-                                                                  </p>
-                                                                </div>
-
-                                                                <img
-                                                                  src="/images/copy.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="copy"
-                                                                />
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/call.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Phone Number
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    08168141116
-                                                                  </p>
-                                                                </div>
-                                                                <img
-                                                                  src="/images/copy.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="copy"
-                                                                />
-                                                              </div>
-                                                            </ul>
-                                                          </div>
-                                                          <div className="dropdown">
-                                                            <a
-                                                              href="#"
-                                                              className="avatars__item dropdown-toggle"
-                                                              type="button"
-                                                              data-bs-toggle="dropdown"
-                                                              aria-expanded="false"
-                                                            >
-                                                              <img
-                                                                className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                                                src="https://randomuser.me/api/portraits/women/67.jpg"
-                                                                alt=""
-                                                              />
-                                                            </a>
-                                                            <ul className="dropdown-menu action-menu border-radius">
-                                                              <img
-                                                                src="/images/pointer.svg"
-                                                                className="img-fluid pointer"
-                                                              />
-                                                              <div className="d-flex avatar-holder border-bottom py-4">
-                                                                <div className="position-relative">
-                                                                  <img
-                                                                    src="/images/Avatar-online-indicator.svg"
-                                                                    className="img-fluid indicator-avatar"
-                                                                    alt="indicator"
-                                                                  />
-                                                                  <div className="avatar-sm flex-shrink-0">
-                                                                    <img
-                                                                      src="https://randomuser.me/api/portraits/women/67.jpg"
-                                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                                      alt="Avatar"
-                                                                    />
-                                                                  </div>
-                                                                </div>
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <h5 className="mb-0">
-                                                                    Stephen
-                                                                    Ejiro
-                                                                  </h5>
-                                                                  <p className="mb-0 text-main-primary">
-                                                                    View profile
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/users.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Role in
-                                                                    dispute
-                                                                  </p>
-                                                                  <img
-                                                                    src="/images/claim.svg"
-                                                                     className="img-fluid" alt=""
-                                                                    alt="claimant"
-                                                                  />
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/user.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Name &
-                                                                    Organization
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    Stephen
-                                                                    Ejiro (Shafa
-                                                                    Abuja)
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/mail.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Email
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    stepheneji@nnpc.com
-                                                                  </p>
-                                                                </div>
-
-                                                                <img
-                                                                  src="/images/copy.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="copy"
-                                                                />
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/call.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Phone Number
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    08168141116
-                                                                  </p>
-                                                                </div>
-                                                                <img
-                                                                  src="/images/copy.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="copy"
-                                                                />
-                                                              </div>
-                                                            </ul>
-                                                          </div>
-                                                          <div className="dropdown">
-                                                            <a
-                                                              href="#"
-                                                              className="avatars__item dropdown-toggle"
-                                                              type="button"
-                                                              data-bs-toggle="dropdown"
-                                                              aria-expanded="false"
-                                                            >
-                                                              <img
-                                                                className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                                                src="https://randomuser.me/api/portraits/women/68.jpg"
-                                                                alt=""
-                                                              />
-                                                            </a>
-                                                            <ul className="dropdown-menu action-menu border-radius">
-                                                              <img
-                                                                src="/images/pointer.svg"
-                                                                className="img-fluid pointer"
-                                                              />
-                                                              <div className="d-flex avatar-holder border-bottom py-4">
-                                                                <div className="position-relative">
-                                                                  <img
-                                                                    src="/images/Avatar-online-indicator.svg"
-                                                                    className="img-fluid indicator-avatar"
-                                                                    alt="indicator"
-                                                                  />
-                                                                  <div className="avatar-sm flex-shrink-0">
-                                                                    <img
-                                                                      src="https://randomuser.me/api/portraits/women/68.jpg"
-                                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                                      alt="Avatar"
-                                                                    />
-                                                                  </div>
-                                                                </div>
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <h5 className="mb-0">
-                                                                    Stephen
-                                                                    Ejiro
-                                                                  </h5>
-                                                                  <p className="mb-0 text-main-primary">
-                                                                    View profile
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/users.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Role in
-                                                                    dispute
-                                                                  </p>
-                                                                  <img
-                                                                    src="/images/claim.svg"
-                                                                     className="img-fluid" alt=""
-                                                                    alt="claimant"
-                                                                  />
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/user.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Name &
-                                                                    Organization
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    Stephen
-                                                                    Ejiro (Shafa
-                                                                    Abuja)
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/mail.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Email
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    stepheneji@nnpc.com
-                                                                  </p>
-                                                                </div>
-
-                                                                <img
-                                                                  src="/images/copy.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="copy"
-                                                                />
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/call.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Phone Number
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    08168141116
-                                                                  </p>
-                                                                </div>
-                                                                <img
-                                                                  src="/images/copy.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="copy"
-                                                                />
-                                                              </div>
-                                                            </ul>
-                                                          </div>
-                                                          <div className="dropdown">
-                                                            <a
-                                                              href="#"
-                                                              className="avatars__item dropdown-toggle"
-                                                              type="button"
-                                                              data-bs-toggle="dropdown"
-                                                              aria-expanded="false"
-                                                            >
-                                                              <img
-                                                                className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                                                src="https://randomuser.me/api/portraits/women/69.jpg"
-                                                                alt=""
-                                                              />
-                                                            </a>
-                                                            <ul className="dropdown-menu action-menu border-radius">
-                                                              <img
-                                                                src="/images/pointer.svg"
-                                                                className="img-fluid pointer"
-                                                              />
-                                                              <div className="d-flex avatar-holder border-bottom py-4">
-                                                                <div className="position-relative">
-                                                                  <img
-                                                                    src="/images/Avatar-online-indicator.svg"
-                                                                    className="img-fluid indicator-avatar"
-                                                                    alt="indicator"
-                                                                  />
-                                                                  <div className="avatar-sm flex-shrink-0">
-                                                                    <img
-                                                                      src="https://randomuser.me/api/portraits/women/69.jpg"
-                                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                                      alt="Avatar"
-                                                                    />
-                                                                  </div>
-                                                                </div>
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <h5 className="mb-0">
-                                                                    Stephen
-                                                                    Ejiro
-                                                                  </h5>
-                                                                  <p className="mb-0 text-main-primary">
-                                                                    View profile
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/users.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Role in
-                                                                    dispute
-                                                                  </p>
-                                                                  <img
-                                                                    src="/images/claim.svg"
-                                                                     className="img-fluid" alt=""
-                                                                    alt="claimant"
-                                                                  />
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/user.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Name &
-                                                                    Organization
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    Stephen
-                                                                    Ejiro (Shafa
-                                                                    Abuja)
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/mail.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Email
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    stepheneji@nnpc.com
-                                                                  </p>
-                                                                </div>
-
-                                                                <img
-                                                                  src="/images/copy.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="copy"
-                                                                />
-                                                              </div>
-
-                                                              <div className="d-flex align-items-center py-2">
-                                                                <img
-                                                                  src="/images/call.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="users"
-                                                                />
-                                                                <div className="ms-2 flex-grow-1">
-                                                                  <p className="mb-1 ft-sm">
-                                                                    Phone Number
-                                                                  </p>
-                                                                  <p className="mb-0">
-                                                                    08168141116
-                                                                  </p>
-                                                                </div>
-                                                                <img
-                                                                  src="/images/copy.svg"
-                                                                   className="img-fluid" alt=""
-                                                                  alt="copy"
-                                                                />
-                                                              </div>
-                                                            </ul>
-                                                          </div>
-                                                        </div> */}<p>No user has been invited</p>
+																															<div className="mb-0 d-flex align-items-center">
+																																<div className="heading-text text-truncate max-150">{user.name}</div>
+																															</div>
+																														</div>
+																													</div>
+																												</div>
 																											</td>
-																											<td>{item.name}</td>
-																											<td>
-																												{item.assigned_cases}
-																											</td>
-																											<td>
-																												<img
-																													src="/images/suspending.svg"
-																													className="img-fluid" alt=""
-																												/>
-																											</td>
-																											<td>{item.date_added}</td>
+																											<td>{user.assigned_cases}</td>
+																											<td>{user.status}</td>
+																											<td>{user.date_added}</td>
 																											<td>
 																												<div className="dropdown">
-																													<button
-																														className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																														type="button"
-																														data-bs-toggle="dropdown"
-																														aria-expanded="false"
-																														data-bs-auto-close="outside"
-																													>
-																														<img
-																															src="/images/dots-v.svg"
-																															className="img-fluid"
-																															alt="dots"
-																														/>
+																													<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+																														<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
 																													</button>
 																													<ul className="dropdown-menu border-radius action-menu-2">
-																														<li>
-																															<a
-																																className="dropdown-item"
-																																href="#"
-																																data-bs-toggle="modal"
-																																data-bs-target="#disputeModal"
-																															>
-																																Refer to Dispute
-																																Case
-																															</a>
-																														</li>
-																														<li>
-																															<a
-																																href=""
-																																className="dropdown-item"
-																															>
-																																View Members
-																															</a>
-																														</li>
-																														<li>
-																															<a
-																																href=""
-																																className="dropdown-item"
-																																onClick={(e) =>
-																																	handleDissolve(
-																																		e,
-																																		item._id,
-																																		getBoardOfEnquire,
-																																		setGetBoardOfEnquire
-																																	)
-																																}
-																															>
-																																Dissolve Board{" "}
-																															</a>
-																														</li>
-																														<li>
-																															<a
-																																className="dropdown-item d-flex align-items-center justify-content-between"
-																																data-bs-toggle="collapse"
-																																data-bs-target="#collapseStatus"
-																																aria-expanded="false"
-																																aria-controls="collapseStatus"
-																															>
-																																Change Status{" "}
-																																<i className="bi bi-chevron-down"></i>
-																															</a>
-																														</li>
-																														<div
-																															className="collapse"
-																															id="collapseStatus"
-																														>
+																														<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal" onClick={() => { handleIndividualUserInfo(user); }}>Refer to Dispute Case</a></li>
+																														<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
+																														<li><a href="javascript:void(0);" className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
+																														<div className="collapse" id="collapseStatus">
 																															<ul className="list-unstyled">
 																																<li>
-																																	<a
-																																		className="dropdown-item"
-																																		href="#"
-																																	>
+																																	<a className="dropdown-item" href="javascript:void(0);" onClick={(e) => { handleUserStatusChange(user._id, `active`); }}>
 																																		<div className="form-check">
-																																			<input
-																																				className="form-check-input"
-																																				type="radio"
-																																				name="flexRadioDefault"
-																																				id="active"
-																																				onClick={
-																																					handleStatusChange
-																																				}
-																																			/>
-																																			<label
-																																				className="form-check-label"
-																																				htmlFor="active"
-																																			>
+																																			<input className="form-check-input cursor-pointer" type="radio" name="flexRadioDefault" id={`admin-active-${user._id}`} checked={(user.status === 'active')} />
+																																			<label className="form-check-label" htmlFor={`active-${user._id}`}>
 																																				Active
 																																			</label>
 																																		</div>
 																																	</a>
 																																</li>
 																																<li>
-																																	<a
-																																		className="dropdown-item"
-																																		href="#"
-																																	>
+																																	<a className="dropdown-item" href="javascript:void(0);" onClick={(e) => { handleUserStatusChange(user._id, `suspended`); }}>
 																																		<div className="form-check">
-																																			<input
-																																				className="form-check-input"
-																																				type="radio"
-																																				name="flexRadioDefault"
-																																				id="suspended"
-																																				onClick={
-																																					handleStatusChange
-																																				}
-																																			/>
-																																			<label
-																																				className="form-check-label"
-																																				htmlFor="suspended"
-																																			>
+																																			<input className="form-check-input" type="radio" name="flexRadioDefault" id={`admin-suspended-${user._id}`} checked={(user.status === 'suspended')} />
+																																			<label className="form-check-label" htmlFor={`suspended-${user._id}`}>
 																																				Suspended
 																																			</label>
 																																		</div>
 																																	</a>
 																																</li>
 																																<li>
-																																	<a
-																																		className="dropdown-item"
-																																		href="#"
-																																	>
+																																	<a className="dropdown-item" href="javascript:void(0);" onClick={(e) => { handleUserStatusChange(user._id, `deactivated`); }}>
 																																		<div className="form-check">
-																																			<input
-																																				className="form-check-input"
-																																				type="radio"
-																																				name="flexRadioDefault"
-																																				id="deactivated"
-																																				onClick={
-																																					handleStatusChange
-																																				}
-																																			/>
-																																			<label
-																																				className="form-check-label"
-																																				htmlFor="deactivated"
-																																			>
+																																			<input className="form-check-input" type="radio" name="flexRadioDefault" id={`admin-deactivated-${user._id}`} checked={(user.status === 'deactivated')} />
+																																			<label className="form-check-label" htmlFor={`deactivated-${user._id}`}>
 																																				Deactivated
-																																			</label>
-																																		</div>
-																																	</a>
-																																</li>
-																																<li>
-																																	<a
-																																		className="dropdown-item"
-																																		href="#"
-																																	>
-																																		<div className="form-check">
-																																			<input
-																																				className="form-check-input"
-																																				type="radio"
-																																				name="flexRadioDefault"
-																																				id="pending"
-																																				onClick={
-																																					handleStatusChange
-																																				}
-																																			/>
-																																			<label
-																																				className="form-check-label"
-																																				htmlFor="pending"
-																																			>
-																																				Pending
 																																			</label>
 																																		</div>
 																																	</a>
@@ -9347,1663 +1289,508 @@ const Users = () => {
 																												</div>
 																											</td>
 																										</tr>
-																									)
-																								)}
-
-																							</tbody>
-																						</table>
+																									)) : (
+																										<tr>
+																											<td id="admin-users-not-found" colSpan={6} className={`text-center`}>
+																												<p><i className="fa fa-triangle-exclamation fa-2x text-warning"></i></p>
+																												<p className="h5">No users found</p>
+																											</td>
+																										</tr>
+																									)}
+																								</tbody>
+																							</table>
+																						</div>
 																					</div>
 																				</div>
 																			</div>
-
-																		</div>
+																		)}
 																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
 
-																	<div className="tab-pane fade" id="v-pills-ind" role="tabpanel" aria-labelledby="v-pills-ind-tab" tabIndex="0">
-																		<div className="card mb-4">
+													<div className="tab-pane fade" id="pills-settlement" role="tabpanel" aria-labelledby="pills-settlement-tab" tabIndex="0">
+														<div className="row mt-5">
+															<div className="col-lg-3">
 
-																			<div className="card-body p-4">
-																				<div className="row mt-2 mb-4">
-																					<div className="col-lg-5">
-																						<div className="input-group">
-																							<span className="input-group-text bg-transparent">
-																								<img src="images/search.svg" className="img-fluid" alt="search" />
-																							</span>
-																							<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
-																						</div>
-																					</div>
+																<div className="nav flex-column tab-item nav-pills gap-10" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+																	{getSettlementBodies.map((sb_role, index) => (
+																		<button className={`nav-link tab-v text-start ${index === 0 ? `active` : ``}`} id="v-pills-con-tab"
+																			data-bs-toggle="pill" data-bs-target="#v-pills-con"
+																			type="button" role="tab" aria-controls="v-pills-con"
+																			aria-selected="true" onClick={(e) => { getAllSettlementBodyUsers(sb_role._id) }}>
+																			{sb_role.name}
+																		</button>
+																	))}
+																</div>
+															</div>
 
-																					<div className="col-lg-7">
-																						<div className="d-flex align-items-center justify-content-between gap-15">
-
-																							<div className="d-flex">
-
-																								<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
-
-																								<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
-
+															<div className="col-lg-9">
+																<div className="tab-content" id="v-pills-tabContent">
+																	<div className="tab-pane fade show active" id="v-pills-con" role="tabpanel" aria-labelledby="v-pills-con-tab" tabIndex="0">
+																		{isSettlementBodyLoading ? (
+																			<div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+																				<ClipLoader color="#36D7B7" loading={isSettlementBodyLoading} size={50} />
+																			</div>
+																		) : (
+																			<div className="card mb-4">
+																				<div className="card-body p-4">
+																					<div className="row mt-2 mb-4">
+																						<div className="col-lg-5">
+																							<div className="input-group">
+																								<span className="input-group-text bg-transparent">
+																									<img src="images/search.svg" className="img-fluid" alt="search" />
+																								</span>
+																								<input type="search" className="form-control border-start-0 form-control-height" placeholder="Search here..." />
 																							</div>
+																						</div>
 
-																							<p className="text-end mb-0 file-count">National Industrial Courts: 42</p>
+																						<div className="col-lg-7">
+																							<div className="d-flex align-items-center justify-content-between gap-15">
+
+																								<div className="d-flex">
+
+																									<a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"><img src="images/filter.svg" className="img-fluid" /> A-Z</a>
+
+																									<button className="btn btn-size btn-main-outline-primary px-3"><i className="bi bi-cloud-download me-2"></i> Export CSV</button>
+
+																								</div>
+
+																								<p className="text-end mb-0 file-count">Bodies: {getSettlementBodyUsers.length}</p>
+																							</div>
+																						</div>
+																					</div>
+
+																					<div className="row mb-4">
+																						<div className="col-lg-3 offset-lg-9">
+																							<button className="btn btn-main-primary btn-size w-100" data-bs-toggle="modal" data-bs-target="#boardModal">Create Board Profile</button>
+																						</div>
+																					</div>
+
+																					<div className="row">
+																						<div className="col-lg-12">
+																							<table className="table table-list">
+																								<thead className="table-light">
+																									<tr>
+																										<th scope="col">
+																											<div>
+																												<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
+																											</div>
+																										</th>
+																										<th scope="col">Members</th>
+																										<th scope="col">Name</th>
+																										<th scope="col">Assigned Cases</th>
+																										<th scope="col">Status</th>
+																										<th scope="col">Date added</th>
+																										<th scope="col">Actions</th>
+																									</tr>
+																								</thead>
+																								<tbody>
+																									{getSettlementBodyUsers.map((sb_role, index) => (
+																										<tr>
+																											<td>
+																												<div>
+																													<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
+																												</div>
+																											</td>
+																											<td>
+																												<div className="avatars">
+																													<div className="dropdown">
+																														<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+																															<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
+																														</a>
+																														<ul className="dropdown-menu action-menu border-radius">
+																															<img src="images/pointer.svg" className="img-fluid pointer" />
+																															<div className="d-flex avatar-holder border-bottom py-4">
+																																<div className="position-relative">
+																																	<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
+																																	<div className="avatar-sm flex-shrink-0">
+																																		<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																																	</div>
+																																</div>
+																																<div className="ms-2 flex-grow-1">
+																																	<h5 className="mb-0">Stephen Ejiro</h5>
+																																	<p className="mb-0 text-main-primary">View profile</p>
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/users.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Role in dispute</p>
+																																	<img src="images/claim.svg" className="img-fluid" alt="claimant" />
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/user.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Name & Organization</p>
+																																	<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/mail.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Email</p>
+																																	<p className="mb-0">stepheneji@nnpc.com</p>
+																																</div>
+
+																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/call.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Phone Number</p>
+																																	<p className="mb-0">08168141116</p>
+																																</div>
+																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
+																															</div>
+
+																														</ul>
+																													</div>
+																													<div className="dropdown">
+																														<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+																															<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
+																														</a>
+																														<ul className="dropdown-menu action-menu border-radius">
+																															<img src="images/pointer.svg" className="img-fluid pointer" />
+																															<div className="d-flex avatar-holder border-bottom py-4">
+																																<div className="position-relative">
+																																	<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
+																																	<div className="avatar-sm flex-shrink-0">
+																																		<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																																	</div>
+																																</div>
+																																<div className="ms-2 flex-grow-1">
+																																	<h5 className="mb-0">Stephen Ejiro</h5>
+																																	<p className="mb-0 text-main-primary">View profile</p>
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/users.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Role in dispute</p>
+																																	<img src="images/claim.svg" className="img-fluid" alt="claimant" />
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/user.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Name & Organization</p>
+																																	<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/mail.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Email</p>
+																																	<p className="mb-0">stepheneji@nnpc.com</p>
+																																</div>
+
+																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/call.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Phone Number</p>
+																																	<p className="mb-0">08168141116</p>
+																																</div>
+																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
+																															</div>
+
+																														</ul>
+																													</div>
+																													<div className="dropdown">
+																														<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+																															<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
+																														</a>
+																														<ul className="dropdown-menu action-menu border-radius">
+																															<img src="images/pointer.svg" className="img-fluid pointer" />
+																															<div className="d-flex avatar-holder border-bottom py-4">
+																																<div className="position-relative">
+																																	<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
+																																	<div className="avatar-sm flex-shrink-0">
+																																		<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																																	</div>
+																																</div>
+																																<div className="ms-2 flex-grow-1">
+																																	<h5 className="mb-0">Stephen Ejiro</h5>
+																																	<p className="mb-0 text-main-primary">View profile</p>
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/users.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Role in dispute</p>
+																																	<img src="images/claim.svg" className="img-fluid" alt="claimant" />
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/user.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Name & Organization</p>
+																																	<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/mail.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Email</p>
+																																	<p className="mb-0">stepheneji@nnpc.com</p>
+																																</div>
+
+																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/call.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Phone Number</p>
+																																	<p className="mb-0">08168141116</p>
+																																</div>
+																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
+																															</div>
+
+																														</ul>
+																													</div>
+																													<div className="dropdown">
+																														<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+																															<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
+																														</a>
+																														<ul className="dropdown-menu action-menu border-radius">
+																															<img src="images/pointer.svg" className="img-fluid pointer" />
+																															<div className="d-flex avatar-holder border-bottom py-4">
+																																<div className="position-relative">
+																																	<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
+																																	<div className="avatar-sm flex-shrink-0">
+																																		<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																																	</div>
+																																</div>
+																																<div className="ms-2 flex-grow-1">
+																																	<h5 className="mb-0">Stephen Ejiro</h5>
+																																	<p className="mb-0 text-main-primary">View profile</p>
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/users.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Role in dispute</p>
+																																	<img src="images/claim.svg" className="img-fluid" alt="claimant" />
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/user.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Name & Organization</p>
+																																	<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/mail.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Email</p>
+																																	<p className="mb-0">stepheneji@nnpc.com</p>
+																																</div>
+
+																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/call.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Phone Number</p>
+																																	<p className="mb-0">08168141116</p>
+																																</div>
+																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
+																															</div>
+
+																														</ul>
+																													</div>
+																													<div className="dropdown">
+																														<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+																															<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
+																														</a>
+																														<ul className="dropdown-menu action-menu border-radius">
+																															<img src="images/pointer.svg" className="img-fluid pointer" />
+																															<div className="d-flex avatar-holder border-bottom py-4">
+																																<div className="position-relative">
+																																	<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
+																																	<div className="avatar-sm flex-shrink-0">
+																																		<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																																	</div>
+																																</div>
+																																<div className="ms-2 flex-grow-1">
+																																	<h5 className="mb-0">Stephen Ejiro</h5>
+																																	<p className="mb-0 text-main-primary">View profile</p>
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/users.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Role in dispute</p>
+																																	<img src="images/claim.svg" className="img-fluid" alt="claimant" />
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/user.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Name & Organization</p>
+																																	<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
+																																</div>
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/mail.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Email</p>
+																																	<p className="mb-0">stepheneji@nnpc.com</p>
+																																</div>
+
+																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
+																															</div>
+
+																															<div className="d-flex align-items-center py-2">
+																																<img src="images/call.svg" className="img-fluid" alt="users" />
+																																<div className="ms-2 flex-grow-1">
+																																	<p className="mb-1 ft-sm">Phone Number</p>
+																																	<p className="mb-0">08168141116</p>
+																																</div>
+																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
+																															</div>
+
+																														</ul>
+																													</div>
+																												</div>
+																											</td>
+																											<td>Health</td>
+																											<td>12</td>
+																											<td><img src="images/active.svg" className="img-fluid" /></td>
+																											<td>Feb 4 2023</td>
+																											<td>
+																												<div className="dropdown">
+																													<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+																														<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
+																													</button>
+																													<ul className="dropdown-menu border-radius action-menu-2">
+																														<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
+																														<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
+																														<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
+																														<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
+																														<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
+																														<div className="collapse" id="collapseStatus">
+																															<ul className="list-unstyled">
+																																<li>
+																																	<a className="dropdown-item" href="#">
+																																		<div className="form-check">
+																																			<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
+																																			<label className="form-check-label" htmlFor="active">
+																																				Active
+																																			</label>
+																																		</div>
+																																	</a>
+																																</li>
+																																<li>
+																																	<a className="dropdown-item" href="#">
+																																		<div className="form-check">
+																																			<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
+																																			<label className="form-check-label" htmlFor="suspended">
+																																				Suspended
+																																			</label>
+																																		</div>
+																																	</a>
+																																</li>
+																																<li>
+																																	<a className="dropdown-item" href="#">
+																																		<div className="form-check">
+																																			<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
+																																			<label className="form-check-label" htmlFor="deactivated">
+																																				Deactivated
+																																			</label>
+																																		</div>
+																																	</a>
+																																</li>
+																																<li>
+																																	<a className="dropdown-item" href="#">
+																																		<div className="form-check">
+																																			<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
+																																			<label className="form-check-label" htmlFor="pending">
+																																				Pending
+																																			</label>
+																																		</div>
+																																	</a>
+																																</li>
+																															</ul>
+																														</div>
+																														<li><h6 className="dropdown-header">Change Status</h6></li>
+																														<li>
+																															<a className="dropdown-item" href="#">
+																																<div className="form-check">
+																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
+																																	<label className="form-check-label" htmlFor="active">
+																																		Active
+																																	</label>
+																																</div>
+																															</a>
+																														</li>
+																														<li>
+																															<a className="dropdown-item" href="#">
+																																<div className="form-check">
+																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
+																																	<label className="form-check-label" htmlFor="suspended">
+																																		Suspended
+																																	</label>
+																																</div>
+																															</a>
+																														</li>
+																														<li>
+																															<a className="dropdown-item" href="#">
+																																<div className="form-check">
+																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
+																																	<label className="form-check-label" htmlFor="deactivated">
+																																		Deactivated
+																																	</label>
+																																</div>
+																															</a>
+																														</li>
+																														<li>
+																															<a className="dropdown-item" href="#">
+																																<div className="form-check">
+																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
+																																	<label className="form-check-label" htmlFor="pending">
+																																		Pending
+																																	</label>
+																																</div>
+																															</a>
+																														</li>
+																													</ul>
+																												</div>
+																											</td>
+																										</tr>
+																									))}
+																								</tbody>
+																							</table>
 																						</div>
 																					</div>
 																				</div>
-
-																				<div className="row mb-4">
-																					<div className="col-lg-3 offset-lg-9">
-																						<button className="btn btn-main-primary btn-size w-100" data-bs-toggle="modal" data-bs-target="#boardModal">Create Board Profile</button>
-																					</div>
-																				</div>
-
-																				<div className="row">
-																					<div className="col-lg-12">
-																						<table className="table table-list">
-																							<thead className="table-light">
-																								<tr>
-																									<th scope="col">
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</th>
-																									<th scope="col">National Industrial Courts </th>
-																									<th scope="col">Name</th>
-																									<th scope="col">Assigned Cases</th>
-																									<th scope="col">Status</th>
-																									<th scope="col">Date added</th>
-																									<th scope="col">Actions</th>
-																								</tr>
-																							</thead>
-																							<tbody>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/active.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/pending-icon.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/deactivated.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																								<tr>
-																									<td>
-																										<div>
-																											<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
-																										</div>
-																									</td>
-																									<td>
-																										<div className="avatars">
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																											<div className="dropdown">
-																												<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																													<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																												</a>
-																												<ul className="dropdown-menu action-menu border-radius">
-																													<img src="images/pointer.svg" className="img-fluid pointer" />
-																													<div className="d-flex avatar-holder border-bottom py-4">
-																														<div className="position-relative">
-																															<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																															<div className="avatar-sm flex-shrink-0">
-																																<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																															</div>
-																														</div>
-																														<div className="ms-2 flex-grow-1">
-																															<h5 className="mb-0">Stephen Ejiro</h5>
-																															<p className="mb-0 text-main-primary">View profile</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/users.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Role in dispute</p>
-																															<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/user.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Name & Organization</p>
-																															<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																														</div>
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/mail.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Email</p>
-																															<p className="mb-0">stepheneji@nnpc.com</p>
-																														</div>
-
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																													<div className="d-flex align-items-center py-2">
-																														<img src="images/call.svg" className="img-fluid" alt="users" />
-																														<div className="ms-2 flex-grow-1">
-																															<p className="mb-1 ft-sm">Phone Number</p>
-																															<p className="mb-0">08168141116</p>
-																														</div>
-																														<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																													</div>
-
-																												</ul>
-																											</div>
-																										</div>
-																									</td>
-																									<td>Health</td>
-																									<td>12</td>
-																									<td><img src="images/suspending.svg" className="img-fluid" /></td>
-																									<td>Feb 4 2023</td>
-																									<td>
-																										<div className="dropdown">
-																											<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-																												<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
-																											</button>
-																											<ul className="dropdown-menu border-radius action-menu-2">
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																												<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																												<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																												<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																												<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																												<div className="collapse" id="collapseStatus">
-																													<ul className="list-unstyled">
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																													</ul>
-																												</div>
-																												<li><h6 className="dropdown-header">Change Status</h6></li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																															<label className="form-check-label" htmlFor="active">
-																																Active
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																															<label className="form-check-label" htmlFor="suspended">
-																																Suspended
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																															<label className="form-check-label" htmlFor="deactivated">
-																																Deactivated
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																												<li>
-																													<a className="dropdown-item" href="#">
-																														<div className="form-check">
-																															<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																															<label className="form-check-label" htmlFor="pending">
-																																Pending
-																															</label>
-																														</div>
-																													</a>
-																												</li>
-																											</ul>
-																										</div>
-																									</td>
-																								</tr>
-
-																							</tbody>
-																						</table>
-																					</div>
-																				</div>
 																			</div>
-
-																		</div>
+																		)}
 																	</div>
-
 																</div>
 															</div>
 														</div>
@@ -11180,8 +1967,6 @@ const Users = () => {
 
 			</div>
 
-
-
 			<div className="modal fade" id="disputeModal" tabIndex="-1" aria-labelledby="disputeModalLabel" aria-hidden="true">
 				<div className="modal-dialog modal-dialog-centered modal-xl">
 					<div className="modal-content p-lg-4 border-0">
@@ -11190,21 +1975,21 @@ const Users = () => {
 							<div className="gap-10 d-flex align-items-center">
 								<button className="btn btn btn-size btn-main-outline-primary px-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
 
-								<button className="btn btn-main-primary btn-size px-3">Refer case</button>
+								<button className="btn btn-main-primary btn-size px-3" onClick={(e) => { handleIndividualCaseRefer(); }}>
+									Refer Case
+								</button>
 							</div>
 						</div>
 						<div className="modal-body">
 							<div className="">
-
 								<div className="d-flex avatar-holder mb-5">
 									<div className="position-relative">
-
 										<div className="avatar-sm flex-shrink-0">
-											<img src="images/avatar-2.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+											<img src={IndividualUser.user_photo || 'images/download.png'} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
 										</div>
 									</div>
 									<div className="ms-2 flex-grow-1">
-										<h5 className="mb-0">Salim Mustapha</h5>
+										<h5 className="mb-0">{IndividualUser.user_name}</h5>
 									</div>
 								</div>
 
@@ -11236,6 +2021,9 @@ const Users = () => {
 									<table className="table table-list">
 										<thead className="table-light">
 											<tr>
+												<th scope="col">
+													<input type="checkbox" className="form-check-input" id="select-all-dispute" onClick={selectAllDisputeCases} />
+												</th>
 												<th scope="col">Filing Date</th>
 												<th scope="col">Case Number</th>
 												<th scope="col">Involved Parties</th>
@@ -11245,126 +2033,82 @@ const Users = () => {
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td>Feb 4 2023</td>
-												<td scope="row">DS139</td>
-												<td>
-													<div className="mb-2">
-														<div className="d-flex align-items-center avatar-holder">
-															<div className="position-relative">
-																<div className="avatar-sm flex-shrink-0">
-																	<img src="images/nnpc.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+											{getDisputes.length ? getDisputes.map((dispute) => (
+												<tr key={dispute._id}>
+													<td>
+														<input type="checkbox" name="cases[]" value={dispute._id} className="all-dispute-selected form-check-input" onClick={(e) => { onHandleReferCaseSelect(e, dispute._id) }} />
+													</td>
+													<td>{dispute.filling_date}</td>
+													<td scope="row">{dispute.case_no}</td>
+													<td>
+														<div className="mb-2">
+															<div className="d-flex align-items-center avatar-holder">
+																<div className="position-relative">
+																	<div className="avatar-sm flex-shrink-0">
+																		<img src={dispute.involved_parties.accused.logo} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																	</div>
+																</div>
+																<div className="ms-2 d-flex flex-grow-1 text-muted-3">
+																	<p className="text-truncate mb-0 max-200">
+																		{dispute.involved_parties.accused.name}{" "}
+																	</p>
+																	<span>
+																		({dispute.involved_parties.accused.acronym})
+																	</span>
 																</div>
 															</div>
-															<div className="ms-2 d-flex flex-grow-1 text-muted-3">
-																<p className="text-truncate mb-0 max-200">Nigerian National Petroleum Com </p>
-																<span>(NNPC)</span>
-															</div>
 														</div>
-													</div>
-													<div className="mb-2">
-														<div className="d-flex align-items-center avatar-holder">
-															<div className="position-relative">
-																<div className="avatar-sm flex-shrink-0">
-																	<img src="images/ipman.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+														<div className="mb-2">
+															<div className="d-flex align-items-center avatar-holder">
+																<div className="position-relative">
+																	<div className="avatar-sm flex-shrink-0">
+																		<img src={dispute.involved_parties.claimant.logo} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																	</div>
+																</div>
+																<div className="ms-2 d-flex flex-grow-1 text-muted-3">
+																	<p className="text-truncate mb-0 max-200">{dispute.involved_parties.claimant.name}</p>
+																	<span>
+																		({dispute.involved_parties.claimant.acronym})
+																	</span>
 																</div>
 															</div>
-															<div className="ms-2 d-flex flex-grow-1 text-muted-3">
-																<p className="text-truncate mb-0 max-200">Independent Petroleum Marketer</p>
-																<span>(IPMAN)</span>
-															</div>
 														</div>
-													</div>
-												</td>
-												<td>Production Sharing Contracts (PSCs) 2024</td>
-												<td>
-													<img src="images/Internally-resolved.svg" className="img-fluid" alt="internally resolved" />
-												</td>
-
-												<td>
-													<div className="dropdown">
-														<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-															<img src="images/dots-v.svg" className="img-fluid" alt="dot-v" />
-														</button>
-														<ul className="dropdown-menu border-radius action-menu-2">
-															<li><a className="dropdown-item" href="disputes-details.php">View details</a></li>
-														</ul>
-													</div>
-												</td>
-											</tr>
-
-											<tr>
-												<td>Feb 4 2023</td>
-												<td scope="row">DS139</td>
-												<td>
-													<div className="mb-2">
-														<div className="d-flex align-items-center avatar-holder">
-															<div className="position-relative">
-																<div className="avatar-sm flex-shrink-0">
-																	<img src="images/nnpc.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																</div>
-															</div>
-															<div className="ms-2 d-flex flex-grow-1 text-muted-3">
-																<p className="text-truncate mb-0 max-200">Nigerian National Petroleum Com </p>
-																<span>(NNPC)</span>
-															</div>
+													</td>
+													<td>{dispute.title}</td>
+													<td>
+														<img src="/images/pending.svg" alt="" />
+													</td>
+													<td>
+														<div className="dropdown">
+															<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+																<img src="/images/dots-v.svg" className="img-fluid" alt="dot-v" />
+															</button>
+															<ul className="dropdown-menu border-radius action-menu-2">
+																<li>
+																	<Link className="dropdown-item" to={`/disputesDetails/${dispute._id}`} target="_blank" >
+																		View details
+																	</Link>
+																</li>
+															</ul>
 														</div>
-													</div>
-													<div className="mb-2">
-														<div className="d-flex align-items-center avatar-holder">
-															<div className="position-relative">
-																<div className="avatar-sm flex-shrink-0">
-																	<img src="images/ipman.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																</div>
-															</div>
-															<div className="ms-2 d-flex flex-grow-1 text-muted-3">
-																<p className="text-truncate mb-0 max-200">Independent Petroleum Marketer</p>
-																<span>(IPMAN)</span>
-															</div>
-														</div>
-													</div>
-													<div className="mb-2">
-														<div className="d-flex align-items-center avatar-holder">
-															<div className="position-relative">
-																<div className="avatar-sm flex-shrink-0">
-																	<img src="images/nnpc.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																</div>
-															</div>
-															<div className="ms-2 d-flex flex-grow-1 text-muted-3">
-																<p className="text-truncate mb-0 max-200">Nigerian National Petroleum Com </p>
-																<span>(NNPC)</span>
-															</div>
-														</div>
-													</div>
-												</td>
-												<td>Production Sharing Contracts (PSCs) 2024</td>
-												<td>
-													<img src="images/Internally-resolved.svg" className="img-fluid" alt="internally resolved" />
-												</td>
-
-												<td>
-													<div className="dropdown">
-														<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-															<img src="images/dots-v.svg" className="img-fluid" alt="dot-v" />
-														</button>
-														<ul className="dropdown-menu border-radius action-menu-2">
-															<li><a className="dropdown-item" href="disputes-details.php">View details</a></li>
-														</ul>
-													</div>
-												</td>
-											</tr>
-
+													</td>
+												</tr>
+											)) : (
+												<tr>
+													<td id="pending-dispute-not-found" colSpan={6} className={`text-center d-none`}>
+														<p><i className="fa fa-triangle-exclamation fa-2x text-warning"></i></p>
+														<p className="h5">No dispute data found</p>
+													</td>
+												</tr>
+											)}
 										</tbody>
 									</table>
 								</div>
-
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-
-
 
 			<div className="modal fade" id="previewModal" tabIndex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
 				<div className="modal-dialog modal-dialog-centered modal-xl">
@@ -12656,8 +3400,6 @@ const Users = () => {
 					</div>
 				</div>
 			</div>
-			{/* 
-    <?php include "./components/javascript.inc.php"; ?> */}
 		</>
 	)
 }
