@@ -6,14 +6,15 @@ import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 
 const BranchDetails = () => {
-
   const { id } = useParams();
   const user_avatar = "/images/unilag.svg";
   const [isLoading, setIsLoading] = useState(true);
-  const [industries, setIndustries] = useState([])
+  const [industries, setIndustries] = useState([]);
+  const [SubBranches, setSubBranches] = useState([]);
 
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const [roles, setRoles] = useState([]);
+  const [unionAdmin, setUnionAdmin] = useState([]);
   const [unions, setunions] = useState({
     name: "",
     acronym: "",
@@ -29,22 +30,68 @@ const BranchDetails = () => {
     role: "",
   });
   const [branches, setBranches] = useState([]);
-  const [sidebar, setsidebar] = useState(true)
+  const [sidebar, setsidebar] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
-
-
-
+    setsidebar(!sidebar);
+  };
 
   useEffect(() => {
     fetchdata(id);
-    fetchIndustries()
+    fetchIndustries();
     fetchroles();
+    fetchSubBranch(id);
+    fetchUnionAdmin(id);
   }, []);
 
+  const fetchSubBranch = async (id) => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
 
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + `/api/get-union-organizations/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      //   subBranch.union = data.data.union_id;
+      setSubBranches(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchUnionAdmin = async (id) => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const res = await fetch(baseUrl + `/api/union/branch/get-admins/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setUnionAdmin(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
 
   const fetchdata = async (id) => {
     try {
@@ -67,15 +114,12 @@ const BranchDetails = () => {
 
       const data = await res.json();
       setunions(data.data);
-
-
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
-
 
   const fetchroles = async () => {
     try {
@@ -124,7 +168,6 @@ const BranchDetails = () => {
     }
   };
 
-
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     const formData = new FormData();
@@ -165,8 +208,8 @@ const BranchDetails = () => {
       }
 
       const data = await res.json();
-      fetchdata(id)
-      toast.success('your branch has been updated!')
+      fetchdata(id);
+      toast.success("your branch has been updated!");
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -194,16 +237,16 @@ const BranchDetails = () => {
         throw new Error("Failed to fetch data."); // Handle failed request
       }
       setUsers({
-        email: '',
-        role: ''
-      })
+        email: "",
+        role: "",
+      });
       const data = await res.json();
       // setGetDisputes(data.data);
       toast.success("Branch invite has been sent!");
       // window.location.reload();
     } catch (error) {
       console.error("Error fetching data:", error.message);
-      toast.error('failed to send invite')
+      toast.error("failed to send invite");
     }
   };
   return (
@@ -214,7 +257,6 @@ const BranchDetails = () => {
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
             <main className="admin-content">
               <div className="header-box py-5">
@@ -223,7 +265,10 @@ const BranchDetails = () => {
                 </div>
               </div>
               {isLoading ? (
-                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ minHeight: "80vh" }}
+                >
                   <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
                 </div>
               ) : (
@@ -234,7 +279,7 @@ const BranchDetails = () => {
                         <div className="d-flex gap-15">
                           <div>
                             <a
-                              href="#"
+                              href=""
                               className="text-muted-4 text-decoration-none"
                             >
                               <i className="bi bi-arrow-left"></i> Go back
@@ -299,7 +344,797 @@ const BranchDetails = () => {
                           className="accordion accordion-expand"
                           id="accordionUnion"
                         >
+                          <div className="accordion-item mb-3">
+                            <h2 className="accordion-header">
+                              <button
+                                className="accordion-button heading-4 text-grey"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne"
+                                aria-expanded="true"
+                                aria-controls="collapseOne"
+                              >
+                                {unions.acronym || unions.name} Sub Branches
+                              </button>
+                            </h2>
+                            <div
+                              id="collapseOne"
+                              className="accordion-collapse collapse show"
+                              data-bs-parent="#accordionUnion"
+                            >
+                              <div className="accordion-body">
+                                <div className="row my-4">
+                                  <div className="col-lg-5">
+                                    <div className="input-group">
+                                      <span className="input-group-text bg-transparent">
+                                        <img
+                                          src="/images/search.svg"
+                                          className="img-fluid"
+                                          alt="search"
+                                        />
+                                      </span>
+                                      <input
+                                        type="search"
+                                        className="form-control border-start-0 form-control-height"
+                                        placeholder="Search here..."
+                                      />
+                                    </div>
+                                  </div>
 
+                                  <div className="col-lg-7">
+                                    <div className="d-flex align-items-center justify-content-between gap-15">
+                                      <div className="d-flex">
+                                        <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+                                          <img
+                                            src="/images/filter.svg"
+                                            className="img-fluid"
+                                            alt=""
+                                          />{" "}
+                                          A-Z
+                                        </a>
+
+                                        <button className="btn btn-size btn-main-outline-primary px-3">
+                                          <i className="bi bi-cloud-download me-2"></i>{" "}
+                                          Export CSV
+                                        </button>
+                                      </div>
+
+                                      <p className="text-end mb-0 file-count">
+                                        Sub Branches: {SubBranches.length}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="row">
+                                  <div className="col-lg-12">
+                                    <table className="table table-list">
+                                      <thead className="table-light">
+                                        <tr>
+                                          <th scope="col">
+                                            <div>
+                                              <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id="checkboxNoLabel"
+                                                value=""
+                                                aria-label="..."
+                                              />
+                                            </div>
+                                          </th>
+                                          <th scope="col">Unions</th>
+                                          <th scope="col">Assigned Admin</th>
+                                          <th scope="col">No of branches</th>
+                                          <th scope="col">Date added</th>
+                                          <th scope="col"></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {SubBranches.map((item) => (
+                                          <tr>
+                                            <td>
+                                              <div>
+                                                <input
+                                                  className="form-check-input"
+                                                  type="checkbox"
+                                                  id="checkboxNoLabel"
+                                                  value=""
+                                                  aria-label="..."
+                                                />
+                                              </div>
+                                            </td>
+
+                                            <td>
+                                              <div
+                                                className="d-flex align-items-center avatar-holder"
+                                                key={item._id}
+                                              >
+                                                <div className="position-relative">
+                                                  <div className="avatar-sm flex-shrink-0">
+                                                    <img
+                                                      src={item.logo}
+                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                      alt="Avatar"
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="ms-2 flex-grow-1">
+                                                  <div className="d-flex justify-content-between align-items-center mb-2">
+                                                    <div className="mb-0 d-flex align-items-center">
+                                                      <div className="heading-text">
+                                                        {item.name}
+                                                        <span className="text-muted-3">
+                                                          ({item.acronym})
+                                                        </span>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </td>
+
+                                            <td>
+                                              {/* <div className="avatars">
+                                            <div className="dropdown">
+                                              <a
+                                                href="#"
+                                                className="avatars__item dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                              >
+                                                <img
+                                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
+                                                  src="https://randomuser.me/api/portraits/women/65.jpg"
+                                                  alt=""
+                                                />
+                                              </a>
+                                              <ul className="dropdown-menu action-menu border-radius">
+                                                <img
+                                                  src="/images/pointer.svg"
+                                                  className="img-fluid pointer"
+                                                />
+                                                <div className="d-flex avatar-holder border-bottom py-4">
+                                                  <div className="position-relative">
+                                                    <img
+                                                      src="/images/Avatar-online-indicator.svg"
+                                                      className="img-fluid indicator-avatar"
+                                                      alt="indicator"
+                                                    />
+                                                    <div className="avatar-sm flex-shrink-0">
+                                                      <img
+                                                        src="https://randomuser.me/api/portraits/women/65.jpg"
+                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                        alt="Avatar"
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <h5 className="mb-0">
+                                                      Stephen Ejiro
+                                                    </h5>
+                                                    <p className="mb-0 text-main-primary">
+                                                      View profile
+                                                    </p>
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/users.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Role in dispute
+                                                    </p>
+                                                    <img
+                                                      src="/images/claim.svg"
+                                                      className="img-fluid"
+                                                      alt="claimant"
+                                                    />
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/user.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Name & Organization
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      Stephen Ejiro (Shafa
+                                                      Abuja)
+                                                    </p>
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/mail.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Email
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      stepheneji@nnpc.com
+                                                    </p>
+                                                  </div>
+
+                                                  <img
+                                                    src="/images/copy.svg"
+                                                    className="img-fluid"
+                                                    alt="copy"
+                                                  />
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/call.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Phone Number
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      08168141116
+                                                    </p>
+                                                  </div>
+                                                  <img
+                                                    src="/images/copy.svg"
+                                                    className="img-fluid"
+                                                    alt="copy"
+                                                  />
+                                                </div>
+                                              </ul>
+                                            </div>
+                                            <div className="dropdown">
+                                              <a
+                                                href="#"
+                                                className="avatars__item dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                              >
+                                                <img
+                                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
+                                                  src="https://randomuser.me/api/portraits/women/66.jpg"
+                                                  alt=""
+                                                />
+                                              </a>
+                                              <ul className="dropdown-menu action-menu border-radius">
+                                                <img
+                                                  src="/images/pointer.svg"
+                                                  className="img-fluid pointer"
+                                                />
+                                                <div className="d-flex avatar-holder border-bottom py-4">
+                                                  <div className="position-relative">
+                                                    <img
+                                                      src="/images/Avatar-online-indicator.svg"
+                                                      className="img-fluid indicator-avatar"
+                                                      alt="indicator"
+                                                    />
+                                                    <div className="avatar-sm flex-shrink-0">
+                                                      <img
+                                                        src="https://randomuser.me/api/portraits/women/66.jpg"
+                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                        alt="Avatar"
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <h5 className="mb-0">
+                                                      Stephen Ejiro
+                                                    </h5>
+                                                    <p className="mb-0 text-main-primary">
+                                                      View profile
+                                                    </p>
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/users.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Role in dispute
+                                                    </p>
+                                                    <img
+                                                      src="/images/claim.svg"
+                                                      className="img-fluid"
+                                                      alt="claimant"
+                                                    />
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/user.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Name & Organization
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      Stephen Ejiro (Shafa
+                                                      Abuja)
+                                                    </p>
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/mail.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Email
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      stepheneji@nnpc.com
+                                                    </p>
+                                                  </div>
+
+                                                  <img
+                                                    src="/images/copy.svg"
+                                                    className="img-fluid"
+                                                    alt="copy"
+                                                  />
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/call.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Phone Number
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      08168141116
+                                                    </p>
+                                                  </div>
+                                                  <img
+                                                    src="/images/copy.svg"
+                                                    className="img-fluid"
+                                                    alt="copy"
+                                                  />
+                                                </div>
+                                              </ul>
+                                            </div>
+                                            <div className="dropdown">
+                                              <a
+                                                href="#"
+                                                className="avatars__item dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                              >
+                                                <img
+                                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
+                                                  src="https://randomuser.me/api/portraits/women/67.jpg"
+                                                  alt=""
+                                                />
+                                              </a>
+                                              <ul className="dropdown-menu action-menu border-radius">
+                                                <img
+                                                  src="/images/pointer.svg"
+                                                  className="img-fluid pointer"
+                                                />
+                                                <div className="d-flex avatar-holder border-bottom py-4">
+                                                  <div className="position-relative">
+                                                    <img
+                                                      src="/images/Avatar-online-indicator.svg"
+                                                      className="img-fluid indicator-avatar"
+                                                      alt="indicator"
+                                                    />
+                                                    <div className="avatar-sm flex-shrink-0">
+                                                      <img
+                                                        src="https://randomuser.me/api/portraits/women/67.jpg"
+                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                        alt="Avatar"
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <h5 className="mb-0">
+                                                      Stephen Ejiro
+                                                    </h5>
+                                                    <p className="mb-0 text-main-primary">
+                                                      View profile
+                                                    </p>
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/users.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Role in dispute
+                                                    </p>
+                                                    <img
+                                                      src="/images/claim.svg"
+                                                      className="img-fluid"
+                                                      alt="claimant"
+                                                    />
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/user.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Name & Organization
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      Stephen Ejiro (Shafa
+                                                      Abuja)
+                                                    </p>
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/mail.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Email
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      stepheneji@nnpc.com
+                                                    </p>
+                                                  </div>
+
+                                                  <img
+                                                    src="/images/copy.svg"
+                                                    className="img-fluid"
+                                                    alt="copy"
+                                                  />
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/call.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Phone Number
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      08168141116
+                                                    </p>
+                                                  </div>
+                                                  <img
+                                                    src="/images/copy.svg"
+                                                    className="img-fluid"
+                                                    alt="copy"
+                                                  />
+                                                </div>
+                                              </ul>
+                                            </div>
+                                            <div className="dropdown">
+                                              <a
+                                                href="#"
+                                                className="avatars__item dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                              >
+                                                <img
+                                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
+                                                  src="https://randomuser.me/api/portraits/women/68.jpg"
+                                                  alt=""
+                                                />
+                                              </a>
+                                              <ul className="dropdown-menu action-menu border-radius">
+                                                <img
+                                                  src="/images/pointer.svg"
+                                                  className="img-fluid pointer"
+                                                />
+                                                <div className="d-flex avatar-holder border-bottom py-4">
+                                                  <div className="position-relative">
+                                                    <img
+                                                      src="/images/Avatar-online-indicator.svg"
+                                                      className="img-fluid indicator-avatar"
+                                                      alt="indicator"
+                                                    />
+                                                    <div className="avatar-sm flex-shrink-0">
+                                                      <img
+                                                        src="https://randomuser.me/api/portraits/women/68.jpg"
+                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                        alt="Avatar"
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <h5 className="mb-0">
+                                                      Stephen Ejiro
+                                                    </h5>
+                                                    <p className="mb-0 text-main-primary">
+                                                      View profile
+                                                    </p>
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/users.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Role in dispute
+                                                    </p>
+                                                    <img
+                                                      src="/images/claim.svg"
+                                                      className="img-fluid"
+                                                      alt="claimant"
+                                                    />
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/user.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Name & Organization
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      Stephen Ejiro (Shafa
+                                                      Abuja)
+                                                    </p>
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/mail.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Email
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      stepheneji@nnpc.com
+                                                    </p>
+                                                  </div>
+
+                                                  <img
+                                                    src="/images/copy.svg"
+                                                    className="img-fluid"
+                                                    alt="copy"
+                                                  />
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/call.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Phone Number
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      08168141116
+                                                    </p>
+                                                  </div>
+                                                  <img
+                                                    src="/images/copy.svg"
+                                                    className="img-fluid"
+                                                    alt="copy"
+                                                  />
+                                                </div>
+                                              </ul>
+                                            </div>
+                                            <div className="dropdown">
+                                              <a
+                                                href="#"
+                                                className="avatars__item dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                              >
+                                                <img
+                                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
+                                                  src="https://randomuser.me/api/portraits/women/69.jpg"
+                                                  alt=""
+                                                />
+                                              </a>
+                                              <ul className="dropdown-menu action-menu border-radius">
+                                                <img
+                                                  src="/images/pointer.svg"
+                                                  className="img-fluid pointer"
+                                                />
+                                                <div className="d-flex avatar-holder border-bottom py-4">
+                                                  <div className="position-relative">
+                                                    <img
+                                                      src="/images/Avatar-online-indicator.svg"
+                                                      className="img-fluid indicator-avatar"
+                                                      alt="indicator"
+                                                    />
+                                                    <div className="avatar-sm flex-shrink-0">
+                                                      <img
+                                                        src="https://randomuser.me/api/portraits/women/69.jpg"
+                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                        alt="Avatar"
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <h5 className="mb-0">
+                                                      Stephen Ejiro
+                                                    </h5>
+                                                    <p className="mb-0 text-main-primary">
+                                                      View profile
+                                                    </p>
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/users.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Role in dispute
+                                                    </p>
+                                                    <img
+                                                      src="/images/claim.svg"
+                                                      className="img-fluid"
+                                                      alt="claimant"
+                                                    />
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/user.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Name & Organization
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      Stephen Ejiro (Shafa
+                                                      Abuja)
+                                                    </p>
+                                                  </div>
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/mail.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Email
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      stepheneji@nnpc.com
+                                                    </p>
+                                                  </div>
+
+                                                  <img
+                                                    src="/images/copy.svg"
+                                                    className="img-fluid"
+                                                    alt="copy"
+                                                  />
+                                                </div>
+
+                                                <div className="d-flex align-items-center py-2">
+                                                  <img
+                                                    src="/images/call.svg"
+                                                    className="img-fluid"
+                                                    alt="users"
+                                                  />
+                                                  <div className="ms-2 flex-grow-1">
+                                                    <p className="mb-1 ft-sm">
+                                                      Phone Number
+                                                    </p>
+                                                    <p className="mb-0">
+                                                      08168141116
+                                                    </p>
+                                                  </div>
+                                                  <img
+                                                    src="/images/copy.svg"
+                                                    className="img-fluid"
+                                                    alt="copy"
+                                                  />
+                                                </div>
+                                              </ul>
+                                            </div>
+                                          </div> */}
+                                              <p>No admin has been invited</p>
+                                            </td>
+
+                                            <td>{item.industry}</td>
+                                            <td>{item.date_added}</td>
+
+                                            <td>
+                                              <div className="dropdown">
+                                                <button
+                                                  className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                                                  type="button"
+                                                  data-bs-toggle="dropdown"
+                                                  aria-expanded="false"
+                                                >
+                                                  <img
+                                                    src="/images/dots-v.svg"
+                                                    className="img-fluid"
+                                                    alt="dot-v"
+                                                  />
+                                                </button>
+                                                <ul
+                                                  className="dropdown-menu border-radius action-menu-2"
+                                                  // onClick={onUniones3}
+                                                >
+                                                  <li>
+                                                    <Link
+                                                      to={`/subBranchDetails/${item._id}`}
+                                                      className="dropdown-item"
+                                                    >
+                                                      View details
+                                                    </Link>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                           <div className="accordion-item mb-3">
                             <h2 className="accordion-header">
                               <button
@@ -350,7 +1185,8 @@ const BranchDetails = () => {
                                         <div className="main-avatar mx-auto">
                                           <img
                                             src={unions.logo}
-                                            className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+                                            className="img-fluid object-fit-cover object-position-center w-100 h-100"
+                                            alt=""
                                           />
                                         </div>
                                       </label>
@@ -477,6 +1313,79 @@ const BranchDetails = () => {
                                     </tr>
                                   </thead>
                                   <tbody>
+                                    {Object.entries(unionAdmin)?.length > 0 ? (
+                                      Object.entries(unionAdmin).map(
+                                        ([key, value], index) => (
+                                          <tr key={key}>
+                                            <td scope="row">
+                                              <div className="d-flex avatar-holder">
+                                                <div className="position-relative">
+                                                  <div className="avatar-sm flex-shrink-0">
+                                                    <img
+                                                      src={
+                                                        value.photo ||
+                                                        "/images/download.png"
+                                                      }
+                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                      alt="Avatar"
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="ms-2 flex-grow-1">
+                                                  <h5 className="mb-0">
+                                                    {value.name}
+                                                  </h5>
+                                                  <p className="mb-0 text-muted-3">
+                                                    {value.email}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </td>
+                                            <td>{value.date_joined}</td>
+                                            <td>
+                                              <p>{value.role}</p>
+                                            </td>
+
+                                            <td>
+                                              <div className="dropdown">
+                                                <button
+                                                  className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                                                  type="button"
+                                                  data-bs-toggle="dropdown"
+                                                  aria-expanded="false"
+                                                >
+                                                  <img
+                                                    src="/images/dots-v.svg"
+                                                    className="img-fluid"
+                                                    alt="dot-v"
+                                                  />
+                                                </button>
+                                                <ul className="dropdown-menu border-radius action-menu-2">
+                                                  <li>
+                                                    <a
+                                                      className="dropdown-item"
+                                                      href="#"
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#removeModal"
+                                                    >
+                                                      Remove Admin
+                                                    </a>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        )
+                                      )
+                                    ) : (
+                                      <tr>
+                                        <td>
+                                          <p className="m-3">
+                                            No admin has been invited
+                                          </p>
+                                        </td>
+                                      </tr>
+                                    )}
                                     {/* <tr>
                                   <td scope="row">
                                     <div className="d-flex avatar-holder">
@@ -720,18 +1629,13 @@ const BranchDetails = () => {
                                     </div>
                                   </td>
                                 </tr> */}
-                                    <tr>
-                                      <td>
-                                        <p className="m-3">No admin has been invited</p>
-                                      </td>
-                                    </tr>
                                   </tbody>
                                 </table>
                               </div>
                             </div>
                           </div>
 
-                          <div className="accordion-item mb-3">
+                          {/* <div className="accordion-item mb-3">
                             <h2 className="accordion-header">
                               <button
                                 className="accordion-button collapsed heading-4 text-grey"
@@ -900,7 +1804,7 @@ const BranchDetails = () => {
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -982,8 +1886,12 @@ const BranchDetails = () => {
                 >
                   Save Changes
                 </a>
-                <a href="#" className="btn btn-size btn-main-primary" data-bs-dismiss="modal"
-                  aria-label="Close">
+                <a
+                  href="#"
+                  className="btn btn-size btn-main-primary"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
                   Discard Changes
                 </a>
               </div>
@@ -1005,7 +1913,8 @@ const BranchDetails = () => {
                       <div className="main-avatar mx-auto">
                         <img
                           src={unions.logo}
-                          className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+                          className="img-fluid object-fit-cover object-position-center w-100 h-100"
+                          alt=""
                         />
                       </div>
                     </label>
@@ -1036,11 +1945,19 @@ const BranchDetails = () => {
                     </div>
                     <div className="mb-4">
                       <label className="form-label">Industry</label>
-                      <select className="form-control form-control-height" id="industriy" name="industry_id" onChange={onHandleChange} value={unions.industry_id}>
-                        <option value="default"  >--Choose--</option>
-                        {industries.map((item) =>
-                          <option value={item._id} key={item._id}>{item.name}</option>
-                        )}
+                      <select
+                        className="form-control form-control-height"
+                        id="industriy"
+                        name="industry_id"
+                        onChange={onHandleChange}
+                        value={unions.industry_id}
+                      >
+                        <option value="default">--Choose--</option>
+                        {industries.map((item) => (
+                          <option value={item._id} key={item._id}>
+                            {item.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
 
@@ -1063,11 +1980,11 @@ const BranchDetails = () => {
                         onChange={onHandleChange}
                         name="about"
                       >
-                        Nigeria Branch of Journalists (NUJ) is a network of media
-                        professionals established to advance the safety and
-                        welfare of Nigerian journalists. It is an independent
-                        trade organization with no political leaning or
-                        ideological disposition. NUJ is founded in the
+                        Nigeria Branch of Journalists (NUJ) is a network of
+                        media professionals established to advance the safety
+                        and welfare of Nigerian journalists. It is an
+                        independent trade organization with no political leaning
+                        or ideological disposition. NUJ is founded in the
                         underlying belief that speaking with one voice
                       </textarea>
                     </div>
@@ -1436,7 +2353,8 @@ const BranchDetails = () => {
                         <div className="text-center">
                           <img
                             src="/images/no-found.svg"
-                            className="img-fluid" alt=""
+                            className="img-fluid"
+                            alt=""
                           />
                         </div>
                       </div>
@@ -1451,7 +2369,7 @@ const BranchDetails = () => {
 
       {/* <?php include "./components/javascript.inc.php"; ?> */}
     </>
-  )
-}
+  );
+};
 
-export default BranchDetails
+export default BranchDetails;

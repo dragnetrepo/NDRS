@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TopBarInc from "../Bars/TopBarInc";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import { Link } from "react-router-dom";
-import { ClipLoader } from 'react-spinners';
+import { ClipLoader } from "react-spinners";
 import MyChartComponent from "../Bars/MyChartComponent";
 
 const Dashboard = () => {
@@ -11,22 +11,39 @@ const Dashboard = () => {
   const [discussion, setDiscussions] = useState([]);
   const [user, setuser] = useState([]);
   const [notifications, setNotifications] = useState([]);
-  const [documents, setDocuments] = useState([])
-  const [dashboard, setDashboard] = useState([])
-  const [sidebar, setsidebar] = useState(true)
+  const [documents, setDocuments] = useState([]);
+  const [dashboard, setDashboard] = useState([]);
+  const [sidebar, setsidebar] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
+    setsidebar(!sidebar);
+  };
 
   const today = new Date();
 
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   const dayName = days[today.getDay()];
@@ -37,22 +54,21 @@ const Dashboard = () => {
   const getOrdinalSuffix = (n) => {
     const s = ["th", "st", "nd", "rd"];
     const v = n % 100;
-    return (s[(v - 20) % 10] || s[v] || s[0]);
+    return s[(v - 20) % 10] || s[v] || s[0];
   };
 
-  const formattedDate = `${dayName}, ${monthName} ${day}${getOrdinalSuffix(day)}`;
-
+  const formattedDate = `${dayName}, ${monthName} ${day}${getOrdinalSuffix(
+    day
+  )}`;
 
   useEffect(() => {
-    fetchdata()
-    fetchDashboard()
-
+    fetchdata();
+    fetchDashboard();
+    fetchReports();
   }, []);
-
 
   const fetchdata = async () => {
     try {
-
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -76,9 +92,33 @@ const Dashboard = () => {
     }
   };
 
+  const fetchReports = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + "/api/reports", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setuser(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
   const fetchDashboard = async () => {
     try {
-
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -99,13 +139,10 @@ const Dashboard = () => {
       setDashboard(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
-    }
-    finally {
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
-
-
 
   return (
     <>
@@ -117,7 +154,10 @@ const Dashboard = () => {
             {/* <?php include "./components/top-bar.inc.php"; ?> */}
             <TopBarInc toggleSideBar={toggleSideBar} />
             {isLoading ? (
-              <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ minHeight: "80vh" }}
+              >
                 <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
               </div>
             ) : (
@@ -135,19 +175,27 @@ const Dashboard = () => {
                       <div className="col-lg-8">
                         <div className="row mb-5">
                           <div className="col-lg-4 mb-lg-0 mb-3">
-                            <a href="/disputes" className="text-decoration-none">
+                            <a
+                              href="/disputes"
+                              className="text-decoration-none"
+                            >
                               <div className="card dash-card bg-custom-color-2 h-100 border-0">
                                 <div className="card-body">
                                   <div className="d-flex avatar-holder align-items-center mb-3">
                                     <div className="position-relative flex-shrink-0">
                                       <img
                                         src="/images/dispute-icon.svg"
-                                        className="img-fluid" alt=""
+                                        className="img-fluid"
+                                        alt=""
                                       />
                                     </div>
                                     <div className="ms-2 flex-grow-1">
                                       <h5 className="mb-0">
-                                        View Pending Disputes ({dashboard.pending_disputes ? dashboard.pending_disputes.count : 0})
+                                        View Pending Disputes (
+                                        {dashboard.pending_disputes
+                                          ? dashboard.pending_disputes.count
+                                          : 0}
+                                        )
                                       </h5>
                                     </div>
                                   </div>
@@ -162,17 +210,15 @@ const Dashboard = () => {
                           </div>
 
                           <div className="col-lg-4 mb-lg-0 mb-3">
-                            <Link
-                              to="/unions"
-                              className="text-decoration-none"
-                            >
+                            <Link to="/unions" className="text-decoration-none">
                               <div className="card dash-card bg-custom-color-2 h-100 border-0">
                                 <div className="card-body">
                                   <div className="d-flex avatar-holder align-items-center mb-3">
                                     <div className="position-relative flex-shrink-0">
                                       <img
                                         src="/images/union-icon.svg"
-                                        className="img-fluid" alt=""
+                                        className="img-fluid"
+                                        alt=""
                                       />
                                     </div>
                                     <div className="ms-2 flex-grow-1">
@@ -198,7 +244,8 @@ const Dashboard = () => {
                                     <div className="position-relative flex-shrink-0">
                                       <img
                                         src="/images/userz-icon.svg"
-                                        className="img-fluid" alt=""
+                                        className="img-fluid"
+                                        alt=""
                                       />
                                     </div>
                                     <div className="ms-2 flex-grow-1">
@@ -248,9 +295,8 @@ const Dashboard = () => {
                                   src="/images/bar-chart.svg"
                                   className="img-fluid"
                                   alt="bar-chart"
-                                /> */}<MyChartComponent />
-
-
+                                /> */}
+                                <MyChartComponent />
                               </div>
                             </div>
                           </div>
@@ -268,45 +314,53 @@ const Dashboard = () => {
 
                         <div className="card p-lg-1 mb-5">
                           <div className="card-body p-0">
+                            {dashboard?.recent_notifications?.data?.length >
+                            0 ? (
+                              dashboard?.recent_notifications?.data
+                                .slice(0, 3)
+                                .map((item) => (
+                                  <div
+                                    className="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4"
+                                    key={item._id}
+                                  >
+                                    <div className="position-relative">
+                                      <div className="avatar-sm flex-shrink-0">
+                                        <img
+                                          src={
+                                            item.photo || "/images/download.png"
+                                          }
+                                          className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                          alt="Avatar"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="ms-2 flex-grow-1">
+                                      <div className="mb-2 d-flex align-items-center">
+                                        <p className="mb-0">
+                                          <strong>{item.message}</strong>
+                                        </p>
+                                      </div>
 
-                            {dashboard?.recent_notifications?.data?.length > 0 ? (
-                              dashboard?.recent_notifications?.data.slice(0, 3).map((item) =>
-                                <div className="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4" key={item._id}>
-                                  <div className="position-relative">
-                                    <div className="avatar-sm flex-shrink-0">
-                                      <img
-                                        src={item.photo || '/images/download.png'}
-                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                        alt="Avatar"
-                                      />
+                                      <div className="">
+                                        <p className="mb-0">{item.date}</p>
+                                      </div>
                                     </div>
                                   </div>
-                                  <div className="ms-2 flex-grow-1">
-                                    <div className="mb-2 d-flex align-items-center">
-                                      <p className="mb-0">
-                                        <strong>{item.message}</strong>
-                                      </p>
-                                    </div>
-
-                                    <div className="">
-                                      <p className="mb-0">{item.date}</p>
-                                    </div>
-                                  </div>
-                                </div>
-                              )) : (
+                                ))
+                            ) : (
                               <div className="d-flex justify-content-center align-items-center">
                                 <h5>No Notifications Yet</h5>
                               </div>
-
                             )}
-
                           </div>
                         </div>
                       </div>
                       <div className="col-lg-4">
                         <div className="mb-4">
                           <div className="d-flex justify-content-between align-items-center mb-2">
-                            <h4 className="mb-0 heading-4">Recent Discussions</h4>
+                            <h4 className="mb-0 heading-4">
+                              Recent Discussions
+                            </h4>
                             <Link
                               to="/discussions"
                               className="text-main-primary text-decoration-none text-medium"
@@ -317,48 +371,55 @@ const Dashboard = () => {
                           <div className="card dash-card">
                             <div className="card-body">
                               {dashboard?.recent_messages?.data?.length > 0 ? (
-                                dashboard?.recent_messages?.data.slice(0, 4).map((item) => (
-                                  <div className="d-flex avatar-holder my-4" key={item._id}>
-                                    <div className="position-relative">
-                                      <div className="avatar-sm flex-shrink-0">
-                                        <img
-                                          src={item.sender.photo || '/images/download.png'}
-                                          className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                          alt="Avatar"
-                                        />
+                                dashboard?.recent_messages?.data
+                                  .slice(0, 4)
+                                  .map((item) => (
+                                    <div
+                                      className="d-flex avatar-holder my-4"
+                                      key={item._id}
+                                    >
+                                      <div className="position-relative">
+                                        <div className="avatar-sm flex-shrink-0">
+                                          <img
+                                            src={
+                                              item.sender.photo ||
+                                              "/images/download.png"
+                                            }
+                                            className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                            alt="Avatar"
+                                          />
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div className="ms-2 flex-grow-1">
-                                      <div className="d-flex justify-content-between align-items-center mb-2">
-                                        <div className="mb-0 d-flex align-items-center">
-                                          <div className="heading-text text-truncate max-150">
-                                            {item.sender.sender}
+                                      <div className="ms-2 flex-grow-1">
+                                        <div className="d-flex justify-content-between align-items-center mb-2">
+                                          <div className="mb-0 d-flex align-items-center">
+                                            <div className="heading-text text-truncate max-150">
+                                              {item.sender.sender}
+                                            </div>
+                                            <span className="card-text-sm ms-2">
+                                              {item.case_no}
+                                            </span>
                                           </div>
-                                          <span className="card-text-sm ms-2">
-                                            {item.case_no}
+                                          <span className="text-main-primary ft-sm-only">
+                                            {item.time_sent}
                                           </span>
                                         </div>
-                                        <span className="text-main-primary ft-sm-only">
-                                          {item.time_sent}
-                                        </span>
-                                      </div>
-                                      <div className="d-flex justify-content-between align-items-start">
-                                        <p className="mb-0 action line-clamp-2">
-                                          {item.message}
-                                        </p>
-                                        <span className="badge rounded-pill text-bg-main">
-                                          {item.unread_messages}
-                                        </span>
+                                        <div className="d-flex justify-content-between align-items-start">
+                                          <p className="mb-0 action line-clamp-2">
+                                            {item.message}
+                                          </p>
+                                          <span className="badge rounded-pill text-bg-main">
+                                            {item.unread_messages}
+                                          </span>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                ))
+                                  ))
                               ) : (
                                 <div className="d-flex align-items-center justify-content-center">
                                   <h5>No Discussions Yet.</h5>
                                 </div>
                               )}
-
                             </div>
                           </div>
                         </div>
@@ -376,50 +437,56 @@ const Dashboard = () => {
                           <div className="card dash-card">
                             <div className="card-body">
                               {dashboard?.recent_documents?.data?.length > 0 ? (
-                                dashboard?.recent_documents?.data.slice(0, 4).map((item) =>
-                                  <div className="d-flex avatar-holder my-4" key={item._id}>
-                                    <div className="position-relative">
-                                      <div className="flex-shrink-0">
+                                dashboard?.recent_documents?.data
+                                  .slice(0, 4)
+                                  .map((item) => (
+                                    <div
+                                      className="d-flex avatar-holder my-4"
+                                      key={item._id}
+                                    >
+                                      <div className="position-relative">
+                                        <div className="flex-shrink-0">
+                                          <img
+                                            src="/images/pdf-icon.svg"
+                                            className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                            alt="PDF"
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="ms-2 flex-grow-1">
+                                        <div className="mb-2 d-flex align-items-center">
+                                          <div className="heading-text text-truncate max-150">
+                                            {item.name}
+                                          </div>{" "}
+                                          <span className="card-text-sm ms-2">
+                                            {item.case_no}
+                                          </span>
+                                        </div>
+
+                                        <div className="d-flex justify-content-between align-items-center">
+                                          <p className="mb-0">
+                                            {item.time_modified}{" "}
+                                            <i className="bi bi-dot"></i>{" "}
+                                            <span className="text-medium">
+                                              {item.size}
+                                            </span>
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <div className="avatar-sm flex-shrink-0">
                                         <img
-                                          src="/images/pdf-icon.svg"
+                                          src="/images/union-3.svg"
                                           className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                          alt="PDF"
+                                          alt="Avatar"
                                         />
                                       </div>
                                     </div>
-                                    <div className="ms-2 flex-grow-1">
-                                      <div className="mb-2 d-flex align-items-center">
-                                        <div className="heading-text text-truncate max-150">
-                                          {item.name}
-                                        </div>{" "}
-                                        <span className="card-text-sm ms-2">
-                                          {item.case_no}
-                                        </span>
-                                      </div>
-
-                                      <div className="d-flex justify-content-between align-items-center">
-                                        <p className="mb-0">
-                                          {item.time_modified}{" "}
-                                          <i className="bi bi-dot"></i>{" "}
-                                          <span className="text-medium">{item.size}</span>
-                                        </p>
-                                      </div>
-                                    </div>
-                                    <div className="avatar-sm flex-shrink-0">
-                                      <img
-                                        src="/images/union-3.svg"
-                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                        alt="Avatar"
-                                      />
-                                    </div>
-                                  </div>
-                                )) : (
+                                  ))
+                              ) : (
                                 <div className="d-flex justify-content-center align-items-center">
                                   <h5>No Documents Yet</h5>
                                 </div>
-
                               )}
-
                             </div>
                           </div>
                         </div>
@@ -427,8 +494,8 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-              </main>)}
-
+              </main>
+            )}
 
             <footer>
               <div className="container">

@@ -10,6 +10,8 @@ const Settings = () => {
   const navigate = useNavigate();
   const user_avatar = "/images/unilag.svg";
   const [isLoading, setIsLoading] = useState(true);
+  const [industries, setIndustries] = useState([]);
+
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const [user, setuser] = useState({
     first_name: "",
@@ -29,7 +31,27 @@ const Settings = () => {
   const [deleteAccount, setDeleteaccount] = useState({
     password: "",
   });
-
+  const [organization, setOrganization] = useState({
+    name: "",
+    acronym: "",
+    industry: "",
+    industry_id: "",
+    headquarters: "",
+    phone: "",
+    about: "",
+    founded_in: "",
+    logo: "",
+  });
+  // const [editOrganization, setEditOrganization] = useState({
+  //   name: "",
+  //   acronym: "",
+  //   industry: "",
+  //   headquarters: "",
+  //   phone: "",
+  //   about: "",
+  //   founded_in: "",
+  //   logo: "",
+  // });
   const [twoFactorAuth, setTwoFactorAuth] = useState(false);
   const [notificationSettings, setNotificationSettings] = useState([]);
   const [sidebar, setsidebar] = useState(true);
@@ -42,11 +64,100 @@ const Settings = () => {
     fetchdata(user, setuser);
     fetchTwoFactorAuth();
     fetchNotificationSettings();
+    fetchOrganization();
+    fetchIndustries();
   }, []);
+
+  const fetchIndustries = async () => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + "/api/get-industries", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setIndustries(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const fetchOrganization = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const res = await fetch(baseUrl + "/api/organization-profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setOrganization(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // const onHandleTwoFactorAuth = (event) => {
   //  ;
   // };
+  const onHandleChangeOrganization = (e) => {
+    setOrganization({
+      ...organization,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleOrganization = async (e) => {
+    e.preventDefault();
+
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const response = await fetch(baseUrl + "/api/edit/organization-profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(organization),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      fetchOrganization();
+      toast.success("Organization has been updated!");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const onHandleChangePassword = (e) => {
     setChangePassword({ ...changePassword, [e.target.name]: e.target.value });
@@ -347,20 +458,26 @@ const Settings = () => {
                               Personal profile
                             </button>
                           </li>
-                          <li className="nav-item" role="presentation">
-                            <button
-                              className="nav-link"
-                              id="pills-organization-tab"
-                              data-bs-toggle="pill"
-                              data-bs-target="#pills-organization"
-                              type="button"
-                              role="tab"
-                              aria-controls="pills-organization"
-                              aria-selected="false"
-                            >
-                              Organization profile
-                            </button>
-                          </li>
+
+                          {user.user_role?.union_name ||
+                          user.user_role?.union_branch_name ||
+                          user.user_role?.union_sub_branch_name ? (
+                            <li className="nav-item" role="presentation">
+                              <button
+                                className="nav-link"
+                                id="pills-organization-tab"
+                                data-bs-toggle="pill"
+                                data-bs-target="#pills-organization"
+                                type="button"
+                                role="tab"
+                                aria-controls="pills-organization"
+                                aria-selected="true"
+                              >
+                                Organization profile
+                              </button>
+                            </li>
+                          ) : null}
+
                           <li className="nav-item" role="presentation">
                             <button
                               className="nav-link"
@@ -453,6 +570,7 @@ const Settings = () => {
                                                 <img
                                                   src={
                                                     user.display_picture ||
+                                                    image ||
                                                     "/images/download.png"
                                                   }
                                                   className="img-fluid object-fit-cover object-position-center w-100 h-100"
@@ -534,7 +652,7 @@ const Settings = () => {
                                                 onChange={onHandleChange}
                                               />
                                             </div>
-                                            {user.user_role.union_name ? (
+                                            {user.user_role?.union_name ? (
                                               <div className="mb-4">
                                                 <label className="form-label">
                                                   Union
@@ -544,7 +662,7 @@ const Settings = () => {
                                                   className="form-control form-control-height"
                                                   placeholder="Enter your phone number"
                                                   value={
-                                                    user.user_role.union_name
+                                                    user.user_role?.union_name
                                                   }
                                                   disabled
                                                   onChange={onHandleChange}
@@ -553,7 +671,7 @@ const Settings = () => {
                                             ) : null}
 
                                             {user.user_role
-                                              .union_branch_name ? (
+                                              ?.union_branch_name ? (
                                               <div className="mb-4">
                                                 <label className="form-label">
                                                   Union branch
@@ -564,7 +682,7 @@ const Settings = () => {
                                                   placeholder="Enter your phone number"
                                                   value={
                                                     user.user_role
-                                                      .union_branch_name
+                                                      ?.union_branch_name
                                                   }
                                                   disabled
                                                   onChange={onHandleChange}
@@ -573,7 +691,7 @@ const Settings = () => {
                                             ) : null}
 
                                             {user.user_role
-                                              .union_sub_branch_name ? (
+                                              ?.union_sub_branch_name ? (
                                               <div className="mb-4">
                                                 <label className="form-label">
                                                   Sub branch
@@ -584,7 +702,7 @@ const Settings = () => {
                                                   placeholder="Enter your phone number"
                                                   value={
                                                     user.user_role
-                                                      .union_sub_branch_name
+                                                      ?.union_sub_branch_name
                                                   }
                                                   disabled
                                                   onChange={onHandleChange}
@@ -610,7 +728,9 @@ const Settings = () => {
                                                 type="text"
                                                 className="form-control form-control-height"
                                                 placeholder="Enter your phone number"
-                                                value={user.user_role.role_name}
+                                                value={
+                                                  user.user_role?.role_name
+                                                }
                                                 disabled
                                                 onChange={onHandleChange}
                                               />
@@ -673,15 +793,15 @@ const Settings = () => {
                                     </h3>
                                     <div className="d-flex align-items-center gap-15">
                                       <a
-                                        href="#"
+                                        href=""
                                         className="btn-flat text-main-primary"
                                       >
                                         Discard changes
                                       </a>
                                       <a
-                                        href="#"
+                                        href=""
                                         className="btn btn-size btn-main-primary"
-                                        disabled
+                                        onClick={handleOrganization}
                                       >
                                         Save changes
                                       </a>
@@ -697,16 +817,16 @@ const Settings = () => {
                                           >
                                             <input
                                               type="file"
-                                              id="profile"
+                                              id="profileOrganization"
                                               style={{ display: "none" }}
                                               onChange={onHandleChange}
                                             />
 
                                             <div className="main-avatar mx-auto">
-                                              <img
-                                                src="/images/org-logo.png"
+                                              {/* <img
+                                                src={organization?.logo}
                                                 className="img-fluid object-fit-cover object-position-center w-100 h-100"
-                                              />
+                                              /> */}
                                             </div>
 
                                             <img
@@ -716,109 +836,353 @@ const Settings = () => {
                                           </label>
                                         </div>
 
-                                        <div className="col-lg-9">
-                                          <div className="mb-4">
-                                            <label className="form-label">
-                                              Organization name
-                                            </label>
-                                            <input
-                                              type="text"
-                                              className="form-control form-control-height"
-                                              placeholder="Enter your first name"
-                                              value="University of Lagos"
-                                              onChange={onHandleChange}
-                                            />
-                                          </div>
+                                        {user.user_role
+                                          ?.union_sub_branch_name ? (
+                                          <div className="col-lg-9">
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Sub Branch name
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder="Enter branch name"
+                                                name="name"
+                                                value={organization?.name}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
 
-                                          <div className="mb-4">
-                                            <label className="form-label">
-                                              Union
-                                            </label>
-                                            <input
-                                              type="text"
-                                              className="form-control form-control-height"
-                                              placeholder="Enter your phone number"
-                                              value="ASUU"
-                                              onChange={onHandleChange}
-                                              disabled
-                                            />
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Union Acronym (if applicable)
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder="Enter branch Acronym"
+                                                name="acronym"
+                                                value={organization?.acronym}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Founded in
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder=""
+                                                name="founded_in"
+                                                value={organization?.founded_in}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Industry
+                                              </label>
+                                              <select
+                                                className="form-control form-control-height"
+                                                id="industriy"
+                                                name="industry_id"
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                                value={
+                                                  organization?.industry_id
+                                                }
+                                              >
+                                                <option value="default">
+                                                  --Choose--
+                                                </option>
+                                                {industries.map((item) => (
+                                                  <option
+                                                    value={item._id}
+                                                    key={item._id}
+                                                  >
+                                                    {item.name}
+                                                  </option>
+                                                ))}
+                                              </select>
+                                            </div>
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Phone
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder=""
+                                                name="phone"
+                                                value={organization?.phone}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                About
+                                              </label>
+                                              <textarea
+                                                className="form-control"
+                                                rows="4"
+                                                name="about"
+                                                value={organization?.about}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              ></textarea>
+                                            </div>
                                           </div>
-                                          <div className="mb-4">
-                                            <label className="form-label">
-                                              Union branch
-                                            </label>
-                                            <input
-                                              type="text"
-                                              className="form-control form-control-height"
-                                              placeholder="Enter your phone number"
-                                              value="Lagos"
-                                              onChange={onHandleChange}
-                                              disabled
-                                            />
-                                          </div>
+                                        ) : user.user_role
+                                            ?.union_branch_name ? (
+                                          <div className="col-lg-9">
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Branch name
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder="Enter branch name"
+                                                name="name"
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                                value={organization?.name}
+                                              />
+                                            </div>
 
-                                          <div className="mb-4">
-                                            <label className="form-label">
-                                              Organization phone number
-                                            </label>
-                                            <input
-                                              type="text"
-                                              className="form-control form-control-height"
-                                              placeholder="Enter your phone number"
-                                              value="080226648364"
-                                              onChange={onHandleChange}
-                                            />
-                                          </div>
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Union Acronym (if applicable)
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder="Enter branch Acronym"
+                                                name="acronym"
+                                                value={organization?.acronym}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
 
-                                          <div className="mb-4">
-                                            <label className="form-label">
-                                              Email address
-                                            </label>
-                                            <input
-                                              type="email"
-                                              className="form-control form-control-height"
-                                              placeholder="Enter your phone number"
-                                              value="info@unilag.edu.ng"
-                                              onChange={onHandleChange}
-                                            />
-                                          </div>
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Founded in
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder="founded in"
+                                                name="founded_in"
+                                                value={organization?.founded_in}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
 
-                                          <div className="mb-4">
-                                            <label className="form-label">
-                                              Organization address
-                                            </label>
-                                            <input
-                                              type="text"
-                                              className="form-control form-control-height"
-                                              placeholder="Enter your phone number"
-                                              value="University of Lagos, Akoka, Yaba, Lagos, Nigeria."
-                                              onChange={onHandleChange}
-                                            />
-                                          </div>
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Industry
+                                              </label>
+                                              <select
+                                                className="form-control form-control-height"
+                                                id="industriy"
+                                                name="industry_id"
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                                value={
+                                                  organization?.industry_id
+                                                }
+                                              >
+                                                <option value="default">
+                                                  --Choose--
+                                                </option>
+                                                {industries.map((item) => (
+                                                  <option
+                                                    value={item._id}
+                                                    key={item._id}
+                                                  >
+                                                    {item.name}
+                                                  </option>
+                                                ))}
+                                              </select>
+                                            </div>
 
-                                          <div className="mb-4">
-                                            <label className="form-label">
-                                              Organization detail
-                                            </label>
-                                            <textarea
-                                              className="form-control"
-                                              rows="4"
-                                            ></textarea>
-                                          </div>
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Phone
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder=""
+                                                name="phone"
+                                                value={organization?.phone}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
 
-                                          <div className="mb-4">
-                                            <label className="form-label">
-                                              Organization admins
-                                            </label>
-                                            <input
-                                              type="email"
-                                              className="form-control form-control-height"
-                                              placeholder="Enter your phone number"
-                                              value="University of Lagos, Akoka, Yaba, Lagos, Nigeria."
-                                              onChange={onHandleChange}
-                                            />
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                About
+                                              </label>
+                                              <textarea
+                                                className="form-control"
+                                                rows="4"
+                                                name="about"
+                                                value={organization?.about}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              ></textarea>
+                                            </div>
                                           </div>
-                                        </div>
+                                        ) : user.user_role?.union_name ? (
+                                          <div className="col-lg-9">
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Union name
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder=""
+                                                name="name"
+                                                value={organization?.name}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
+
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Union Acronym (if applicable)
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder=""
+                                                name="acronym"
+                                                value={organization?.acronym}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
+
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Founded in
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder=""
+                                                name="founded_in"
+                                                value={organization?.founded_in}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
+
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Industry
+                                              </label>
+                                              <select
+                                                className="form-control form-control-height"
+                                                id="industriy"
+                                                name="industry_id"
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                                value={
+                                                  organization?.industry_id
+                                                }
+                                              >
+                                                <option value="default">
+                                                  --Choose--
+                                                </option>
+                                                {industries.map((item) => (
+                                                  <option
+                                                    value={item._id}
+                                                    key={item._id}
+                                                  >
+                                                    {item.name}
+                                                  </option>
+                                                ))}
+                                              </select>
+                                            </div>
+
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Headquarters
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder=""
+                                                name="headquarters"
+                                                value={
+                                                  organization?.headquarters
+                                                }
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
+
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                Phone
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control form-control-height"
+                                                placeholder=""
+                                                name="phone"
+                                                value={organization?.phone}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              />
+                                            </div>
+
+                                            <div className="mb-4">
+                                              <label className="form-label">
+                                                About
+                                              </label>
+                                              <textarea
+                                                className="form-control"
+                                                rows="4"
+                                                name="about"
+                                                value={organization?.about}
+                                                onChange={
+                                                  onHandleChangeOrganization
+                                                }
+                                              ></textarea>
+                                            </div>
+                                          </div>
+                                        ) : null}
                                       </div>
                                     </form>
                                   </div>

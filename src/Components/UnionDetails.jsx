@@ -9,10 +9,12 @@ const UnionDetails = () => {
   const { id } = useParams();
   const user_avatar = "/images/unilag.svg";
   const [isLoading, setIsLoading] = useState(true);
-  const [industries, setIndustries] = useState([])
+  const [industries, setIndustries] = useState([]);
 
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const [roles, setRoles] = useState([]);
+  const [unionAdmin, setUnionAdmin] = useState([]);
+  const [unionDisputes, SetUnionDisputes] = useState([]);
   const [unions, setunions] = useState({
     name: "",
     acronym: "",
@@ -29,19 +31,19 @@ const UnionDetails = () => {
     role: "",
   });
   const [branches, setBranches] = useState([]);
-  const [sidebar, setsidebar] = useState(true)
+  const [sidebar, setsidebar] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
-
-
+    setsidebar(!sidebar);
+  };
 
   useEffect(() => {
     fetchdata(id);
     fetchBranches(id);
     fetchroles();
-    fetchIndustries()
+    fetchUnionDisputes(id);
+    fetchIndustries();
+    fetchUnionAdmin(id);
   }, []);
 
   const fetchIndustries = async () => {
@@ -65,6 +67,32 @@ const UnionDetails = () => {
 
       const data = await res.json();
       setIndustries(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const fetchUnionDisputes = async (id) => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + `/api/case/union/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      SetUnionDisputes(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -94,10 +122,9 @@ const UnionDetails = () => {
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
-
 
   const fetchroles = async () => {
     try {
@@ -184,9 +211,9 @@ const UnionDetails = () => {
       if (!res.ok) {
         throw new Error("Failed to fetch data."); // Handle failed request
       }
-      fetchdata(id)
+      fetchdata(id);
       const data = await res.json();
-      toast.success('Union has been updated')
+      toast.success("Union has been updated");
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -194,6 +221,26 @@ const UnionDetails = () => {
 
   const onHandleChangeUser = (e) => {
     setUsers({ ...users, [e.target.name]: e.target.value });
+  };
+
+  const fetchUnionAdmin = async (id) => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const res = await fetch(baseUrl + `/api/union/get-admins/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setUnionAdmin(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
   };
 
   const handleSendInvite = async (e, id) => {
@@ -214,16 +261,16 @@ const UnionDetails = () => {
         throw new Error("Failed to fetch data."); // Handle failed request
       }
       setUsers({
-        email: '',
-        role: ''
-      })
+        email: "",
+        role: "",
+      });
       const data = await res.json();
       // setGetDisputes(data.data);
       toast.success("union invite has been sent!");
       // window.location.reload();
     } catch (error) {
       console.error("Error fetching data:", error.message);
-      toast.error('failed to send invite')
+      toast.error("failed to send invite");
     }
   };
 
@@ -235,7 +282,6 @@ const UnionDetails = () => {
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
             <main className="admin-content">
               <div className="header-box py-5">
@@ -244,7 +290,10 @@ const UnionDetails = () => {
                 </div>
               </div>
               {isLoading ? (
-                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ minHeight: "80vh" }}
+                >
                   <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
                 </div>
               ) : (
@@ -363,7 +412,8 @@ const UnionDetails = () => {
                                         <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
                                           <img
                                             src="/images/filter.svg"
-                                            className="img-fluid" alt=""
+                                            className="img-fluid"
+                                            alt=""
                                           />{" "}
                                           A-Z
                                         </a>
@@ -1065,7 +1115,8 @@ const UnionDetails = () => {
                                                   </div>
                                                 </ul>
                                               </div>
-                                            </div> */}<p>no admin has been invited</p>
+                                            </div> */}
+                                              <p>no admin has been invited</p>
                                             </td>
 
                                             <td>{branch.industry}</td>
@@ -1087,7 +1138,7 @@ const UnionDetails = () => {
                                                 </button>
                                                 <ul
                                                   className="dropdown-menu border-radius action-menu-2"
-                                                // onClick={onUnionBranches3}
+                                                  // onClick={onUnionBranches3}
                                                 >
                                                   <li>
                                                     <Link
@@ -1159,7 +1210,8 @@ const UnionDetails = () => {
                                         <div className="main-avatar mx-auto">
                                           <img
                                             src={unions.logo}
-                                            className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+                                            className="img-fluid object-fit-cover object-position-center w-100 h-100"
+                                            alt=""
                                           />
                                         </div>
                                       </label>
@@ -1298,254 +1350,79 @@ const UnionDetails = () => {
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {/* <tr>
-                                    <td scope="row">
-                                      <div className="d-flex avatar-holder">
-                                        <div className="position-relative">
-                                          <div className="avatar-sm flex-shrink-0">
-                                            <img
-                                              src="/images/avatar-2.svg"
-                                              className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                              alt="Avatar"
-                                            />
-                                          </div>
-                                        </div>
-                                        <div className="ms-2 flex-grow-1">
-                                          <h5 className="mb-0">
-                                            Salim Mustapha
-                                          </h5>
-                                          <p className="mb-0 text-muted-3">
-                                            salimmusty@gmail.com
+                                    {Object.entries(unionAdmin)?.length > 0 ? (
+                                      Object.entries(unionAdmin).map(
+                                        ([key, value], index) => (
+                                          <tr key={key}>
+                                            <td scope="row">
+                                              <div className="d-flex avatar-holder">
+                                                <div className="position-relative">
+                                                  <div className="avatar-sm flex-shrink-0">
+                                                    <img
+                                                      src={
+                                                        value.photo ||
+                                                        "/images/download.png"
+                                                      }
+                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                      alt="Avatar"
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="ms-2 flex-grow-1">
+                                                  <h5 className="mb-0">
+                                                    {value.name}
+                                                  </h5>
+                                                  <p className="mb-0 text-muted-3">
+                                                    {value.email}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </td>
+                                            <td>{value.date_joined}</td>
+                                            <td>
+                                              <p>{value.role}</p>
+                                            </td>
+
+                                            <td>
+                                              <div className="dropdown">
+                                                <button
+                                                  className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                                                  type="button"
+                                                  data-bs-toggle="dropdown"
+                                                  aria-expanded="false"
+                                                >
+                                                  <img
+                                                    src="/images/dots-v.svg"
+                                                    className="img-fluid"
+                                                    alt="dot-v"
+                                                  />
+                                                </button>
+                                                <ul className="dropdown-menu border-radius action-menu-2">
+                                                  <li>
+                                                    <a
+                                                      className="dropdown-item"
+                                                      href="#"
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#removeModal"
+                                                    >
+                                                      Remove Admin
+                                                    </a>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        )
+                                      )
+                                    ) : (
+                                      <tr>
+                                        <td>
+                                          <p className="m-3">
+                                            No admin has been invited
                                           </p>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td>Feb 4 2023</td>
-                                    <td>
-                                      <img
-                                        src="/images/claimant.svg"
-                                         className="img-fluid" alt=""
-                                        alt="claimant"
-                                      />
-                                    </td>
-
-                                    <td>
-                                      <div className="dropdown">
-                                        <button
-                                          className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-                                          type="button"
-                                          data-bs-toggle="dropdown"
-                                          aria-expanded="false"
-                                        >
-                                          <img
-                                            src="/images/dots-v.svg"
-                                             className="img-fluid" alt=""
-                                            alt="dot-v"
-                                          />
-                                        </button>
-                                        <ul className="dropdown-menu border-radius action-menu-2">
-                                          <li>
-                                            <a
-                                              className="dropdown-item"
-                                              href="#"
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#removeModal"
-                                            >
-                                              Remove Admin
-                                            </a>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                    </td>
-                                  </tr>
-
-                                  <tr>
-                                    <td scope="row">
-                                      <div className="d-flex avatar-holder">
-                                        <div className="position-relative">
-                                          <div className="avatar-sm flex-shrink-0">
-                                            <img
-                                              src="/images/avatar-2.svg"
-                                              className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                              alt="Avatar"
-                                            />
-                                          </div>
-                                        </div>
-                                        <div className="ms-2 flex-grow-1">
-                                          <h5 className="mb-0">
-                                            Salim Mustapha
-                                          </h5>
-                                          <p className="mb-0 text-muted-3">
-                                            salimmusty@gmail.com
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td>Feb 4 2023</td>
-                                    <td>
-                                      <img
-                                        src="/images/claimant.svg"
-                                         className="img-fluid" alt=""
-                                        alt="claimant"
-                                      />
-                                    </td>
-
-                                    <td>
-                                      <div className="dropdown">
-                                        <button
-                                          className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-                                          type="button"
-                                          data-bs-toggle="dropdown"
-                                          aria-expanded="false"
-                                        >
-                                          <img
-                                            src="/images/dots-v.svg"
-                                             className="img-fluid" alt=""
-                                            alt="dot-v"
-                                          />
-                                        </button>
-                                        <ul className="dropdown-menu border-radius action-menu-2">
-                                          <li>
-                                            <a
-                                              className="dropdown-item"
-                                              href="#"
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#removeModal"
-                                            >
-                                              Remove Admin
-                                            </a>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                    </td>
-                                  </tr>
-
-                                  <tr>
-                                    <td scope="row">
-                                      <div className="d-flex avatar-holder">
-                                        <div className="position-relative">
-                                          <div className="avatar-sm flex-shrink-0">
-                                            <img
-                                              src="/images/avatar-2.svg"
-                                              className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                              alt="Avatar"
-                                            />
-                                          </div>
-                                        </div>
-                                        <div className="ms-2 flex-grow-1">
-                                          <h5 className="mb-0">
-                                            Salim Mustapha
-                                          </h5>
-                                          <p className="mb-0 text-muted-3">
-                                            salimmusty@gmail.com
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td>Feb 4 2023</td>
-                                    <td>
-                                      <img
-                                        src="/images/claimant.svg"
-                                         className="img-fluid" alt=""
-                                        alt="claimant"
-                                      />
-                                    </td>
-
-                                    <td>
-                                      <div className="dropdown">
-                                        <button
-                                          className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-                                          type="button"
-                                          data-bs-toggle="dropdown"
-                                          aria-expanded="false"
-                                        >
-                                          <img
-                                            src="/images/dots-v.svg"
-                                             className="img-fluid" alt=""
-                                            alt="dot-v"
-                                          />
-                                        </button>
-                                        <ul className="dropdown-menu border-radius action-menu-2">
-                                          <li>
-                                            <a
-                                              className="dropdown-item"
-                                              href="#"
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#removeModal"
-                                            >
-                                              Remove Admin
-                                            </a>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                    </td>
-                                  </tr>
-
-                                  <tr>
-                                    <td scope="row">
-                                      <div className="d-flex avatar-holder">
-                                        <div className="position-relative">
-                                          <div className="avatar-sm flex-shrink-0">
-                                            <img
-                                              src="/images/avatar-2.svg"
-                                              className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                              alt="Avatar"
-                                            />
-                                          </div>
-                                        </div>
-                                        <div className="ms-2 flex-grow-1">
-                                          <h5 className="mb-0">
-                                            Salim Mustapha
-                                          </h5>
-                                          <p className="mb-0 text-muted-3">
-                                            salimmusty@gmail.com
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td>Feb 4 2023</td>
-                                    <td>
-                                      <img
-                                        src="/images/claimant.svg"
-                                         className="img-fluid" alt=""
-                                        alt="claimant"
-                                      />
-                                    </td>
-
-                                    <td>
-                                      <div className="dropdown">
-                                        <button
-                                          className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-                                          type="button"
-                                          data-bs-toggle="dropdown"
-                                          aria-expanded="false"
-                                        >
-                                          <img
-                                            src="/images/dots-v.svg"
-                                             className="img-fluid" alt=""
-                                            alt="dot-v"
-                                          />
-                                        </button>
-                                        <ul className="dropdown-menu border-radius action-menu-2">
-                                          <li>
-                                            <a
-                                              className="dropdown-item"
-                                              href="#"
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#removeModal"
-                                            >
-                                              Remove Admin
-                                            </a>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                    </td>
-                                  </tr> */}
-                                    <tr>
-                                      <td>
-                                        <p className="m-3">No admin has been invited</p>
-                                      </td>
-                                    </tr>
+                                        </td>
+                                      </tr>
+                                    )}
                                   </tbody>
                                 </table>
                               </div>
@@ -1588,134 +1465,88 @@ const UnionDetails = () => {
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      <tr>
-                                        <td>Feb 4 2023</td>
-                                        <td scope="row">DS139</td>
-                                        <td>
-                                          <div className="mb-2">
-                                            <div className="d-flex align-items-center avatar-holder">
-                                              <div className="position-relative">
-                                                <div className="avatar-sm flex-shrink-0">
-                                                  <img
-                                                    src="/images/nnpc.svg"
-                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                    alt="Avatar"
-                                                  />
+                                      {unionDisputes.map((item) => (
+                                        <tr key={item._id}>
+                                          <td>{item.filling_date}</td>
+                                          <td scope="row">{item.case_no}</td>
+                                          <td>
+                                            <div className="mb-2">
+                                              <div className="d-flex align-items-center avatar-holder">
+                                                <div className="position-relative">
+                                                  <div className="avatar-sm flex-shrink-0">
+                                                    <img
+                                                      src={
+                                                        item.involved_parties
+                                                          .claimant.logo
+                                                      }
+                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                      alt="Avatar"
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="ms-2 d-flex flex-grow-1 text-muted-3">
+                                                  <p className="text-truncate mb-0 max-200">
+                                                    {
+                                                      item.involved_parties
+                                                        .claimant.name
+                                                    }{" "}
+                                                  </p>
+                                                  <span>
+                                                    (
+                                                    {
+                                                      item.involved_parties
+                                                        .claimant.acronym
+                                                    }
+                                                    )
+                                                  </span>
                                                 </div>
                                               </div>
-                                              <div className="ms-2 d-flex flex-grow-1 text-muted-3">
-                                                <p className="text-truncate mb-0 max-200">
-                                                  ASUU Awka Ibom{" "}
-                                                </p>
-                                                <span>(NNPC)</span>
-                                              </div>
                                             </div>
-                                          </div>
-                                          <div className="mb-2">
-                                            <div className="d-flex align-items-center avatar-holder">
-                                              <div className="position-relative">
-                                                <div className="avatar-sm flex-shrink-0">
-                                                  <img
-                                                    src="/images/ipman.svg"
-                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                    alt="Avatar"
-                                                  />
+                                            <div className="mb-2">
+                                              <div className="d-flex align-items-center avatar-holder">
+                                                <div className="position-relative">
+                                                  <div className="avatar-sm flex-shrink-0">
+                                                    <img
+                                                      src={
+                                                        item.involved_parties
+                                                          .accused.logo
+                                                      }
+                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                      alt="Avatar"
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="ms-2 d-flex flex-grow-1 text-muted-3">
+                                                  <p className="text-truncate mb-0 max-200">
+                                                    {
+                                                      item.involved_parties
+                                                        .accused.name
+                                                    }
+                                                  </p>
+                                                  <span>
+                                                    (
+                                                    {
+                                                      item.involved_parties
+                                                        .accused.acronym
+                                                    }
+                                                    )
+                                                  </span>
                                                 </div>
                                               </div>
-                                              <div className="ms-2 d-flex flex-grow-1 text-muted-3">
-                                                <p className="text-truncate mb-0 max-200">
-                                                  ASUU Ibadan
-                                                </p>
-                                                <span>(IPMAN)</span>
-                                              </div>
                                             </div>
-                                          </div>
-                                        </td>
-                                        <td>
-                                          Production Sharing Contracts (PSCs) 2024
-                                        </td>
-                                        <td>
-                                          <img
-                                            src="/images/Internally-resolved.svg"
-                                            className="img-fluid"
-                                            alt="internally resolved"
-                                          />
-                                        </td>
-                                      </tr>
-
-                                      <tr>
-                                        <td>Feb 4 2023</td>
-                                        <td scope="row">DS139</td>
-                                        <td>
-                                          <div className="mb-2">
-                                            <div className="d-flex align-items-center avatar-holder">
-                                              <div className="position-relative">
-                                                <div className="avatar-sm flex-shrink-0">
-                                                  <img
-                                                    src="/images/nnpc.svg"
-                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                    alt="Avatar"
-                                                  />
-                                                </div>
-                                              </div>
-                                              <div className="ms-2 d-flex flex-grow-1 text-muted-3">
-                                                <p className="text-truncate mb-0 max-200">
-                                                  ASUU Awka Ibom{" "}
-                                                </p>
-                                                <span>(NNPC)</span>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div className="mb-2">
-                                            <div className="d-flex align-items-center avatar-holder">
-                                              <div className="position-relative">
-                                                <div className="avatar-sm flex-shrink-0">
-                                                  <img
-                                                    src="/images/ipman.svg"
-                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                    alt="Avatar"
-                                                  />
-                                                </div>
-                                              </div>
-                                              <div className="ms-2 d-flex flex-grow-1 text-muted-3">
-                                                <p className="text-truncate mb-0 max-200">
-                                                  ASUU Ibadan
-                                                </p>
-                                                <span>(IPMAN)</span>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div className="mb-2">
-                                            <div className="d-flex align-items-center avatar-holder">
-                                              <div className="position-relative">
-                                                <div className="avatar-sm flex-shrink-0">
-                                                  <img
-                                                    src="/images/nnpc.svg"
-                                                    className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                    alt="Avatar"
-                                                  />
-                                                </div>
-                                              </div>
-                                              <div className="ms-2 d-flex flex-grow-1 text-muted-3">
-                                                <p className="text-truncate mb-0 max-200">
-                                                  ASUU Awka Ibom{" "}
-                                                </p>
-                                                <span>(NNPC)</span>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </td>
-                                        <td>
-                                          Production Sharing Contracts (PSCs) 2024
-                                        </td>
-                                        <td>
-                                          <img
-                                            src="/images/Internally-resolved.svg"
-                                            className="img-fluid"
-                                            alt="internally resolved"
-                                          />
-                                        </td>
-                                      </tr>
+                                          </td>
+                                          <td>
+                                            {item.involved_parties.accused.name}
+                                          </td>
+                                          <td>
+                                            <img
+                                              src={item.status_img}
+                                              className="img-fluid"
+                                              alt="internally resolved"
+                                            />
+                                          </td>
+                                        </tr>
+                                      ))}
                                     </tbody>
                                   </table>
                                 </div>
@@ -1803,8 +1634,12 @@ const UnionDetails = () => {
                 >
                   Save Changes
                 </a>
-                <a href="#" className="btn btn-size btn-main-primary" data-bs-dismiss="modal"
-                  aria-label="Close">
+                <a
+                  href="#"
+                  className="btn btn-size btn-main-primary"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
                   Discard Changes
                 </a>
               </div>
@@ -1826,7 +1661,8 @@ const UnionDetails = () => {
                       <div className="main-avatar mx-auto">
                         <img
                           src={unions.logo}
-                          className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+                          className="img-fluid object-fit-cover object-position-center w-100 h-100"
+                          alt=""
                         />
                       </div>
                     </label>
@@ -1857,11 +1693,19 @@ const UnionDetails = () => {
                     </div>
                     <div className="mb-4">
                       <label className="form-label">Industry</label>
-                      <select className="form-control form-control-height" id="industriy" name="industry_id" onChange={onHandleChange} value={unions.industry_id}>
-                        <option value="default"  >--Choose--</option>
-                        {industries.map((item) =>
-                          <option value={item._id} key={item._id}>{item.name}</option>
-                        )}
+                      <select
+                        className="form-control form-control-height"
+                        id="industriy"
+                        name="industry_id"
+                        onChange={onHandleChange}
+                        value={unions.industry_id}
+                      >
+                        <option value="default">--Choose--</option>
+                        {industries.map((item) => (
+                          <option value={item._id} key={item._id}>
+                            {item.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="mb-4">
@@ -2266,7 +2110,8 @@ const UnionDetails = () => {
                         <div className="text-center">
                           <img
                             src="/images/no-found.svg"
-                            className="img-fluid" alt=""
+                            className="img-fluid"
+                            alt=""
                           />
                         </div>
                       </div>

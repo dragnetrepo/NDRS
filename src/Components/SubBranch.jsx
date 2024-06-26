@@ -6,14 +6,13 @@ import toast from "react-hot-toast";
 import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 
-
 const SubBranch = () => {
   const { id } = useParams();
   const user_avatar = "/images/download.png";
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const [branch, setbranch] = useState([]);
   const [SubBranches, setSubBranches] = useState([]);
-  const [industries, setIndustries] = useState([])
+  const [industries, setIndustries] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -24,22 +23,21 @@ const SubBranch = () => {
     acronym: "",
     industry_id: "",
     about: "",
-    phone: '',
+    phone: "",
     founded_in: "",
     logo: "",
   });
-  const [sidebar, setsidebar] = useState(true)
+  const [sidebar, setsidebar] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
-
+    setsidebar(!sidebar);
+  };
 
   useEffect(() => {
     // fetchdata(id);
     fetchBranch(id);
     fetchSubBranch(id);
-    fetchIndustries()
+    fetchIndustries();
   }, []);
 
   const fetchBranch = async (id) => {
@@ -114,20 +112,15 @@ const SubBranch = () => {
         throw new Error("Failed to fetch data."); // Handle failed request
       }
 
-
       const data = await res.json();
       //   subBranch.union = data.data.union_id;
       setSubBranches(data.data);
-
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
-
-
-
 
   //   const fetchBranches = async (id) => {
   //     try {
@@ -201,17 +194,15 @@ const SubBranch = () => {
         acronym: "",
         industry_id: "",
         about: "",
-        phone: '',
+        phone: "",
         founded_in: "",
         logo: "",
-
-      })
-      setAvatarImage('/images/download.png')
+      });
+      setAvatarImage("/images/download.png");
       toast.success("Sub Branch has been created successfully!");
-
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error('Fields are required')
+      toast.error("Fields are required");
     }
   };
 
@@ -223,7 +214,6 @@ const SubBranch = () => {
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
             <main className="admin-content">
               <div className="header-box py-5">
@@ -303,7 +293,10 @@ const SubBranch = () => {
                               </div>
 
                               <div className="col-lg-9">
-                                <div className="tab-content" id="v-pills-tabContent">
+                                <div
+                                  className="tab-content"
+                                  id="v-pills-tabContent"
+                                >
                                   <div
                                     className="tab-pane fade show active"
                                     id="v-pills-single"
@@ -313,7 +306,9 @@ const SubBranch = () => {
                                   >
                                     <div className="card mb-4">
                                       <div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-                                        <h3 className="mb-lg-0 mb-3">Single Sub Branch upload</h3>
+                                        <h3 className="mb-lg-0 mb-3">
+                                          Single Sub Branch upload
+                                        </h3>
                                         <a
                                           href=""
                                           className="btn btn-size btn-main-primary"
@@ -334,7 +329,9 @@ const SubBranch = () => {
                                           <div className="row mt-4">
                                             <div className="col-lg-12">
                                               <div className="mb-4">
-                                                <label className="form-label">Union name</label>
+                                                <label className="form-label">
+                                                  Union name
+                                                </label>
                                                 <input
                                                   type="text"
                                                   className="form-control form-control-height"
@@ -345,7 +342,9 @@ const SubBranch = () => {
                                                 />
                                               </div>
                                               <div className="mb-4">
-                                                <label className="form-label">Branch name</label>
+                                                <label className="form-label">
+                                                  Branch name
+                                                </label>
                                                 <input
                                                   type="text"
                                                   className="form-control form-control-height"
@@ -357,7 +356,9 @@ const SubBranch = () => {
                                                 />
                                               </div>
                                               <div className="mb-4">
-                                                <label className="form-label">Sub Branch name</label>
+                                                <label className="form-label">
+                                                  Sub Branch name
+                                                </label>
                                                 <input
                                                   type="text"
                                                   className="form-control form-control-height"
@@ -371,17 +372,25 @@ const SubBranch = () => {
                                                 <label className="form-label d-block">
                                                   Branch display picture
                                                 </label>
-                                                <label htmlFor="profile" className="position-relative">
+                                                <label
+                                                  htmlFor="profile"
+                                                  className="position-relative"
+                                                >
                                                   <input
                                                     type="file"
                                                     id="profile"
-                                                    style={{ display: 'none' }}
-                                                    onChange={handleAvatarChange}
+                                                    style={{ display: "none" }}
+                                                    onChange={
+                                                      handleAvatarChange
+                                                    }
                                                     name="logo"
                                                   />
                                                   <div className="main-avatar mx-auto">
                                                     <img
-                                                      src={avatarImage || '/images/download.png'}
+                                                      src={
+                                                        avatarImage ||
+                                                        "/images/download.png"
+                                                      }
                                                       className="img-fluid object-fit-cover object-position-center w-100 h-100"
                                                       alt=""
                                                     />
@@ -407,7 +416,9 @@ const SubBranch = () => {
                                                 />
                                               </div>
                                               <div className="mb-4">
-                                                <label className="form-label">Founded in</label>
+                                                <label className="form-label">
+                                                  Founded in
+                                                </label>
                                                 <input
                                                   type="text"
                                                   className="form-control form-control-height"
@@ -418,7 +429,9 @@ const SubBranch = () => {
                                                 />
                                               </div>
                                               <div className="mb-4">
-                                                <label className="form-label">Industry</label>
+                                                <label className="form-label">
+                                                  Industry
+                                                </label>
                                                 <select
                                                   className="form-control form-control-height"
                                                   id="industriy"
@@ -426,16 +439,23 @@ const SubBranch = () => {
                                                   onChange={onHandleChange}
                                                   value={subBranch.industry_id}
                                                 >
-                                                  <option value="default">--Choose--</option>
+                                                  <option value="default">
+                                                    --Choose--
+                                                  </option>
                                                   {industries.map((item) => (
-                                                    <option value={item._id} key={item._id}>
+                                                    <option
+                                                      value={item._id}
+                                                      key={item._id}
+                                                    >
                                                       {item.name}
                                                     </option>
                                                   ))}
                                                 </select>
                                               </div>
                                               <div className="mb-4">
-                                                <label className="form-label">Phone</label>
+                                                <label className="form-label">
+                                                  Phone
+                                                </label>
                                                 <input
                                                   type="text"
                                                   className="form-control form-control-height"
@@ -446,7 +466,9 @@ const SubBranch = () => {
                                                 />
                                               </div>
                                               <div className="mb-4">
-                                                <label className="form-label">About</label>
+                                                <label className="form-label">
+                                                  About
+                                                </label>
                                                 <textarea
                                                   className="form-control"
                                                   rows="4"
@@ -466,8 +488,15 @@ const SubBranch = () => {
                             </div>
                           </div>
                           {isLoading ? (
-                            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-                              <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+                            <div
+                              className="d-flex justify-content-center align-items-center"
+                              style={{ minHeight: "80vh" }}
+                            >
+                              <ClipLoader
+                                color="#36D7B7"
+                                loading={isLoading}
+                                size={50}
+                              />
                             </div>
                           ) : (
                             <div
@@ -513,7 +542,7 @@ const SubBranch = () => {
                                     </div>
 
                                     <p className="text-end mb-0 file-count">
-                                      Unions: {SubBranches?.length}
+                                      Sub branch: {SubBranches?.length}
                                     </p>
                                   </div>
                                 </div>
@@ -1203,7 +1232,8 @@ const SubBranch = () => {
                                                 </div>
                                               </ul>
                                             </div>
-                                          </div> */}<p>No admin has been invited</p>
+                                          </div> */}
+                                            <p>No admin has been invited</p>
                                           </td>
 
                                           <td>{item.industry}</td>
@@ -1225,7 +1255,7 @@ const SubBranch = () => {
                                               </button>
                                               <ul
                                                 className="dropdown-menu border-radius action-menu-2"
-                                              // onClick={onUniones3}
+                                                // onClick={onUniones3}
                                               >
                                                 <li>
                                                   <Link
@@ -1323,7 +1353,11 @@ const SubBranch = () => {
                       <option>National Industrial Courts</option>
                     </select>
 
-                    <a href="#" className="btn btn-size btn-main-primary" disabled>
+                    <a
+                      href="#"
+                      className="btn btn-size btn-main-primary"
+                      disabled
+                    >
                       Send Invite
                     </a>
                   </div>
@@ -1389,7 +1423,10 @@ const SubBranch = () => {
                             </button>
                             <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a className="dropdown-item" href="disputesDetails">
+                                <a
+                                  className="dropdown-item"
+                                  href="disputesDetails"
+                                >
                                   View details
                                 </a>
                               </li>
@@ -1443,7 +1480,10 @@ const SubBranch = () => {
                             </button>
                             <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a className="dropdown-item" href="disputesDetails">
+                                <a
+                                  className="dropdown-item"
+                                  href="disputesDetails"
+                                >
                                   View details
                                 </a>
                               </li>
@@ -1497,7 +1537,10 @@ const SubBranch = () => {
                             </button>
                             <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a className="dropdown-item" href="disputesDetails">
+                                <a
+                                  className="dropdown-item"
+                                  href="disputesDetails"
+                                >
                                   View details
                                 </a>
                               </li>
@@ -1551,7 +1594,10 @@ const SubBranch = () => {
                             </button>
                             <ul className="dropdown-menu border-radius action-menu-2">
                               <li>
-                                <a className="dropdown-item" href="disputesDetails">
+                                <a
+                                  className="dropdown-item"
+                                  href="disputesDetails"
+                                >
                                   View details
                                 </a>
                               </li>
@@ -1581,7 +1627,10 @@ const SubBranch = () => {
                         </p>
 
                         <div className="text-center">
-                          <img src="/images/no-found.svg" className="img-fluid" />
+                          <img
+                            src="/images/no-found.svg"
+                            className="img-fluid"
+                          />
                         </div>
                       </div>
                     </div>
@@ -1650,7 +1699,9 @@ const SubBranch = () => {
           <div className="modal-content p-lg-4 border-0">
             <div className="modal-header">
               <div>
-                <h1 className="modal-title mb-1 fs-5">Preview Uploaded Unions</h1>
+                <h1 className="modal-title mb-1 fs-5">
+                  Preview Uploaded Unions
+                </h1>
                 <p className="text-muted-3">Unions: 43</p>
               </div>
               <button

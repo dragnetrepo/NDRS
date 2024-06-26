@@ -5,20 +5,20 @@ const TopBarInc = ({ toggleSideBar }) => {
   const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
   const [user, setuser] = useState([]);
   const [search, setsearch] = useState([]);
-  const [query, setQuery] = useState('')
-  const [docType, setDocType] = useState('');
-  const [caseStatus, setCaseStatus] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [orderBy, setOrderBy] = useState('');
-  const [error, setError] = useState('');
+  const [query, setQuery] = useState("");
+  const [docType, setDocType] = useState("");
+  const [caseStatus, setCaseStatus] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [orderBy, setOrderBy] = useState("");
+  const [error, setError] = useState("");
   const [searchResults, setSearchResults] = useState({
     branches: { count: 0, data: [] },
     disputes: { count: 0, data: [] },
     documents: { count: 0, data: [] },
-    'sub branches': { count: 0, data: [] },
+    "sub branches": { count: 0, data: [] },
     unions: { count: 0, data: [] },
-    users: { count: 0, data: [] }
+    users: { count: 0, data: [] },
   });
 
   useEffect(() => {
@@ -27,7 +27,6 @@ const TopBarInc = ({ toggleSideBar }) => {
   }, [query, docType, caseStatus, startDate, endDate, orderBy]);
   const fetchdata = async () => {
     try {
-
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -46,7 +45,6 @@ const TopBarInc = ({ toggleSideBar }) => {
 
       const data = await res.json();
       setuser(data.data);
-
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -61,18 +59,21 @@ const TopBarInc = ({ toggleSideBar }) => {
       }
 
       const searchParams = new URLSearchParams();
-      if (query) searchParams.append('q', query);
-      if (docType) searchParams.append('doc_type[]', docType);
-      if (caseStatus) searchParams.append('case_status', caseStatus);
-      if (startDate) searchParams.append('start_date', startDate);
-      if (endDate) searchParams.append('end_date', endDate);
-      if (orderBy) searchParams.append('order_by', orderBy);
+      if (query) searchParams.append("q", query);
+      if (docType) searchParams.append("doc_type[]", docType);
+      if (caseStatus) searchParams.append("case_status", caseStatus);
+      if (startDate) searchParams.append("start_date", startDate);
+      if (endDate) searchParams.append("end_date", endDate);
+      if (orderBy) searchParams.append("order_by", orderBy);
 
-      const res = await fetch(`${baseUrl}/api/search?${searchParams.toString()}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(
+        `${baseUrl}/api/search?${searchParams.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!res.ok) {
         throw new Error("Failed to fetch data."); // Handle failed request
@@ -80,12 +81,10 @@ const TopBarInc = ({ toggleSideBar }) => {
 
       const data = await res.json();
       setSearchResults(data.data);
-
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
   };
-
 
   return (
     <div>
@@ -102,7 +101,10 @@ const TopBarInc = ({ toggleSideBar }) => {
           </div> */}
 
           <div className="d-flex align-items-center">
-            <i className="bi bi-list bi-2 text-dark cursor-pointer arrow-box me-3" onClick={toggleSideBar}></i>
+            <i
+              className="bi bi-list bi-2 text-dark cursor-pointer arrow-box me-3"
+              onClick={toggleSideBar}
+            ></i>
 
             <div
               className="d-flex align-items-center"
@@ -204,7 +206,6 @@ const TopBarInc = ({ toggleSideBar }) => {
                         src="/images/search.svg"
                         className="img-fluid"
                         alt="search"
-
                       />
                     </span>
                     <input
@@ -232,24 +233,28 @@ const TopBarInc = ({ toggleSideBar }) => {
                         src="/images/filter.svg"
                         className="img-fluid me-2"
                         alt=""
-                      />{' '}
+                      />{" "}
                       Filters
                     </a>
 
                     <button className="btn btn-size btn-outline-light w-100 text-medium px-3">
-                      <img src="/images/sort.svg" className="img-fluid me-2" alt="" />{' '}
+                      <img
+                        src="/images/sort.svg"
+                        className="img-fluid me-2"
+                        alt=""
+                      />{" "}
                       Sort
                     </button>
 
                     <button
                       className="btn btn-size btn-link w-100 text-main-primary text-medium text-decoration-none px-3"
                       onClick={() => {
-                        setQuery('');
-                        setDocType('');
-                        setCaseStatus('');
-                        setStartDate('');
-                        setEndDate('');
-                        setOrderBy('');
+                        setQuery("");
+                        setDocType("");
+                        setCaseStatus("");
+                        setStartDate("");
+                        setEndDate("");
+                        setOrderBy("");
                         setSearchResults([]);
                       }}
                     >
@@ -267,23 +272,42 @@ const TopBarInc = ({ toggleSideBar }) => {
                         <div className="col-lg-4">
                           <p className="text-underline">Document type</p>
                           <ul className="list-unstyled filter-list">
-                            <li onClick={() => setDocType('')}>All</li>
-                            <li onClick={() => setDocType('PNG')}>PNG</li>
-                            <li onClick={() => setDocType('PDF')} className="text-main-primary">PDF</li>
-                            <li onClick={() => setDocType('XLS')}>XLS</li>
-                            <li onClick={() => setDocType('JPEG')} className="text-main-primary">JPEG</li>
-                            <li onClick={() => setDocType('MP3')}>MP3</li>
-                            <li onClick={() => setDocType('GIF')}>GIF</li>
+                            <li onClick={() => setDocType("")}>All</li>
+                            <li onClick={() => setDocType("PNG")}>PNG</li>
+                            <li
+                              onClick={() => setDocType("PDF")}
+                              className="text-main-primary"
+                            >
+                              PDF
+                            </li>
+                            <li onClick={() => setDocType("XLS")}>XLS</li>
+                            <li
+                              onClick={() => setDocType("JPEG")}
+                              className="text-main-primary"
+                            >
+                              JPEG
+                            </li>
+                            <li onClick={() => setDocType("MP3")}>MP3</li>
+                            <li onClick={() => setDocType("GIF")}>GIF</li>
                           </ul>
                         </div>
 
                         <div className="col-lg-4">
                           <p className="text-underline">Case status</p>
                           <ul className="list-unstyled filter-list">
-                            <li onClick={() => setCaseStatus('')} className="text-main-primary">All</li>
-                            <li onClick={() => setCaseStatus('Open')}>Open</li>
-                            <li onClick={() => setCaseStatus('On Hold')}>On Hold</li>
-                            <li onClick={() => setCaseStatus('Closed')}>Closed</li>
+                            <li
+                              onClick={() => setCaseStatus("")}
+                              className="text-main-primary"
+                            >
+                              All
+                            </li>
+                            <li onClick={() => setCaseStatus("Open")}>Open</li>
+                            <li onClick={() => setCaseStatus("On Hold")}>
+                              On Hold
+                            </li>
+                            <li onClick={() => setCaseStatus("Closed")}>
+                              Closed
+                            </li>
                           </ul>
                         </div>
 
@@ -324,85 +348,226 @@ const TopBarInc = ({ toggleSideBar }) => {
                 {query && (
                   <button
                     className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
-                    onClick={() => setQuery('')}
+                    onClick={() => setQuery("")}
                   >
-                    {query} <img src="/images/x.svg" className="img-fluid ms-2" alt="" />
+                    {query}{" "}
+                    <img
+                      src="/images/x.svg"
+                      className="img-fluid ms-2"
+                      alt=""
+                    />
                   </button>
                 )}
                 {docType && (
                   <button
                     className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
-                    onClick={() => setDocType('')}
+                    onClick={() => setDocType("")}
                   >
-                    {docType} <img src="/images/x.svg" className="img-fluid ms-2" alt="" />
+                    {docType}{" "}
+                    <img
+                      src="/images/x.svg"
+                      className="img-fluid ms-2"
+                      alt=""
+                    />
                   </button>
                 )}
                 {caseStatus && (
                   <button
                     className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
-                    onClick={() => setCaseStatus('')}
+                    onClick={() => setCaseStatus("")}
                   >
-                    {caseStatus} <img src="/images/x.svg" className="img-fluid ms-2" alt="" />
+                    {caseStatus}{" "}
+                    <img
+                      src="/images/x.svg"
+                      className="img-fluid ms-2"
+                      alt=""
+                    />
                   </button>
                 )}
                 {(startDate || endDate) && (
                   <button
                     className="btn btn-size btn-outline-light text-medium text-muted-3 px-3"
-                    onClick={() => { setStartDate(''); setEndDate(''); }}
+                    onClick={() => {
+                      setStartDate("");
+                      setEndDate("");
+                    }}
                   >
-                    {startDate} - {endDate}{' '}
-                    <img src="/images/x.svg" className="img-fluid ms-2" alt="" />
+                    {startDate} - {endDate}{" "}
+                    <img
+                      src="/images/x.svg"
+                      className="img-fluid ms-2"
+                      alt=""
+                    />
                   </button>
                 )}
               </div>
 
-              <ul className="nav custom-tab nav-underline mb-3" id="pills-tab" role="tablist">
+              <ul
+                className="nav custom-tab nav-underline mb-3"
+                id="pills-tab"
+                role="tablist"
+              >
                 <li className="nav-item" role="presentation">
-                  <button className="nav-link active" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button" role="tab" aria-controls="pills-all" aria-selected="true">All <span className="badge badge-main rounded-pill">{searchResults.disputes.count + searchResults.documents.count + searchResults.users.count + searchResults.documents.count + searchResults.branches.count + searchResults.users.count + searchResults.unions.count + searchResults['sub branches'].count}</span></button>
+                  <button
+                    className="nav-link active"
+                    id="pills-all-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-all"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-all"
+                    aria-selected="true"
+                  >
+                    All{" "}
+                    <span className="badge badge-main rounded-pill">
+                      {searchResults.disputes.count +
+                        searchResults.documents.count +
+                        searchResults.users.count +
+                        searchResults.documents.count +
+                        searchResults.branches.count +
+                        searchResults.users.count +
+                        searchResults.unions.count +
+                        searchResults["sub branches"].count}
+                    </span>
+                  </button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button className="nav-link" id="pills-disputes-tab" data-bs-toggle="pill" data-bs-target="#pills-disputes" type="button" role="tab" aria-controls="pills-disputes" aria-selected="false">Disputes <span className="badge badge-main rounded-pill">{searchResults.disputes.count}</span></button>
+                  <button
+                    className="nav-link"
+                    id="pills-disputes-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-disputes"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-disputes"
+                    aria-selected="false"
+                  >
+                    Disputes{" "}
+                    <span className="badge badge-main rounded-pill">
+                      {searchResults.disputes.count}
+                    </span>
+                  </button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button className="nav-link" id="pills-doc-tab" data-bs-toggle="pill" data-bs-target="#pills-doc" type="button" role="tab" aria-controls="pills-doc" aria-selected="false">Documents <span className="badge badge-main rounded-pill">{searchResults.documents.count}</span></button>
+                  <button
+                    className="nav-link"
+                    id="pills-doc-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-doc"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-doc"
+                    aria-selected="false"
+                  >
+                    Documents{" "}
+                    <span className="badge badge-main rounded-pill">
+                      {searchResults.documents.count}
+                    </span>
+                  </button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button className="nav-link" id="pills-users-tab" data-bs-toggle="pill" data-bs-target="#pills-users" type="button" role="tab" aria-controls="pills-users" aria-selected="false">Users <span className="badge badge-main rounded-pill">{searchResults.users.count}</span></button>
+                  <button
+                    className="nav-link"
+                    id="pills-users-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-users"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-users"
+                    aria-selected="false"
+                  >
+                    Users{" "}
+                    <span className="badge badge-main rounded-pill">
+                      {searchResults.users.count}
+                    </span>
+                  </button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button className="nav-link" id="pills-union-tab" data-bs-toggle="pill" data-bs-target="#pills-union" type="button" role="tab" aria-controls="pills-union" aria-selected="false">Unions <span className="badge badge-main rounded-pill">{searchResults.unions.count}</span></button>
+                  <button
+                    className="nav-link"
+                    id="pills-union-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-union"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-union"
+                    aria-selected="false"
+                  >
+                    Unions{" "}
+                    <span className="badge badge-main rounded-pill">
+                      {searchResults.unions.count}
+                    </span>
+                  </button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button className="nav-link" id="pills-companies-tab" data-bs-toggle="pill" data-bs-target="#pills-companies" type="button" role="tab" aria-controls="pills-companies" aria-selected="false">Companies <span className="badge badge-main rounded-pill">{searchResults.branches.count + searchResults['sub branches'].count + searchResults.unions.count}</span></button>
+                  <button
+                    className="nav-link"
+                    id="pills-companies-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-companies"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-companies"
+                    aria-selected="false"
+                  >
+                    Companies{" "}
+                    <span className="badge badge-main rounded-pill">
+                      {searchResults.branches.count +
+                        searchResults["sub branches"].count +
+                        searchResults.unions.count}
+                    </span>
+                  </button>
                 </li>
               </ul>
 
-              <div className="tab-content" id="pills-tabContent" style={{ height: "300px", overflow: 'auto' }}>
+              <div
+                className="tab-content"
+                id="pills-tabContent"
+                style={{ height: "300px", overflow: "auto" }}
+              >
                 {Object.entries(searchResults).map(([category, results]) => (
-                  <div className="tab-pane fade show active" id={`pills-${category}`} role="tabpanel" aria-labelledby={`pills-${category}-tab`} key={category}>
+                  <div
+                    className="tab-pane fade show active"
+                    id={`pills-${category}`}
+                    role="tabpanel"
+                    aria-labelledby={`pills-${category}-tab`}
+                    key={category}
+                  >
                     <div className="mt-4 overflow-auto">
-                      {Array.isArray(results.data) && results.data.length > 0 && (
+                      {Array.isArray(results.data) &&
+                        results.data.length > 0 &&
                         results.data.map((result, index) => (
-                          <div className="d-flex avatar-holder py-4 border-bottom" key={index}>
+                          <div
+                            className="d-flex avatar-holder py-4 border-bottom"
+                            key={index}
+                          >
                             <div className="position-relative">
-                              <img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
                               <div className="avatar-sm flex-shrink-0">
-                                <img src={result.logo || "images/pdf-icon.svg"} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+                                <img
+                                  src={
+                                    result.logo ||
+                                    result.photo ||
+                                    "/images/pdf-icon.svg"
+                                  }
+                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                  alt="Avatar"
+                                />
                               </div>
                             </div>
                             <div className="ms-2 flex-grow-1">
-                              <h5 className="mb-0">{result.name || result.document_name}</h5>
-                              <p className="mb-0 text-muted-3">in {category.replace('_', ' ')}</p>
+                              <h5 className="mb-0">
+                                {result.name || result.document_name}
+                              </h5>
+                              <p className="mb-0 text-muted-3">
+                                in {category.replace("_", " ")}
+                              </p>
                             </div>
                           </div>
-                        ))
-                      )}
+                        ))}
                     </div>
                   </div>
                 ))}
               </div>
-
-
             </div>
           </div>
         </div>

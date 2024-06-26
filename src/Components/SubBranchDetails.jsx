@@ -9,8 +9,8 @@ const SubBranchDetails = () => {
   const { id } = useParams();
   const user_avatar = "/images/unilag.svg";
   const [isLoading, setIsLoading] = useState(true);
-  const [industries, setIndustries] = useState([])
-
+  const [industries, setIndustries] = useState([]);
+  const [unionAdmin, setUnionAdmin] = useState([]);
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const [roles, setRoles] = useState([]);
   const [unions, setunions] = useState({
@@ -29,22 +29,41 @@ const SubBranchDetails = () => {
     role: "",
   });
   const [branches, setBranches] = useState([]);
-  const [sidebar, setsidebar] = useState(true)
-
+  const [sidebar, setsidebar] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
-
-
-
+    setsidebar(!sidebar);
+  };
 
   useEffect(() => {
     fetchdata(id);
-    fetchIndustries()
+    fetchIndustries();
     fetchroles();
+    fetchUnionAdmin(id);
   }, []);
 
+  const fetchUnionAdmin = async (id) => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const res = await fetch(
+        baseUrl + `/api/union/sub-branch/get-admins/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setUnionAdmin(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
 
   const fetchIndustries = async () => {
     try {
@@ -93,15 +112,12 @@ const SubBranchDetails = () => {
 
       const data = await res.json();
       setunions(data.data);
-
-
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
-
 
   const fetchroles = async () => {
     try {
@@ -123,8 +139,6 @@ const SubBranchDetails = () => {
       console.error("Error fetching data:", error.message);
     }
   };
-
-
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -164,9 +178,9 @@ const SubBranchDetails = () => {
       if (!res.ok) {
         throw new Error("Failed to fetch data."); // Handle failed request
       }
-      fetchdata(id)
+      fetchdata(id);
       const data = await res.json();
-      toast.success('Sub branch has been updated!')
+      toast.success("Sub branch has been updated!");
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -180,30 +194,33 @@ const SubBranchDetails = () => {
     e.preventDefault();
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-      const res = await fetch(baseUrl + `/api/union/sub-branch/send-invite/${id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(users),
-      });
+      const res = await fetch(
+        baseUrl + `/api/union/sub-branch/send-invite/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(users),
+        }
+      );
 
       if (!res.ok) {
         throw new Error("Failed to fetch data."); // Handle failed request
       }
       setUsers({
-        email: '',
-        role: ''
-      })
+        email: "",
+        role: "",
+      });
       const data = await res.json();
       // setGetDisputes(data.data);
       toast.success("Sub Branch invite has been sent!");
       // window.location.reload();
     } catch (error) {
       console.error("Error fetching data:", error.message);
-      toast.error('failed to send invite')
+      toast.error("failed to send invite");
     }
   };
 
@@ -215,7 +232,6 @@ const SubBranchDetails = () => {
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
             <main className="admin-content">
               <div className="header-box py-5">
@@ -224,7 +240,10 @@ const SubBranchDetails = () => {
                 </div>
               </div>
               {isLoading ? (
-                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ minHeight: "80vh" }}
+                >
                   <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
                 </div>
               ) : (
@@ -282,13 +301,10 @@ const SubBranchDetails = () => {
                           </div>
                         </div>
 
-
-
                         <div
                           className="accordion accordion-expand"
                           id="accordionUnion"
                         >
-
                           <div className="accordion-item mb-3">
                             <h2 className="accordion-header">
                               <button
@@ -339,7 +355,8 @@ const SubBranchDetails = () => {
                                         <div className="main-avatar mx-auto">
                                           <img
                                             src={unions.logo}
-                                            className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+                                            className="img-fluid object-fit-cover object-position-center w-100 h-100"
+                                            alt=""
                                           />
                                         </div>
                                       </label>
@@ -382,18 +399,7 @@ const SubBranchDetails = () => {
                                           value={unions.industry}
                                         />
                                       </div>
-                                      <div className="mb-4">
-                                        <label className="form-label">
-                                          Headquarters
-                                        </label>
-                                        <input
-                                          type="email"
-                                          className="form-control form-control-height"
-                                          disabled
-                                          name="headquarters"
-                                          value={unions.headquarters}
-                                        />
-                                      </div>
+
                                       <div className="mb-4">
                                         <label className="form-label">
                                           Phone number
@@ -477,6 +483,79 @@ const SubBranchDetails = () => {
                                     </tr>
                                   </thead>
                                   <tbody>
+                                    {Object.entries(unionAdmin)?.length > 0 ? (
+                                      Object.entries(unionAdmin).map(
+                                        ([key, value], index) => (
+                                          <tr key={key}>
+                                            <td scope="row">
+                                              <div className="d-flex avatar-holder">
+                                                <div className="position-relative">
+                                                  <div className="avatar-sm flex-shrink-0">
+                                                    <img
+                                                      src={
+                                                        value.photo ||
+                                                        "/images/download.png"
+                                                      }
+                                                      className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                      alt="Avatar"
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="ms-2 flex-grow-1">
+                                                  <h5 className="mb-0">
+                                                    {value.name}
+                                                  </h5>
+                                                  <p className="mb-0 text-muted-3">
+                                                    {value.email}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </td>
+                                            <td>{value.date_joined}</td>
+                                            <td>
+                                              <p>{value.role}</p>
+                                            </td>
+
+                                            <td>
+                                              <div className="dropdown">
+                                                <button
+                                                  className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+                                                  type="button"
+                                                  data-bs-toggle="dropdown"
+                                                  aria-expanded="false"
+                                                >
+                                                  <img
+                                                    src="/images/dots-v.svg"
+                                                    className="img-fluid"
+                                                    alt="dot-v"
+                                                  />
+                                                </button>
+                                                <ul className="dropdown-menu border-radius action-menu-2">
+                                                  <li>
+                                                    <a
+                                                      className="dropdown-item"
+                                                      href="#"
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#removeModal"
+                                                    >
+                                                      Remove Admin
+                                                    </a>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        )
+                                      )
+                                    ) : (
+                                      <tr>
+                                        <td>
+                                          <p className="m-3">
+                                            No admin has been invited
+                                          </p>
+                                        </td>
+                                      </tr>
+                                    )}
                                     {/* <tr>
                                 <td scope="row">
                                   <div className="d-flex avatar-holder">
@@ -720,18 +799,13 @@ const SubBranchDetails = () => {
                                   </div>
                                 </td>
                               </tr> */}
-                                    <tr>
-                                      <td>
-                                        <p className="m-3">No admin has been invited</p>
-                                      </td>
-                                    </tr>
                                   </tbody>
                                 </table>
                               </div>
                             </div>
                           </div>
 
-                          <div className="accordion-item mb-3">
+                          {/* <div className="accordion-item mb-3">
                             <h2 className="accordion-header">
                               <button
                                 className="accordion-button collapsed heading-4 text-grey"
@@ -900,7 +974,7 @@ const SubBranchDetails = () => {
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -982,8 +1056,12 @@ const SubBranchDetails = () => {
                 >
                   Save Changes
                 </a>
-                <a href="#" className="btn btn-size btn-main-primary" data-bs-dismiss="modal"
-                  aria-label="Close">
+                <a
+                  href="#"
+                  className="btn btn-size btn-main-primary"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
                   Discard Changes
                 </a>
               </div>
@@ -1005,7 +1083,8 @@ const SubBranchDetails = () => {
                       <div className="main-avatar mx-auto">
                         <img
                           src={unions.logo}
-                          className="img-fluid object-fit-cover object-position-center w-100 h-100" alt=""
+                          className="img-fluid object-fit-cover object-position-center w-100 h-100"
+                          alt=""
                         />
                       </div>
                     </label>
@@ -1036,23 +1115,22 @@ const SubBranchDetails = () => {
                     </div>
                     <div className="mb-4">
                       <label className="form-label">Industry</label>
-                      <select className="form-control form-control-height" id="industriy" name="industry_id" onChange={onHandleChange} value={unions.industry_id}>
-                        <option value="default"  >--Choose--</option>
-                        {industries.map((item) =>
-                          <option value={item._id} key={item._id}>{item.name}</option>
-                        )}
+                      <select
+                        className="form-control form-control-height"
+                        id="industriy"
+                        name="industry_id"
+                        onChange={onHandleChange}
+                        value={unions.industry_id}
+                      >
+                        <option value="default">--Choose--</option>
+                        {industries.map((item) => (
+                          <option value={item._id} key={item._id}>
+                            {item.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
-                    <div className="mb-4">
-                      <label className="form-label">Headquarters</label>
-                      <input
-                        type="email"
-                        className="form-control form-control-height"
-                        value={unions.headquarters}
-                        onChange={onHandleChange}
-                        name="headquarters"
-                      />
-                    </div>
+
                     <div className="mb-4">
                       <label className="form-label">Phone number</label>
                       <input
@@ -1072,11 +1150,11 @@ const SubBranchDetails = () => {
                         onChange={onHandleChange}
                         name="about"
                       >
-                        Nigeria Branch of Journalists (NUJ) is a network of media
-                        professionals established to advance the safety and
-                        welfare of Nigerian journalists. It is an independent
-                        trade organization with no political leaning or
-                        ideological disposition. NUJ is founded in the
+                        Nigeria Branch of Journalists (NUJ) is a network of
+                        media professionals established to advance the safety
+                        and welfare of Nigerian journalists. It is an
+                        independent trade organization with no political leaning
+                        or ideological disposition. NUJ is founded in the
                         underlying belief that speaking with one voice
                       </textarea>
                     </div>
@@ -1445,7 +1523,8 @@ const SubBranchDetails = () => {
                         <div className="text-center">
                           <img
                             src="/images/no-found.svg"
-                            className="img-fluid" alt=""
+                            className="img-fluid"
+                            alt=""
                           />
                         </div>
                       </div>
@@ -1460,7 +1539,7 @@ const SubBranchDetails = () => {
 
       {/* <?php include "./components/javascript.inc.php"; ?> */}
     </>
-  )
-}
+  );
+};
 
-export default SubBranchDetails
+export default SubBranchDetails;
