@@ -663,7 +663,7 @@ const DisputesDetails = () => {
                                                                     />
                                                                   ) : (
                                                                     <img
-                                                                      src="/images/default-avatar-image.png"
+                                                                      src="/images/download.png"
                                                                       className="img-fluid object-position-center object-fit-cover w-100 h-100"
                                                                       alt="Avatar"
                                                                     />
