@@ -14,16 +14,32 @@ const Users = () => {
 	const [getAdminRoles, setAdminRoles] = useState([]);
 	const [getAdminRoleUsers, setAdminRoleUsers] = useState([]);
 	const [getSettlementBodies, setSettlementBodies] = useState([]);
-	const [getSettlementBodyUsers, setSettlementBodyUsers] = useState([]);
+	const [getSettlementBodyLists, setSettlementBodyLists] = useState([]);
+	const [getSettlementBodyMembers, setSettlementBodyMembers] = useState([]);
 	const [IndividualUser, setIndividualUser] = useState({
 		user_id: "",
 		user_name: "",
 		user_photo: "",
 	});
+	const [IndividualSettlmentBody, setIndividualSettlmentBody] = useState({
+		sb_id: "",
+		sb_name: "",
+	});
+	const [IndividualSettlmentProfile, setIndividualSettlmentProfile] = useState({
+		sp_id: "",
+		sp_name: "",
+		sp_status: "",
+	});
+	const [IndividualSettlmentMemberProfile, setIndividualSettlmentMemberProfile] = useState({
+		member_id: "",
+		member_name: "",
+	});
 	const [isChecked, setIsChecked] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAdminLoading, setIsAdminLoading] = useState(true);
 	const [isSettlementBodyLoading, setIsSettlementBodyLoading] = useState(true);
+	const [isSettlementBodyMemberLoading, setIsSettlementBodyMemberLoading] = useState(false);
+	const [isSettlementBodyMemberDisabled, setIsSettlementBodyMemberDisabled] = useState(false);
 
 	// const [bulkUpload, setBulkUpload] = useState({
 	//   file: "",
@@ -43,6 +59,9 @@ const Users = () => {
 	});
 	const [customRole, setcustomRole] = useState({
 		name: "",
+	});
+	const [settlementBodyMemberInvite, setsettlementBodyMemberInvite] = useState({
+		email: "",
 	});
 	const [sidebar, setsidebar] = useState(true)
 
@@ -98,7 +117,6 @@ const Users = () => {
 	};
 
 	useEffect(() => {
-		fetchBoardOfEnquires();
 		fetchDisputes();
 		getAllIndividualUsers();
 		getAllAdminRoles();
@@ -109,38 +127,7 @@ const Users = () => {
 		setUsers({ ...users, [e.target.name]: e.target.value });
 	};
 
-	const fetchBoardOfEnquires = async () => {
-		try {
-			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-			const token = localStorage.getItem("token");
-
-			if (!token) {
-				throw new Error("User is not logged in.");
-			}
-
-			const res = await fetch(baseUrl + "/api/users/get-board-of-enquiries", {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-
-			if (!res.ok) {
-				throw new Error("Failed to fetch data."); // Handle failed request
-			}
-
-			const data = await res.json();
-			setGetBoardOfEnquire(data.data);
-		} catch (error) {
-			console.error("Error fetching data:", error.message);
-		}
-	};
-
-	const handleDissolve = async (
-		e,
-		id,
-		getBoardOfEnquire,
-		setGetBoardOfEnquire
-	) => {
+	const handleDissolve = async (e, id) => {
 		e.preventDefault();
 
 		try {
@@ -160,9 +147,8 @@ const Users = () => {
 			}
 
 			const data = await response.json();
-			// setGetBoardOfEnquire((prevUnionsList) =>
-			//   prevUnionsList.filter((boardOfEnquire) => boardOfEnquire._id !== id)
-			// );
+			toast.success(data.message);
+			getAllSettlementBodyLists({ _id: IndividualSettlmentBody.sb_id, name: IndividualSettlmentBody.sb_name });
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
@@ -246,7 +232,7 @@ const Users = () => {
 		try {
 			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
 			const response = await fetch(
-				baseUrl + "/api/users/create-board-of-enquiry",
+				baseUrl + `/api/users/create-settlement-body/${IndividualSettlmentBody.sb_id}`,
 				{
 					method: "POST",
 					headers: {
@@ -262,13 +248,13 @@ const Users = () => {
 				throw new Error("Network response was not ok");
 			}
 
-
 			const data = await response.json();
-
-			toast.success("Board of Enquire has been created successfully!");
+			toast.success(data.message);
 			setboardOfEnquire({
 				name: ''
-			})
+			});
+
+			getAllSettlementBodyLists({ _id: IndividualSettlmentBody.sb_id, name: IndividualSettlmentBody.sb_name });
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
@@ -589,15 +575,19 @@ const Users = () => {
 			const data = await res.json();
 			setSettlementBodies(data.data);
 			if (data.data.length) {
-				getAllSettlementBodyUsers(data.data[0]._id);
+				getAllSettlementBodyLists(data.data[0]);
 			}
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
 	}
 
-	const getAllSettlementBodyUsers = async (sb_id) => {
+	const getAllSettlementBodyLists = async (sb) => {
 		setIsSettlementBodyLoading(true);
+		setIndividualSettlmentBody({
+			sb_id: sb._id,
+			sb_name: sb.name
+		});
 
 		try {
 			const token = localStorage.getItem("token");
@@ -606,7 +596,7 @@ const Users = () => {
 				throw new Error("User is not logged in."); // Handle case where user is not logged in
 			}
 
-			const res = await fetch(baseUrl + `/api/users/role/${sb_id}`, {
+			const res = await fetch(baseUrl + `/api/users/get-settlement-body/${sb._id}`, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
@@ -617,12 +607,123 @@ const Users = () => {
 			}
 
 			const data = await res.json();
-			setSettlementBodyUsers(data.data);
+			setSettlementBodyLists(data.data);
+			console.log(data.data);
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
 		finally {
 			setIsSettlementBodyLoading(false);
+		}
+	}
+
+	const fetchSettlementBodyMembers = async (sb) => {
+		setIsSettlementBodyMemberLoading(true);
+
+		try {
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + `/api/users/view-board-members/${sb._id}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			setSettlementBodyMembers(data.data);
+			console.log(data.data);
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+		finally {
+			setIsSettlementBodyMemberLoading(false);
+		}
+	}
+
+	const sendSettlementBodyMemberInvite = async () => {
+		setIsSettlementBodyMemberDisabled(true);
+
+		try {
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + `/api/users/invite-board-member/${IndividualSettlmentProfile.sp_id}`, {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+					"Accept": "application/json",
+
+				},
+				body: JSON.stringify(settlementBodyMemberInvite)
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			toast.success(data.message);
+			fetchSettlementBodyMembers({
+				_id: IndividualSettlmentProfile.sp_id
+			});
+			setsettlementBodyMemberInvite({
+				email: ""
+			})
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+		finally {
+			setIsSettlementBodyMemberDisabled(false);
+		}
+	}
+
+	const onHandleSettlementMemberChange = (e) => {
+		setsettlementBodyMemberInvite({ ...settlementBodyMemberInvite, [e.target.name]: e.target.value });
+	}
+
+	const removeSettlementBodyMember = async () => {
+		setIsSettlementBodyMemberLoading(true);
+
+		try {
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				throw new Error("User is not logged in."); // Handle case where user is not logged in
+			}
+
+			const res = await fetch(baseUrl + `/api/users/remove-board-member/${IndividualSettlmentMemberProfile.member_id}`, {
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
+
+			const data = await res.json();
+			fetchSettlementBodyMembers({
+				_id: IndividualSettlmentProfile.sp_id
+			});
+			toast.success(data.message);
+		} catch (error) {
+			console.error("Error fetching data:", error.message);
+		}
+		finally {
+			setIsSettlementBodyMemberLoading(false);
 		}
 	}
 
@@ -689,11 +790,12 @@ const Users = () => {
 		});
 	}
 
-	const handleIndividualUserInfo = (user) => {
+	const handleIndividualUserInfo = (user, user_type = "user") => {
 		setIndividualUser({
 			user_id: user._id,
 			user_name: user.name,
-			user_photo: user.photo
+			user_photo: user.photo,
+			type: user_type,
 		});
 	}
 
@@ -709,7 +811,13 @@ const Users = () => {
 				throw new Error("User is not logged in."); // Handle case where user is not logged in
 			}
 
-			const res = await fetch(baseUrl + `/api/users/refer-case/${IndividualUser.user_id}`, {
+			var refer_case_url = baseUrl + `/api/users/refer-case/${IndividualUser.user_id}`;
+
+			if (IndividualUser.type === "settlement_body") {
+				refer_case_url = baseUrl + `/api/users/refer-case-to-body/${IndividualUser.user_id}`;
+			}
+
+			const res = await fetch(refer_case_url, {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json',
@@ -778,21 +886,13 @@ const Users = () => {
 	return (
 		<>
 			<div className="main-admin-container bg-light dark-mode-active">
-
 				<div className="d-flex flex-column flex-lg-row h-lg-100">
-
-					{/* <?php include "./components/main-navbar.inc.php"; ?> */}
 					<MainNavbarInc sidebar={sidebar} />
 
-
 					<div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
-						{/* <?php include "./components/top-bar.inc.php"; ?> */}
-
 						<TopBarInc toggleSideBar={toggleSideBar} />
 
 						<main className="admin-content">
-
 							<div className="header-box py-5">
 								<div className="container">
 									<h2>Users & Groups </h2>
@@ -822,20 +922,13 @@ const Users = () => {
 													</li>
 												</ul>
 												<div className="tab-content" id="pills-tabContent">
-
 													<div className="tab-pane fade show active" id="pills-invite" role="tabpanel" aria-labelledby="pills-invite-tab" tabIndex="0">
 														<div className="row mt-5">
 															<div className="col-lg-3">
-
 																<div className="nav flex-column tab-item nav-pills gap-10" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-
 																	<button className="nav-link tab-v text-start active" id="v-pills-bulk-tab" data-bs-toggle="pill" data-bs-target="#v-pills-bulk" type="button" role="tab" aria-controls="v-pills-bulk" aria-selected="true">Bulk Union upload</button>
-
 																	<button className="nav-link tab-v text-start" id="v-pills-single-tab" data-bs-toggle="pill" data-bs-target="#v-pills-single" type="button" role="tab" aria-controls="v-pills-single" aria-selected="false">Single Union upload</button>
-
-
 																</div>
-
 															</div>
 
 															<div className="col-lg-9">
@@ -845,8 +938,8 @@ const Users = () => {
 																			<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
 																				<h3 className="mb-lg-0 mb-3">Bulk Invites</h3>
 																			</div>
-																			<div className="card-body p-4">
 
+																			<div className="card-body p-4">
 																				<div className="row mb-4">
 																					<div className="col-lg-5 mb-lg-0 mb-3">
 																						<h6 className="step-text">Step 1.</h6>
@@ -996,7 +1089,6 @@ const Users = () => {
 																				</form>
 
 																			</div>
-
 																		</div>
 																	</div>
 																</div>
@@ -1088,7 +1180,7 @@ const Users = () => {
 																										</button>
 																										<ul className="dropdown-menu border-radius action-menu-2">
 																											<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal" onClick={() => { handleIndividualUserInfo(user); }}>Refer to Dispute Case</a></li>
-																											<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
+																											{/* <li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li> */}
 																											<li><a href="javascript:void(0);" className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
 																											<div className="collapse" id="collapseStatus">
 																												<ul className="list-unstyled">
@@ -1249,7 +1341,7 @@ const Users = () => {
 																													</button>
 																													<ul className="dropdown-menu border-radius action-menu-2">
 																														<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal" onClick={() => { handleIndividualUserInfo(user); }}>Refer to Dispute Case</a></li>
-																														<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
+																														{/* <li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li> */}
 																														<li><a href="javascript:void(0);" className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
 																														<div className="collapse" id="collapseStatus">
 																															<ul className="list-unstyled">
@@ -1319,7 +1411,7 @@ const Users = () => {
 																		<button className={`nav-link tab-v text-start ${index === 0 ? `active` : ``}`} id="v-pills-con-tab"
 																			data-bs-toggle="pill" data-bs-target="#v-pills-con"
 																			type="button" role="tab" aria-controls="v-pills-con"
-																			aria-selected="true" onClick={(e) => { getAllSettlementBodyUsers(sb_role._id) }}>
+																			aria-selected="true" onClick={(e) => { getAllSettlementBodyLists(sb_role) }}>
 																			{sb_role.name}
 																		</button>
 																	))}
@@ -1357,14 +1449,14 @@ const Users = () => {
 
 																								</div>
 
-																								<p className="text-end mb-0 file-count">Bodies: {getSettlementBodyUsers.length}</p>
+																								<p className="text-end mb-0 file-count">{IndividualSettlmentBody.sb_name}: {getSettlementBodyLists.length}</p>
 																							</div>
 																						</div>
 																					</div>
 
 																					<div className="row mb-4">
-																						<div className="col-lg-3 offset-lg-9">
-																							<button className="btn btn-main-primary btn-size w-100" data-bs-toggle="modal" data-bs-target="#boardModal">Create Board Profile</button>
+																						<div className="col-lg-5 offset-lg-7">
+																							<button className="btn btn-main-primary btn-size w-100" data-bs-toggle="modal" data-bs-target="#boardModal">Create {IndividualSettlmentBody.sb_name} Profile</button>
 																						</div>
 																					</div>
 
@@ -1387,402 +1479,99 @@ const Users = () => {
 																									</tr>
 																								</thead>
 																								<tbody>
-																									{getSettlementBodyUsers.map((sb_role, index) => (
-																										<tr>
+																									{getSettlementBodyLists.length ? getSettlementBodyLists.map((settlement_body, index) => (
+																										<tr key={settlement_body._id}>
 																											<td>
 																												<div>
 																													<input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
 																												</div>
 																											</td>
 																											<td>
-																												<div className="avatars">
-																													<div className="dropdown">
-																														<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																															<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/65.jpg" alt="" />
-																														</a>
-																														<ul className="dropdown-menu action-menu border-radius">
-																															<img src="images/pointer.svg" className="img-fluid pointer" />
-																															<div className="d-flex avatar-holder border-bottom py-4">
-																																<div className="position-relative">
-																																	<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																																	<div className="avatar-sm flex-shrink-0">
-																																		<img src="https://randomuser.me/api/portraits/women/65.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																												{settlement_body.assigned_members.length ? (
+																													<div className="avatars">
+																														{settlement_body.assigned_members.map((admin, iteration) => (
+																															<div className="dropdown">
+																																<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+																																	<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src={admin.photo || 'images/download.png'} alt="" />
+																																</a>
+																																<ul className="dropdown-menu action-menu border-radius">
+																																	<img src="images/pointer.svg" className="img-fluid pointer" />
+																																	<div className="d-flex avatar-holder border-bottom py-4">
+																																		<div className="position-relative">
+																																			<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
+																																			<div className="avatar-sm flex-shrink-0">
+																																				<img src={admin.photo || 'images/download.png'} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																																			</div>
+																																		</div>
+																																		<div className="ms-2 flex-grow-1">
+																																			<h5 className="mb-0">{admin.name || admin.email}</h5>
+																																			{/* <p className="mb-0 text-main-primary">View profile</p> */}
+																																		</div>
 																																	</div>
-																																</div>
-																																<div className="ms-2 flex-grow-1">
-																																	<h5 className="mb-0">Stephen Ejiro</h5>
-																																	<p className="mb-0 text-main-primary">View profile</p>
-																																</div>
-																															</div>
 
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/users.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Role in dispute</p>
-																																	<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																																</div>
-																															</div>
+																																	<div className="d-flex align-items-center py-2">
+																																		<img src="images/mail.svg" className="img-fluid" alt="users" />
+																																		<div className="ms-2 flex-grow-1">
+																																			<p className="mb-1 ft-sm">Email</p>
+																																			<p className="mb-0">{admin.email}</p>
+																																		</div>
 
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/user.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Name & Organization</p>
-																																	<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/mail.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Email</p>
-																																	<p className="mb-0">stepheneji@nnpc.com</p>
-																																</div>
-
-																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/call.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Phone Number</p>
-																																	<p className="mb-0">08168141116</p>
-																																</div>
-																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																															</div>
-
-																														</ul>
-																													</div>
-																													<div className="dropdown">
-																														<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																															<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/66.jpg" alt="" />
-																														</a>
-																														<ul className="dropdown-menu action-menu border-radius">
-																															<img src="images/pointer.svg" className="img-fluid pointer" />
-																															<div className="d-flex avatar-holder border-bottom py-4">
-																																<div className="position-relative">
-																																	<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																																	<div className="avatar-sm flex-shrink-0">
-																																		<img src="https://randomuser.me/api/portraits/women/66.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																																		<img src="images/copy.svg" className="img-fluid" alt="copy" />
 																																	</div>
-																																</div>
-																																<div className="ms-2 flex-grow-1">
-																																	<h5 className="mb-0">Stephen Ejiro</h5>
-																																	<p className="mb-0 text-main-primary">View profile</p>
-																																</div>
-																															</div>
 
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/users.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Role in dispute</p>
-																																	<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/user.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Name & Organization</p>
-																																	<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/mail.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Email</p>
-																																	<p className="mb-0">stepheneji@nnpc.com</p>
-																																</div>
-
-																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/call.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Phone Number</p>
-																																	<p className="mb-0">08168141116</p>
-																																</div>
-																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																															</div>
-
-																														</ul>
-																													</div>
-																													<div className="dropdown">
-																														<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																															<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/67.jpg" alt="" />
-																														</a>
-																														<ul className="dropdown-menu action-menu border-radius">
-																															<img src="images/pointer.svg" className="img-fluid pointer" />
-																															<div className="d-flex avatar-holder border-bottom py-4">
-																																<div className="position-relative">
-																																	<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																																	<div className="avatar-sm flex-shrink-0">
-																																		<img src="https://randomuser.me/api/portraits/women/67.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																																	<div className="d-flex align-items-center py-2">
+																																		<img src="images/call.svg" className="img-fluid" alt="users" />
+																																		<div className="ms-2 flex-grow-1">
+																																			<p className="mb-1 ft-sm">Phone Number</p>
+																																			<p className="mb-0">{admin.phone}</p>
+																																		</div>
+																																		<img src="images/copy.svg" className="img-fluid" alt="copy" />
 																																	</div>
-																																</div>
-																																<div className="ms-2 flex-grow-1">
-																																	<h5 className="mb-0">Stephen Ejiro</h5>
-																																	<p className="mb-0 text-main-primary">View profile</p>
-																																</div>
+																																</ul>
 																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/users.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Role in dispute</p>
-																																	<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/user.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Name & Organization</p>
-																																	<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/mail.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Email</p>
-																																	<p className="mb-0">stepheneji@nnpc.com</p>
-																																</div>
-
-																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/call.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Phone Number</p>
-																																	<p className="mb-0">08168141116</p>
-																																</div>
-																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																															</div>
-
-																														</ul>
+																														))}
 																													</div>
-																													<div className="dropdown">
-																														<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																															<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/68.jpg" alt="" />
-																														</a>
-																														<ul className="dropdown-menu action-menu border-radius">
-																															<img src="images/pointer.svg" className="img-fluid pointer" />
-																															<div className="d-flex avatar-holder border-bottom py-4">
-																																<div className="position-relative">
-																																	<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																																	<div className="avatar-sm flex-shrink-0">
-																																		<img src="https://randomuser.me/api/portraits/women/68.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																																	</div>
-																																</div>
-																																<div className="ms-2 flex-grow-1">
-																																	<h5 className="mb-0">Stephen Ejiro</h5>
-																																	<p className="mb-0 text-main-primary">View profile</p>
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/users.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Role in dispute</p>
-																																	<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/user.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Name & Organization</p>
-																																	<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/mail.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Email</p>
-																																	<p className="mb-0">stepheneji@nnpc.com</p>
-																																</div>
-
-																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/call.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Phone Number</p>
-																																	<p className="mb-0">08168141116</p>
-																																</div>
-																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																															</div>
-
-																														</ul>
-																													</div>
-																													<div className="dropdown">
-																														<a href="#" className="avatars__item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-																															<img className="avatar img-fluid object-fit-cover object-position-center w-100 h-100" src="https://randomuser.me/api/portraits/women/69.jpg" alt="" />
-																														</a>
-																														<ul className="dropdown-menu action-menu border-radius">
-																															<img src="images/pointer.svg" className="img-fluid pointer" />
-																															<div className="d-flex avatar-holder border-bottom py-4">
-																																<div className="position-relative">
-																																	<img src="images/Avatar-online-indicator.svg" className="img-fluid indicator-avatar" alt="indicator" />
-																																	<div className="avatar-sm flex-shrink-0">
-																																		<img src="https://randomuser.me/api/portraits/women/69.jpg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-																																	</div>
-																																</div>
-																																<div className="ms-2 flex-grow-1">
-																																	<h5 className="mb-0">Stephen Ejiro</h5>
-																																	<p className="mb-0 text-main-primary">View profile</p>
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/users.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Role in dispute</p>
-																																	<img src="images/claim.svg" className="img-fluid" alt="claimant" />
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/user.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Name & Organization</p>
-																																	<p className="mb-0">Stephen Ejiro (Shafa Abuja)</p>
-																																</div>
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/mail.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Email</p>
-																																	<p className="mb-0">stepheneji@nnpc.com</p>
-																																</div>
-
-																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																															</div>
-
-																															<div className="d-flex align-items-center py-2">
-																																<img src="images/call.svg" className="img-fluid" alt="users" />
-																																<div className="ms-2 flex-grow-1">
-																																	<p className="mb-1 ft-sm">Phone Number</p>
-																																	<p className="mb-0">08168141116</p>
-																																</div>
-																																<img src="images/copy.svg" className="img-fluid" alt="copy" />
-																															</div>
-
-																														</ul>
-																													</div>
-																												</div>
+																												) : (
+																													<p>No member added here</p>
+																												)}
 																											</td>
-																											<td>Health</td>
-																											<td>12</td>
-																											<td><img src="images/active.svg" className="img-fluid" /></td>
-																											<td>Feb 4 2023</td>
+																											<td>{settlement_body.name}</td>
+																											<td>{settlement_body.assigned_cases}</td>
+																											<td>
+																												{settlement_body.status}
+																											</td>
+																											<td>{settlement_body.date_added}</td>
 																											<td>
 																												<div className="dropdown">
 																													<button className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
 																														<img src="images/dots-v.svg" className="img-fluid" alt="dots" />
 																													</button>
 																													<ul className="dropdown-menu border-radius action-menu-2">
-																														<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal">Refer to Dispute Case</a></li>
-																														<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li>
-																														<li><a href="view-members.php" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2">View Members</a></li>
-																														<li><a href="" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveModal">Dissolve Board </a></li>
-																														<li><a className="dropdown-item d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">Change Status <i className="bi bi-chevron-down"></i></a></li>
-																														<div className="collapse" id="collapseStatus">
-																															<ul className="list-unstyled">
-																																<li>
-																																	<a className="dropdown-item" href="#">
-																																		<div className="form-check">
-																																			<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																			<label className="form-check-label" htmlFor="active">
-																																				Active
-																																			</label>
-																																		</div>
-																																	</a>
-																																</li>
-																																<li>
-																																	<a className="dropdown-item" href="#">
-																																		<div className="form-check">
-																																			<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																			<label className="form-check-label" htmlFor="suspended">
-																																				Suspended
-																																			</label>
-																																		</div>
-																																	</a>
-																																</li>
-																																<li>
-																																	<a className="dropdown-item" href="#">
-																																		<div className="form-check">
-																																			<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																			<label className="form-check-label" htmlFor="deactivated">
-																																				Deactivated
-																																			</label>
-																																		</div>
-																																	</a>
-																																</li>
-																																<li>
-																																	<a className="dropdown-item" href="#">
-																																		<div className="form-check">
-																																			<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																			<label className="form-check-label" htmlFor="pending">
-																																				Pending
-																																			</label>
-																																		</div>
-																																	</a>
-																																</li>
-																															</ul>
-																														</div>
-																														<li><h6 className="dropdown-header">Change Status</h6></li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="active" />
-																																	<label className="form-check-label" htmlFor="active">
-																																		Active
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="suspended" />
-																																	<label className="form-check-label" htmlFor="suspended">
-																																		Suspended
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="deactivated" />
-																																	<label className="form-check-label" htmlFor="deactivated">
-																																		Deactivated
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
-																														<li>
-																															<a className="dropdown-item" href="#">
-																																<div className="form-check">
-																																	<input className="form-check-input" type="radio" name="flexRadioDefault" id="pending" />
-																																	<label className="form-check-label" htmlFor="pending">
-																																		Pending
-																																	</label>
-																																</div>
-																															</a>
-																														</li>
+																														{settlement_body.status !== 'dissolved' && (
+																															<li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disputeModal" onClick={() => {
+																																handleIndividualUserInfo({
+																																	_id: settlement_body._id,
+																																	name: settlement_body.name,
+																																}, `settlement_body`);
+																															}}>Refer to Dispute Case</a></li>
+																														)}
+																														{/* <li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li> */}
+																														<li><a href="javascript:void(0);" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#boardModal2" onClick={(e) => { setIndividualSettlmentProfile({ sp_id: settlement_body._id, sp_name: settlement_body.name, sp_status: settlement_body.status }); fetchSettlementBodyMembers(settlement_body); }}>View Members</a></li>
+																														{settlement_body.status !== 'dissolved' && (
+																															<li><a href="javascript:void(0);" className="dropdown-item" data-bs-toggle="modal" data-bs-target="#dissolveBoardModal" onClick={(e) => { setIndividualSettlmentProfile({ sp_id: settlement_body._id, sp_name: settlement_body.name, sp_status: settlement_body.status }); }}>Dissolve Board </a></li>
+																														)}
 																													</ul>
 																												</div>
 																											</td>
 																										</tr>
-																									))}
+																									)) : (
+																										<tr>
+																											<td id="pending-dispute-not-found" colSpan={6} className={`text-center`}>
+																												<p><i className="fa fa-triangle-exclamation fa-2x text-warning"></i></p>
+																												<p className="h5">No member data found</p>
+																											</td>
+																										</tr>
+																									)}
 																								</tbody>
 																							</table>
 																						</div>
@@ -1948,7 +1737,6 @@ const Users = () => {
 									</div>
 								</div>
 							</div>
-
 						</main>
 
 						<footer>
@@ -1960,11 +1748,8 @@ const Users = () => {
 								</div>
 							</div>
 						</footer>
-
 					</div>
-
 				</div>
-
 			</div>
 
 			<div className="modal fade" id="disputeModal" tabIndex="-1" aria-labelledby="disputeModalLabel" aria-hidden="true">
@@ -2076,7 +1861,7 @@ const Users = () => {
 													</td>
 													<td>{dispute.title}</td>
 													<td>
-														<img src="/images/pending.svg" alt="" />
+														<img src={dispute.status_img} alt="" />
 													</td>
 													<td>
 														<div className="dropdown">
@@ -2179,7 +1964,7 @@ const Users = () => {
 					<div className="modal-content p-lg-4 border-0">
 						<div className="modal-header justify-content-between">
 							<h1 className="modal-title fs-5">
-								Create Board of Enquiry Profile
+								Create {IndividualSettlmentBody.sb_name} Profile
 							</h1>
 
 							<div className="gap-10 d-flex align-items-center">
@@ -2191,12 +1976,7 @@ const Users = () => {
 									Cancel
 								</button>
 
-								<button
-									className="btn btn-main-primary btn-size px-3"
-
-									data-bs-dismiss="modal"
-									aria-label="Close"
-								>
+								<button className="btn btn-main-primary btn-size px-3" data-bs-dismiss="modal" aria-label="Close">
 									Finish
 								</button>
 							</div>
@@ -2204,11 +1984,11 @@ const Users = () => {
 						<div className="modal-body">
 							<div className="row mt-4">
 								<div className="col-lg-12">
-									<label className="form-label">Name of Board of Enquiry</label>
+									<label className="form-label">Name of {IndividualSettlmentBody.sb_name}</label>
 									<input
 										type="text"
 										className="form-control form-control-height"
-										placeholder="Enter Board of Enquiry"
+										placeholder={`Enter ${IndividualSettlmentBody.sb_name}`}
 										name="name"
 										value={boardOfEnquire.name}
 										onChange={onHandleChange}
@@ -2339,7 +2119,7 @@ const Users = () => {
 				<div className="modal-dialog modal-dialog-centered modal-lg">
 					<div className="modal-content p-lg-4 border-0">
 						<div className="modal-header justify-content-between">
-							<h1 className="modal-title fs-5">Board of Enquiry  Members</h1>
+							<h1 className="modal-title fs-5">{IndividualSettlmentBody.sb_name}  Members</h1>
 
 							<div className="gap-10 d-flex align-items-center">
 								<button className="btn btn btn-size btn-main-outline-primary px-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
@@ -2350,103 +2130,101 @@ const Users = () => {
 						<div className="modal-body">
 							<div className="row mt-4">
 								<div className="col-lg-12">
-									<label className="form-label">Name of  Board of Enquiry </label>
-									<input type="text" className="form-control form-control-height" placeholder="Health issues in South South" disabled />
-								</div>
-							</div>
-							<div className="row my-4">
-								<div className="col-lg-7">
-									<div className="input-group">
-										<span className="input-group-text bg-transparent">
-											<img src="images/search.svg" className="img-fluid" alt="search" />
-										</span>
-										<input type="search" className="form-control border-start-0 form-control-height" placeholder="Type an email to invite" />
-									</div>
-								</div>
-
-								<div className="col-lg-2 offset-lg-3">
-									<div className="d-flex align-items-center justify-content-between gap-15">
-										<a href="#" className="btn btn-size btn-main-primary">Send Invite</a>
-									</div>
+									<label className="form-label">Name of  {IndividualSettlmentBody.sb_name} </label>
+									<input type="text" className="form-control form-control-height" value={IndividualSettlmentProfile.sp_name} disabled />
 								</div>
 							</div>
 
-							<div className="row">
-								<div className="col-lg-12">
-									<table className="table table-list">
-										<thead className="table-light">
-											<tr>
-												<th scope="col">Name</th>
-												<th scope="col">Date added</th>
-												<th scope="col">Actions</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td scope="row">
-													<div className="d-flex avatar-holder">
-														<div className="position-relative">
+							{IndividualSettlmentProfile.sp_status === 'active' && (
+								<div className="row my-4">
+									<div className="col-lg-7">
+										<div className="input-group">
+											<span className="input-group-text bg-transparent">
+												<img src="images/search.svg" className="img-fluid" alt="search" />
+											</span>
+											<input type="email" name="email" value={settlementBodyMemberInvite.email} onChange={(e) => { onHandleSettlementMemberChange(e) }} className="form-control border-start-0 form-control-height" placeholder="Type an email to invite" />
+										</div>
+									</div>
 
-															<div className="avatar-sm flex-shrink-0">
-																<img src="images/avatar-2.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-															</div>
-														</div>
-														<div className="ms-2 flex-grow-1">
-															<h5 className="mb-0">Salim Mustapha</h5>
-															<p className="mb-0 text-muted-3">salimmusty@gmail.com</p>
-														</div>
-													</div>
-												</td>
-												<td>Feb 4 2023</td>
-												<td><a className="text-danger">Remove member</a></td>
-											</tr>
-
-											<tr>
-												<td scope="row">
-													<div className="d-flex avatar-holder">
-														<div className="position-relative">
-
-															<div className="avatar-sm flex-shrink-0">
-																<img src="images/avatar-2.svg" className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
-															</div>
-														</div>
-														<div className="ms-2 flex-grow-1">
-															<h5 className="mb-0">Salim Mustapha</h5>
-															<p className="mb-0 text-muted-3">salimmusty@gmail.com</p>
-														</div>
-													</div>
-												</td>
-												<td>Pending</td>
-												<td><a className="text-danger">Remove member</a></td>
-											</tr>
-
-										</tbody>
-									</table>
-									<table className="table table-list">
-										<thead className="table-light">
-											<tr>
-												<th scope="col">Name</th>
-												<th scope="col">Date added</th>
-												<th scope="col">Role</th>
-												<th scope="col"></th>
-											</tr>
-										</thead>
-									</table>
-									<div className="card no-admin-card rounded-0">
-										<div className="card-body d-flex align-items-center justify-content-center">
-											<div className="text-center">
-												<h4 className="">No board members</h4>
-
-												<p className="text-muted-3">Enter an admins email and role to send invite</p>
-
-												<div className="text-center">
-													<img src="images/no-found.svg" className="img-fluid" />
-												</div>
-											</div>
+									<div className="col-lg-2 offset-lg-3">
+										<div className="d-flex align-items-center justify-content-between gap-15">
+											<button type="button" className="btn btn-size btn-main-primary" onClick={sendSettlementBodyMemberInvite} disabled={isSettlementBodyMemberDisabled}>
+												{isSettlementBodyMemberDisabled ? `Sending...` : `Send Invite`}
+											</button>
 										</div>
 									</div>
 								</div>
-							</div>
+							)}
+
+							{isSettlementBodyMemberLoading ? (
+								<div className="row">
+									<div className="col-lg-12">
+										<div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+											<ClipLoader color="#36D7B7" loading={isSettlementBodyMemberLoading} size={50} />
+										</div>
+									</div>
+								</div>
+							) : (
+								<div className="row">
+									<div className="col-lg-12">
+										{getSettlementBodyMembers && getSettlementBodyMembers.length ? (
+											<table className="table table-list">
+												<thead className="table-light">
+													<tr>
+														<th scope="col">Name</th>
+														<th scope="col">Date added</th>
+														<th scope="col">Actions</th>
+													</tr>
+												</thead>
+												<tbody>
+													{getSettlementBodyMembers.map((member_profile) => (
+														<tr>
+															<td scope="row">
+																<div className="d-flex avatar-holder">
+																	<div className="position-relative">
+
+																		<div className="avatar-sm flex-shrink-0">
+																			<img src={member_profile.photo || 'images/download.png'} className="img-fluid object-position-center object-fit-cover w-100 h-100" alt="Avatar" />
+																		</div>
+																	</div>
+																	<div className="ms-2 flex-grow-1">
+																		<h5 className="mb-0">{member_profile.name}</h5>
+																		<p className="mb-0 text-muted-3">{member_profile.email}</p>
+																	</div>
+																</div>
+															</td>
+															<td>
+																{member_profile.status === 'pending' && (
+																	<span className="badge bg-warning">{member_profile.status}</span>
+																)}
+
+																{member_profile.status !== 'pending' && (
+																	<span className="badge bg-warning">{member_profile.date_joined}</span>
+																)}
+															</td>
+															<td><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#dissolveModal" onClick={(e) => { setIndividualSettlmentMemberProfile({ member_id: member_profile._id, member_name: (member_profile.name || member_profile.email) }) }} className="text-danger">Remove member</a></td>
+														</tr>
+													))}
+												</tbody>
+											</table>
+										) : (
+											<div className="card no-admin-card rounded-0">
+												<div className="card-body d-flex align-items-center justify-content-center">
+													<div className="text-center">
+														<h4 className="">No board members</h4>
+
+														<p className="text-muted-3">Enter an admins email and role to send invite</p>
+
+														<div className="text-center">
+															<img src="images/no-found.svg" className="img-fluid" />
+														</div>
+													</div>
+												</div>
+											</div>
+										)}
+									</div>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
@@ -3384,6 +3162,24 @@ const Users = () => {
 
 
 			{/* Modal */}
+			<div className="modal fade" id="dissolveBoardModal" tabIndex="-1" aria-labelledby="dissolveBoardLabel" aria-hidden="true">
+				<div className="modal-dialog modal-dialog-centered">
+					<div className="modal-content p-lg-4 border-0">
+						<div className="modal-body">
+							<div className="text-center">
+								<img src="images/delete-icon.svg" className="img-fluid mb-3" alt="delete an account" />
+							</div>
+							<p className="mb-4 modal-text text-center text-black custom-text">Are you sure you want to dissolve <span className="text-bold">{IndividualSettlmentProfile.sp_name}</span> in the {IndividualSettlmentBody.sb_name} list</p>
+
+							<button onClick={(e) => { handleDissolve(e, IndividualSettlmentProfile.sp_id) }} className="btn btn-size btn-main-danger w-100 mb-3">Dissolve Board</button>
+
+							<button className="btn btn btn-size w-100 btn-main-outline-primary px-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{/* Modal */}
 			<div className="modal fade" id="dissolveModal" tabIndex="-1" aria-labelledby="dissolveLabel" aria-hidden="true">
 				<div className="modal-dialog modal-dialog-centered">
 					<div className="modal-content p-lg-4 border-0">
@@ -3391,11 +3187,11 @@ const Users = () => {
 							<div className="text-center">
 								<img src="images/delete-icon.svg" className="img-fluid mb-3" alt="delete an account" />
 							</div>
-							<p className="mb-4 modal-text text-center text-black custom-text">Are you sure you want to Remove Dorothy Ogenekaro (Board or Enquiry) from <span className="text-bold">Health issues in South South Board of enquiry </span></p>
+							<p className="mb-4 modal-text text-center text-black custom-text">Are you sure you want to remove {IndividualSettlmentMemberProfile.member_name} ({IndividualSettlmentBody.sb_name}) from <span className="text-bold">{IndividualSettlmentProfile.sp_name} </span></p>
 
-							<button className="btn btn-size btn-main-danger w-100 mb-3">Remove admin</button>
+							<button type="button" data-bs-toggle="modal" data-bs-target="#boardModal2" data-bs-dismiss="modal" onClick={(e) => { removeSettlementBodyMember() }} className="btn btn-size btn-main-danger w-100 mb-3">Remove admin</button>
 
-							<button className="btn btn btn-size w-100 btn-main-outline-primary px-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+							<button className="btn btn btn-size w-100 btn-main-outline-primary px-3" data-bs-toggle="modal" data-bs-target="#boardModal2" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
 						</div>
 					</div>
 				</div>
