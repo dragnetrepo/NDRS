@@ -8,11 +8,11 @@ import { ClipLoader } from "react-spinners";
 
 const Settings = () => {
   const navigate = useNavigate();
-  const user_avatar = "/images/unilag.svg";
+
   const [isLoading, setIsLoading] = useState(true);
   const [industries, setIndustries] = useState([]);
 
-  const [avatarImage, setAvatarImage] = useState(user_avatar);
+  const [avatarImage, setAvatarImage] = useState("");
   const [user, setuser] = useState({
     first_name: "",
     last_name: "",
@@ -569,8 +569,8 @@ const Settings = () => {
                                               <div className="main-avatar mx-auto">
                                                 <img
                                                   src={
-                                                    user.display_picture ||
-                                                    "/images/download.png"
+                                                    avatarImage ||
+                                                    user.display_picture
                                                   }
                                                   className="img-fluid object-fit-cover object-position-center w-100 h-100"
                                                   alt=""

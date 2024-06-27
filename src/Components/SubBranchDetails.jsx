@@ -7,11 +7,11 @@ import { ClipLoader } from "react-spinners";
 
 const SubBranchDetails = () => {
   const { id } = useParams();
-  const user_avatar = "/images/unilag.svg";
+
   const [isLoading, setIsLoading] = useState(true);
   const [industries, setIndustries] = useState([]);
   const [unionAdmin, setUnionAdmin] = useState([]);
-  const [avatarImage, setAvatarImage] = useState(user_avatar);
+  const [avatarImage, setAvatarImage] = useState();
   const [roles, setRoles] = useState([]);
   const [unions, setunions] = useState({
     name: "",
@@ -350,11 +350,12 @@ const SubBranchDetails = () => {
                                           id="profile"
                                           style={{ display: "none" }}
                                           name="logo"
+                                          onChange={handleAvatarChange}
                                         />
 
                                         <div className="main-avatar mx-auto">
                                           <img
-                                            src={unions.logo}
+                                            src={avatarImage || unions.logo}
                                             className="img-fluid object-fit-cover object-position-center w-100 h-100"
                                             alt=""
                                           />
@@ -1082,7 +1083,7 @@ const SubBranchDetails = () => {
 
                       <div className="main-avatar mx-auto">
                         <img
-                          src={unions.logo}
+                          src={avatarImage || unions.logo}
                           className="img-fluid object-fit-cover object-position-center w-100 h-100"
                           alt=""
                         />
