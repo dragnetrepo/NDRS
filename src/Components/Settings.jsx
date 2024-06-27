@@ -132,32 +132,32 @@ const Settings = () => {
     });
   };
 
-  const handleOrganization = async (e) => {
-    e.preventDefault();
+  // const handleOrganization = async (e) => {
+  //   e.preventDefault();
 
-    try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-      const response = await fetch(baseUrl + "/api/edit/organization-profile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(organization),
-      });
+  //   try {
+  //     const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  //     const response = await fetch(baseUrl + "/api/edit/organization-profile", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Accept: "application/json",
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //       body: JSON.stringify(organization),
+  //     });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
 
-      const data = await response.json();
-      fetchOrganization();
-      toast.success("Organization has been updated!");
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //     const data = await response.json();
+  //     fetchOrganization();
+  //     toast.success("Organization has been updated!");
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   const onHandleChangePassword = (e) => {
     setChangePassword({ ...changePassword, [e.target.name]: e.target.value });
@@ -570,7 +570,6 @@ const Settings = () => {
                                                 <img
                                                   src={
                                                     user.display_picture ||
-                                                    image ||
                                                     "/images/download.png"
                                                   }
                                                   className="img-fluid object-fit-cover object-position-center w-100 h-100"
@@ -801,7 +800,8 @@ const Settings = () => {
                                       <a
                                         href=""
                                         className="btn btn-size btn-main-primary"
-                                        onClick={handleOrganization}
+                                        disabled
+                                        // onClick={handleOrganization}
                                       >
                                         Save changes
                                       </a>
@@ -823,10 +823,10 @@ const Settings = () => {
                                             />
 
                                             <div className="main-avatar mx-auto">
-                                              {/* <img
+                                              <img
                                                 src={organization?.logo}
                                                 className="img-fluid object-fit-cover object-position-center w-100 h-100"
-                                              /> */}
+                                              />
                                             </div>
 
                                             <img

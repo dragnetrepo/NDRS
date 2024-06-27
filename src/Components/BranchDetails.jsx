@@ -474,624 +474,152 @@ const BranchDetails = () => {
                                             </td>
 
                                             <td>
-                                              {/* <div className="avatars">
-                                            <div className="dropdown">
-                                              <a
-                                                href="#"
-                                                className="avatars__item dropdown-toggle"
-                                                type="button"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                              >
-                                                <img
-                                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                                  src="https://randomuser.me/api/portraits/women/65.jpg"
-                                                  alt=""
-                                                />
-                                              </a>
-                                              <ul className="dropdown-menu action-menu border-radius">
-                                                <img
-                                                  src="/images/pointer.svg"
-                                                  className="img-fluid pointer"
-                                                />
-                                                <div className="d-flex avatar-holder border-bottom py-4">
-                                                  <div className="position-relative">
-                                                    <img
-                                                      src="/images/Avatar-online-indicator.svg"
-                                                      className="img-fluid indicator-avatar"
-                                                      alt="indicator"
-                                                    />
-                                                    <div className="avatar-sm flex-shrink-0">
-                                                      <img
-                                                        src="https://randomuser.me/api/portraits/women/65.jpg"
-                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                        alt="Avatar"
-                                                      />
-                                                    </div>
-                                                  </div>
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <h5 className="mb-0">
-                                                      Stephen Ejiro
-                                                    </h5>
-                                                    <p className="mb-0 text-main-primary">
-                                                      View profile
-                                                    </p>
-                                                  </div>
-                                                </div>
+                                              <div className="avatars">
+                                                {Object.entries(unionAdmin)
+                                                  ?.length > 0 ? (
+                                                  Object.entries(
+                                                    unionAdmin
+                                                  ).map(
+                                                    ([key, value], index) => (
+                                                      <div
+                                                        className="dropdown"
+                                                        key={key}
+                                                      >
+                                                        <a
+                                                          href="#"
+                                                          className="avatars__item dropdown-toggle"
+                                                          type="button"
+                                                          data-bs-toggle="dropdown"
+                                                          aria-expanded="false"
+                                                        >
+                                                          <img
+                                                            className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
+                                                            src={
+                                                              value.photo ||
+                                                              "/images/download.png"
+                                                            }
+                                                            alt=""
+                                                          />
+                                                        </a>
+                                                        <ul className="dropdown-menu action-menu border-radius">
+                                                          <img
+                                                            src="/images/pointer.svg"
+                                                            className="img-fluid pointer"
+                                                          />
+                                                          <div className="d-flex avatar-holder border-bottom py-4">
+                                                            <div className="position-relative">
+                                                              <img
+                                                                src="/images/Avatar-online-indicator.svg"
+                                                                className="img-fluid indicator-avatar"
+                                                                alt="indicator"
+                                                              />
+                                                              <div className="avatar-sm flex-shrink-0">
+                                                                <img
+                                                                  src={
+                                                                    value.photo ||
+                                                                    "/images/download.png"
+                                                                  }
+                                                                  className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                                  alt="Avatar"
+                                                                />
+                                                              </div>
+                                                            </div>
+                                                            <div className="ms-2 flex-grow-1">
+                                                              <h5 className="mb-0">
+                                                                {value.name}
+                                                              </h5>
+                                                              <p className="mb-0 text-main-primary">
+                                                                View profile
+                                                              </p>
+                                                            </div>
+                                                          </div>
 
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/users.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Role in dispute
-                                                    </p>
-                                                    <img
-                                                      src="/images/claim.svg"
-                                                      className="img-fluid"
-                                                      alt="claimant"
-                                                    />
-                                                  </div>
-                                                </div>
+                                                          <div className="d-flex align-items-center py-2">
+                                                            <img
+                                                              src="/images/users.svg"
+                                                              className="img-fluid"
+                                                              alt="users"
+                                                            />
+                                                            <div className="ms-2 flex-grow-1">
+                                                              <p className="mb-1 ft-sm">
+                                                                Role in dispute
+                                                              </p>
+                                                              <p>
+                                                                {value.role}
+                                                              </p>
+                                                            </div>
+                                                          </div>
 
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/user.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Name & Organization
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      Stephen Ejiro (Shafa
-                                                      Abuja)
-                                                    </p>
-                                                  </div>
-                                                </div>
+                                                          <div className="d-flex align-items-center py-2">
+                                                            <img
+                                                              src="/images/user.svg"
+                                                              className="img-fluid"
+                                                              alt="users"
+                                                            />
+                                                            <div className="ms-2 flex-grow-1">
+                                                              <p className="mb-1 ft-sm">
+                                                                Name &
+                                                                Organization
+                                                              </p>
+                                                              <p className="mb-0">
+                                                                {value.name}
+                                                                (Shafa Abuja)
+                                                              </p>
+                                                            </div>
+                                                          </div>
 
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/mail.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Email
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      stepheneji@nnpc.com
-                                                    </p>
-                                                  </div>
+                                                          <div className="d-flex align-items-center py-2">
+                                                            <img
+                                                              src="/images/mail.svg"
+                                                              className="img-fluid"
+                                                              alt="users"
+                                                            />
+                                                            <div className="ms-2 flex-grow-1">
+                                                              <p className="mb-1 ft-sm">
+                                                                Email
+                                                              </p>
+                                                              <p className="mb-0">
+                                                                {value.email}
+                                                              </p>
+                                                            </div>
 
-                                                  <img
-                                                    src="/images/copy.svg"
-                                                    className="img-fluid"
-                                                    alt="copy"
-                                                  />
-                                                </div>
+                                                            <img
+                                                              src="/images/copy.svg"
+                                                              className="img-fluid"
+                                                              alt="copy"
+                                                            />
+                                                          </div>
 
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/call.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Phone Number
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      08168141116
-                                                    </p>
-                                                  </div>
-                                                  <img
-                                                    src="/images/copy.svg"
-                                                    className="img-fluid"
-                                                    alt="copy"
-                                                  />
-                                                </div>
-                                              </ul>
-                                            </div>
-                                            <div className="dropdown">
-                                              <a
-                                                href="#"
-                                                className="avatars__item dropdown-toggle"
-                                                type="button"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                              >
-                                                <img
-                                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                                  src="https://randomuser.me/api/portraits/women/66.jpg"
-                                                  alt=""
-                                                />
-                                              </a>
-                                              <ul className="dropdown-menu action-menu border-radius">
-                                                <img
-                                                  src="/images/pointer.svg"
-                                                  className="img-fluid pointer"
-                                                />
-                                                <div className="d-flex avatar-holder border-bottom py-4">
-                                                  <div className="position-relative">
-                                                    <img
-                                                      src="/images/Avatar-online-indicator.svg"
-                                                      className="img-fluid indicator-avatar"
-                                                      alt="indicator"
-                                                    />
-                                                    <div className="avatar-sm flex-shrink-0">
-                                                      <img
-                                                        src="https://randomuser.me/api/portraits/women/66.jpg"
-                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                        alt="Avatar"
-                                                      />
-                                                    </div>
-                                                  </div>
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <h5 className="mb-0">
-                                                      Stephen Ejiro
-                                                    </h5>
-                                                    <p className="mb-0 text-main-primary">
-                                                      View profile
-                                                    </p>
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/users.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Role in dispute
-                                                    </p>
-                                                    <img
-                                                      src="/images/claim.svg"
-                                                      className="img-fluid"
-                                                      alt="claimant"
-                                                    />
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/user.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Name & Organization
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      Stephen Ejiro (Shafa
-                                                      Abuja)
-                                                    </p>
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/mail.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Email
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      stepheneji@nnpc.com
-                                                    </p>
-                                                  </div>
-
-                                                  <img
-                                                    src="/images/copy.svg"
-                                                    className="img-fluid"
-                                                    alt="copy"
-                                                  />
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/call.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Phone Number
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      08168141116
-                                                    </p>
-                                                  </div>
-                                                  <img
-                                                    src="/images/copy.svg"
-                                                    className="img-fluid"
-                                                    alt="copy"
-                                                  />
-                                                </div>
-                                              </ul>
-                                            </div>
-                                            <div className="dropdown">
-                                              <a
-                                                href="#"
-                                                className="avatars__item dropdown-toggle"
-                                                type="button"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                              >
-                                                <img
-                                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                                  src="https://randomuser.me/api/portraits/women/67.jpg"
-                                                  alt=""
-                                                />
-                                              </a>
-                                              <ul className="dropdown-menu action-menu border-radius">
-                                                <img
-                                                  src="/images/pointer.svg"
-                                                  className="img-fluid pointer"
-                                                />
-                                                <div className="d-flex avatar-holder border-bottom py-4">
-                                                  <div className="position-relative">
-                                                    <img
-                                                      src="/images/Avatar-online-indicator.svg"
-                                                      className="img-fluid indicator-avatar"
-                                                      alt="indicator"
-                                                    />
-                                                    <div className="avatar-sm flex-shrink-0">
-                                                      <img
-                                                        src="https://randomuser.me/api/portraits/women/67.jpg"
-                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                        alt="Avatar"
-                                                      />
-                                                    </div>
-                                                  </div>
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <h5 className="mb-0">
-                                                      Stephen Ejiro
-                                                    </h5>
-                                                    <p className="mb-0 text-main-primary">
-                                                      View profile
-                                                    </p>
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/users.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Role in dispute
-                                                    </p>
-                                                    <img
-                                                      src="/images/claim.svg"
-                                                      className="img-fluid"
-                                                      alt="claimant"
-                                                    />
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/user.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Name & Organization
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      Stephen Ejiro (Shafa
-                                                      Abuja)
-                                                    </p>
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/mail.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Email
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      stepheneji@nnpc.com
-                                                    </p>
-                                                  </div>
-
-                                                  <img
-                                                    src="/images/copy.svg"
-                                                    className="img-fluid"
-                                                    alt="copy"
-                                                  />
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/call.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Phone Number
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      08168141116
-                                                    </p>
-                                                  </div>
-                                                  <img
-                                                    src="/images/copy.svg"
-                                                    className="img-fluid"
-                                                    alt="copy"
-                                                  />
-                                                </div>
-                                              </ul>
-                                            </div>
-                                            <div className="dropdown">
-                                              <a
-                                                href="#"
-                                                className="avatars__item dropdown-toggle"
-                                                type="button"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                              >
-                                                <img
-                                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                                  src="https://randomuser.me/api/portraits/women/68.jpg"
-                                                  alt=""
-                                                />
-                                              </a>
-                                              <ul className="dropdown-menu action-menu border-radius">
-                                                <img
-                                                  src="/images/pointer.svg"
-                                                  className="img-fluid pointer"
-                                                />
-                                                <div className="d-flex avatar-holder border-bottom py-4">
-                                                  <div className="position-relative">
-                                                    <img
-                                                      src="/images/Avatar-online-indicator.svg"
-                                                      className="img-fluid indicator-avatar"
-                                                      alt="indicator"
-                                                    />
-                                                    <div className="avatar-sm flex-shrink-0">
-                                                      <img
-                                                        src="https://randomuser.me/api/portraits/women/68.jpg"
-                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                        alt="Avatar"
-                                                      />
-                                                    </div>
-                                                  </div>
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <h5 className="mb-0">
-                                                      Stephen Ejiro
-                                                    </h5>
-                                                    <p className="mb-0 text-main-primary">
-                                                      View profile
-                                                    </p>
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/users.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Role in dispute
-                                                    </p>
-                                                    <img
-                                                      src="/images/claim.svg"
-                                                      className="img-fluid"
-                                                      alt="claimant"
-                                                    />
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/user.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Name & Organization
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      Stephen Ejiro (Shafa
-                                                      Abuja)
-                                                    </p>
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/mail.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Email
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      stepheneji@nnpc.com
-                                                    </p>
-                                                  </div>
-
-                                                  <img
-                                                    src="/images/copy.svg"
-                                                    className="img-fluid"
-                                                    alt="copy"
-                                                  />
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/call.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Phone Number
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      08168141116
-                                                    </p>
-                                                  </div>
-                                                  <img
-                                                    src="/images/copy.svg"
-                                                    className="img-fluid"
-                                                    alt="copy"
-                                                  />
-                                                </div>
-                                              </ul>
-                                            </div>
-                                            <div className="dropdown">
-                                              <a
-                                                href="#"
-                                                className="avatars__item dropdown-toggle"
-                                                type="button"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                              >
-                                                <img
-                                                  className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-                                                  src="https://randomuser.me/api/portraits/women/69.jpg"
-                                                  alt=""
-                                                />
-                                              </a>
-                                              <ul className="dropdown-menu action-menu border-radius">
-                                                <img
-                                                  src="/images/pointer.svg"
-                                                  className="img-fluid pointer"
-                                                />
-                                                <div className="d-flex avatar-holder border-bottom py-4">
-                                                  <div className="position-relative">
-                                                    <img
-                                                      src="/images/Avatar-online-indicator.svg"
-                                                      className="img-fluid indicator-avatar"
-                                                      alt="indicator"
-                                                    />
-                                                    <div className="avatar-sm flex-shrink-0">
-                                                      <img
-                                                        src="https://randomuser.me/api/portraits/women/69.jpg"
-                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                        alt="Avatar"
-                                                      />
-                                                    </div>
-                                                  </div>
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <h5 className="mb-0">
-                                                      Stephen Ejiro
-                                                    </h5>
-                                                    <p className="mb-0 text-main-primary">
-                                                      View profile
-                                                    </p>
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/users.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Role in dispute
-                                                    </p>
-                                                    <img
-                                                      src="/images/claim.svg"
-                                                      className="img-fluid"
-                                                      alt="claimant"
-                                                    />
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/user.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Name & Organization
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      Stephen Ejiro (Shafa
-                                                      Abuja)
-                                                    </p>
-                                                  </div>
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/mail.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Email
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      stepheneji@nnpc.com
-                                                    </p>
-                                                  </div>
-
-                                                  <img
-                                                    src="/images/copy.svg"
-                                                    className="img-fluid"
-                                                    alt="copy"
-                                                  />
-                                                </div>
-
-                                                <div className="d-flex align-items-center py-2">
-                                                  <img
-                                                    src="/images/call.svg"
-                                                    className="img-fluid"
-                                                    alt="users"
-                                                  />
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <p className="mb-1 ft-sm">
-                                                      Phone Number
-                                                    </p>
-                                                    <p className="mb-0">
-                                                      08168141116
-                                                    </p>
-                                                  </div>
-                                                  <img
-                                                    src="/images/copy.svg"
-                                                    className="img-fluid"
-                                                    alt="copy"
-                                                  />
-                                                </div>
-                                              </ul>
-                                            </div>
-                                          </div> */}
-                                              <p>No admin has been invited</p>
+                                                          <div className="d-flex align-items-center py-2">
+                                                            <img
+                                                              src="/images/call.svg"
+                                                              className="img-fluid"
+                                                              alt="users"
+                                                            />
+                                                            <div className="ms-2 flex-grow-1">
+                                                              <p className="mb-1 ft-sm">
+                                                                Phone Number
+                                                              </p>
+                                                              <p className="mb-0">
+                                                                08168141116
+                                                              </p>
+                                                            </div>
+                                                            <img
+                                                              src="/images/copy.svg"
+                                                              className="img-fluid"
+                                                              alt="copy"
+                                                            />
+                                                          </div>
+                                                        </ul>
+                                                      </div>
+                                                    )
+                                                  )
+                                                ) : (
+                                                  <p>
+                                                    no admin has been invited
+                                                  </p>
+                                                )}
+                                              </div>
                                             </td>
 
                                             <td>{item.industry}</td>
