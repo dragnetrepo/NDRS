@@ -81,6 +81,68 @@ class UnionBranchController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function union_branches(Request $request)
+    {
+        $data = [];
+        $union_set = $request->header("ndrs-union");
+        $user_id = $request->user()->id;
+        $union_id = 0;
+
+        $user_role = UnionUserRole::where("user_id", $user_id)->when($union_set, function($query) use ($union_set) {
+            $query->where("union_id", $union_set);
+        })->where("status", "active")->where("branch_id", 0)->first();
+
+        if ($user_role) {
+            $union_id = $user_role->union_id;
+        }
+
+        if ($union_id) {
+            $union_branches = UnionBranch::where("union_id", $union_id)->get();
+            $this->response["message"] = "No data found";
+
+            if ($union_branches->isNotEmpty()) {
+                foreach ($union_branches as $union_branch) {
+                    $assigned_admins = [];
+
+                    if ($union_branch->users->count()) {
+                        foreach ($union_branch->users as $assigned_user) {
+                            $user_deets = $assigned_user->user;
+                            if ($user_deets) {
+                                $assigned_admins = [
+                                    "photo" => get_model_file_from_disk($user_deets->display_picture ?? "", "profile_photos")
+                                ];
+                            }
+                        }
+                    }
+
+                    $data[] = [
+                        "_id" => $union_branch->id,
+                        "union_id" => $union_branch->union_id,
+                        "union_name" => $union_branch->union->name,
+                        "name" => $union_branch->name,
+                        "acronym" => $union_branch->acronym,
+                        "about" => $union_branch->description,
+                        "phone" => $union_branch->phone,
+                        "industry_id" => $union_branch->industry->id ?? "",
+                        "industry" => $union_branch->industry->name ?? "",
+                        "headquarters" => $union_branch->headquarters,
+                        "founded_in" => $union_branch->founded_in,
+                        "logo" => get_model_file_from_disk($union_branch->logo ?? "", "union_branch_logos"),
+                        "assigned_admins" => $assigned_admins,
+                        "date_added" => $union_branch->created_at->format("M d Y"),
+                    ];
+                }
+
+                $this->response["message"] = "Retrieved comprehensive union list";
+            }
+
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["data"] = $data;
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function read($branch)
     {
         $union_branch = UnionBranch::find($branch);
@@ -290,9 +352,10 @@ class UnionBranchController extends Controller
                     if ($user_deets) {
                         $data[] = [
                             "_id" => $assigned_user->id,
-                            "name" => trim($user_deets->last_name.' '.$user_deets->first_name),
-                            "photo" => get_model_file_from_disk($user_deets->display_picture, "profile_photos"),
-                            "role" => $assigned_user->role->name,
+                            "name" => trim(($user_deets->last_name ?? "").' '.($user_deets->first_name ?? "")),
+                            "photo" => get_model_file_from_disk(($user_deets->display_picture ?? ""), "profile_photos"),
+                            "role" => $assigned_user->role->name ?? "",
+                            "email" => $user_deets->email,
                             "status" => $assigned_user->status,
                             "date_joined" => $assigned_user->updated_at->format("j F Y"),
                         ];

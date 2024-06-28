@@ -18,10 +18,17 @@ if (!function_exists("get_user_roles")) {
     function get_user_roles($user) {
         $roles_collection = [];
         $fetch_multiple = false;
+        $union_set = request()->header("ndrs-union");
+        if ($union_set) {
+            $member_role = $user->member_role->where("union_id", $union_set);
+        }
+        else {
+            $member_role = $user->member_role;
+        }
 
-        if ($user->member_role->count()) {
+        if ($member_role->count()) {
             if ($fetch_multiple) {
-                foreach ($user->member_role as $key => $role) {
+                foreach ($member_role as $key => $role) {
                     $roles_collection[$key] = [
                         "role_id" => $role->role_id,
                         "role_name" => $role->role->display_name,
@@ -35,7 +42,7 @@ if (!function_exists("get_user_roles")) {
                 }
             }
             else {
-                $role = $user->member_role->first();
+                $role = $member_role->first();
                 if ($role) {
                     $roles_collection = [
                         "role_id" => $role->role_id,
@@ -199,6 +206,11 @@ if (!function_exists("get_case_dispute")) {
         })
         ->when($status, function($query) use ($status) {
             $query->where("status", $status);
+        })
+        ->when(request()->union_id, function($query){
+            $query->where("union", request()->union_id)->orWhereHas('accused', function($sub_query){
+                $sub_query->where("union_id", request()->union_id);
+            });
         })
         ->whereHas('union_data')
         ->orderBy("created_at", "desc");
@@ -737,20 +749,36 @@ if (!function_exists("get_discussion_files")) {
 if (!function_exists("get_user_organization_name")) {
     function get_user_organization_name(User $user) {
         $organization = $user->member_role->where("status", "active")->first();
+        $organization = (object) get_user_roles($user);
+
         $data = [];
 
         if ($organization) {
-            if ($organization->union) {
-                $data["name"] = $organization->union->name;
+            if ($organization->union_name) {
+                $data["name"] = $organization->union_name;
             }
-            elseif ($organization->union_branch) {
-                $data["name"] = $organization->union_branch->name;
+            elseif ($organization->union_branch_name) {
+                $data["name"] = $organization->union_branch_name;
             }
-            elseif ($organization->union_sub_branch) {
-                $data["name"] = $organization->union_sub_branch->name;
+            elseif ($organization->union_sub_branch_name) {
+                $data["name"] = $organization->union_sub_branch_name;
             }
         }
 
         return $data;
+    }
+}
+
+if (!function_exists("calculateDaysBetweenDates")) {
+    function calculateDaysBetweenDates($startDate, $endDate) {
+        // Create DateTime objects for each date
+        $startDateTime = new DateTime($startDate);
+        $endDateTime = new DateTime($endDate);
+
+        // Calculate the difference between the two dates
+        $interval = $startDateTime->diff($endDateTime);
+
+        // Return the difference in days
+        return $interval->days;
     }
 }

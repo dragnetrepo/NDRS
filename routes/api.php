@@ -57,6 +57,8 @@ Route::name("api.")->middleware(['cors'])->group(function () {
         Route::post("/complete-registration", [AuthenticationController::class, "complete_registration"])->name("complete-account-registration");
         Route::name("profile.")->group(function () {
             Route::get("user-profile", [ProfileController::class, "index"])->name("index");
+            Route::get("organization-profile", [ProfileController::class, "organization_profile"])->name("organization-profile");
+            Route::post("edit/organization-profile", [ProfileController::class, "update_organization_profile"])->name("organization-profile-edit");
             Route::post("profile-update", [ProfileController::class, "update"])->name("update");
             Route::post("change-password", [ProfileController::class, "change_password"])->name("change-password");
             Route::delete("delete-account", [ProfileController::class, "destroy"])->name("delete");
@@ -76,7 +78,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                     Route::delete('delete/{union}', "delete")->name("delete");
                 });
 
-                Route::prefix("branch")->controller(UnionBranchController::class,)->name("branch.")->group(function(){
+                Route::prefix("branch")->controller(UnionBranchController::class)->name("branch.")->group(function(){
                     Route::get('{branch}', "read")->name("read-by-id");
                     Route::post('create', "create")->name("create")->middleware("custom_user_permission:create branches");
                     Route::post('edit/{branch}', "edit")->name("edit")->middleware("custom_user_permission:edit branches");
@@ -96,6 +98,9 @@ Route::name("api.")->middleware(['cors'])->group(function () {
                     Route::delete('remove-admin/{sub_branch}', "remove_admin")->name("delete-admin");
                     Route::delete('delete/{sub_branch}', "delete")->name("delete");
                 });
+
+                Route::get('branch', [UnionBranchController::class, "union_branches"])->name("read-by-id");
+                Route::get('organizations', [UnionSubBranchController::class, "union_sub_branches"])->name("read-by-id");
             });
 
             Route::get("get-unions", [UnionController::class, "index"])->name("all");
@@ -106,6 +111,7 @@ Route::name("api.")->middleware(['cors'])->group(function () {
         Route::prefix("case")->name("case.")->group(function(){
             Route::controller(DisputesController::class)->name("disputes.")->group(function(){
                 Route::get("disputes/{status?}", "index")->name("index");
+                Route::get("union/{union_id}", "index")->name("index");
                 Route::get("roles", "roles")->name("roles");
                 Route::get("read/{case_id}", "read")->name("read")->where('case_id', '[0-9]+');
                 Route::post("create", "create")->name("create")->middleware("custom_user_permission:create dispute");
@@ -183,6 +189,9 @@ Route::name("api.")->middleware(['cors'])->group(function () {
 
             Route::get("/get-board-of-enquiries", "get_board_enquiry")->name("view-body-members");
             Route::post("/create-board-of-enquiry", "create_board_enquiry")->name("create-board-of-enquiry");
+
+            Route::get("/get-settlement-body/{role}", "get_settlement_body")->name("get-settlement-body");
+            Route::post("/create-settlement-body/{role}", "create_settlement_body")->name("create-settlement-body");
             Route::post("/refer-case-to-body/{settlement}", "refer_case_to_body")->name("refer-case-to-body");
             Route::get("/view-board-members/{settlement}", "body_members")->name("view-body-members");
             Route::delete("/dissolve-board-of-enquiry/{settlement}", "dissolve_board_enquiry")->name("dissolve-board-of-enquiry");

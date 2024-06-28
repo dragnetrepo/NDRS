@@ -56,7 +56,7 @@ class UserController extends Controller
 
                 if ($role) {
                     $role_name = $role->display_name;
-                    if ($role->name == "board of enquiry") {
+                    if ($role->type == "settlement-body") {
                         $role_name .= " Member";
                     }
                 }
@@ -497,11 +497,82 @@ class UserController extends Controller
             if ($role) {
                 SettlementBody::create([
                     "name" => $request->name,
-                    "role_id" => $role->id
+                    "role_id" => $role->id,
+                    "status" => "active"
                 ]);
 
                 $this->response["status"] = Response::HTTP_OK;
                 $this->response["message"] = "Board of enquiry has been created successfully!";
+            }
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function get_settlement_body($role)
+    {
+        $settlement_body = SettlementBody::whereHas('role', function($query) use ($role) {
+            $query->where("id", $role);
+        })->get();
+
+        $data = [];
+        $this->response["message"] = "No data found";
+
+        if ($settlement_body->isNotEmpty()) {
+            foreach ($settlement_body as $board) {
+                $assigned_members = [];
+                if ($board->members->count()) {
+                    foreach ($board->members as $member) {
+                        $assigned_members[] = [
+                            "photo" => get_model_file_from_disk($member->user->display_picture ?? "", "profile_photos"),
+                            "name" => $member->user ? trim($member->user->first_name.' '.$member->user->last_name) : "",
+                            "email" => $member->email,
+                            "phone" => $member->user->phone ?? "N/A",
+                        ];
+                    }
+                }
+
+                $data[] = [
+                    "_id" => $board->id,
+                    "name" => $board->name,
+                    "status" => $board->status,
+                    "date_added" => $board->created_at->format("M d Y"),
+                    "assigned_cases" => $board->disputes->count(),
+                    "assigned_members" => $assigned_members,
+                ];
+            }
+
+            $this->response["message"] = $board->role->display_name." list retrieved!";
+        }
+
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function create_settlement_body(Request $request, $role)
+    {
+        $validator = Validator::make($request->all(), [
+            "name" => "required|min:3",
+        ]);
+
+        if ($validator->fails()) {
+            $this->response["message"] = "Validation errors";
+            $this->response["error"] = $validator->errors();
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+        }
+        else {
+            $role = Role::where("id", $role)->where("type", "settlement-body")->first();
+            if ($role) {
+                SettlementBody::create([
+                    "name" => $request->name,
+                    "role_id" => $role->id,
+                    "status" => "active"
+                ]);
+
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["message"] = $role->display_name." has been created successfully!";
             }
         }
 
@@ -536,9 +607,8 @@ class UserController extends Controller
                                         }
                                     }
 
-
                                     $this->response["status"] = Response::HTTP_OK;
-                                    $this->response["message"] = "Board of enquiry has been referred to selected cases successfully!";
+                                    $this->response["message"] = ($settlement->name ?? $settlement->role->display_name)." has been referred to selected cases successfully!";
                                 }
                             }
                         }
@@ -572,6 +642,7 @@ class UserController extends Controller
                         "name" => $member->user ? trim($member->user->first_name.' '.$member->user->last_name) : "",
                         "email" => $member->email,
                         "status" => $member->status,
+                        "photo" => get_model_file_from_disk($member->user->display_picture ?? "", "profile_photos"),
                         "date_joined" => $member->created_at->format("M d Y"),
                     ];
                 }
@@ -609,7 +680,7 @@ class UserController extends Controller
                     send_out_board_member_invitation($settlement->name, 0, $request->email);
 
                     $this->response["status"] = Response::HTTP_OK;
-                    $this->response["emssage"] = "Invite has been sent to member successfully!";
+                    $this->response["message"] = "Invite has been sent to member successfully!";
                 }
                 else {
                     $this->response["message"] = "Validation errors";
@@ -631,7 +702,7 @@ class UserController extends Controller
         if ($settlement_member) {
             if ($settlement_member->delete()) {
                 $this->response["status"] = Response::HTTP_OK;
-                $this->response["emssage"] = "Member has been removed successfully!!";
+                $this->response["message"] = "Member has been removed successfully!!";
             }
         }
 
@@ -646,7 +717,7 @@ class UserController extends Controller
             $settlement->status = "dissolved";
             if ($settlement->save()) {
                 $this->response["status"] = Response::HTTP_OK;
-                $this->response["emssage"] = "Board has been dissolved successfully!!";
+                $this->response["message"] = "Board has been dissolved successfully!!";
             }
         }
 

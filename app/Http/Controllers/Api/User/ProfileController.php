@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\User\OrganizationProfileRequest;
 use App\Http\Requests\User\ProfileUpdateRequest;
 use App\Http\Requests\User\SendMessageRequest;
 use App\Models\CaseUserRoles;
 use App\Models\EmailInvitations;
 use App\Models\SettlementBodyMember;
 use App\Models\SupportMessage;
+use App\Models\Union;
+use App\Models\UnionBranch;
+use App\Models\UnionSubBranch;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -175,6 +179,114 @@ class ProfileController extends Controller
 
         $this->response["status"] = Response::HTTP_OK;
         $this->response["message"] = "Your message has been sent successfully!";
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function organization_profile(Request $request)
+    {
+        $role = (object) get_user_roles($request->user());
+        $organization = $disk_name = null;
+
+        if ($role) {
+            if ($role->union_sub_branch_id) {
+                $organization = UnionSubBranch::find($role->union_sub_branch_id);
+                $disk_name = "union_sub_branch_logos";
+            }
+            elseif ($role->union_branch_id) {
+                $organization = UnionBranch::find($role->union_branch_id);
+                $disk_name = "union_branch_logos";
+            }
+            elseif ($role->union_id) {
+                $organization = Union::find($role->union_branch_id);
+                $disk_name = "union_logos";
+            }
+
+            if ($organization) {
+                $this->response["data"] = [
+                    "_id" => $organization->id,
+                    "name" => $organization->name,
+                    "acronym" => $organization->acronym,
+                    "about" => $organization->description,
+                    "phone" => $organization->phone,
+                    "industry_id" => $organization->industry->id ?? "",
+                    "industry" => $organization->industry->name ?? "",
+                    "headquarters" => $organization->headquarters,
+                    "founded_in" => $organization->founded_in,
+                    "logo" => get_model_file_from_disk($organization->logo, $disk_name),
+                ];
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["message"] = "Organization profile information retrieved successfully!";
+            }
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function update_organization_profile(OrganizationProfileRequest $request)
+    {
+        $role = (object) get_user_roles($request->user());
+        $organization = $disk_name = null;
+
+        if ($role) {
+            if ($role->union_sub_branch_id) {
+                $organization = UnionSubBranch::find($role->union_sub_branch_id);
+                $disk_name = "union_logos";
+            }
+            elseif ($role->union_branch_id) {
+                $organization = UnionBranch::find($role->union_branch_id);
+                $disk_name = "union_branch_logos";
+            }
+            elseif ($role->union_id) {
+                $organization = Union::find($role->union_branch_id);
+                $disk_name = "union_logos";
+            }
+
+            if ($organization) {
+                if (isset($organization->name)) {
+                    $organization->name = $request->name;
+                }
+
+                if (isset($organization->acronym)) {
+                    $organization->acronym = $request->acronym;
+                }
+
+                if (isset($organization->industry_id)) {
+                    $organization->industry_id = $request->industry_id;
+                }
+
+                if (isset($organization->headquarters) && $request->headquarters) {
+                    $organization->headquarters = $request->headquarters;
+                }
+
+                if (isset($organization->phone) && $request->phone) {
+                    $organization->phone = $request->phone;
+                }
+
+                if (isset($organization->about) && $request->about) {
+                    $organization->about = $request->about;
+                }
+
+                if (isset($organization->founded_in) && $request->founded_in) {
+                    $organization->founded_in = $request->founded_in;
+                }
+
+                if ($request->hasFile("logo")) {
+                    // This file
+                    $file_name = sha1(time().$organization->id).'.'.$request->file('logo')->getClientOriginalExtension();
+                    $request->file('logo')->storeAs("", $file_name, ['disk' => $disk_name]);
+
+                    if ($file_name) {
+                        $organization->logo = $file_name;
+                    }
+                }
+
+                if ($organization->save()) {
+                    $this->response["status"] = Response::HTTP_OK;
+                    $this->response["message"] = "Organization profile information has been updated successfully!";
+                }
+            }
+        }
 
         return response()->json($this->response, $this->response["status"]);
     }

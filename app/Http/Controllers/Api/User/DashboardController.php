@@ -8,12 +8,14 @@ use Illuminate\Http\Request;
 use App\Models\Union;
 use App\Models\CaseDocument;
 use App\Models\CaseDispute;
+use App\Models\CaseDisputeStatusHistory;
 use App\Models\Notification;
 use App\Models\UnionBranch;
 use App\Models\UnionSubBranch;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -325,7 +327,218 @@ class DashboardController extends Controller
 
     public function reports(Request $request)
     {
-        $data = [];
+        $period_filter = $request->period;
+        $text_filter = $request->text;
+
+        $end_date = Carbon::now();
+        if ($period_filter == "one week") {
+            $start_date = Carbon::now()->subDays(7);
+        }
+        elseif ($period_filter == "one month") {
+            $start_date = Carbon::now()->subDays(30);
+        }
+        elseif ($period_filter == "four months") {
+            $start_date = Carbon::now()->subDays(120);
+        }
+        elseif ($period_filter == "six months") {
+            $start_date = Carbon::now()->subDays(180);
+        }
+        elseif ($period_filter == "one year") {
+            $start_date = Carbon::now()->subDays(365);
+        }
+        elseif ($period_filter == "all time") {
+            $end_date = $start_date = null;
+        }
+        else {
+            $end_date = Carbon::now();
+            $start_date = Carbon::now()->subDays(30);
+        }
+
+        // $filters
+        $data = [
+            "disputes_approved" => [
+                "current" => 0,
+                "prev_month" => 0,
+            ],
+            "disputes_satisfaction_score" => [
+                "current" => 0,
+                "prev_month" => 0,
+            ],
+            "document_uploaded" => [
+                "current" => 0,
+                "prev_month" => 0,
+            ],
+            "disputes_resolved" => [
+                "current" => 0,
+                "prev_month" => 0,
+            ],
+            "active_disputes" => [
+                "current" => 0,
+                "prev_month" => 0,
+            ],
+            "avg_dispute_resolution_time" => [
+                "current" => 0,
+                "prev_month" => 0,
+            ],
+            "top_dispute_types" => [],
+            "highest_dispute_cases" => [],
+            "highest_resolution_rate" => [],
+        ];
+
+        $union_search = $user_search = null;
+        $allow_generate_report = true;
+
+        if ($text_filter) {
+            // Find Union With Name
+            $union_search = Union::where("name", $text_filter)->first();
+
+            if (!$union_search) {
+                // Find User
+                $user_search = User::where("name", $text_filter)->first();
+
+                if (!$user_search) {
+                    $allow_generate_report = false;
+                }
+            }
+        }
+
+        if ($allow_generate_report) {
+            $case_dispute_type = CaseDispute::selectRaw(DB::raw("dispute_type, COUNT(dispute_type) as occurence"))
+            ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
+                $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            })
+            ->when($text_filter, function($query) use ($union_search, $user_search) {
+                return $this->additional_text_filter($query, $union_search, $user_search);
+            })
+            ->groupBy("dispute_type")->get();
+
+            $resolved_dispute_cases = CaseDispute::selectRaw(DB::raw("COUNT(`union`) as `occurence`, `union` as union_id"))->whereHas('union_data')->whereIn("status", CaseDispute::RESOLVED_CASE_STATUSES)
+            ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
+                $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            })
+            ->when($text_filter, function($query) use ($union_search, $user_search) {
+                return $this->additional_text_filter($query, $union_search, $user_search);
+            })->groupBy("union")->get();
+
+            $highest_dispute_cases = CaseDispute::selectRaw(DB::raw("COUNT(`union`) as `occurence`, `union` as union_id"))->whereHas('union_data')
+            ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
+                $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            })
+            ->when($text_filter, function($query) use ($union_search, $user_search) {
+                return $this->additional_text_filter($query, $union_search, $user_search);
+            })->groupBy("union")->get();
+
+            $disputes_approved = CaseDispute::whereNotIn("status", CaseDispute::PENDING_APPROVAL_CASE_STATUSES)
+            ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
+                $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            })
+            ->when($text_filter, function($query) use ($union_search, $user_search) {
+                return $this->additional_text_filter($query, $union_search, $user_search);
+            })->count();
+
+            $disputes_resolved = CaseDispute::whereIn("status", CaseDispute::RESOLVED_CASE_STATUSES)
+            ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
+                $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            })
+            ->when($text_filter, function($query) use ($union_search, $user_search) {
+                return $this->additional_text_filter($query, $union_search, $user_search);
+            })->count();
+
+            $active_disputes = CaseDispute::whereIn("status", CaseDispute::ACTIVE_CASE_STATUSES)
+            ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
+                $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            })
+            ->when($text_filter, function($query) use ($union_search, $user_search) {
+                return $this->additional_text_filter($query, $union_search, $user_search);
+            })->count();
+
+            // Documents Uploaded
+            $case_documents = CaseDocument::where("doc_size", ">", 0)->selectRaw(DB::raw("id, doc_name as identifier"))
+            ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
+                $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            });
+            $chat_documents = CaseDiscussionMessage::where("message_type", "file")->selectRaw(DB::raw("id, message_type as identifier"))
+            ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
+                $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            });
+
+            $all_documents = $chat_documents->union($case_documents)->count();
+
+            $number_of_days = $avg_dispute_time = 0;
+            $all_resolved_disputes = CaseDispute::whereIn("status", CaseDispute::RESOLVED_CASE_STATUSES)
+            ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
+                $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            })
+            ->when($text_filter, function($query) use ($union_search, $user_search) {
+                return $this->additional_text_filter($query, $union_search, $user_search);
+            })->get();
+
+            if ($all_resolved_disputes->isNotEmpty()) {
+                foreach ($all_resolved_disputes as $dispute) {
+                    $case_history = CaseDisputeStatusHistory::where("case_id", $dispute->id)->selectRaw(DB::raw("MIN(created_at) as start_date, MAX(created_at) as end_date"))->groupBy("case_id")->first();
+                    if ($case_history) {
+                        $days_diff = calculateDaysBetweenDates($case_history->start_date, $case_history->end_date);
+                        $number_of_days += ($days_diff ?? 1);
+                    }
+                }
+
+                if ($number_of_days) {
+                    $avg_dispute_time = round($number_of_days/$all_resolved_disputes->count());
+                }
+            }
+
+            $days_suffix = ($avg_dispute_time == 1) ? "day" : "days";
+
+            $data["disputes_approved"]["current"] = $disputes_approved;
+            $data["disputes_resolved"]["current"] = $disputes_resolved;
+            $data["active_disputes"]["current"] = $active_disputes;
+            $data["document_uploaded"]["current"] = $all_documents;
+            $data["avg_dispute_resolution_time"]["current"] = $avg_dispute_time.' '.$days_suffix;
+
+            if ($case_dispute_type->isNotEmpty()) {
+                foreach ($case_dispute_type as $dispute_type) {
+                    if ($dispute_type->dispute_type > 0) {
+                        $data["top_dispute_types"][$dispute_type->dispute_type] = $dispute_type->occurence;
+                    }
+                }
+            }
+
+            if ($resolved_dispute_cases->isNotEmpty()) {
+                foreach ($resolved_dispute_cases as $resolved_case) {
+                    $get_union = Union::find($resolved_case->union_id);
+                    if ($get_union) {
+                        $data["highest_resolution_rate"][$get_union->name] = $resolved_case->occurence;
+                    }
+                }
+            }
+
+            if ($highest_dispute_cases->isNotEmpty()) {
+                foreach ($highest_dispute_cases as $highest_dispute_case) {
+                    $get_union = Union::find($highest_dispute_case->union_id);
+                    if ($get_union) {
+                        $data["highest_dispute_cases"][$get_union->name] = $highest_dispute_case->occurence;
+                    }
+                }
+            }
+        }
+
+        $this->response["data"] = $data;
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["message"] = "Report retrieved";
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    private function additional_text_filter($query, $union_search, $user_search) {
+        return $query->when($union_search, function($sub_query) use ($union_search) {
+            $sub_query->where("union", $union_search);
+        })
+        ->when($user_search, function($sub_query) use ($user_search) {
+            $sub_query->where("created_by", $user_search->id)
+                ->orWhereHas('involved_parties', function($inner_query) use ($user_search) {
+                    $inner_query->where("user_id", $user_search->id);
+            });
+        });
     }
 
     private function prepare_messages_data(CaseDiscussionMessage $discussion, int $user_id): array

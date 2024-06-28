@@ -318,9 +318,10 @@ class UnionController extends Controller
                     if ($user_deets) {
                         $data[] = [
                             "_id" => $assigned_user->id,
-                            "name" => trim($user_deets->last_name.' '.$user_deets->first_name),
-                            "photo" => get_model_file_from_disk($user_deets->display_picture, "profile_photos"),
-                            "role" => $assigned_user->role->name,
+                            "name" => trim(($user_deets->last_name ?? "").' '.($user_deets->first_name ?? "")),
+                            "photo" => get_model_file_from_disk(($user_deets->display_picture ?? ""), "profile_photos"),
+                            "role" => $assigned_user->role->name ?? "",
+                            "email" => $user_deets->email,
                             "status" => $assigned_user->status,
                             "date_joined" => $assigned_user->updated_at->format("j F Y"),
                         ];

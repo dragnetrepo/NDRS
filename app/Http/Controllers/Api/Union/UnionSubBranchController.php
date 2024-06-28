@@ -71,11 +71,72 @@ class UnionSubBranchController extends Controller
                 ];
             }
 
-            $this->response["message"] = "Retrieved comprehensive union list";
+            $this->response["message"] = "Retrieved comprehensive organizations list";
         }
 
         $this->response["status"] = Response::HTTP_OK;
         $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function union_sub_branches(Request $request)
+    {
+        $data = [];
+        $union_set = $request->header("ndrs-union");
+        $user_id = $request->user()->id;
+        $branch_id = 0;
+
+        $user_role = UnionUserRole::where("user_id", $user_id)->when($union_set, function($query) use ($union_set) {
+            $query->where("union_id", $union_set);
+        })->where("status", "active")->where("sub_branch_id", 0)->first();
+
+        if ($user_role) {
+            $branch_id = $user_role->branch_id;
+        }
+
+        if ($branch_id) {
+            $union_sub_branches = UnionSubBranch::where("branch_id", $branch_id)->get();
+            $this->response["message"] = "No data found";
+
+            if ($union_sub_branches->isNotEmpty()) {
+                foreach ($union_sub_branches as $union_sub_branch) {
+                    $assigned_admins = [];
+
+                    if ($union_sub_branch->users->count()) {
+                        foreach ($union_sub_branch->users as $assigned_user) {
+                            $user_deets = $assigned_user->user;
+                            if ($user_deets) {
+                                $assigned_admins = [
+                                    "photo" => get_model_file_from_disk($user_deets->display_picture ?? "", "profile_photos")
+                                ];
+                            }
+                        }
+                    }
+
+                    $data[] = [
+                        "_id" => $union_sub_branch->id,
+                        "union_id" => $union_sub_branch->union_id,
+                        "branch_id" => $union_sub_branch->branch_id,
+                        "name" => $union_sub_branch->name,
+                        "acronym" => $union_sub_branch->acronym,
+                        "about" => $union_sub_branch->description,
+                        "phone" => $union_sub_branch->phone,
+                        "industry_id" => $union_sub_branch->industry->id ?? "",
+                        "industry" => $union_sub_branch->industry->name ?? "",
+                        "founded_in" => $union_sub_branch->founded_in,
+                        "logo" => get_model_file_from_disk($union_sub_branch->logo ?? "", "union_sub_branch_logos"),
+                        "assigned_admins" => $assigned_admins,
+                        "date_added" => $union_sub_branch->created_at->format("M d Y"),
+                    ];
+                }
+
+                $this->response["message"] = "Retrieved comprehensive organizations list";
+            }
+
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["data"] = $data;
+        }
 
         return response()->json($this->response, $this->response["status"]);
     }
@@ -300,9 +361,10 @@ class UnionSubBranchController extends Controller
                     if ($user_deets) {
                         $data[] = [
                             "_id" => $assigned_user->id,
-                            "name" => trim($user_deets->last_name.' '.$user_deets->first_name),
-                            "photo" => get_model_file_from_disk($user_deets->display_picture, "profile_photos"),
-                            "role" => $assigned_user->role->name,
+                            "name" => trim(($user_deets->last_name ?? "").' '.($user_deets->first_name ?? "")),
+                            "photo" => get_model_file_from_disk(($user_deets->display_picture ?? ""), "profile_photos"),
+                            "role" => $assigned_user->role->name ?? "",
+                            "email" => $user_deets->email,
                             "status" => $assigned_user->status,
                             "date_joined" => $assigned_user->updated_at->format("j F Y"),
                         ];

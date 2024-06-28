@@ -20,6 +20,18 @@ class CaseDispute extends Model
         "internally resolved", "concilliation", "voting for panel", "resolved", "internal resolution", "arbitration", "court decision"
     ];
 
+    public const ACTIVE_CASE_STATUSES = [
+        "concilliation", "voting for panel", "arbitration", "court decision",
+    ];
+
+    public const RESOLVED_CASE_STATUSES = [
+        "internally resolved", "resolved", "internal resolution",
+    ];
+
+    public const PENDING_APPROVAL_CASE_STATUSES = [
+        "pending approval",
+    ];
+
     public const ARRAY_OF_CASE_TYPES = [
         "wage and benefit disputes", "work hours and leave", "workplace health and safety", "discrimination and harassment", "unfair dismissals", "contractual disputes",
         "union representation issues", "workplace restructuring", "employee rights and entitlement", "management and employee relation"
