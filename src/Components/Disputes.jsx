@@ -30,6 +30,22 @@ const Disputes = () => {
     FetchCaseType();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredDisputes, setFilteredDisputes] = useState([]);
+
+  useEffect(() => {
+    // Filter disputes based on search query
+    setFilteredDisputes(
+      getDisputes.filter((dispute) =>
+        dispute.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, getDisputes]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   const fetchdata = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -75,7 +91,6 @@ const Disputes = () => {
 
       const data = await res.json();
       setCaseType(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -729,6 +744,8 @@ const Disputes = () => {
                                           type="search"
                                           className="form-control border-start-0 form-control-height"
                                           placeholder="Search disputes..."
+                                          value={searchQuery}
+                                          onChange={handleSearchChange}
                                         />
                                       </div>
                                     </div>
@@ -803,7 +820,7 @@ const Disputes = () => {
                                     </tr>
 
                                     {getDisputes.length ? (
-                                      getDisputes.map((dispute) => (
+                                      filteredDisputes.map((dispute) => (
                                         <tr key={dispute._id}>
                                           <td>{dispute.filling_date}</td>
                                           <td scope="row">{dispute.case_no}</td>
@@ -954,6 +971,8 @@ const Disputes = () => {
                                           type="search"
                                           className="form-control border-start-0 form-control-height"
                                           placeholder="Search disputes..."
+                                          value={searchQuery}
+                                          onChange={handleSearchChange}
                                         />
                                       </div>
                                     </div>
@@ -1028,7 +1047,7 @@ const Disputes = () => {
                                     </tr>
 
                                     {getPendingDisputes.length ? (
-                                      getPendingDisputes.map((dispute) => (
+                                      filteredDisputes.map((dispute) => (
                                         <tr key={dispute._id}>
                                           <td>{dispute.filling_date}</td>
                                           <td scope="row">{dispute.case_no}</td>

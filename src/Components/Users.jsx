@@ -128,6 +128,73 @@ const Users = () => {
     getAllSettlementBodies();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredDisputes, setFilteredDisputes] = useState([]);
+  const [filteredAdminRoles, setFilteredAdminRoles] = useState([]);
+  const [filteredSettlementBodies, setFilteredSettlementBodies] = useState([]);
+
+  const sortindividuals = () => {
+    const sortedItems = [...getIndividualUsers].sort((a, b) => {
+      if (isAscending) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    setIndividualUsers(sortedItems);
+    setIsAscending(!isAscending);
+  };
+  const sortSettlementBodyLists = () => {
+    const sortedItems = [...getSettlementBodyLists].sort((a, b) => {
+      if (isAscending) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    setSettlementBodyLists(sortedItems);
+    setIsAscending(!isAscending);
+  };
+  const sortAdminRole = () => {
+    const sortedItems = [...getAdminRoleUsers].sort((a, b) => {
+      if (isAscending) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    setAdminRoleUsers(sortedItems);
+    setIsAscending(!isAscending);
+  };
+
+  useEffect(() => {
+    // Filter disputes based on search query
+    setFilteredDisputes(
+      getIndividualUsers.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+    setFilteredAdminRoles(
+      getAdminRoleUsers.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+    setFilteredSettlementBodies(
+      getSettlementBodyLists.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [
+    searchQuery,
+    getIndividualUsers,
+    getAdminRoleUsers,
+    getSettlementBodyLists,
+  ]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   const onHandleChangeUser = (e) => {
     setUsers({ ...users, [e.target.name]: e.target.value });
   };
@@ -618,7 +685,6 @@ const Users = () => {
 
       const data = await res.json();
       setSettlementBodyLists(data.data);
-      console.log(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
@@ -651,7 +717,6 @@ const Users = () => {
 
       const data = await res.json();
       setSettlementBodyMembers(data.data);
-      console.log(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
@@ -1292,6 +1357,8 @@ const Users = () => {
                                             type="search"
                                             className="form-control border-start-0 form-control-height"
                                             placeholder="Search here..."
+                                            value={searchQuery}
+                                            onChange={handleSearchChange}
                                           />
                                         </div>
                                       </div>
@@ -1299,7 +1366,10 @@ const Users = () => {
                                       <div className="col-lg-7">
                                         <div className="d-flex align-items-center justify-content-between gap-15">
                                           <div className="d-flex">
-                                            <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+                                            <a
+                                              className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
+                                              onClick={sortindividuals}
+                                            >
                                               <img
                                                 src="images/filter.svg"
                                                 className="img-fluid"
@@ -1348,7 +1418,7 @@ const Users = () => {
                                           </thead>
                                           <tbody>
                                             {getIndividualUsers.length ? (
-                                              getIndividualUsers.map((user) => (
+                                              filteredDisputes.map((user) => (
                                                 <tr key={user._id}>
                                                   <td>
                                                     <div>
@@ -1649,6 +1719,8 @@ const Users = () => {
                                                   type="search"
                                                   className="form-control border-start-0 form-control-height"
                                                   placeholder="Search here..."
+                                                  value={searchQuery}
+                                                  onChange={handleSearchChange}
                                                 />
                                               </div>
                                             </div>
@@ -1656,7 +1728,10 @@ const Users = () => {
                                             <div className="col-lg-7">
                                               <div className="d-flex align-items-center justify-content-between gap-15">
                                                 <div className="d-flex">
-                                                  <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+                                                  <a
+                                                    className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
+                                                    onClick={sortAdminRole}
+                                                  >
                                                     <img
                                                       src="images/filter.svg"
                                                       className="img-fluid"
@@ -1707,7 +1782,7 @@ const Users = () => {
                                                 </thead>
                                                 <tbody>
                                                   {getAdminRoleUsers.length ? (
-                                                    getAdminRoleUsers.map(
+                                                    filteredAdminRoles.map(
                                                       (user) => (
                                                         <tr key={user._id}>
                                                           <td>
@@ -2022,6 +2097,8 @@ const Users = () => {
                                                   type="search"
                                                   className="form-control border-start-0 form-control-height"
                                                   placeholder="Search here..."
+                                                  value={searchQuery}
+                                                  onChange={handleSearchChange}
                                                 />
                                               </div>
                                             </div>
@@ -2029,7 +2106,12 @@ const Users = () => {
                                             <div className="col-lg-7">
                                               <div className="d-flex align-items-center justify-content-between gap-15">
                                                 <div className="d-flex">
-                                                  <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+                                                  <a
+                                                    className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
+                                                    onClick={
+                                                      sortSettlementBodyLists
+                                                    }
+                                                  >
                                                     <img
                                                       src="images/filter.svg"
                                                       className="img-fluid"
@@ -2049,7 +2131,7 @@ const Users = () => {
                                                   }
                                                   :{" "}
                                                   {
-                                                    getSettlementBodyLists.length
+                                                    getSettlementBodyLists?.length
                                                   }
                                                 </p>
                                               </div>
@@ -2101,8 +2183,9 @@ const Users = () => {
                                                   </tr>
                                                 </thead>
                                                 <tbody>
-                                                  {getSettlementBodyLists.length ? (
-                                                    getSettlementBodyLists.map(
+                                                  {getSettlementBodyLists?.length >
+                                                  0 ? (
+                                                    filteredSettlementBodies.map(
                                                       (
                                                         settlement_body,
                                                         index
@@ -2126,7 +2209,7 @@ const Users = () => {
                                                           <td>
                                                             {settlement_body
                                                               .assigned_members
-                                                              .length ? (
+                                                              ?.length ? (
                                                               <div className="avatars">
                                                                 {settlement_body.assigned_members.map(
                                                                   (
@@ -3201,7 +3284,7 @@ const Users = () => {
                 <div className="row">
                   <div className="col-lg-12">
                     {getSettlementBodyMembers &&
-                    getSettlementBodyMembers.length ? (
+                    getSettlementBodyMembers?.length ? (
                       <table className="table table-list">
                         <thead className="table-light">
                           <tr>

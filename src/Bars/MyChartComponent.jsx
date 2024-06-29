@@ -1,23 +1,23 @@
-import React, { useRef, useEffect } from 'react';
-import { Chart } from 'chart.js/auto';
+import React, { useRef, useEffect } from "react";
+import { Chart } from "chart.js/auto";
 
-const MyChartComponent = () => {
+const MyChartComponent = ({ periods, data }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    const ctx = chartRef.current.getContext('2d');
+    const ctx = chartRef.current.getContext("2d");
 
     new Chart(ctx, {
-      type: 'line',
+      type: "line",
       data: {
-        labels: ['Jan', 'Feb', 'March', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: periods,
         datasets: [
           {
-            label: 'Average time spent by all students',
-            data: [500, 1000, 2000, 800, 900, 300, 1500, 2000, 300, 500, 600, 1200],
+            label: "Days",
+            data: data,
             borderWidth: 3,
             fill: false,
-            borderColor: '#15AD07',
+            borderColor: "#15AD07",
             tension: 0.5,
           },
         ],
@@ -31,7 +31,7 @@ const MyChartComponent = () => {
         scales: {
           y: {
             min: 0,
-            max: 2000,
+            // max: 2000,
           },
         },
         responsive: true,

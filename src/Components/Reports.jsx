@@ -8,6 +8,13 @@ const Reports = () => {
   const [sidebar, setsidebar] = useState(true);
   const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isComponentLoading, setIsComponentLoading] = useState(false);
+  const [periods, setPeriods] = useState([]);
+  const [periodData, setperiodData] = useState([]);
+  const [periodMessage, setperiodMessageData] = useState({
+    report_text: "",
+    period_text: "",
+  });
 
   const toggleSideBar = () => {
     setsidebar(!sidebar);
@@ -15,6 +22,7 @@ const Reports = () => {
 
   useEffect(() => {
     fetchReports();
+    fetchDisputeResolutionReport("8 months");
   }, []);
 
   const fetchReports = async () => {
@@ -36,13 +44,68 @@ const Reports = () => {
       }
 
       const data = await res.json();
-      setReports(data.data);
-      console.log(data);
+      if (Object.keys(data.data).length) {
+        setReports(data.data);
+      }
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const fetchDisputeResolutionReport = async (period) => {
+    setIsComponentLoading(true);
+    setperiodMessageData({});
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const res = await fetch(
+        baseUrl + `/api/dispute-resolution-report?period=${period}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      if (Object.keys(data.data).length) {
+        setPeriods(Object.keys(data.data));
+        setperiodData(Object.values(data.data));
+        setperiodMessageData({
+          report_text: data.report_message,
+          period_text: data.period_text,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    } finally {
+      setIsComponentLoading(false);
+    }
+  };
+
+  const reportButtonClicked = async (identifier) => {
+    console.log("clicked");
+    document
+      .querySelectorAll(".report-btn")
+      .forEach((button) => button.classList.remove("active-date"));
+
+    document.getElementById(identifier).classList.add("active-date");
+    var filter_by = document
+      .getElementById(identifier)
+      .getAttribute("filter-by");
+
+    fetchDisputeResolutionReport(filter_by);
   };
 
   return (
@@ -333,43 +396,117 @@ const Reports = () => {
                         <div className="card p-lg-4 mb-5">
                           <div className="card-body">
                             <div className="row align-items-center">
-                              <div className="col-lg-3">
-                                <h3 className="chart-text">
-                                  There has been a{" "}
-                                  <span className="text-main-primary">
-                                    32% decrease
-                                  </span>{" "}
-                                  in total time of Dispute Resolutions over the
-                                  past{" "}
-                                  <span className="text-main-primary">
-                                    1 year
-                                  </span>
-                                </h3>
+                              <div
+                                className={
+                                  periodMessage.period_text &&
+                                  periodMessage.report_text
+                                    ? `col-lg-3`
+                                    : ``
+                                }
+                              >
+                                {periodMessage.period_text &&
+                                  periodMessage.report_text && (
+                                    <h3 className="chart-text">
+                                      There has been a{" "}
+                                      <span className="text-main-primary">
+                                        {periodMessage.report_text}
+                                      </span>{" "}
+                                      in total time of Dispute Resolutions over
+                                      the past{" "}
+                                      <span className="text-main-primary">
+                                        {periodMessage.period_text}
+                                      </span>
+                                    </h3>
+                                  )}
                               </div>
 
-                              <div className="col-lg-8 offset-lg-1">
+                              <div
+                                className={`${
+                                  periodMessage.period_text &&
+                                  periodMessage.report_text
+                                    ? `col-lg-8 offset-lg-1`
+                                    : `col-lg-12`
+                                }`}
+                              >
                                 <div className="chart-tab d-flex align-items-center gap-10 justify-content-end mb-3">
-                                  <button className="btn btn-link ft-sm text-decoration-none text-muted-3">
+                                  <button
+                                    className="btn btn-link ft-sm text-decoration-none text-muted-3 report-btn"
+                                    filter-by={`1 week`}
+                                    id="1-week"
+                                    onClick={(e) => {
+                                      reportButtonClicked("1-week");
+                                    }}
+                                  >
                                     1 week
                                   </button>
-                                  <button className="btn btn-link ft-sm text-decoration-none text-muted-3">
+                                  <button
+                                    className="btn btn-link ft-sm text-decoration-none text-muted-3 report-btn"
+                                    filter-by={`1 month`}
+                                    id="1-month"
+                                    onClick={(e) => {
+                                      reportButtonClicked("1-month");
+                                    }}
+                                  >
                                     1 month
                                   </button>
-                                  <button className="btn btn-link ft-sm text-decoration-none text-muted-3">
+                                  <button
+                                    className="btn btn-link ft-sm text-decoration-none text-muted-3 report-btn"
+                                    filter-by={`4 months`}
+                                    id="4-months"
+                                    onClick={(e) => {
+                                      reportButtonClicked("4-months");
+                                    }}
+                                  >
                                     4 months
                                   </button>
-                                  <button className="btn btn-link ft-sm text-decoration-none text-muted-3 active-date">
+                                  <button
+                                    className="btn btn-link ft-sm text-decoration-none text-muted-3 active-date report-btn"
+                                    filter-by={`8 months`}
+                                    id="8-months"
+                                    onClick={(e) => {
+                                      reportButtonClicked("8-months");
+                                    }}
+                                  >
                                     8 months
                                   </button>
-                                  <button className="btn btn-link ft-sm text-decoration-none text-muted-3">
+                                  <button
+                                    className="btn btn-link ft-sm text-decoration-none text-muted-3 report-btn"
+                                    filter-by={`1 year`}
+                                    id="1-year"
+                                    onClick={(e) => {
+                                      reportButtonClicked("1-year");
+                                    }}
+                                  >
                                     1 year
                                   </button>
-                                  <button className="btn btn-link ft-sm text-decoration-none text-muted-3">
+                                  <button
+                                    className="btn btn-link ft-sm text-decoration-none text-muted-3 report-btn"
+                                    filter-by={`all time`}
+                                    id="all-time"
+                                    onClick={(e) => {
+                                      reportButtonClicked("all-time");
+                                    }}
+                                  >
                                     Max
                                   </button>
                                 </div>
-                                {/* <canvas id="myChart3"></canvas> */}
-                                <MyChartComponent />
+                                {isComponentLoading ? (
+                                  <div
+                                    className="d-flex justify-content-center align-items-center"
+                                    style={{ minHeight: "80vh" }}
+                                  >
+                                    <ClipLoader
+                                      color="#36D7B7"
+                                      loading={isComponentLoading}
+                                      size={50}
+                                    />
+                                  </div>
+                                ) : (
+                                  <MyChartComponent
+                                    periods={periods}
+                                    data={periodData}
+                                  />
+                                )}
                               </div>
                             </div>
                           </div>
@@ -447,15 +584,7 @@ const Reports = () => {
                                       <div
                                         className="progress progress-height-report bg-white"
                                         role="progressbar"
-                                        aria-valuenow={
-                                          (value /
-                                            Math.max(
-                                              ...Object.values(
-                                                reports.highest_dispute_cases
-                                              )
-                                            )) *
-                                          100
-                                        }
+                                        aria-valuenow={value}
                                         aria-valuemin="0"
                                         aria-valuemax="100"
                                       >

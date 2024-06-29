@@ -15,6 +15,13 @@ const Dashboard = () => {
   const [dashboard, setDashboard] = useState([]);
   const [sidebar, setsidebar] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isComponentLoading, setIsComponentLoading] = useState(false);
+  const [periods, setPeriods] = useState([]);
+  const [periodData, setperiodData] = useState([]);
+  const [periodMessage, setperiodMessageData] = useState({
+    report_text: "",
+    period_text: "",
+  });
 
   const toggleSideBar = () => {
     setsidebar(!sidebar);
@@ -64,7 +71,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchdata();
     fetchDashboard();
-    fetchReports();
+    fetchDisputeResolutionReport("1 year");
   }, []);
 
   const fetchdata = async () => {
@@ -76,31 +83,6 @@ const Dashboard = () => {
       }
 
       const res = await fetch(baseUrl + "/api/user-profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
-      }
-
-      const data = await res.json();
-      setuser(data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  };
-
-  const fetchReports = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        throw new Error("User is not logged in."); // Handle case where user is not logged in
-      }
-
-      const res = await fetch(baseUrl + "/api/reports", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -141,6 +123,46 @@ const Dashboard = () => {
       console.error("Error fetching data:", error.message);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchDisputeResolutionReport = async (period) => {
+    setIsComponentLoading(true);
+    setperiodMessageData({});
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const res = await fetch(
+        baseUrl + `/api/dispute-resolution-report?period=${period}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      if (Object.keys(data.data).length) {
+        setPeriods(Object.keys(data.data));
+        setperiodData(Object.values(data.data));
+        setperiodMessageData({
+          report_text: data.report_message,
+          period_text: data.period_text,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    } finally {
+      setIsComponentLoading(false);
     }
   };
 
@@ -276,28 +298,55 @@ const Dashboard = () => {
                         <div className="card p-lg-4 mb-5">
                           <div className="card-body">
                             <div className="row align-items-center">
-                              <div className="col-lg-4">
-                                <h3 className="chart-text">
-                                  There has been a{" "}
-                                  <span className="text-main-primary">
-                                    32% decrease
-                                  </span>{" "}
-                                  in total time of Dispute Resolutions over the
-                                  past{" "}
-                                  <span className="text-main-primary">
-                                    1 year
-                                  </span>
-                                </h3>
+                              <div
+                                className={
+                                  periodMessage.period_text &&
+                                  periodMessage.report_text
+                                    ? `col-lg-4`
+                                    : ``
+                                }
+                              >
+                                {periodMessage.period_text &&
+                                  periodMessage.report_text && (
+                                    <h3 className="chart-text">
+                                      There has been a{" "}
+                                      <span className="text-main-primary">
+                                        {periodMessage.report_text}
+                                      </span>{" "}
+                                      in total time of Dispute Resolutions over
+                                      the past{" "}
+                                      <span className="text-main-primary">
+                                        {periodMessage.period_text}
+                                      </span>
+                                    </h3>
+                                  )}
                               </div>
-
-                              <div className="col-lg-8">
-                                {/* <img
-                                  src="/images/bar-chart.svg"
-                                  className="img-fluid"
-                                  alt="bar-chart"
-                                /> */}
-                                <MyChartComponent />
-                              </div>
+                              {isComponentLoading ? (
+                                <div
+                                  className="d-flex justify-content-center align-items-center"
+                                  style={{ minHeight: "80vh" }}
+                                >
+                                  <ClipLoader
+                                    color="#36D7B7"
+                                    loading={isComponentLoading}
+                                    size={50}
+                                  />
+                                </div>
+                              ) : (
+                                <div
+                                  className={`${
+                                    periodMessage.period_text &&
+                                    periodMessage.report_text
+                                      ? `col-lg-8`
+                                      : `col-lg-12`
+                                  }`}
+                                >
+                                  <MyChartComponent
+                                    periods={periods}
+                                    data={periodData}
+                                  />
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>

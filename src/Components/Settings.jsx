@@ -114,7 +114,6 @@ const Settings = () => {
 
       const data = await res.json();
       setOrganization(data.data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {

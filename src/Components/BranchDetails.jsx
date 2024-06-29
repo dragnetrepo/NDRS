@@ -44,6 +44,36 @@ const BranchDetails = () => {
     fetchUnionAdmin(id);
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredDisputes, setFilteredDisputes] = useState([]);
+
+  useEffect(() => {
+    // Filter disputes based on search query
+    setFilteredDisputes(
+      SubBranches.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, SubBranches]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const [isAscending, setIsAscending] = useState(true);
+
+  const sortSubBranch = () => {
+    const sortedItems = [...SubBranches].sort((a, b) => {
+      if (isAscending) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    setSubBranches(sortedItems);
+    setIsAscending(!isAscending);
+  };
+
   const fetchSubBranch = async (id) => {
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -377,6 +407,8 @@ const BranchDetails = () => {
                                         type="search"
                                         className="form-control border-start-0 form-control-height"
                                         placeholder="Search here..."
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
                                       />
                                     </div>
                                   </div>
@@ -384,7 +416,10 @@ const BranchDetails = () => {
                                   <div className="col-lg-7">
                                     <div className="d-flex align-items-center justify-content-between gap-15">
                                       <div className="d-flex">
-                                        <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+                                        <a
+                                          className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
+                                          onClick={sortSubBranch}
+                                        >
                                           <img
                                             src="/images/filter.svg"
                                             className="img-fluid"
@@ -430,7 +465,7 @@ const BranchDetails = () => {
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {SubBranches.map((item) => (
+                                        {filteredDisputes.map((item) => (
                                           <tr>
                                             <td>
                                               <div>

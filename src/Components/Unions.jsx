@@ -32,6 +32,8 @@ const Unions = () => {
     fetchRoles();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredDisputes, setFilteredDisputes] = useState([]);
   const [isAscending, setIsAscending] = useState(true);
 
   const sortunions = () => {
@@ -44,6 +46,19 @@ const Unions = () => {
     });
     setUnionsList(sortedItems);
     setIsAscending(!isAscending);
+  };
+
+  useEffect(() => {
+    // Filter disputes based on search query
+    setFilteredDisputes(
+      unionsList.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, unionsList]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
   };
 
   const fetchRoles = async () => {
@@ -846,6 +861,8 @@ const Unions = () => {
                                       type="search"
                                       className="form-control border-start-0 form-control-height"
                                       placeholder="Search here..."
+                                      value={searchQuery}
+                                      onChange={handleSearchChange}
                                     />
                                   </div>
                                 </div>
@@ -903,7 +920,7 @@ const Unions = () => {
                                     </thead>
 
                                     <tbody>
-                                      {unionsList.map((union) => (
+                                      {filteredDisputes.map((union) => (
                                         <tr key={union._id}>
                                           <td>
                                             <div>

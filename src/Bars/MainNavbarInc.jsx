@@ -1,12 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-
 
 const MainNavbarInc = ({ sidebar }) => {
   const location = useLocation();
+  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+
   const { pathname } = location;
   const navigate = useNavigate();
-
+  const [unions, setUnions] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [organizations, setOrganizations] = useState([]);
+  const [user, setuser] = useState([]);
 
   useEffect(() => {
     // Retrieve the token from localStorage
@@ -15,6 +19,9 @@ const MainNavbarInc = ({ sidebar }) => {
       // If token is not available, navigate back to the login page
       navigate("/login");
     }
+    fetchBranches();
+    fetchOrganizations();
+    fetchUnions();
     // Fetch profile data using the token or perform any other actions
   }, [navigate]);
 
@@ -36,7 +43,6 @@ const MainNavbarInc = ({ sidebar }) => {
 
       const data = await response.json();
 
-
       localStorage.removeItem("token");
       navigate("/login");
     } catch (error) {
@@ -44,10 +50,109 @@ const MainNavbarInc = ({ sidebar }) => {
     }
   };
 
+  const fetchProfile = async () => {
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+
+      const res = await fetch(baseUrl + "/api/user-profile", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setuser(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchUnions = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + "/api/get-unions", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setUnions(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const fetchBranches = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + "/api/union/branch", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setBranches(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const fetchOrganizations = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User is not logged in."); // Handle case where user is not logged in
+      }
+
+      const res = await fetch(baseUrl + "/api/union/organizations", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setOrganizations(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
   return (
     <nav
       className="flex-none navbar navbar-vertical navbar-expand-lg show vh-lg-100 bg-custom-color px-0 py-2 navbar-light"
-      id="sidebar" style={{ display: sidebar ? 'block' : 'none' }}
+      id="sidebar"
+      style={{ display: sidebar ? "block" : "none" }}
     >
       <div className="container-fluid flex-lg-column align-items-lg-start">
         <button
@@ -113,7 +218,8 @@ const MainNavbarInc = ({ sidebar }) => {
                   activeclassname="nav-active"
                   to="/dashboard"
                 >
-                  <img src="/images/home.svg" className="img-fluid" alt="" /> Dashboard
+                  <img src="/images/home.svg" className="img-fluid" alt="" />{" "}
+                  Dashboard
                 </NavLink>
               </li>
               <li className="nav-item">
@@ -122,7 +228,12 @@ const MainNavbarInc = ({ sidebar }) => {
                   activeclassname="nav-active"
                   to="/Disputes"
                 >
-                  <img src="/images/suitcase.svg" className="img-fluid" alt="" /> Disputes
+                  <img
+                    src="/images/suitcase.svg"
+                    className="img-fluid"
+                    alt=""
+                  />{" "}
+                  Disputes
                 </NavLink>
               </li>
               <li className="nav-item">
@@ -131,7 +242,8 @@ const MainNavbarInc = ({ sidebar }) => {
                   activeclassname="nav-active"
                   to="/discussions"
                 >
-                  <img src="/images/chats.svg" className="img-fluid" alt="" /> Discussions
+                  <img src="/images/chats.svg" className="img-fluid" alt="" />{" "}
+                  Discussions
                 </NavLink>
               </li>
 
@@ -141,7 +253,8 @@ const MainNavbarInc = ({ sidebar }) => {
                   activeclassname="nav-active"
                   to="/documents"
                 >
-                  <img src="/images/folder.svg" className="img-fluid" alt="" /> Documents
+                  <img src="/images/folder.svg" className="img-fluid" alt="" />{" "}
+                  Documents
                 </NavLink>
               </li>
             </ul>
@@ -155,16 +268,60 @@ const MainNavbarInc = ({ sidebar }) => {
                   activeclassname="nav-active"
                   to="/users"
                 >
-                  <img src="/images/users.svg" className="img-fluid" alt="" /> Users & Groups
+                  <img src="/images/users.svg" className="img-fluid" alt="" />{" "}
+                  Users & Groups
                 </NavLink>
               </li>
               <li className="nav-item">
+                {/* {user.user_role?.branch_name &&
+                !user.user_role?.union_sub_branch_name ? (
+                  <NavLink
+                    className="nav-link"
+                    activeclassname="nav-active"
+                    to="/Unions"
+                  >
+                    <img
+                      src="/images/branch.svg"
+                      className="img-fluid"
+                      alt=""
+                    />{" "}
+                    Unions
+                  </NavLink>
+                ) : user.user_role?.union_name &&
+                  !user.user_role?.union_branch_name ? (
+                  <NavLink
+                    className="nav-link"
+                    activeclassname="nav-active"
+                    to="/branches"
+                  >
+                    <img
+                      src="/images/branch.svg"
+                      className="img-fluid"
+                      alt=""
+                    />{" "}
+                    Branches
+                  </NavLink>
+                ) : user.user_role?.role_name === "ministry admin" ? (
+                  <NavLink
+                    className="nav-link"
+                    activeclassname="nav-active"
+                    to="/subBranch"
+                  >
+                    <img
+                      src="/images/branch.svg"
+                      className="img-fluid"
+                      alt=""
+                    />{" "}
+                    Organizations
+                  </NavLink>
+                ) : null} */}
                 <NavLink
                   className="nav-link"
                   activeclassname="nav-active"
                   to="/Unions"
                 >
-                  <img src="/images/branch.svg" className="img-fluid" alt="" /> Unions
+                  <img src="/images/branch.svg" className="img-fluid" alt="" />{" "}
+                  Unions
                 </NavLink>
               </li>
               <li className="nav-item">
@@ -173,7 +330,8 @@ const MainNavbarInc = ({ sidebar }) => {
                   activeclassname="nav-active"
                   to="/notifications"
                 >
-                  <img src="/images/bell.svg" className="img-fluid" alt="" /> Notifications
+                  <img src="/images/bell.svg" className="img-fluid" alt="" />{" "}
+                  Notifications
                 </NavLink>
               </li>
               <li className="nav-item">
@@ -182,7 +340,12 @@ const MainNavbarInc = ({ sidebar }) => {
                   activeclassname="nav-active"
                   to="/reports"
                 >
-                  <img src="/images/clipboard.svg" className="img-fluid" alt="" /> Reports
+                  <img
+                    src="/images/clipboard.svg"
+                    className="img-fluid"
+                    alt=""
+                  />{" "}
+                  Reports
                 </NavLink>
               </li>
             </ul>
@@ -195,7 +358,12 @@ const MainNavbarInc = ({ sidebar }) => {
                     activeclassname="nav-active"
                     to="/helpSupport"
                   >
-                    <img src="/images/headphones.svg" className="img-fluid" alt="" /> Help & Support
+                    <img
+                      src="/images/headphones.svg"
+                      className="img-fluid"
+                      alt=""
+                    />{" "}
+                    Help & Support
                   </NavLink>
                 </li>
                 <li className="nav-item">
@@ -204,7 +372,12 @@ const MainNavbarInc = ({ sidebar }) => {
                     activeclassname="nav-active"
                     to="/settings"
                   >
-                    <img src="/images/settings.svg" className="img-fluid" alt="" /> Settings
+                    <img
+                      src="/images/settings.svg"
+                      className="img-fluid"
+                      alt=""
+                    />{" "}
+                    Settings
                   </NavLink>
                 </li>
                 <li className="nav-item" onClick={handleClick}>
@@ -213,13 +386,17 @@ const MainNavbarInc = ({ sidebar }) => {
                     activeclassname="nav-active"
                     to="/login"
                   >
-                    <img src="/images/log-out.svg" className="img-fluid" alt="" /> Log out
+                    <img
+                      src="/images/log-out.svg"
+                      className="img-fluid"
+                      alt=""
+                    />{" "}
+                    Log out
                   </NavLink>
                 </li>
               </ul>
             </div>
           </div>
-
         </div>
       </div>
     </nav>

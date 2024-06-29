@@ -5,13 +5,11 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 
-
-
 const Documents = () => {
   const navigate = useNavigate();
 
-  const [folders, setFolders] = useState([])
-  const [documents, setDocuments] = useState([])
+  const [folders, setFolders] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const [caseFolder, setcaseFolder] = useState({
     name: "",
   });
@@ -28,17 +26,38 @@ const Documents = () => {
     accused_party: "",
     initiating_party: "",
   });
-  const [sidebar, setsidebar] = useState(true)
+  const [sidebar, setsidebar] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
-
+    setsidebar(!sidebar);
+  };
 
   useEffect(() => {
-    fetchFolder()
-    fetchDocuments()
+    fetchFolder();
+    fetchDocuments();
   }, []);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredDisputes, setFilteredDisputes] = useState([]);
+  const [filteredFolders, setFilteredFolders] = useState([]);
+
+  useEffect(() => {
+    // Filter disputes based on search query
+    setFilteredFolders(
+      folders.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+    setFilteredDisputes(
+      documents.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, documents, folders]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   const [isAscending, setIsAscending] = useState(true);
 
@@ -94,7 +113,7 @@ const Documents = () => {
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -122,7 +141,6 @@ const Documents = () => {
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
-
   };
 
   const handleSubmit = async (
@@ -162,16 +180,18 @@ const Documents = () => {
 
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-      const response = await fetch(baseUrl + `/api/case/${id}/delete-document`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          document_id: ''
-        })
-
-      });
+      const response = await fetch(
+        baseUrl + `/api/case/${id}/delete-document`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            document_id: "",
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -181,14 +201,14 @@ const Documents = () => {
       setDocuments((prevUnionsList) =>
         prevUnionsList.filter((document) => document.id !== id)
       );
-      toast.success('document has been deleted!')
+      toast.success("document has been deleted!");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
   const handleDownload = async (e, url) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const a = document.createElement("a");
     a.href = url;
@@ -196,8 +216,6 @@ const Documents = () => {
     document.body.appendChild(a);
     a.click();
     a.remove(); // Clean up and remove the element
-
-
   };
 
   return (
@@ -208,7 +226,6 @@ const Documents = () => {
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
             <main className="admin-content">
               <div className="header-box py-5">
@@ -217,7 +234,10 @@ const Documents = () => {
                 </div>
               </div>
               {isLoading ? (
-                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ minHeight: "80vh" }}
+                >
                   <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
                 </div>
               ) : (
@@ -275,8 +295,8 @@ const Documents = () => {
                                       <div>
                                         <h3>Case Folders</h3>
                                         <p className="text-muted-3 font-sm mb-0">
-                                          Each dispute case automatically creates
-                                          a new folder
+                                          Each dispute case automatically
+                                          creates a new folder
                                         </p>
                                       </div>
                                       {/* 
@@ -303,16 +323,22 @@ const Documents = () => {
                                               type="search"
                                               className="form-control border-start-0 form-control-height"
                                               placeholder="Search here..."
+                                              value={searchQuery}
+                                              onChange={handleSearchChange}
                                             />
                                           </div>
                                         </div>
 
                                         <div className="col-lg-6">
                                           <div className="d-flex align-items-center justify-content-between gap-15">
-                                            <a className="btn btn-size btn-outline-light text-medium px-3" onClick={sortFolders}>
+                                            <a
+                                              className="btn btn-size btn-outline-light text-medium px-3"
+                                              onClick={sortFolders}
+                                            >
                                               <img
                                                 src="/images/sort.svg"
-                                                className="img-fluid me-2" alt=""
+                                                className="img-fluid me-2"
+                                                alt=""
                                               />{" "}
                                               Sort
                                             </a>
@@ -347,7 +373,7 @@ const Documents = () => {
                                               </tr>
                                             </thead>
                                             <tbody>
-                                              {folders.map((item) =>
+                                              {filteredFolders.map((item) => (
                                                 <tr key={item._id}>
                                                   <td>
                                                     <div>
@@ -369,11 +395,13 @@ const Documents = () => {
                                                     </div>
                                                   </td>
                                                   <td>{item.size}</td>
-                                                  <td>{item.number_of_files}</td>
+                                                  <td>
+                                                    {item.number_of_files}
+                                                  </td>
                                                   {/* <td>Feb 4 2019</td> */}
                                                   <td>{item.last_modified}</td>
                                                 </tr>
-                                              )}
+                                              ))}
                                             </tbody>
                                           </table>
                                         </div>
@@ -412,13 +440,18 @@ const Documents = () => {
                                               type="search"
                                               className="form-control border-start-0 form-control-height"
                                               placeholder="Search here..."
+                                              value={searchQuery}
+                                              onChange={handleSearchChange}
                                             />
                                           </div>
                                         </div>
 
                                         <div className="col-lg-6">
                                           <div className="d-flex align-items-center justify-content-between gap-15">
-                                            <a className="btn btn-size btn-outline-light text-medium px-3" onClick={sortDocuments}>
+                                            <a
+                                              className="btn btn-size btn-outline-light text-medium px-3"
+                                              onClick={sortDocuments}
+                                            >
                                               <img
                                                 src="/images/sort.svg"
                                                 className="img-fluid me-2"
@@ -457,7 +490,7 @@ const Documents = () => {
                                               </tr>
                                             </thead>
                                             <tbody>
-                                              {documents.map((item) =>
+                                              {filteredDisputes.map((item) => (
                                                 <tr key={item._id}>
                                                   <td>
                                                     <div>
@@ -508,8 +541,12 @@ const Documents = () => {
                                                         <li>
                                                           <button
                                                             className="dropdown-item"
-
-                                                            onClick={(e) => handleDownload(e, item.file_path)}
+                                                            onClick={(e) =>
+                                                              handleDownload(
+                                                                e,
+                                                                item.file_path
+                                                              )
+                                                            }
                                                           >
                                                             Download
                                                           </button>
@@ -518,7 +555,7 @@ const Documents = () => {
                                                           <a
                                                             className="dropdown-item"
                                                             href=""
-                                                          // onClick={(e) => handleDelete(e, item._id)}
+                                                            // onClick={(e) => handleDelete(e, item._id)}
                                                           >
                                                             Print
                                                           </a>
@@ -527,7 +564,7 @@ const Documents = () => {
                                                     </div>
                                                   </td>
                                                 </tr>
-                                              )}
+                                              ))}
                                             </tbody>
                                           </table>
                                         </div>
@@ -544,7 +581,6 @@ const Documents = () => {
                   </div>
                 </div>
               )}
-
             </main>
 
             <footer>

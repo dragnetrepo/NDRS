@@ -38,6 +38,34 @@ const Branches = () => {
     fetchBranches(id);
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredDisputes, setFilteredDisputes] = useState([]);
+
+  useEffect(() => {
+    // Filter disputes based on search query
+    setFilteredDisputes(
+      branches.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, branches]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const sortBranch = () => {
+    const sortedItems = [...branches].sort((a, b) => {
+      if (isAscending) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+    setbranches(sortedItems);
+    setIsAscending(!isAscending);
+  };
+
   const fetchdata = async (id) => {
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -485,6 +513,8 @@ const Branches = () => {
                                       type="search"
                                       className="form-control border-start-0 form-control-height"
                                       placeholder="Search here..."
+                                      value={searchQuery}
+                                      onChange={handleSearchChange}
                                     />
                                   </div>
                                 </div>
@@ -492,7 +522,10 @@ const Branches = () => {
                                 <div className="col-lg-7">
                                   <div className="d-flex align-items-center justify-content-between gap-15">
                                     <div className="d-flex">
-                                      <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
+                                      <a
+                                        className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
+                                        onClick={sortBranch}
+                                      >
                                         <img
                                           src="/images/filter.svg"
                                           className="img-fluid"
@@ -538,7 +571,7 @@ const Branches = () => {
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      {branches.map((item) => (
+                                      {filteredDisputes.map((item) => (
                                         <tr key={item._id}>
                                           <td>
                                             <div>
