@@ -40,6 +40,7 @@ import BranchDetails from "./Components/BranchDetails";
 import SubBranchDetails from "./Components/SubBranchDetails";
 import UnionInvite from "./Components/UnionInvite";
 import SendUnionInvite from "./Components/SendUnionInvite";
+import ResetPassword from "./Components/ResetPassword";
 
 // import LandingPage from "./Components/Index";
 
@@ -170,6 +171,7 @@ const App = () => {
           <Route path="/subBranchDetails/:id" element={<SubBranchDetails />} />
           <Route path="/sendUnionInvite" element={<SendUnionInvite />} />
           <Route path="/union-invite/:token" element={<UnionInvite />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           <Route path="/*" element={<Error404 />} />
         </Routes>

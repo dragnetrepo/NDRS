@@ -7,10 +7,6 @@ const PasswordSet2 = () => {
   const { recovery, setRecovery } = useContext(AppContext);
   const navigate = useNavigate();
 
-  const nextPage = () => {
-    navigate("/CreatePassword");
-  };
-
   const handleClick = async () => {
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -59,7 +55,7 @@ const PasswordSet2 = () => {
               <div className="mt-4">
                 {/* <a href="create-password.php" className="btn btn-size btn-main-primary w-100" onClick={nextPage}>Got it</a> */}
                 <Link
-                  to="/CreatePassword"
+                  to="/Login"
                   className="btn btn-size btn-main-primary w-100"
                 >
                   Got it

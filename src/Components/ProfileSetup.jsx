@@ -153,6 +153,7 @@ const ProfileSetup = () => {
                         type="file"
                         id="profile"
                         name="display_picture"
+                        accept="image/*"
                         style={{ display: "none" }}
                         onChange={handleAvatarChange}
                       />

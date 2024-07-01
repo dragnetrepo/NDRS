@@ -13,17 +13,20 @@ const ProfileSetup2 = () => {
 	const { profile, setProfile } = useContext(AppContext);
 	const [unions, setUnions] = useState([])
 	const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+	const [isSubmitted, setSubmitted] = useState(false)
 
 	const onHandleChange = (e) => {
 		setProfile({ ...profile, [e.target.name]: e.target.value });
 	};
 
 	if (!profile.first_name) {
+		console.log(profile);
 		navigate("/ProfileSetup");
 	}
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		setSubmitted(true);
 		try {
 			const formData = new FormData(); // Create FormData object
 
@@ -40,60 +43,31 @@ const ProfileSetup2 = () => {
 				body: formData,
 			});
 
+			const data = await response.json();
+
 			if (!response.ok) {
+				if (Object.values(data.error).length) {
+					Object.values(data.error).forEach((errorMessage, index) => {
+						toast.error(errorMessage);
+					});
+				}
 				throw new Error("Network response was not ok");
 			}
 
-			const data = await response.json();
 			toast.success('Registration has been completed!!!')
 			navigate("/Dashboard");
 		} catch (error) {
 			console.error("Error fetching data:", error);
+			console.error(error);
+		}
+		finally {
+			setSubmitted(false);
 		}
 	};
 
 	useEffect(() => {
 		fetchUnions();
 	}, []);
-
-	// const fetchUnions = async () => {
-	// 	try {
-	// 		const token = localStorage.getItem("token");
-	// 		document.getElementById("unions").innerHTML = `<option value="" disabled selected>Fetching Unions...</option>`;
-
-	// 		if (!token) {
-	// 			throw new Error("User is not logged in."); // Handle case where user is not logged in
-	// 		}
-
-	// 		const res = await fetch(baseUrl + "/api/get-unions", {
-	// 			headers: {
-	// 				Authorization: `Bearer ${token}`,
-	// 			},
-	// 		});
-
-	// 		if (!res.ok) {
-	// 			throw new Error("Failed to fetch data."); // Handle failed request
-	// 		}
-
-	// 		const data = await res.json();
-	// 		let results = data.data;
-
-	// 		let html = `<option value="" disabled selected>No Union Found</option>`;
-
-	// 		if (results.length) {
-	// 			html = `<option value="" disabled selected>Select an Option</option>`;
-	// 			results.forEach((item, index) => {
-	// 				html += `<option value="${item._id}">${item.name}</option>`;
-	// 			});
-	// 		}
-
-	// 		if (html) {
-	// 			document.getElementById("unions").innerHTML = html;
-	// 		}
-	// 	} catch (error) {
-	// 		console.error("Error fetching data:", error.message);
-	// 	}
-	// };
 
 	const fetchUnions = async () => {
 		try {
@@ -116,6 +90,11 @@ const ProfileSetup2 = () => {
 
 			const data = await res.json();
 			setUnions(data.data);
+			
+			profile.union = null;
+			profile.union_branch = null;
+			profile.organization = null;
+			
 		} catch (error) {
 			console.error("Error fetching data:", error.message);
 		}
@@ -160,6 +139,9 @@ const ProfileSetup2 = () => {
 				if (html) {
 					document.getElementById("branches").innerHTML = html;
 				}
+
+				profile.union_branch = null;
+				profile.organization = null;
 			}
 			else {
 				document.getElementById("branches").innerHTML = ``;
@@ -207,6 +189,8 @@ const ProfileSetup2 = () => {
 				if (html) {
 					document.getElementById("organizations").innerHTML = html;
 				}
+
+				profile.organization = null;
 			}
 			else {
 				document.getElementById("organizations").innerHTML = ``;
@@ -215,12 +199,6 @@ const ProfileSetup2 = () => {
 			console.error("Error fetching data:", error.message);
 		}
 	};
-
-	// const handleReturnBack = async (e) => {
-	// 	e.preventDefault();
-
-	// 	navigate("/ProfileSetup");
-	// }
 
 	return (
 		<>
@@ -275,8 +253,8 @@ const ProfileSetup2 = () => {
 									</div>
 
 									<div className="mt-4">
-										<button className="btn btn-size btn-main-primary w-100" disabled={!profile.union || !profile.union_branch || !profile.organization}>
-											Finish
+										<button className="btn btn-size btn-main-primary w-100" disabled={!profile.union || !profile.union_branch || !profile.organization || isSubmitted}>
+											{isSubmitted ? `Saving...` : `Finish`}
 										</button>
 									</div>
 
