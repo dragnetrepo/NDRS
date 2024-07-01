@@ -40,7 +40,7 @@ Route::get('clear-data', function(){
     ]);
 });
 
-Route::name("api.")->middleware(['cors'])->group(function () {
+Route::name("api.")->middleware(['cors'])->withoutMiddleware([\Illuminate\Routing\Middleware\ThrottleRequests::class])->group(function () {
     Route::get("/verify-password-token", [AuthenticationController::class, "verify_password_token"])->name("verify-password-token");
     Route::post("/create-password", [AuthenticationController::class, "create_password"])->name("create-password");
 
@@ -240,7 +240,10 @@ Route::name("api.")->middleware(['cors'])->group(function () {
 
         Route::get("dashboard", [DashboardController::class, "index"])->name("dashboard");
         Route::get("search", [DashboardController::class, "search"])->name("search");
-        Route::get("reports", [DashboardController::class, "reports"])->name("reports")->middleware("custom_user_permission:view reports");
+        Route::middleware("custom_user_permission:view reports")->group(function(){
+            Route::get("dispute-resolution-report", [DashboardController::class, "dispute_resolutions_report"])->name("dispute-resolution-report");
+            Route::get("reports", [DashboardController::class, "reports"])->name("reports");
+        });
         Route::get("get-industries", [UserController::class, "industries"])->name("industries");
         Route::get("/settings/{auth}", [NotificationController::class, "settings"])->name("auth-settings");
         Route::post("/send-message", [ProfileController::class, "send_message"])->name("send-message");

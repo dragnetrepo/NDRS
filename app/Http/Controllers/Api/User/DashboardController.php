@@ -14,6 +14,7 @@ use App\Models\UnionBranch;
 use App\Models\UnionSubBranch;
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -340,8 +341,8 @@ class DashboardController extends Controller
         elseif ($period_filter == "four months") {
             $start_date = Carbon::now()->subDays(120);
         }
-        elseif ($period_filter == "six months") {
-            $start_date = Carbon::now()->subDays(180);
+        elseif ($period_filter == "eight months") {
+            $start_date = Carbon::now()->subDays(240);
         }
         elseif ($period_filter == "one year") {
             $start_date = Carbon::now()->subDays(365);
@@ -529,6 +530,146 @@ class DashboardController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function dispute_resolutions_report(Request $request)
+    {
+        $period_filter = $request->period ?? "8 months";
+        $text_filter = $request->text;
+        $period = $period_retrieved = [];
+        $days_difference = [
+            "1 week" => 7,
+            "1 month" => 30,
+            "4 months" => 120,
+            "8 months" => 240,
+            "1 year" => 365,
+        ];
+
+        $difference_start_date = $difference_end_date = null;
+        $current_number_days = $difference_number_days = 0;
+
+        $end_date = Carbon::now();
+        if ($period_filter == "1 week") {
+            $start_date = Carbon::now()->subDays($days_difference["1 week"]);
+            $period_retrieved = $this->getDayListFromDate($start_date, $end_date);
+        }
+        elseif ($period_filter == "1 month") {
+            $start_date = Carbon::now()->subDays($days_difference["1 month"]);
+        }
+        elseif ($period_filter == "4 months") {
+            $start_date = Carbon::now()->subDays($days_difference["4 months"]);
+        }
+        elseif ($period_filter == "8 months") {
+            $start_date = Carbon::now()->subDays($days_difference["8 months"]);
+        }
+        elseif ($period_filter == "1 year") {
+            $start_date = Carbon::now()->subDays($days_difference["1 year"]);
+        }
+        elseif ($period_filter == "all time") {
+            $end_date = $start_date = null;
+            $period_retrieved = $this->getMonthListFromDate(Carbon::now()->subDays($days_difference["1 year"]), Carbon::now()); // Will get every month required
+        }
+        else {
+            $end_date = Carbon::now();
+            $start_date = Carbon::now()->subDays($days_difference["8 months"]);
+        }
+
+        if (empty($period_retrieved)) {
+            $period_retrieved = $this->getMonthListFromDate($start_date, $end_date);
+        }
+
+        foreach ($period_retrieved as $retrieved) {
+            $period[$retrieved] = 0;
+        }
+
+        if ($start_date && $end_date) {
+            $difference_start_date = Carbon::parse($start_date)->subDays($days_difference[$period_filter]);
+            $difference_end_date = Carbon::parse($start_date)->subDays($days_difference[$period_filter]);
+        }
+
+        $resolved_disputes = CaseDispute::whereIn("status", CaseDispute::RESOLVED_CASE_STATUSES)
+                            ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
+                                $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+                            })
+                            ->get();
+
+        if ($resolved_disputes->isNotEmpty()) {
+            foreach ($resolved_disputes as $dispute) {
+                if (in_array($period_filter, ["1 week"])) {
+                    $period_name = Carbon::parse($dispute->created_at)->format("l");
+                }
+                else {
+                    $period_name = Carbon::parse($dispute->created_at)->format("F");
+                }
+
+                $case_history = CaseDisputeStatusHistory::where("case_id", $dispute->id)->selectRaw(DB::raw("MIN(created_at) as start_date, MAX(created_at) as end_date"))->groupBy("case_id")->first();
+                $days_diff = 1;
+
+                if ($case_history) {
+                    $days_diff = calculateDaysBetweenDates($case_history->start_date, $case_history->end_date);
+                }
+
+                $period[$period_name] = $current_number_days += (($days_diff > 0) ? $days_diff : 1);
+            }
+        }
+
+        if ($difference_start_date && $difference_end_date) {
+            $resolved_disputes = CaseDispute::whereIn("status", CaseDispute::RESOLVED_CASE_STATUSES)
+                                ->when(($difference_start_date && $difference_end_date), function($query) use ($difference_start_date, $difference_end_date) {
+                                    $query->where("created_at", ">=", $difference_start_date)->where("created_at", "<=", $difference_end_date);
+                                })
+                                ->get();
+
+            if ($resolved_disputes->isNotEmpty()) {
+                foreach ($resolved_disputes as $dispute) {
+                    if (in_array($period_filter, ["one week"])) {
+                        $period_name = Carbon::parse($dispute->created_at)->format("l");
+                    }
+                    else {
+                        $period_name = Carbon::parse($dispute->created_at)->format("F");
+                    }
+                    $case_history = CaseDisputeStatusHistory::where("case_id", $dispute->id)->selectRaw(DB::raw("MIN(created_at) as start_date, MAX(created_at) as end_date"))->groupBy("case_id")->first();
+                    if ($case_history) {
+                        $days_diff = calculateDaysBetweenDates($case_history->start_date, $case_history->end_date);
+                        $difference_number_days += ($days_diff ?? 1);
+                    }
+                }
+            }
+        }
+
+        $message_text = "";
+
+        if ($difference_number_days > $current_number_days) {
+            if ($current_number_days) {
+                $message_text = (($current_number_days/$difference_number_days) * 100). "% decrease";
+            }
+            else {
+                $message_text = "100% decrease";
+            }
+        }
+        elseif ($difference_number_days < $current_number_days) {
+            if ($difference_number_days) {
+                $message_text = (($difference_number_days/$current_number_days) * 100). "% increase";
+            }
+            else {
+                $message_text = "100% increase";
+            }
+        }
+
+        if (in_array($period_filter, ["1 week"])) {
+            uksort($period, "compareDayNames");
+        }
+        else {
+            uksort($period, "compareMonthNames");
+        }
+
+        $this->response["data"] = $period;
+        $this->response["period_text"] = $message_text ? $period_filter : "";
+        $this->response["report_message"] = $message_text;
+        $this->response["message"] = "Dispute resolution Report retrieved successfully!";
+        $this->response["status"] = Response::HTTP_OK;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     private function additional_text_filter($query, $union_search, $user_search) {
         return $query->when($union_search, function($sub_query) use ($union_search) {
             $sub_query->where("union", $union_search);
@@ -590,5 +731,22 @@ class DashboardController extends Controller
         }
 
         return $message_data;
+    }
+
+    private function getMonthListFromDate(Carbon $start, Carbon $end)
+    {
+        $start->setDay(1);
+        foreach (CarbonPeriod::create($start, '1 month', $end) as $month) {
+            $months[] = $month->format('F');
+        }
+        return $months;
+    }
+
+    private function getDayListFromDate(Carbon $start, Carbon $end)
+    {
+        foreach (CarbonPeriod::create($start, '1 days', $end) as $day) {
+            $days[] = $day->format('l');
+        }
+        return $days;
     }
 }

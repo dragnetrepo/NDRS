@@ -106,9 +106,11 @@ class DiscussionController extends Controller
                     "title" => $discussion->title,
                     "last_message" => $message_content,
                     "unread_messages" => unread_messages_count($discussion->id, request()->user()->id),
-                    "time_sent" => $last_msg ? $last_msg->created_at->format("h:i") : "",
+                    "time_sent" => $last_msg ? $last_msg->created_at->format("H:i") : "",
                     "sender" => $sender_info,
                 ];
+
+                usort($data, 'sortByUnreadMessages');
             }
 
             $this->response["message"] = "Discussions chat tab retrieved";
@@ -175,7 +177,9 @@ class DiscussionController extends Controller
                         $poll_information = unserialize($message->content);
 
                         if (count($poll_information)) {
+                            $my_vote = null;
                             if (count($poll_information["options"])) {
+                                $my_vote = CaseDiscussionAction::where("cdm_id", $message->id)->where("user_id", $user_id)->where("action", "vote")->first();
                                 $all_votes = CaseDiscussionAction::where("cdm_id", $message->id)->where("action", "vote")->count();
 
                                 foreach ($poll_information["options"] as $option) {
@@ -207,6 +211,7 @@ class DiscussionController extends Controller
                                     "vote_results" => $options
                                 ],
                                 "type" => "poll",
+                                "my_answer" => $my_vote ? $my_vote->response : ""
                             ];
                         }
                     }

@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
 
 if (!function_exists("get_user_roles")) {
     function get_user_roles($user) {
@@ -59,6 +60,55 @@ if (!function_exists("get_user_roles")) {
         }
 
         return $roles_collection;
+    }
+}
+
+if (!function_exists("get_user_permissions")) {
+    function get_user_permissions($user) {
+        $permissions_collection = [];
+        $fetch_multiple = false;
+        $union_set = request()->header("ndrs-union");
+        if ($union_set) {
+            $member_role = $user->member_role->where("union_id", $union_set);
+        }
+        else {
+            $member_role = $user->member_role;
+        }
+
+        if ($member_role->count()) {
+            if ($fetch_multiple) {
+                foreach ($member_role as $key => $role) {
+                    $find_role = Role::find($role->role_id);
+
+                    if ($find_role) {
+                        $permissions = $find_role->permissions;
+
+                        if ($permissions->count()) {
+                            foreach ($permissions as $permission) {
+                                $permissions_collection[$key][] = $permission->name;
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                $role = $member_role->first();
+                if ($role) {
+                    $find_role = Role::find($role->role_id);
+
+                    if ($find_role) {
+                        $permissions = $find_role->permissions;
+                        if ($permissions->count()) {
+                                foreach ($permissions as $permission) {
+                                $permissions_collection[] = $permission->name;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $permissions_collection;
     }
 }
 
@@ -781,4 +831,31 @@ if (!function_exists("calculateDaysBetweenDates")) {
         // Return the difference in days
         return $interval->days;
     }
+}
+
+function compareMonthNames($key1, $key2) {
+    // Define the order of the month names
+    $monthOrder = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    $key1Index = array_search($key1, $monthOrder);
+    $key2Index = array_search($key2, $monthOrder);
+    return $key1Index - $key2Index;
+}
+
+function compareDayNames($key1, $key2) {
+    // Define the order of the month names
+    $dayOrder = [
+        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+    ];
+
+    $key1Index = array_search($key1, $dayOrder);
+    $key2Index = array_search($key2, $dayOrder);
+    return $key1Index - $key2Index;
+}
+
+function sortByUnreadMessages($a, $b) {
+    return $b['unread_messages'] <=> $a['unread_messages'];
 }

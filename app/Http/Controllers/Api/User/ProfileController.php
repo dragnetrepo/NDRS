@@ -45,7 +45,8 @@ class ProfileController extends Controller
             "phone" => $user->phone,
             "display_picture" => get_model_file_from_disk($user->display_picture ?? "", "profile_photos"),
             "contact_address" => $user->contact_address,
-            "user_role" => get_user_roles($user)
+            "user_role" => get_user_roles($user),
+            "permissions" => get_user_permissions($user),
         ];
 
         $this->response["status"] = Response::HTTP_OK;
