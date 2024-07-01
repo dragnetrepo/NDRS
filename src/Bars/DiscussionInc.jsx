@@ -40,77 +40,6 @@ const DiscussionIinc = () => {
     }
   };
 
-  // const fetchDiscussionsMessages = async (id) => {
-  //   try {
-  //     const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-  //     const token = localStorage.getItem("token");
-
-  //     if (!token) {
-  //       throw new Error("User is not logged in."); // Handle case where user is not logged in
-  //     }
-
-  //     const res = await fetch(
-  //       baseUrl + `/api/case/discussions/${id}/messages`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (!res.ok) {
-  //       throw new Error("Failed to fetch data."); // Handle failed request
-  //     }
-
-  //     const data = await res.json();
-  //     setDiscussionsMessages(data.data);
-
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error.message);
-  //   }
-  // };
-
-  // const onHandleChange = (e) => {
-  //   setMessages({ ...messages, [e.target.name]: e.target.value });
-
-  // };
-
-  // const handleSendMessages = async (e, id) => {
-  //   e.preventDefault();
-  //   try {
-  //     const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-  //     const token = localStorage.getItem("token");
-
-  //     if (!token) {
-  //       throw new Error("User is not logged in."); // Handle case where user is not logged in
-  //     }
-
-  //     const res = await fetch(
-  //       baseUrl + `/api/case/discussions/${id}/send-message`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "content-Type": "application/json",
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //         body: JSON.stringify({ message: messages, type: messages }),
-  //       }
-  //     );
-
-  //     if (!res.ok) {
-  //       throw new Error("Failed to fetch data."); // Handle failed request
-  //     }
-
-  //     fetchDiscussionsMessages();
-
-  //     const data = await res.json();
-  //     // setDiscussionsMessages(data.data);
-
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error.message);
-  //   }
-  // };
-
   return (
     <>
       <div className="discussion-section d-flex">
@@ -160,12 +89,14 @@ const DiscussionIinc = () => {
                       </span>
                     </div>
                     <div className="d-flex justify-content-between align-items-start">
-                      <p className="mb-0 text-muted-3 line-clamp-2">
-                        {item.sender.sender}
-                        {` : `}
-                        {item.last_message}
-                      </p>
-                      <span className="badge rounded-pill text-bg-main">4</span>
+                      {item.sender.sender && (
+                        <p className="mb-0 text-muted-3 line-clamp-2">
+                          {item.sender.sender} {` : `} {item.last_message}
+                        </p>
+                      )}
+                      {(item.unread_messages > 0) && (
+                        <span className="badge rounded-pill text-bg-main">{item.unread_messages}</span>
+                      )}
                     </div>
                   </div>
                 </div>

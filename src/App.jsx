@@ -162,6 +162,7 @@ const App = () => {
           />
           <Route path="/Notifications" element={<Notifications />} />
           <Route path="/Users" element={<Users />} />
+          <Route path="/SubBranch" element={<SubBranch />} />
           <Route path="/Branches" element={<Branches />} />
           <Route path="/BranchDetails/:id" element={<BranchDetails />} />
           <Route path="/Branches/:id" element={<Branches />} />

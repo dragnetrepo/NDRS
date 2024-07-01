@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
-const MainNavbarInc = ({ sidebar }) => {
+const MainNavbarInc = ({ sidebar, profileUser }) => {
   const location = useLocation();
   const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
 
@@ -10,7 +10,9 @@ const MainNavbarInc = ({ sidebar }) => {
   const [unions, setUnions] = useState([]);
   const [branches, setBranches] = useState([]);
   const [organizations, setOrganizations] = useState([]);
-  const [user, setuser] = useState([]);
+  const [user, setuser] = useState({
+	  permissions: []
+  });
 
   useEffect(() => {
     // Retrieve the token from localStorage
@@ -22,6 +24,13 @@ const MainNavbarInc = ({ sidebar }) => {
     fetchBranches();
     fetchOrganizations();
     fetchUnions();
+
+	if (!profileUser) {
+		fetchProfile();
+	}
+	else {
+		setuser(profileUser);
+	}
     // Fetch profile data using the token or perform any other actions
   }, [navigate]);
 
@@ -50,28 +59,26 @@ const MainNavbarInc = ({ sidebar }) => {
     }
   };
 
-  const fetchProfile = async () => {
-    try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+const fetchProfile = async () => {
+	try {
+		const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
 
-      const res = await fetch(baseUrl + "/api/user-profile", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+		const res = await fetch(baseUrl + "/api/user-profile", {
+			headers: {
+			Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
-      }
+		if (!res.ok) {
+			throw new Error("Failed to fetch data."); // Handle failed request
+		}
 
-      const data = await res.json();
-      setuser(data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+		const data = await res.json();
+		setuser(data.data);
+	} catch (error) {
+		console.error("Error fetching data:", error.message);
+	}
+};
 
   const fetchUnions = async () => {
     try {
@@ -148,26 +155,17 @@ const MainNavbarInc = ({ sidebar }) => {
     }
   };
 
+  console.log(user.permissions ? user.permissions : null);
+
   return (
-    <nav
-      className="flex-none navbar navbar-vertical navbar-expand-lg show vh-lg-100 bg-custom-color px-0 py-2 navbar-light"
-      id="sidebar"
-      style={{ display: sidebar ? "block" : "none" }}
-    >
+    <nav className="flex-none navbar navbar-vertical navbar-expand-lg show vh-lg-100 bg-custom-color px-0 py-2 navbar-light" id="sidebar" style={{ display: sidebar ? "block" : "none" }}>
       <div className="container-fluid flex-lg-column align-items-lg-start">
-        <button
-          className="navbar-toggler border-0"
-          type="button"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#offcanvasNavbar"
-          aria-controls="offcanvasNavbar"
-          aria-label="Toggle navigation"
-        >
-          <i className="bi bi-list bi-2 text-dark cursor-pointer"></i>
+        <button className="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+          	<i className="bi bi-list bi-2 text-dark cursor-pointer"></i>
         </button>
 
         <Link className="navbar-brand me-0 text-bold" to="/dashboard">
-          <img src="/images/NDRS-Logo.svg" className="img-fluid" alt="logo" />
+          	<img src="/images/NDRS-Logo.svg" className="img-fluid" alt="logo" />
         </Link>
 
         <div className="navbar-user d-lg-none">
@@ -212,142 +210,86 @@ const MainNavbarInc = ({ sidebar }) => {
           </div>
           <div className="offcanvas-body flex-column custom-offcanvas-h">
             <ul className="navbar-nav flex-column sidebar-list border-bottom py-3">
-              <li className="nav-item">
-                <NavLink
-                  className="nav-link"
-                  activeclassname="nav-active"
-                  to="/dashboard"
-                >
-                  <img src="/images/home.svg" className="img-fluid" alt="" />{" "}
-                  Dashboard
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink
-                  className="nav-link"
-                  activeclassname="nav-active"
-                  to="/Disputes"
-                >
-                  <img
-                    src="/images/suitcase.svg"
-                    className="img-fluid"
-                    alt=""
-                  />{" "}
-                  Disputes
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink
-                  className="nav-link"
-                  activeclassname="nav-active"
-                  to="/discussions"
-                >
-                  <img src="/images/chats.svg" className="img-fluid" alt="" />{" "}
-                  Discussions
-                </NavLink>
-              </li>
+              	<li className="nav-item">
+					<NavLink className="nav-link" activeclassname="nav-active" to="/dashboard">
+						<img src="/images/home.svg" className="img-fluid" alt="" />{" "}
+						Dashboard
+					</NavLink>
+              	</li>
 
-              <li className="nav-item">
-                <NavLink
-                  className="nav-link"
-                  activeclassname="nav-active"
-                  to="/documents"
-                >
-                  <img src="/images/folder.svg" className="img-fluid" alt="" />{" "}
-                  Documents
-                </NavLink>
-              </li>
+				{user.permissions && (user.permissions.includes("create dispute") || user.permissions.includes("approve dispute") || user.permissions.includes("invite dispute participants") || user.permissions.includes("change dispute case status") || user.permissions.includes("participate in resolution")) && (
+					<li className="nav-item">
+						<NavLink className="nav-link" activeclassname="nav-active" to="/Disputes">
+							<img src="/images/suitcase.svg" className="img-fluid" alt=""/>{" "}
+							Disputes
+						</NavLink>
+					</li>
+				)}
+
+				{user.permissions && (user.permissions.includes("participate in resolution")) && (
+					<li className="nav-item">
+						<NavLink className="nav-link" activeclassname="nav-active" to="/discussions">
+							<img src="/images/chats.svg" className="img-fluid" alt="" />{" "}
+							Discussions
+						</NavLink>
+					</li>
+				)}
+
+				{user.permissions && (user.permissions.includes("create dispute") || user.permissions.includes("participate in resolution")) && (
+					<li className="nav-item">
+						<NavLink className="nav-link" activeclassname="nav-active" to="/documents">
+							<img src="/images/folder.svg" className="img-fluid" alt="" />{" "}
+							Documents
+						</NavLink>
+					</li>
+				)}
             </ul>
 
             <p className="mb-0 sub-text-sidebar mt-4">Tools</p>
 
             <ul className="navbar-nav flex-column sidebar-list list-unstyled py-3 flex-grow-1">
-              <li className="nav-item">
-                <NavLink
-                  className="nav-link"
-                  activeclassname="nav-active"
-                  to="/users"
-                >
-                  <img src="/images/users.svg" className="img-fluid" alt="" />{" "}
-                  Users & Groups
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                {/* {user.user_role?.branch_name &&
-                !user.user_role?.union_sub_branch_name ? (
-                  <NavLink
-                    className="nav-link"
-                    activeclassname="nav-active"
-                    to="/Unions"
-                  >
-                    <img
-                      src="/images/branch.svg"
-                      className="img-fluid"
-                      alt=""
-                    />{" "}
-                    Unions
-                  </NavLink>
-                ) : user.user_role?.union_name &&
-                  !user.user_role?.union_branch_name ? (
-                  <NavLink
-                    className="nav-link"
-                    activeclassname="nav-active"
-                    to="/branches"
-                  >
-                    <img
-                      src="/images/branch.svg"
-                      className="img-fluid"
-                      alt=""
-                    />{" "}
-                    Branches
-                  </NavLink>
-                ) : user.user_role?.role_name === "ministry admin" ? (
-                  <NavLink
-                    className="nav-link"
-                    activeclassname="nav-active"
-                    to="/subBranch"
-                  >
-                    <img
-                      src="/images/branch.svg"
-                      className="img-fluid"
-                      alt=""
-                    />{" "}
-                    Organizations
-                  </NavLink>
-                ) : null} */}
-                <NavLink
-                  className="nav-link"
-                  activeclassname="nav-active"
-                  to="/Unions"
-                >
-                  <img src="/images/branch.svg" className="img-fluid" alt="" />{" "}
-                  Unions
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink
-                  className="nav-link"
-                  activeclassname="nav-active"
-                  to="/notifications"
-                >
-                  <img src="/images/bell.svg" className="img-fluid" alt="" />{" "}
-                  Notifications
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink
-                  className="nav-link"
-                  activeclassname="nav-active"
-                  to="/reports"
-                >
-                  <img
-                    src="/images/clipboard.svg"
-                    className="img-fluid"
-                    alt=""
-                  />{" "}
-                  Reports
-                </NavLink>
-              </li>
+				{user.permissions && (user.permissions.includes("invite users") && (user.permissions.includes("edit users status") || user.permissions.includes("edit roles and permissions"))) && (
+					<li className="nav-item">
+						<NavLink className="nav-link" activeclassname="nav-active" to="/users">
+							<img src="/images/users.svg" className="img-fluid" alt="" />{" "}
+							Users & Groups
+						</NavLink>
+					</li>
+				)}
+
+				<li className="nav-item">
+					{user.permissions && (user.permissions.includes("create unions") || user.permissions.includes("edit unions")) ? (
+						<NavLink className="nav-link" activeclassname="nav-active" to="/Unions">
+							<img src="/images/branch.svg" className="img-fluid" alt="" />{" "}
+							Unions
+						</NavLink>
+					) : (user.permissions.includes("create branches") || user.permissions.includes("edit branches")) ? (
+						<NavLink className="nav-link" activeclassname="nav-active" to="/branches">
+							<img src="/images/branch.svg" className="img-fluid" alt="" />{" "}
+							Branches
+						</NavLink>
+					) : (user.permissions.includes("create sub branches") || user.permissions.includes("edit sub branches")) ? (
+						<NavLink className="nav-link" activeclassname="nav-active" to="/subBranch">
+							<img src="/images/branch.svg" className="img-fluid" alt="" />{" "}
+							Organizations
+						</NavLink>
+					) : null}
+				</li>
+
+				<li className="nav-item">
+					<NavLink className="nav-link" activeclassname="nav-active" to="/notifications">
+						<img src="/images/bell.svg" className="img-fluid" alt="" />{" "} Notifications
+					</NavLink>
+				</li>
+
+				{user.permissions && (user.permissions.includes("view reports") || user.permissions.includes("download reports")) && (
+					<li className="nav-item">
+						<NavLink className="nav-link" activeclassname="nav-active" to="/reports">
+							<img src="/images/clipboard.svg" className="img-fluid" alt="" />{" "}
+							Reports
+						</NavLink>
+					</li>
+				)}
             </ul>
 
             <div>

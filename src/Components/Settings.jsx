@@ -12,7 +12,7 @@ const Settings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [industries, setIndustries] = useState([]);
 
-  const [avatarImage, setAvatarImage] = useState("");
+  const [avatarImage, setAvatarImage] = useState("/images/download.png");
   const [user, setuser] = useState({
     first_name: "",
     last_name: "",
