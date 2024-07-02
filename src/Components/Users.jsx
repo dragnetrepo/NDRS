@@ -772,11 +772,17 @@ const Users = () => {
 			}
 		);
 
+		const data = await res.json();
+
 		if (!res.ok) {
+			if (Object.values(data.error).length) {
+				Object.values(data.error).forEach((errorMessage, index) => {
+					toast.error(errorMessage);
+				});
+			}
 			throw new Error("Failed to fetch data."); // Handle failed request
 		}
 
-		const data = await res.json();
 		toast.success(data.message);
 		fetchSettlementBodyMembers({
 			_id: IndividualSettlmentProfile.sp_id,
@@ -1128,7 +1134,7 @@ const Users = () => {
 												aria-controls="v-pills-bulk"
 												aria-selected="true"
 											>
-												Bulk Union upload
+												Bulk Users Upload
 											</button>
 											<button
 												className="nav-link tab-v text-start"
@@ -1140,7 +1146,7 @@ const Users = () => {
 												aria-controls="v-pills-single"
 												aria-selected="false"
 											>
-												Single Union upload
+												Single User Invite
 											</button>
 											</div>
 										</div>
@@ -3361,7 +3367,7 @@ const Users = () => {
 									)}
 
 									{member_profile.status !== "pending" && (
-									<span className="badge bg-warning">
+									<span>
 										{member_profile.date_joined}
 									</span>
 									)}

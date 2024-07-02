@@ -174,24 +174,24 @@ const DisputesDetails = () => {
 
 	const handleApproveCase = async (e, id) => {
 		try {
-		const res = await fetch(baseUrl + `/api/case/approve-case/${id}`, {
-			method: "POST",
-			headers: {
-			"content-Type": "application/json",
-			Authorization: `Bearer ${localStorage.getItem("token")}`,
-			},
-			body: JSON.stringify(changeStatus), // Pass FormData object as the body
-		});
+			const res = await fetch(baseUrl + `/api/case/approve-case/${id}`, {
+				method: "POST",
+				headers: {
+				"content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+				body: JSON.stringify(changeStatus), // Pass FormData object as the body
+			});
 
-		if (!res.ok) {
-			throw new Error("Failed to fetch data."); // Handle failed request
-		}
+			if (!res.ok) {
+				throw new Error("Failed to fetch data."); // Handle failed request
+			}
 
-		const data = await res.json();
-		fetchSingleDisputes(id);
-		toast.success("Case has been Approved!");
+			const data = await res.json();
+			fetchSingleDisputes(id);
+			toast.success("Case has been Approved!");
 		} catch (error) {
-		console.error("Error fetching data:", error.message);
+			console.error("Error fetching data:", error.message);
 		}
 	};
 
@@ -490,8 +490,8 @@ const DisputesDetails = () => {
 																					</h3>
 																					{user.permissions && (user.permissions.includes("approve dispute")) && (
 																						<div className="d-flex align-items-center gap-15">
-																							<a href="#" className="btn btn-size btn-main-primary" onClick={(e) => handleApproveCase(e, id) } disabled={getDisputes.status === "pending approval" } >
-																								Approved case
+																							<a href="#" className="btn btn-size btn-main-primary" onClick={(e) => handleApproveCase(e, id) } disabled={getDisputes.status !== "pending approval" } >
+																								Approve case
 																							</a>
 																						</div>
 																					)}

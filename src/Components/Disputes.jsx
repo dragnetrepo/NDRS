@@ -18,7 +18,7 @@ const Disputes = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [user, setuser] = useState({
 		permissions: []
-	});
+	});const [disputeid, setDisputeid] = useState(0);
 	const documentsArray = [];
 	var array_key_val = 0,
 		dispute_id = 0;
@@ -135,24 +135,24 @@ const Disputes = () => {
 		documentsArray[array_key_val] = e.target.files[0];
 
 		document.getElementById("documents-uploaded").innerHTML += `
-				<div className="d-flex align-items-center justify-content-between mb-4 document-housing" id="housing-${array_key_val}">
-					<div className="d-flex align-items-center">
-						<div className="text-center me-2 flex-shrink-0">
-							<img src="images/file_upload_states.svg" alt="" className="img-fluid" style={{ height: "40px" }} />
+				<div class="d-flex align-items-center justify-content-between mb-4 document-housing" id="housing-${array_key_val}">
+					<div class="d-flex align-items-center">
+						<div class="text-center me-2 flex-shrink-0">
+							<img src="images/file_upload_states.svg" alt="" class="img-fluid" style={{ height: "40px" }} />
 						</div>
 						<div>
-							<p className="text-bold mb-1">${file.name}</p>
-							<p className="font-sm text-muted mb-0">${
+							<p class="text-bold mb-1">${file.name}</p>
+							<p class="font-sm text-muted mb-0">${
 				file.type
 				} format . Max. ${convertBytes(file.size)}</p>
 						</div>
 					</div>
 
-					<div className="d-flex align-items-center gap-10">
-						<a className="btn btn-size btn-main-primary upload-doc" id="${array_key_val}">Upload</a>
+					<div class="d-flex align-items-center gap-10">
+						<a href="javascript:void(0)" class="btn btn-size btn-main-primary upload-doc" id="${array_key_val}">Upload</a>
 
-						<a href="javascript:void(0);" className="remove-doc" remove-id="${array_key_val}">
-							<img src="images/multiply_2.svg" className="img-fluid" alt="close" />
+						<a href="javascript:void(0);" class="remove-doc" remove-id="${array_key_val}">
+							<img src="images/multiply_2.svg" class="img-fluid" alt="close" />
 						</a>
 					</div>
 				</div>
@@ -163,19 +163,20 @@ const Disputes = () => {
 	};
 
 	const handleDocumentUpload = async (id, file) => {
-		if (dispute_id) {
+		console.log(disputeid);
+		if (disputeid) {
 		document
 			.getElementById(id)
 			.closest(
 			"div"
-			).innerHTML = `<div className="spinner-border text-main-primary" id="${id}" role="status"><span className="visually-hidden">Loading...</span></div>`;
+			).innerHTML = `<div class="spinner-border text-main-primary" id="${id}" role="status"><span class="visually-hidden">Loading...</span></div>`;
 
 		if (file) {
 			var formData = new FormData();
 			formData.append("documents[]", file);
 			try {
 			const response = await fetch(
-				baseUrl + `/api/case/${dispute_id}/add-document`,
+				baseUrl + `/api/case/${disputeid}/add-document`,
 				{
 				method: "POST",
 				headers: {
@@ -200,7 +201,7 @@ const Disputes = () => {
 			toast.success(data.message);
 			} catch (error) {
 			document.getElementById(id).closest("div").outerHTML = `
-							<button className="btn btn-danger btn-size" disabled>Failed</button>
+							<button class="btn btn-danger btn-size" disabled>Failed</button>
 						`;
 			console.error("Error fetching data:", error);
 			}
@@ -211,42 +212,43 @@ const Disputes = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-		const response = await fetch(baseUrl + "/api/case/create", {
-			method: "POST",
-			headers: {
-			"Content-Type": "application/json",
-			Accept: "application/json",
-			Authorization: `Bearer ${localStorage.getItem("token")}`,
-			},
-			body: JSON.stringify(disputes),
-		});
+			const response = await fetch(baseUrl + "/api/case/create", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+				body: JSON.stringify(disputes),
+			});
 
-		if (!response.ok) {
-			throw new Error("Network response was not ok");
-		}
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
 
-		const data = await response.json();
-		dispute_id = data.data._id;
-		fetchDisputes();
+			const data = await response.json();
+			dispute_id = data.data._id;
+			setDisputeid(dispute_id)
+			fetchDisputes();
 
-		if (dispute_id) {
-			toast.success("Dispute has been created successfully!");
-			document.getElementById("create-dispute-div").classList.add("d-none");
-			document.getElementById("submit-next-docs").classList.remove("d-none");
-		}
-		// navigate("/Disputes2");
-		// window.location.reload();
+			console.log(disputeid);
+
+			if (dispute_id) {
+				toast.success("Dispute has been created successfully!");
+				document.getElementById("create-dispute-div").classList.add("d-none");
+				document.getElementById("submit-next-docs").classList.remove("d-none");
+			}
 		} catch (error) {
-		toast.error("All fields are required");
-		console.error("Error fetching data:", error);
+			toast.error("All fields are required");
+			console.error("Error fetching data:", error);
 		}
 	};
 
 	const finishCreateDispute = () => {
-		if (dispute_id > 0) {
-		navigate(`/disputesDetails/${dispute_id}`);
+		if (disputeid > 0) {
+			navigate(`/disputesDetails/${disputeid}`);
 		} else {
-		window.location.reload();
+			window.location.reload();
 		}
 	};
 
@@ -368,35 +370,30 @@ const Disputes = () => {
 		.forEach((el) => el.removeEventListener("click", (event) => {}));
 
 		document.querySelectorAll(".upload-doc").forEach((el) =>
-		el.addEventListener("click", (event) => {
-			let document_clicked = el.getAttribute("id");
-			handleDocumentUpload(
-			document_clicked,
-			documentsArray[document_clicked]
-			);
-		})
+			el.addEventListener("click", (event) => {
+				let document_clicked = el.getAttribute("id");
+				handleDocumentUpload(document_clicked, documentsArray[document_clicked]);
+			})
 		);
 
 		document.querySelectorAll(".remove-doc").forEach((el) =>
-		el.addEventListener("click", (event) => {
-			let document_clicked = el.getAttribute("remove-id");
+			el.addEventListener("click", (event) => {
+				let document_clicked = el.getAttribute("remove-id");
 
-			if (documentsArray[document_clicked]) {
-			delete documentsArray[document_clicked];
-			}
+				if (documentsArray[document_clicked]) {
+					delete documentsArray[document_clicked];
+				}
 
-			document.getElementById(`housing-${document_clicked}`).remove();
-		})
+				document.getElementById(`housing-${document_clicked}`).remove();
+			})
 		);
 	};
 
 	document.querySelectorAll(".create-dispute-other-btn").forEach((el) =>
 		el.addEventListener("click", (event) => {
-		document.getElementById("pills-create-tab").click();
+			document.getElementById("pills-create-tab").click();
 		})
 	);
-
-	console.log(user.permissions);
 
 	return (
 		<>
@@ -431,22 +428,20 @@ const Disputes = () => {
 											id="pills-tab"
 											role="tablist"
 											>
-											{user.permissions && (user.permissions.includes("create dispute")) && (
-												<li className="nav-item" role="presentation">
-													<button
-													className="nav-link"
-													id="pills-create-tab"
-													data-bs-toggle="pill"
-													data-bs-target="#pills-create"
-													type="button"
-													role="tab"
-													aria-controls="pills-create"
-													aria-selected="false"
-													>
-														Create Disputes
-													</button>
-												</li>
-											)}
+											<li className={`nav-item ${user.permissions && (user.permissions.includes("create dispute")) ? `` : `d-none`}`} role="presentation">
+												<button
+												className="nav-link"
+												id="pills-create-tab"
+												data-bs-toggle="pill"
+												data-bs-target="#pills-create"
+												type="button"
+												role="tab"
+												aria-controls="pills-create"
+												aria-selected="false"
+												>
+													Create Disputes
+												</button>
+											</li>
 											<li className="nav-item" role="presentation">
 												<button
 												className="nav-link active"
@@ -777,61 +772,59 @@ const Disputes = () => {
 														<div className="col-lg-9">
 															<div className="row mb-4">
 																<div className="col-lg-6">
-																<div className="input-group">
-																	<span className="input-group-text bg-transparent">
-																	<img
-																		src="/images/search.svg"
-																		className="img-fluid"
-																		alt="search"
-																	/>
-																	</span>
-																	<input
-																	type="search"
-																	className="form-control border-start-0 form-control-height"
-																	placeholder="Search disputes..."
-																	value={searchQuery}
-																	onChange={handleSearchChange}
-																	/>
-																</div>
-																</div>
-
-																{user.permissions && (user.permissions.includes("create dispute")) && (
-																	<div className="col-lg-6">
-																		<div className="d-flex align-items-center justify-content-between gap-15">
-																			<a
-																			className="btn btn-size btn-outline-light text-medium px-4"
-																			data-bs-toggle="collapse"
-																			href="#collapseFilter"
-																			role="button"
-																			aria-expanded="false"
-																			aria-controls="collapseFilter"
-																			>
-																			<img
-																				src="/images/filter.svg"
-																				className="img-fluid me-2"
-																				alt=""
-																			/>{" "}
-																			Filters
-																			</a>
-
-																			<button
-																			className="btn btn-size btn-outline-light text-medium px-4"
-																			onClick={sortDisputes}
-																			>
-																			<img
-																				src="/images/sort.svg"
-																				className="img-fluid me-2"
-																				alt=""
-																			/>{" "}
-																			Sort
-																			</button>
-
-																			<button className="btn btn-size btn-main-outline-primary px-4 w-100 create-dispute-other-btn">
-																			Create dispute
-																			</button>
-																		</div>
+																	<div className="input-group">
+																		<span className="input-group-text bg-transparent">
+																		<img
+																			src="/images/search.svg"
+																			className="img-fluid"
+																			alt="search"
+																		/>
+																		</span>
+																		<input
+																		type="search"
+																		className="form-control border-start-0 form-control-height"
+																		placeholder="Search disputes..."
+																		value={searchQuery}
+																		onChange={handleSearchChange}
+																		/>
 																	</div>
-																)}
+																</div>
+
+																<div className="col-lg-6">
+																	<div className="d-flex align-items-center justify-content-between gap-15">
+																		<a
+																		className="btn btn-size btn-outline-light text-medium px-4"
+																		data-bs-toggle="collapse"
+																		href="#collapseFilter"
+																		role="button"
+																		aria-expanded="false"
+																		aria-controls="collapseFilter"
+																		>
+																		<img
+																			src="/images/filter.svg"
+																			className="img-fluid me-2"
+																			alt=""
+																		/>{" "}
+																		Filters
+																		</a>
+
+																		<button
+																		className="btn btn-size btn-outline-light text-medium px-4"
+																		onClick={sortDisputes}
+																		>
+																		<img
+																			src="/images/sort.svg"
+																			className="img-fluid me-2"
+																			alt=""
+																		/>{" "}
+																		Sort
+																		</button>
+
+																		<button className={`btn btn-size btn-main-outline-primary px-4 w-100 create-dispute-other-btn ${user.permissions && (user.permissions.includes("create dispute")) ? `` : `d-none`}`}>
+																			Create dispute
+																		</button>
+																	</div>
+																</div>
 															</div>
 														</div>
 													</div>
@@ -1069,18 +1062,6 @@ const Disputes = () => {
 															</tr>
 														</thead>
 														<tbody>
-															<tr>
-															<td
-																colSpan={6}
-																className={`text-center fetching-data`}
-															>
-																<p>
-																<i className="spinner-border text-success"></i>
-																</p>
-																<p className="h5">Fetching data...</p>
-															</td>
-															</tr>
-
 															{getPendingDisputes.length ? (
 															filteredDisputes.map((dispute) => (
 																<tr key={dispute._id}>

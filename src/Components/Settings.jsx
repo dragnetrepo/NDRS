@@ -11,6 +11,12 @@ const Settings = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [industries, setIndustries] = useState([]);
+  const [allowedRoleChangeUsers, setAllowedRoleChangeUsers] = useState([
+	  "Ministry Admin", "National Union Admin", "Union Branch Admin", "employers"
+  ]);
+  const [allowedEditOrgInfo, setAllowedEditOrgInfo] = useState([
+	  "National Union Admin", "Union Branch Admin", "Employers"
+  ]);
 
   const [avatarImage, setAvatarImage] = useState("/images/download.png");
   const [user, setuser] = useState({
@@ -121,9 +127,6 @@ const Settings = () => {
     }
   };
 
-  // const onHandleTwoFactorAuth = (event) => {
-  //  ;
-  // };
   const onHandleChangeOrganization = (e) => {
     setOrganization({
       ...organization,
@@ -131,32 +134,6 @@ const Settings = () => {
     });
   };
 
-  // const handleOrganization = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-  //     const response = await fetch(baseUrl + "/api/edit/organization-profile", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Accept: "application/json",
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //       body: JSON.stringify(organization),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-
-  //     const data = await response.json();
-  //     fetchOrganization();
-  //     toast.success("Organization has been updated!");
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
 
   const onHandleChangePassword = (e) => {
     setChangePassword({ ...changePassword, [e.target.name]: e.target.value });
@@ -458,9 +435,7 @@ const Settings = () => {
                             </button>
                           </li>
 
-                          {user.user_role?.union_name ||
-                          user.user_role?.union_branch_name ||
-                          user.user_role?.union_sub_branch_name ? (
+                          {allowedEditOrgInfo.includes(user.user_role?.role_name) ? (
                             <li className="nav-item" role="presentation">
                               <button
                                 className="nav-link"
@@ -718,31 +693,18 @@ const Settings = () => {
                                                 </a>
                                               </div>
                                             ) : null}
-                                            <div className="mb-4">
-                                              <label className="form-label">
-                                                Role
-                                              </label>
-                                              <input
-                                                type="text"
-                                                className="form-control form-control-height"
-                                                placeholder="Enter your phone number"
-                                                value={
-                                                  user.user_role?.role_name
-                                                }
-                                                disabled
-                                                onChange={onHandleChange}
-                                              />
-                                              <a
-                                                href="#"
-                                                className="text-main-primary"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#roleModal"
-                                              >
-                                                <p className="mb-0 mt-1">
-                                                  Request new role
-                                                </p>
-                                              </a>
-                                            </div>
+
+											<div className="mb-4">
+												<label className="form-label">Role</label>
+												<input type="text" className="form-control form-control-height" placeholder="Enter your phone number" value={user.user_role?.role_name} disabled onChange={onHandleChange} />
+												{(allowedRoleChangeUsers.includes(user.user_role?.role_name)) ? (
+													<a href="#" className="text-main-primary" data-bs-toggle="modal" data-bs-target="#roleModal">
+														<p className="mb-0 mt-1">
+															Request new role
+														</p>
+													</a>
+												) : null}
+											</div>	
                                           </div>
                                         </div>
                                       </form>

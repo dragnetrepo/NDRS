@@ -21,9 +21,9 @@ const MainNavbarInc = ({ sidebar, profileUser }) => {
       // If token is not available, navigate back to the login page
       navigate("/login");
     }
-    fetchBranches();
-    fetchOrganizations();
-    fetchUnions();
+    // fetchBranches();
+    // fetchOrganizations();
+    // fetchUnions();
 
 	if (!profileUser) {
 		fetchProfile();
@@ -104,58 +104,6 @@ const fetchProfile = async () => {
       console.error("Error fetching data:", error.message);
     }
   };
-
-  const fetchBranches = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        throw new Error("User is not logged in."); // Handle case where user is not logged in
-      }
-
-      const res = await fetch(baseUrl + "/api/union/branch", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
-      }
-
-      const data = await res.json();
-      setBranches(data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  };
-
-  const fetchOrganizations = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        throw new Error("User is not logged in."); // Handle case where user is not logged in
-      }
-
-      const res = await fetch(baseUrl + "/api/union/organizations", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch data."); // Handle failed request
-      }
-
-      const data = await res.json();
-      setOrganizations(data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
-  };
-
-  console.log(user.permissions ? user.permissions : null);
 
   return (
     <nav className="flex-none navbar navbar-vertical navbar-expand-lg show vh-lg-100 bg-custom-color px-0 py-2 navbar-light" id="sidebar" style={{ display: sidebar ? "block" : "none" }}>
@@ -248,7 +196,7 @@ const fetchProfile = async () => {
             <p className="mb-0 sub-text-sidebar mt-4">Tools</p>
 
             <ul className="navbar-nav flex-column sidebar-list list-unstyled py-3 flex-grow-1">
-				{user.permissions && (user.permissions.includes("invite users") && (user.permissions.includes("edit users status") || user.permissions.includes("edit roles and permissions"))) && (
+				{user.permissions && (user.permissions.includes("invite users") && (user.permissions.includes("edit users status") && user.permissions.includes("edit roles and permissions"))) && (
 					<li className="nav-item">
 						<NavLink className="nav-link" activeclassname="nav-active" to="/users">
 							<img src="/images/users.svg" className="img-fluid" alt="" />{" "}
