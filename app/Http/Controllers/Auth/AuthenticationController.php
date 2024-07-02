@@ -158,6 +158,34 @@ class AuthenticationController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function resend_validate_email(ValidateEmailRequest $request)
+    {
+        try {
+            $get_valid_code = EmailValidation::where("email",$request->email)->first();
+
+            if ($get_valid_code) {
+                $message_body = "<p>Hello, there";
+                $message_body .= "<p>We hope this email finds you well.</p>";
+                $message_body .= "<p>An account was created with your email address (".$request->email."). To verify your email address, kindly copy the code below to verify your account.</p>";
+                $message_body .= "<p>$get_valid_code->code</p>";
+                $message_body .= "<p>If you did not initiate this request, kindly ignore this email or you can contact us at ".env("CONTACT_EMAIL")." for more information.</p>";
+                $message_body .= "<p>Cheers,</p>";
+                $message_body .= "<p>".env("APP_NAME")." Team</p>";
+
+                $message_sent = $this->outgoing_messages->send_message(0, $request->email, "account verification", "email", "Verify your Email", $message_body);
+
+                $this->response["status"] = Response::HTTP_OK;
+                $this->response["message"] = "An invitation has been sent to your inbox successfully! Kindly verify your email by checking your inbox for a verification link in order to continue";
+            }
+
+        } catch (\Throwable $th) {
+            $this->response["message"] = "We encountered an error while trying to send you an email. Kindly try again. If error persists, please contact Tech Support";
+            Log::error($th->getMessage());
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function confirm_email_code(ConfirmEmailValidation $request)
     {
         $email_valid = EmailValidation::where("email", $request->email)->where("status", "pending")->where("type", "registration")->orderBy("id", "desc")->first();
@@ -307,7 +335,7 @@ class AuthenticationController extends Controller
                     "created_at" => Carbon::now()
                 ]);
 
-                $password_reset_url = url('/reset-password/'.$password_reset_token);
+                $password_reset_url = env("WEBAPP_URL").('/reset-password/'.$password_reset_token);
 
                 $message_body = "<p>Hello, ".$user->first_name;
                 $message_body .= "<p>We hope this email finds you well.</p>";
@@ -362,7 +390,7 @@ class AuthenticationController extends Controller
                 $user->password = Hash::make($request->password);
                 $user->save();
 
-                $valid_token->delete();
+                DB::statement("DELETE FROM `password_resets` WHERE `token` = '".$request->reset_token."' LIMIT 1;");
 
                 $this->response["status"] = Response::HTTP_OK;
                 $this->response["message"] = "Your password has been reset successfully!";

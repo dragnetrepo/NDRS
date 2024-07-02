@@ -103,6 +103,14 @@ return [
             'throw' => false,
             'main_folder' => env("MAIN_FOLDER_PREFIX").'discussion-documents',
         ],
+        'reports' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/reports',
+            'url' => env('ASSET_URL').'reports',
+            'visibility' => 'public',
+            'throw' => false,
+            'main_folder' => env("MAIN_FOLDER_PREFIX").'reports',
+        ],
 
     ],
 

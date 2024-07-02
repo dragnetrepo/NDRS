@@ -50,6 +50,7 @@ Route::name("api.")->middleware(['cors'])->withoutMiddleware([\Illuminate\Routin
     Route::post("/login", [AuthenticationController::class, "login"])->name("log-in");
     Route::post("/two-factor-authentication", [AuthenticationController::class, "two_factor_authentication"])->name("two-factor-auth");
     Route::post("/reset-password", [AuthenticationController::class, "reset_password"])->name("reset-password");
+    Route::post("/resend-verification-code", [AuthenticationController::class, "resend_validate_email"])->name("resend-verification-code");
     Route::get("/validate-password-reset-token", [AuthenticationController::class, "validate_password_reset_token"])->name("validate-reset-password-token");
     Route::post("/confirm-reset-password", [AuthenticationController::class, "confirm_password_reset"])->name("reset-password");
 

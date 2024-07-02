@@ -20,6 +20,7 @@ class CustomUserPermission
     {
         $union_set = $request->header("ndrs-union");
         $user_id = $request->user()->id;
+        $email = $request->user()->email;
         if ($union_set) {
             $union = Union::find($union_set);
 

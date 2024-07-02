@@ -138,6 +138,10 @@ class UnionBranchController extends Controller
 
             $this->response["status"] = Response::HTTP_OK;
             $this->response["data"] = $data;
+            $this->response["union"] = [
+                "_id" => $user_role->union->id,
+                "name" => $user_role->union->name,
+            ];
         }
 
         return response()->json($this->response, $this->response["status"]);
@@ -354,7 +358,7 @@ class UnionBranchController extends Controller
                             "_id" => $assigned_user->id,
                             "name" => trim(($user_deets->last_name ?? "").' '.($user_deets->first_name ?? "")),
                             "photo" => get_model_file_from_disk(($user_deets->display_picture ?? ""), "profile_photos"),
-                            "role" => $assigned_user->role->name ?? "",
+                            "role" => $assigned_user->role->display_name ?? "",
                             "email" => $user_deets->email,
                             "status" => $assigned_user->status,
                             "date_joined" => $assigned_user->updated_at->format("j F Y"),

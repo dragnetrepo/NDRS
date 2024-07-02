@@ -237,10 +237,25 @@ if (!function_exists("update_user_setting")) {
 if (!function_exists("get_case_dispute")) {
     function get_case_dispute($case_id = 0, $user_id = 0, $status = "") {
         if ($user_id) {
-            $role = request()->user()->roles->first();
+            $user = User::find($user_id);
+            $union_set = request()->header("ndrs-union");
+            if ($union_set) {
+                $member_role = $user->member_role->where("union_id", $union_set);
+            }
+            else {
+                $member_role = $user->member_role;
+            }
 
-            if ($role->hasPermissionTo("approve dispute")) {
-                $user_id = 0;
+            $role = $member_role->first();
+
+            if ($role) {
+                $find_role = Role::find($role->role_id);
+
+                if ($find_role) {
+                    if ($find_role->hasPermissionTo("approve dispute")) {
+                        $user_id = 0;
+                    }
+                }
             }
         }
 
@@ -341,11 +356,18 @@ if (!function_exists("send_out_case_invitation")) {
 if (!function_exists("send_out_board_member_invitation")) {
     function send_out_board_member_invitation($board_name, $user_id, $user_email) {
         $outgoing_messages = new OutgoingMessages();
+        $user = User::where("email", $user_email)->first();
 
         $subject = "New Invite to be a part of $board_name";
         $message_body = "<p>Hello there,";
         $message_body .= "<p>We hope this email finds you well.</p>";
         $message_body .= "<p>You have been invited to be a part of $board_name as a board member.</p>";
+        if ($user) {
+            $message_body .= "<p>Kindly click <a href='".env("WEBAPP_URL")."/login"."'>here</a> to log into your account and tend to disputes affiliated with $board_name.</p>";
+        }
+        else {
+            $message_body .= "<p>Kindly click <a href='".env("WEBAPP_URL")."/createAccount"."'>here</a> to create an account and tend to disputes affiliated with $board_name.</p>";
+        }
         $message_body .= "<p>If you feel this was sent to you in error, kindly ignore this email or you can contact us at ".env("CONTACT_EMAIL")." for more information.</p>";
         $message_body .= "<p>Cheers,</p>";
         $message_body .= "<p>".env("APP_NAME")." Team</p>";

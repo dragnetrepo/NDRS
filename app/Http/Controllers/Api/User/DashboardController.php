@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Exports\ReportsExport;
 use App\Http\Controllers\Controller;
 use App\Models\CaseDiscussionMessage;
 use Illuminate\Http\Request;
@@ -10,13 +11,17 @@ use App\Models\CaseDocument;
 use App\Models\CaseDispute;
 use App\Models\CaseDisputeStatusHistory;
 use App\Models\Notification;
+use App\Models\SettlementBodyMember;
 use App\Models\UnionBranch;
 use App\Models\UnionSubBranch;
+use App\Models\UnionUserRole;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DashboardController extends Controller
 {
@@ -57,6 +62,14 @@ class DashboardController extends Controller
                 "data" => []
             ],
         ];
+
+        SettlementBodyMember::where("email", request()->user()->email)->orWhere("user_id", $user_id)->where("status", "pending")->update([
+            "status" => "active"
+        ]);
+
+        UnionUserRole::where("user_id", $user_id)->where("status", "pending")->update([
+            "status" => "active"
+        ]);
 
         $pending_disputes = CaseDispute::pending()->count();
         $data["pending_disputes"]["count"] = number_format($pending_disputes);
@@ -521,6 +534,17 @@ class DashboardController extends Controller
                     }
                 }
             }
+        }
+
+        if ($request->export_data) {
+            $file_name = 'reports-'.time().'.csv';
+            Excel::store(new ReportsExport($data), $file_name, 'reports');
+
+            // Generate a download link
+            $downloadLink = get_model_file_from_disk($file_name, 'reports');
+            $data = [
+                "download_link" => $downloadLink
+            ];
         }
 
         $this->response["data"] = $data;

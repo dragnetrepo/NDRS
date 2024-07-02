@@ -320,7 +320,7 @@ class UnionController extends Controller
                             "_id" => $assigned_user->id,
                             "name" => trim(($user_deets->last_name ?? "").' '.($user_deets->first_name ?? "")),
                             "photo" => get_model_file_from_disk(($user_deets->display_picture ?? ""), "profile_photos"),
-                            "role" => $assigned_user->role->name ?? "",
+                            "role" => $assigned_user->role->display_name ?? "",
                             "email" => $user_deets->email,
                             "status" => $assigned_user->status,
                             "date_joined" => $assigned_user->updated_at->format("j F Y"),
@@ -346,6 +346,7 @@ class UnionController extends Controller
         $data = [];
 
         if ($union) {
+            // echo("<pre>".$request->admin_id."</pre>");
             if ($remove_admin = $union->users->where("id", $request->admin_id)->first()) {
                 if ($remove_admin->delete()) {
                     $this->response["message"] = "Union Admin has been removed successfully!";

@@ -14,6 +14,6 @@ class SettlementBodyMember extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->where("id", $this->user_id)->orwhere("email", $this->email);
     }
 }
