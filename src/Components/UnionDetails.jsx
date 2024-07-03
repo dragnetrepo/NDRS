@@ -32,6 +32,7 @@ const UnionDetails = () => {
 	});
 	const [branches, setBranches] = useState([]);
 	const [sidebar, setsidebar] = useState(true);
+	const [isRemovingAdmin, setRemovingAdmin] = useState(false);
 
 	const toggleSideBar = () => {
 		setsidebar(!sidebar);
@@ -251,6 +252,7 @@ const UnionDetails = () => {
 
 	const handleDelete = async (e, admin_id) => {
 		e.preventDefault();
+		setRemovingAdmin(true);
 
 		try {
 			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -279,8 +281,12 @@ const UnionDetails = () => {
 			fetchBranches(id);
 			fetchUnionDisputes(id);
 			fetchUnionAdmin(id);
+			document.getElementById("remove-admin-modal-close").click();
 		} catch (error) {
 			console.error("Error fetching data:", error);
+		}
+		finally {
+			setRemovingAdmin(false);
 		}
 	};
 
@@ -1176,7 +1182,7 @@ const UnionDetails = () => {
 			<div className="modal-dialog modal-dialog-centered">
 				<div className="modal-content border-0 p-lg-4 p-3">
 					<div className="text-end">
-						<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						<button type="button" id="remove-admin-modal-close" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div className="modal-body">
 						<div className="text-center">
@@ -1189,8 +1195,8 @@ const UnionDetails = () => {
 							{selectedAdmin?.name} ({selectedAdmin?.role}){" "}
 						</p>
 
-						<button className="btn btn-size btn-main-danger w-100" onClick={(e) => handleDelete(e, selectedAdminId) }>
-							Yes, Remove Admin
+						<button className="btn btn-size btn-main-danger w-100" onClick={(e) => handleDelete(e, selectedAdminId) } disabled={isRemovingAdmin}>
+							{isRemovingAdmin ? `Removing Admin...` : `Yes, Remove Admin`}
 						</button>
 					</div>
 				</div>

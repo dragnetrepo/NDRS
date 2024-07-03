@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 const Users = () => {
 	const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
 	const [roles, setRoles] = useState([]);
+	const [permissions, setPermissions] = useState([]);
 	const [getBoardOfEnquire, setGetBoardOfEnquire] = useState([]);
 	const [getDisputes, setGetDisputes] = useState([]);
 	const [getIndividualUsers, setIndividualUsers] = useState([]);
@@ -38,9 +39,11 @@ const Users = () => {
 		member_name: "",
 	});
 	const [isChecked, setIsChecked] = useState(false);
+	const [isPermChecked, setIsPermChecked] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAdminLoading, setIsAdminLoading] = useState(true);
 	const [isSettlementBodyLoading, setIsSettlementBodyLoading] = useState(true);
+	const [isFinishingCustomRoleCreate, setisFinishingCustomRoleCreate] = useState(false);
 	const [isSettlementBodyMemberLoading, setIsSettlementBodyMemberLoading] =
 		useState(false);
 	const [isSettlementBodyMemberDisabled, setIsSettlementBodyMemberDisabled] =
@@ -131,6 +134,7 @@ const Users = () => {
 		getAllIndividualUsers();
 		getAllAdminRoles();
 		getAllSettlementBodies();
+		fetchAllPermmissions();
 	}, []);
 
 	const [searchQuery, setSearchQuery] = useState("");
@@ -375,32 +379,40 @@ const Users = () => {
 
 	const CreateCustomRole = async (e) => {
 		e.preventDefault();
+		setisFinishingCustomRoleCreate(true);
 
 		try {
-		const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-		const response = await fetch(baseUrl + "/api/users/create-role", {
-			method: "POST",
-			headers: {
-			"Content-Type": "application/json",
-			Accept: "application/json",
-			Authorization: `Bearer ${localStorage.getItem("token")}`,
-			},
-			body: JSON.stringify(customRole), // Pass FormData object as the body
-		});
+			const response = await fetch(baseUrl + "/api/users/create-role", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+				body: JSON.stringify({
+					name: customRole.name,
+					permissions: isPermChecked
+				}), // Pass FormData object as the body
+			});
 
-		if (!response.ok) {
-			throw new Error("Network response was not ok");
-		}
-		fetchdata();
-		const data = await response.json();
-		setcustomRole({
-			name: "",
-		});
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+			
+			const data = await response.json();
+			setcustomRole({
+				name: "",
+			});
 
-		// window.location.reload();
-		toast.success("custom role has been created!");
+			fetchdata();
+			document.getElementById("close-custom-role-modal").click();
+			// window.location.reload();
+			toast.success("custom role has been created!");
 		} catch (error) {
-		console.error("Error fetching data:", error);
+			console.error("Error fetching data:", error);
+		}
+		finally {
+			setisFinishingCustomRoleCreate(false);
 		}
 	};
 
@@ -841,28 +853,33 @@ const Users = () => {
 		}
 	};
 
-	const changeStatus = async (e, id, status) => {
-		e.preventDefault();
-
+	const fetchAllPermmissions = async () => {
 		try {
-		const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-		const response = await fetch(baseUrl + `/api/users/change-status/${id}`, {
-			method: "POST",
-			headers: {
-			"Content-Type": "application/json",
-			Accept: "application/json",
-			Authorization: `Bearer ${localStorage.getItem("token")}`,
-			},
-			body: JSON.stringify({ status }),
-		});
+			const response = await fetch(baseUrl + `/api/users/permissions`, {
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				}
+			});
 
-		if (!response.ok) {
-			throw new Error("Network response was not ok");
-		}
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
 
-		const data = await response.json();
+			const data = await response.json();
+			setPermissions(data.data);
 
-		// toast.success("Roles has been restored to default!");
+			const initialCheckboxes = {};
+			if (Object.values(data.data).length) {
+				Object.values(data.data).forEach(items=> (
+					Object.values(items).forEach(element => {
+						initialCheckboxes[element._id] = 1;
+					})
+				));
+
+				setIsPermChecked(initialCheckboxes);
+			}
 		} catch (error) {
 		console.error("Error fetching data:", error);
 		}
@@ -1006,499 +1023,858 @@ const Users = () => {
 		}
 	};
 
+	const handlePermissionStateChange = (e) => {
+		const { value, checked } = e.target;
+		setIsPermChecked({ ...isPermChecked, [value]: (checked ? 1 : 0) })
+	}
+
 	return (
 		<>
 		<div className="main-admin-container bg-light dark-mode-active">
 			<div className="d-flex flex-column flex-lg-row h-lg-100">
-			<MainNavbarInc sidebar={sidebar} />
+				<MainNavbarInc sidebar={sidebar} />
 
-			<div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-				<TopBarInc toggleSideBar={toggleSideBar} />
+				<div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
+					<TopBarInc toggleSideBar={toggleSideBar} />
 
-				<main className="admin-content">
-				<div className="header-box py-5">
-					<div className="container">
-					<h2>Users & Groups </h2>
-					</div>
-				</div>
+					<main className="admin-content">
+						<div className="header-box py-5">
+							<div className="container">
+							<h2>Users & Groups </h2>
+							</div>
+						</div>
 
-				<div className="content-main">
-					<div className="container">
-					<div className="row">
-						<div className="col-lg-12">
-						<div className="margin-top-negative">
-							<ul
-							className="nav custom-tab nav-underline mb-3"
-							id="pills-tab"
-							role="tablist"
-							>
-								{user.permissions && user.permissions.includes("invite users") && (
-									<li className="nav-item" role="presentation">
-										<button
-										className="nav-link active"
-										id="pills-invite-tab"
-										data-bs-toggle="pill"
-										data-bs-target="#pills-invite"
-										type="button"
-										role="tab"
-										aria-controls="pills-invite"
-										aria-selected="true"
-										>
-										Invite
-										</button>
-									</li>
-								)}
-								<li className="nav-item" role="presentation">
-									<button
-									className={`nav-link ${user.permissions && !user.permissions.includes("invite users") ? `active` : ``}`}
-									id="pills-individual-tab"
-									data-bs-toggle="pill"
-									data-bs-target="#pills-individual"
-									type="button"
-									role="tab"
-									aria-controls="pills-individual"
-									aria-selected="false"
-									>
-									All Individual Users
-									</button>
-								</li>
-								<li className="nav-item" role="presentation">
-									<button
-									className="nav-link"
-									id="pills-claimants-tab"
-									data-bs-toggle="pill"
-									data-bs-target="#pills-claimants"
-									type="button"
-									role="tab"
-									aria-controls="pills-claimants"
-									aria-selected="false"
-									>
-									Admins & Claimants
-									</button>
-								</li>
-								<li className="nav-item" role="presentation">
-									<button
-									className="nav-link"
-									id="pills-settlement-tab"
-									data-bs-toggle="pill"
-									data-bs-target="#pills-settlement"
-									type="button"
-									role="tab"
-									aria-controls="pills-settlement"
-									aria-selected="false"
-									>
-									Settlement Management Bodies
-									</button>
-								</li>
-								{user.permissions && user.permissions.includes("edit roles and permissions") && (
-									<li className="nav-item" role="presentation">
-										<button
-										className="nav-link"
-										id="pills-role-tab"
-										data-bs-toggle="pill"
-										data-bs-target="#pills-role"
-										type="button"
-										role="tab"
-										aria-controls="pills-role"
-										aria-selected="false"
-										>
-										Roles & Permissions
-										</button>
-									</li>
-								)}
-							</ul>
-							<div className="tab-content" id="pills-tabContent">
-								{user.permissions && user.permissions.includes("invite users") && (
-									<div
-										className="tab-pane fade show active"
-										id="pills-invite"
-										role="tabpanel"
-										aria-labelledby="pills-invite-tab"
-										tabIndex="0"
-									>
-										<div className="row mt-5">
-										<div className="col-lg-3">
-											<div
-											className="nav flex-column tab-item nav-pills gap-10"
-											id="v-pills-tab"
-											role="tablist"
-											aria-orientation="vertical"
-											>
-											<button
-												className="nav-link tab-v text-start active"
-												id="v-pills-bulk-tab"
-												data-bs-toggle="pill"
-												data-bs-target="#v-pills-bulk"
-												type="button"
-												role="tab"
-												aria-controls="v-pills-bulk"
-												aria-selected="true"
-											>
-												Bulk Users Upload
-											</button>
-											<button
-												className="nav-link tab-v text-start"
-												id="v-pills-single-tab"
-												data-bs-toggle="pill"
-												data-bs-target="#v-pills-single"
-												type="button"
-												role="tab"
-												aria-controls="v-pills-single"
-												aria-selected="false"
-											>
-												Single User Invite
-											</button>
-											</div>
-										</div>
-
-										<div className="col-lg-9">
-											<div
-											className="tab-content"
-											id="v-pills-tabContent"
-											>
-											<div
-												className="tab-pane fade show active"
-												id="v-pills-bulk"
-												role="tabpanel"
-												aria-labelledby="v-pills-bulk-tab"
-												tabIndex="0"
-											>
-												<div className="card mb-4">
-												<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-													<h3 className="mb-lg-0 mb-3">
-													Bulk Invites
-													</h3>
-												</div>
-
-												<div className="card-body p-4">
-													<div className="row mb-4">
-													<div className="col-lg-5 mb-lg-0 mb-3">
-														<h6 className="step-text">
-														Step 1.
-														</h6>
-														<p className="text-muted-3">
-														Download the CSV template for any
-														user type or settlement bodies
-														</p>
-													</div>
-													<div className="col-lg-5 offset-lg-2">
+						<div className="content-main">
+							<div className="container">
+								<div className="row">
+									<div className="col-lg-12">
+										<div className="margin-top-negative">
+											<ul className="nav custom-tab nav-underline mb-3" id="pills-tab" role="tablist">
+												{user.permissions && user.permissions.includes("invite users") && (
+													<li className="nav-item" role="presentation">
 														<button
-														className="btn btn-main-outline-primary btn-size"
-														onClick={handleDownload}
+														className="nav-link active"
+														id="pills-invite-tab"
+														data-bs-toggle="pill"
+														data-bs-target="#pills-invite"
+														type="button"
+														role="tab"
+														aria-controls="pills-invite"
+														aria-selected="true"
 														>
-														Download CSV template
+														Invite
 														</button>
-													</div>
-													</div>
-
-													<div className="row mb-4">
-													<div className="col-lg-5 mb-lg-0 mb-3">
-														<h6 className="step-text">
-														Step 2.
-														</h6>
-														<p className="text-muted-3">
-														Fill in the users details into the
-														CSV file
-														</p>
-													</div>
-													<div className="col-lg-5 offset-lg-2">
-														<img
-														src="images/csv.png"
-														className="img-fluid"
-														/>
-													</div>
-													</div>
-
-													<div className="row mb-4">
-													<div className="col-lg-5 mb-lg-0 mb-3">
-														<h6 className="step-text">
-														Step 3.
-														</h6>
-														<p className="text-muted-3">
-														Upload the filled CSV file
-														</p>
-													</div>
-													<div className="col-lg-5 offset-lg-2">
-														<div className="upload-box text-center px-3 py-4">
-														<div className="text-center mb-2">
-															<img
-															src="images/file_upload_states.svg"
-															className="img-fluid"
-															/>
-														</div>
-														<p className="text-muted-3 mb-1">
-															Drag and drop to upload
-														</p>
-														<p className="font-sm text-muted">
-															CSV (max. 50mb)
-														</p>
-
-														<img
-															src="images/or-line.svg"
-															className="img-fluid"
-														/>
-
-														<div className="mt-3">
-															<input
-															type="file"
-															id="profile"
-															ref={fileInputRef}
-															style={{
-																visibility: "hidden",
-																height: "0",
-															}}
-															onChange={handleFileChange}
-															/>
-															<button
-															className="btn btn-main-primary btn-size mx-auto"
-															onClick={handleButtonClick}
-															>
-															<i className="bi bi-upload me-2"></i>{" "}
-															Upload filled CSV
-															</button>
-														</div>
-														</div>
-													</div>
-													</div>
-												</div>
-												</div>
-											</div>
-
-											<div
-												className="tab-pane fade"
-												id="v-pills-single"
-												role="tabpanel"
-												aria-labelledby="v-pills-single-tab"
-												tabIndex="0"
-											>
-												<div className="card mb-4">
-												<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
-													<h3 className="mb-lg-0 mb-3">
-													Single Invite
-													</h3>
-
-													<a
-													href=""
-													className="btn btn-size btn-main-primary"
-													onClick={handleSubmitUser}
+													</li>
+												)}
+												<li className="nav-item" role="presentation">
+													<button
+													className={`nav-link ${user.permissions && !user.permissions.includes("invite users") ? `active` : ``}`}
+													id="pills-individual-tab"
+													data-bs-toggle="pill"
+													data-bs-target="#pills-individual"
+													type="button"
+													role="tab"
+													aria-controls="pills-individual"
+													aria-selected="false"
 													>
-													Send Invite
-													</a>
-												</div>
-												<div className="card-body p-4">
-													<form>
-													<div className="row mt-4">
-														<div className="col-lg-12">
-														<div className="mb-4">
-															<label className="form-label">
-															User’s email
-															</label>
-															<input
-															type="email"
-															className="form-control form-control-height"
-															name="email"
-															placeholder="Enter User’s email"
-															value={users.email}
-															onChange={onHandleChangeUser}
-															/>
-														</div>
-
-														<div className="mb-4">
-															<label className="form-label">
-															User’s role
-															</label>
-															<select
-															className="form-select form-control-height"
-															name="role"
-															onChange={onHandleChangeUser}
-															value={users.role}
+													All Individual Users
+													</button>
+												</li>
+												<li className="nav-item" role="presentation">
+													<button
+													className="nav-link"
+													id="pills-claimants-tab"
+													data-bs-toggle="pill"
+													data-bs-target="#pills-claimants"
+													type="button"
+													role="tab"
+													aria-controls="pills-claimants"
+													aria-selected="false"
+													>
+													Admins & Claimants
+													</button>
+												</li>
+												<li className="nav-item" role="presentation">
+													<button
+													className="nav-link"
+													id="pills-settlement-tab"
+													data-bs-toggle="pill"
+													data-bs-target="#pills-settlement"
+													type="button"
+													role="tab"
+													aria-controls="pills-settlement"
+													aria-selected="false"
+													>
+													Settlement Management Bodies
+													</button>
+												</li>
+												{user.permissions && user.permissions.includes("edit roles and permissions") && (
+													<li className="nav-item" role="presentation">
+														<button
+														className="nav-link"
+														id="pills-role-tab"
+														data-bs-toggle="pill"
+														data-bs-target="#pills-role"
+														type="button"
+														role="tab"
+														aria-controls="pills-role"
+														aria-selected="false"
+														>
+														Roles & Permissions
+														</button>
+													</li>
+												)}
+											</ul>
+											<div className="tab-content" id="pills-tabContent">
+												{user.permissions && user.permissions.includes("invite users") && (
+													<div
+														className="tab-pane fade show active"
+														id="pills-invite"
+														role="tabpanel"
+														aria-labelledby="pills-invite-tab"
+														tabIndex="0"
+													>
+														<div className="row mt-5">
+														<div className="col-lg-3">
+															<div
+															className="nav flex-column tab-item nav-pills gap-10"
+															id="v-pills-tab"
+															role="tablist"
+															aria-orientation="vertical"
 															>
-															<option>
-																Type or select a user type
-															</option>
-															{roles.map((role) => (
-																<option
-																key={role._id}
-																value={role._id}
-																>
-																{role.name}
-																</option>
-															))}
-															</select>
-														</div>
-
-														{user.permissions && user.permissions.includes("assign users cases") && (
-															<div className="mb-4">
-																<label className="form-label">
-																Invite to a dispute case{" "}
-																<span className="text-muted-3">
-																	(optional)
-																</span>
-																</label>
-																<select
-																className="form-select form-control-height"
-																name="case_id"
-																onChange={onHandleChangeUser}
-																value={users.case_id}
-																>
-																<option>
-																	Type or select a dispute
-																	case
-																</option>
-																{getDisputes.map(
-																	(dispute) => (
-																	<option
-																		key={dispute._id}
-																		value={dispute._id}
-																	>
-																		{dispute.case_no}
-																	</option>
-																	)
-																)}
-																</select>
-															</div>
-														)}
-														</div>
-													</div>
-													</form>
-												</div>
-												</div>
-											</div>
-											</div>
-										</div>
-										</div>
-									</div>
-								)}
-
-								<div
-									className={`tab-pane fade ${user.permissions && !user.permissions.includes("invite users") ? `show active` : ``}`}
-									id="pills-individual"
-									role="tabpanel"
-									aria-labelledby="pills-individual-tab"
-									tabIndex="0"
-								>
-									<div className="row mt-5">
-										<div className="col-lg-12">
-											<div className="card mb-4">
-												<div className="card-body p-4">
-													<div className="row mt-2 mb-4">
-													<div className="col-lg-5">
-														<div className="input-group">
-														<span className="input-group-text bg-transparent">
-															<img
-															src="images/search.svg"
-															className="img-fluid"
-															alt="search"
-															/>
-														</span>
-														<input
-															type="search"
-															className="form-control border-start-0 form-control-height"
-															placeholder="Search here..."
-															value={searchQuery}
-															onChange={handleSearchChange}
-														/>
-														</div>
-													</div>
-
-													<div className="col-lg-7">
-														<div className="d-flex align-items-center justify-content-between gap-15">
-														<div className="d-flex">
-															<a
-															className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
-															onClick={sortindividuals}
+															<button
+																className="nav-link tab-v text-start active"
+																id="v-pills-bulk-tab"
+																data-bs-toggle="pill"
+																data-bs-target="#v-pills-bulk"
+																type="button"
+																role="tab"
+																aria-controls="v-pills-bulk"
+																aria-selected="true"
 															>
-															<img
-																src="images/filter.svg"
-																className="img-fluid"
-															/>{" "}
-															A-Z
-															</a>
-
-															<button className="btn btn-size btn-main-outline-primary px-3">
-															<i className="bi bi-cloud-download me-2"></i>{" "}
-															Export CSV
+																Bulk Users Upload
 															</button>
+															<button
+																className="nav-link tab-v text-start"
+																id="v-pills-single-tab"
+																data-bs-toggle="pill"
+																data-bs-target="#v-pills-single"
+																type="button"
+																role="tab"
+																aria-controls="v-pills-single"
+																aria-selected="false"
+															>
+																Single User Invite
+															</button>
+															</div>
 														</div>
 
-														<p className="text-end mb-0 file-count">
-															All Individual users:{" "}
-															{getIndividualUsers.length}
-														</p>
+														<div className="col-lg-9">
+															<div
+															className="tab-content"
+															id="v-pills-tabContent"
+															>
+															<div
+																className="tab-pane fade show active"
+																id="v-pills-bulk"
+																role="tabpanel"
+																aria-labelledby="v-pills-bulk-tab"
+																tabIndex="0"
+															>
+																<div className="card mb-4">
+																<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
+																	<h3 className="mb-lg-0 mb-3">
+																	Bulk Invites
+																	</h3>
+																</div>
+
+																<div className="card-body p-4">
+																	<div className="row mb-4">
+																	<div className="col-lg-5 mb-lg-0 mb-3">
+																		<h6 className="step-text">
+																		Step 1.
+																		</h6>
+																		<p className="text-muted-3">
+																		Download the CSV template for any
+																		user type or settlement bodies
+																		</p>
+																	</div>
+																	<div className="col-lg-5 offset-lg-2">
+																		<button
+																		className="btn btn-main-outline-primary btn-size"
+																		onClick={handleDownload}
+																		>
+																		Download CSV template
+																		</button>
+																	</div>
+																	</div>
+
+																	<div className="row mb-4">
+																	<div className="col-lg-5 mb-lg-0 mb-3">
+																		<h6 className="step-text">
+																		Step 2.
+																		</h6>
+																		<p className="text-muted-3">
+																		Fill in the users details into the
+																		CSV file
+																		</p>
+																	</div>
+																	<div className="col-lg-5 offset-lg-2">
+																		<img
+																		src="images/csv.png"
+																		className="img-fluid"
+																		/>
+																	</div>
+																	</div>
+
+																	<div className="row mb-4">
+																	<div className="col-lg-5 mb-lg-0 mb-3">
+																		<h6 className="step-text">
+																		Step 3.
+																		</h6>
+																		<p className="text-muted-3">
+																		Upload the filled CSV file
+																		</p>
+																	</div>
+																	<div className="col-lg-5 offset-lg-2">
+																		<div className="upload-box text-center px-3 py-4">
+																		<div className="text-center mb-2">
+																			<img
+																			src="images/file_upload_states.svg"
+																			className="img-fluid"
+																			/>
+																		</div>
+																		<p className="text-muted-3 mb-1">
+																			Drag and drop to upload
+																		</p>
+																		<p className="font-sm text-muted">
+																			CSV (max. 50mb)
+																		</p>
+
+																		<img
+																			src="images/or-line.svg"
+																			className="img-fluid"
+																		/>
+
+																		<div className="mt-3">
+																			<input
+																			type="file"
+																			id="profile"
+																			ref={fileInputRef}
+																			style={{
+																				visibility: "hidden",
+																				height: "0",
+																			}}
+																			onChange={handleFileChange}
+																			/>
+																			<button
+																			className="btn btn-main-primary btn-size mx-auto"
+																			onClick={handleButtonClick}
+																			>
+																			<i className="bi bi-upload me-2"></i>{" "}
+																			Upload filled CSV
+																			</button>
+																		</div>
+																		</div>
+																	</div>
+																	</div>
+																</div>
+																</div>
+															</div>
+
+															<div
+																className="tab-pane fade"
+																id="v-pills-single"
+																role="tabpanel"
+																aria-labelledby="v-pills-single-tab"
+																tabIndex="0"
+															>
+																<div className="card mb-4">
+																<div className="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
+																	<h3 className="mb-lg-0 mb-3">
+																	Single Invite
+																	</h3>
+
+																	<a
+																	href=""
+																	className="btn btn-size btn-main-primary"
+																	onClick={handleSubmitUser}
+																	>
+																	Send Invite
+																	</a>
+																</div>
+																<div className="card-body p-4">
+																	<form>
+																	<div className="row mt-4">
+																		<div className="col-lg-12">
+																		<div className="mb-4">
+																			<label className="form-label">
+																			User’s email
+																			</label>
+																			<input
+																			type="email"
+																			className="form-control form-control-height"
+																			name="email"
+																			placeholder="Enter User’s email"
+																			value={users.email}
+																			onChange={onHandleChangeUser}
+																			/>
+																		</div>
+
+																		<div className="mb-4">
+																			<label className="form-label">
+																			User’s role
+																			</label>
+																			<select
+																			className="form-select form-control-height"
+																			name="role"
+																			onChange={onHandleChangeUser}
+																			value={users.role}
+																			>
+																			<option>
+																				Type or select a user type
+																			</option>
+																			{roles.map((role) => (
+																				<option
+																				key={role._id}
+																				value={role._id}
+																				>
+																				{role.name}
+																				</option>
+																			))}
+																			</select>
+																		</div>
+
+																		{user.permissions && user.permissions.includes("assign users cases") && (
+																			<div className="mb-4">
+																				<label className="form-label">
+																				Invite to a dispute case{" "}
+																				<span className="text-muted-3">
+																					(optional)
+																				</span>
+																				</label>
+																				<select
+																				className="form-select form-control-height"
+																				name="case_id"
+																				onChange={onHandleChangeUser}
+																				value={users.case_id}
+																				>
+																				<option>
+																					Type or select a dispute
+																					case
+																				</option>
+																				{getDisputes.map(
+																					(dispute) => (
+																					<option
+																						key={dispute._id}
+																						value={dispute._id}
+																					>
+																						{dispute.case_no}
+																					</option>
+																					)
+																				)}
+																				</select>
+																			</div>
+																		)}
+																		</div>
+																	</div>
+																	</form>
+																</div>
+																</div>
+															</div>
+															</div>
+														</div>
 														</div>
 													</div>
-													</div>
+												)}
 
-													<div className="row">
+												<div className={`tab-pane fade ${user.permissions && !user.permissions.includes("invite users") ? `show active` : ``}`} id="pills-individual" role="tabpanel" aria-labelledby="pills-individual-tab" tabIndex="0">
+													<div className="row mt-5">
 														<div className="col-lg-12">
-															<table className="table table-list">
-																<thead className="table-light">
-																	<tr>
-																	<th scope="col">
-																		<div>
+															<div className="card mb-4">
+																<div className="card-body p-4">
+																	<div className="row mt-2 mb-4">
+																	<div className="col-lg-5">
+																		<div className="input-group">
+																		<span className="input-group-text bg-transparent">
+																			<img
+																			src="images/search.svg"
+																			className="img-fluid"
+																			alt="search"
+																			/>
+																		</span>
 																		<input
-																			className="form-check-input"
-																			type="checkbox"
-																			id="checkboxNoLabel"
-																			value=""
-																			aria-label="..."
+																			type="search"
+																			className="form-control border-start-0 form-control-height"
+																			placeholder="Search here..."
+																			value={searchQuery}
+																			onChange={handleSearchChange}
 																		/>
 																		</div>
-																	</th>
-																	<th scope="col">Name</th>
-																	<th scope="col">Role</th>
-																	<th scope="col">
-																		Assigned Cases
-																	</th>
-																	<th scope="col">Date added</th>
-																	<th scope="col">Actions</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	{getIndividualUsers.length ? (
-																	filteredDisputes.map((user) => (
-																		<tr key={`ind-${user._id}`}>
-																			<td>
-																				<div>
+																	</div>
+
+																	<div className="col-lg-7">
+																		<div className="d-flex align-items-center justify-content-between gap-15">
+																		<div className="d-flex">
+																			<a
+																			className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
+																			onClick={sortindividuals}
+																			>
+																			<img
+																				src="images/filter.svg"
+																				className="img-fluid"
+																			/>{" "}
+																			A-Z
+																			</a>
+
+																			<button className="btn btn-size btn-main-outline-primary px-3">
+																			<i className="bi bi-cloud-download me-2"></i>{" "}
+																			Export CSV
+																			</button>
+																		</div>
+
+																		<p className="text-end mb-0 file-count">
+																			All Individual users:{" "}
+																			{getIndividualUsers.length}
+																		</p>
+																		</div>
+																	</div>
+																	</div>
+
+																	<div className="row">
+																		<div className="col-lg-12">
+																			<table className="table table-list">
+																				<thead className="table-light">
+																					<tr>
+																					<th scope="col">
+																						<div>
+																						<input
+																							className="form-check-input"
+																							type="checkbox"
+																							id="checkboxNoLabel"
+																							value=""
+																							aria-label="..."
+																						/>
+																						</div>
+																					</th>
+																					<th scope="col">Name</th>
+																					<th scope="col">Role</th>
+																					<th scope="col">
+																						Assigned Cases
+																					</th>
+																					<th scope="col">Date added</th>
+																					<th scope="col">Actions</th>
+																					</tr>
+																				</thead>
+																				<tbody>
+																					{getIndividualUsers.length ? (
+																					filteredDisputes.map((user) => (
+																						<tr key={`ind-${user._id}`}>
+																							<td>
+																								<div>
+																								<input
+																									className="form-check-input"
+																									type="checkbox"
+																									id="checkboxNoLabel"
+																									value=""
+																									aria-label="..."
+																								/>
+																								</div>
+																							</td>
+																							<td>
+																								<div className="d-flex align-items-center avatar-holder">
+																								<div className="position-relative">
+																									<div className="avatar-sm flex-shrink-0">
+																									<img
+																										src={
+																										user.photo ||
+																										"images/download.png"
+																										}
+																										className="img-fluid object-position-center object-fit-cover w-100 h-100"
+																										alt="Avatar"
+																									/>
+																									</div>
+																								</div>
+																								<div className="ms-2 flex-grow-1">
+																									<div className="d-flex justify-content-between align-items-center mb-2">
+																									<div className="mb-0 d-flex align-items-center">
+																										<div className="heading-text text-truncate max-150">
+																										{user.name}
+																										</div>
+																									</div>
+																									</div>
+																								</div>
+																								</div>
+																							</td>
+																							<td>{user.role}</td>
+																							<td>{user.assigned_cases}</td>
+																							<td>{user.date_added}</td>
+																							<td>
+																								<div className="dropdown">
+																									<button
+																										className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+																										type="button"
+																										data-bs-toggle="dropdown"
+																										aria-expanded="false"
+																										data-bs-auto-close="outside"
+																									>
+																										<img
+																										src="images/dots-v.svg"
+																										className="img-fluid"
+																										alt="dots"
+																										/>
+																									</button>
+																									<ul className="dropdown-menu border-radius action-menu-2">
+																										<li>
+																											<a
+																												className="dropdown-item"
+																												href="#"
+																												data-bs-toggle="modal"
+																												data-bs-target="#disputeModal"
+																												onClick={() => {
+																												handleIndividualUserInfo(
+																													user
+																												);
+																												}}
+																											>
+																												Refer to Dispute
+																												Case
+																											</a>
+																										</li>
+																										
+																										<li>
+																											<a
+																												href="javascript:void(0);"
+																												className="dropdown-item d-flex align-items-center justify-content-between"
+																												data-bs-toggle="collapse"
+																												data-bs-target="#collapseStatus"
+																												aria-expanded="false"
+																												aria-controls="collapseStatus"
+																											>
+																												Change Status{" "}
+																												<i className="bi bi-chevron-down"></i>
+																											</a>
+																										</li>
+																										<div className="collapse" id="collapseStatus">
+																											<ul className="list-unstyled">
+																												<li>
+																												<a
+																													className="dropdown-item"
+																													href="javascript:void(0);"
+																													onClick={(
+																													e
+																													) => {
+																													handleUserStatusChange(
+																														user._id,
+																														`active`
+																													);
+																													}}
+																												>
+																													<div className="form-check">
+																													<input
+																														className="form-check-input cursor-pointer"
+																														type="radio"
+																														name="flexRadioDefault"
+																														id={`active-${user._id}`}
+																														checked={
+																														user.status ===
+																														"active"
+																														}
+																													/>
+																													<label
+																														className="form-check-label"
+																														htmlFor={`active-${user._id}`}
+																													>
+																														Active
+																													</label>
+																													</div>
+																												</a>
+																												</li>
+																												<li>
+																												<a
+																													className="dropdown-item"
+																													href="javascript:void(0);"
+																													onClick={(
+																													e
+																													) => {
+																													handleUserStatusChange(
+																														user._id,
+																														`suspended`
+																													);
+																													}}
+																												>
+																													<div className="form-check">
+																													<input
+																														className="form-check-input"
+																														type="radio"
+																														name="flexRadioDefault"
+																														id={`suspended-${user._id}`}
+																														checked={
+																														user.status ===
+																														"suspended"
+																														}
+																													/>
+																													<label
+																														className="form-check-label"
+																														htmlFor={`suspended-${user._id}`}
+																													>
+																														Suspended
+																													</label>
+																													</div>
+																												</a>
+																												</li>
+																												<li>
+																												<a
+																													className="dropdown-item"
+																													href="javascript:void(0);"
+																													onClick={(
+																													e
+																													) => {
+																													handleUserStatusChange(
+																														user._id,
+																														`deactivated`
+																													);
+																													}}
+																												>
+																													<div className="form-check">
+																													<input
+																														className="form-check-input"
+																														type="radio"
+																														name="flexRadioDefault"
+																														id={`deactivated-${user._id}`}
+																														checked={
+																														user.status ===
+																														"deactivated"
+																														}
+																													/>
+																													<label
+																														className="form-check-label"
+																														htmlFor={`deactivated-${user._id}`}
+																													>
+																														Deactivated
+																													</label>
+																													</div>
+																												</a>
+																												</li>
+																											</ul>
+																										</div>
+																									</ul>
+																								</div>
+																							</td>
+																						</tr>
+																					))
+																					) : (
+																						<tr>
+																							<td
+																							id="pending-dispute-not-found"
+																							colSpan={6}
+																							className={`text-center d-none`}
+																							>
+																							<p>
+																								<i className="fa fa-triangle-exclamation fa-2x text-warning"></i>
+																							</p>
+																							<p className="h5">
+																								No users found
+																							</p>
+																							</td>
+																						</tr>
+																					)}
+																				</tbody>
+																			</table>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+
+												<div className="tab-pane fade" id="pills-claimants" role="tabpanel" aria-labelledby="pills-claimants-tab" tabIndex="0">
+													<div className="row mt-5">
+													<div className="col-lg-3">
+														<div
+														className="nav flex-column tab-item nav-pills gap-10"
+														id="v-pills-tab"
+														role="tablist"
+														aria-orientation="vertical"
+														>
+														{getAdminRoles.map((admin_role, index) => (
+															<button
+															className={`nav-link tab-v text-start ${
+																index === 0 ? `active` : ``
+															}`}
+															id="v-pills-ministry-tab"
+															data-bs-toggle="pill"
+															data-bs-target="#v-pills-ministry"
+															type="button"
+															role="tab"
+															aria-controls="v-pills-ministry"
+															aria-selected="true"
+															onClick={(e) => {
+																getAllAdminRoleUsers(admin_role._id);
+															}}
+															>
+															{admin_role.name}
+															</button>
+														))}
+														</div>
+													</div>
+
+													<div className="col-lg-9">
+														<div
+														className="tab-content"
+														id="v-pills-tabContent"
+														>
+														<div
+															className="tab-pane fade show active"
+															id="v-pills-ministry"
+															role="tabpanel"
+															aria-labelledby="v-pills-ministry-tab"
+															tabIndex="0"
+														>
+															{isAdminLoading ? (
+															<div
+																className="d-flex justify-content-center align-items-center"
+																style={{ minHeight: "80vh" }}
+															>
+																<ClipLoader
+																color="#36D7B7"
+																loading={isAdminLoading}
+																size={50}
+																/>
+															</div>
+															) : (
+															<div className="card mb-4">
+																<div className="card-body p-4">
+																<div className="row mt-2 mb-4">
+																	<div className="col-lg-5">
+																	<div className="input-group">
+																		<span className="input-group-text bg-transparent">
+																		<img
+																			src="images/search.svg"
+																			className="img-fluid"
+																			alt="search"
+																		/>
+																		</span>
+																		<input
+																		type="search"
+																		className="form-control border-start-0 form-control-height"
+																		placeholder="Search here..."
+																		value={searchQuery}
+																		onChange={handleSearchChange}
+																		/>
+																	</div>
+																	</div>
+
+																	<div className="col-lg-7">
+																	<div className="d-flex align-items-center justify-content-between gap-15">
+																		<div className="d-flex">
+																		<a
+																			className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
+																			onClick={sortAdminRole}
+																		>
+																			<img
+																			src="images/filter.svg"
+																			className="img-fluid"
+																			/>{" "}
+																			A-Z
+																		</a>
+
+																		<button className="btn btn-size btn-main-outline-primary px-3">
+																			<i className="bi bi-cloud-download me-2"></i>{" "}
+																			Export CSV
+																		</button>
+																		</div>
+
+																		<p className="text-end mb-0 file-count">
+																		Users:{" "}
+																		{getAdminRoleUsers.length}
+																		</p>
+																	</div>
+																	</div>
+																</div>
+
+																<div className="row">
+																	<div className="col-lg-12">
+																	<table className="table table-list">
+																		<thead className="table-light">
+																		<tr>
+																			<th scope="col">
+																			<div>
 																				<input
-																					className="form-check-input"
-																					type="checkbox"
-																					id="checkboxNoLabel"
-																					value=""
-																					aria-label="..."
+																				className="form-check-input"
+																				type="checkbox"
+																				id="checkboxNoLabel"
+																				value=""
+																				aria-label="..."
 																				/>
-																				</div>
-																			</td>
-																			<td>
-																				<div className="d-flex align-items-center avatar-holder">
-																				<div className="position-relative">
-																					<div className="avatar-sm flex-shrink-0">
-																					<img
-																						src={
-																						user.photo ||
-																						"images/download.png"
-																						}
-																						className="img-fluid object-position-center object-fit-cover w-100 h-100"
-																						alt="Avatar"
+																			</div>
+																			</th>
+																			<th scope="col">Name</th>
+																			<th scope="col">
+																			Assigned Cases
+																			</th>
+																			<th scope="col">Status</th>
+																			<th scope="col">
+																			Date added
+																			</th>
+																			<th scope="col">Actions</th>
+																		</tr>
+																		</thead>
+																		<tbody>
+																		{getAdminRoleUsers.length ? (
+																			filteredAdminRoles.map(
+																			(user) => (
+																				<tr key={user._id}>
+																				<td>
+																					<div>
+																					<input
+																						className="form-check-input"
+																						type="checkbox"
+																						id="checkboxNoLabel"
+																						value=""
+																						aria-label="..."
 																					/>
 																					</div>
-																				</div>
-																				<div className="ms-2 flex-grow-1">
-																					<div className="d-flex justify-content-between align-items-center mb-2">
-																					<div className="mb-0 d-flex align-items-center">
-																						<div className="heading-text text-truncate max-150">
-																						{user.name}
+																				</td>
+																				<td>
+																					<div className="d-flex align-items-center avatar-holder">
+																					<div className="position-relative">
+																						<div className="avatar-sm flex-shrink-0">
+																						<img
+																							src={
+																							user.photo ||
+																							"images/download.png"
+																							}
+																							className="img-fluid object-position-center object-fit-cover w-100 h-100"
+																							alt="Avatar"
+																						/>
+																						</div>
+																					</div>
+																					<div className="ms-2 flex-grow-1">
+																						<div className="d-flex justify-content-between align-items-center mb-2">
+																						<div className="mb-0 d-flex align-items-center">
+																							<div className="heading-text text-truncate max-150">
+																							{
+																								user.name
+																							}
+																							</div>
+																						</div>
 																						</div>
 																					</div>
 																					</div>
-																				</div>
-																				</div>
-																			</td>
-																			<td>{user.role}</td>
-																			<td>{user.assigned_cases}</td>
-																			<td>{user.date_added}</td>
-																			<td>
-																				<div className="dropdown">
+																				</td>
+																				<td>
+																					{
+																					user.assigned_cases
+																					}
+																				</td>
+																				<td>{user.status}</td>
+																				<td>
+																					{user.date_added}
+																				</td>
+																				<td>
+																					<div className="dropdown">
 																					<button
 																						className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
 																						type="button"
@@ -1514,1188 +1890,770 @@ const Users = () => {
 																					</button>
 																					<ul className="dropdown-menu border-radius action-menu-2">
 																						<li>
+																						<a
+																							className="dropdown-item"
+																							href="#"
+																							data-bs-toggle="modal"
+																							data-bs-target="#disputeModal"
+																							onClick={() => {
+																							handleIndividualUserInfo(
+																								user
+																							);
+																							}}
+																						>
+																							Refer to
+																							Dispute Case
+																						</a>
+																						</li>
+																						{/* <li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li> */}
+																						<li>
+																						<a
+																							href="javascript:void(0);"
+																							className="dropdown-item d-flex align-items-center justify-content-between"
+																							data-bs-toggle="collapse"
+																							data-bs-target="#collapseStatus"
+																							aria-expanded="false"
+																							aria-controls="collapseStatus"
+																						>
+																							Change
+																							Status{" "}
+																							<i className="bi bi-chevron-down"></i>
+																						</a>
+																						</li>
+																						<div
+																						className="collapse"
+																						id="collapseStatus"
+																						>
+																						<ul className="list-unstyled">
+																							<li>
 																							<a
 																								className="dropdown-item"
-																								href="#"
-																								data-bs-toggle="modal"
-																								data-bs-target="#disputeModal"
-																								onClick={() => {
-																								handleIndividualUserInfo(
-																									user
+																								href="javascript:void(0);"
+																								onClick={(
+																								e
+																								) => {
+																								handleUserStatusChange(
+																									user._id,
+																									`active`
 																								);
 																								}}
 																							>
-																								Refer to Dispute
-																								Case
+																								<div className="form-check">
+																								<input
+																									className="form-check-input cursor-pointer"
+																									type="radio"
+																									name="flexRadioDefault"
+																									id={`admin-active-${user._id}`}
+																									checked={
+																									user.status ===
+																									"active"
+																									}
+																								/>
+																								<label
+																									className="form-check-label"
+																									htmlFor={`active-${user._id}`}
+																								>
+																									Active
+																								</label>
+																								</div>
 																							</a>
-																						</li>
-																						
-																						<li>
+																							</li>
+																							<li>
 																							<a
+																								className="dropdown-item"
 																								href="javascript:void(0);"
-																								className="dropdown-item d-flex align-items-center justify-content-between"
-																								data-bs-toggle="collapse"
-																								data-bs-target="#collapseStatus"
-																								aria-expanded="false"
-																								aria-controls="collapseStatus"
+																								onClick={(
+																								e
+																								) => {
+																								handleUserStatusChange(
+																									user._id,
+																									`suspended`
+																								);
+																								}}
 																							>
-																								Change Status{" "}
-																								<i className="bi bi-chevron-down"></i>
+																								<div className="form-check">
+																								<input
+																									className="form-check-input"
+																									type="radio"
+																									name="flexRadioDefault"
+																									id={`admin-suspended-${user._id}`}
+																									checked={
+																									user.status ===
+																									"suspended"
+																									}
+																								/>
+																								<label
+																									className="form-check-label"
+																									htmlFor={`suspended-${user._id}`}
+																								>
+																									Suspended
+																								</label>
+																								</div>
 																							</a>
-																						</li>
-																						<div className="collapse" id="collapseStatus">
-																							<ul className="list-unstyled">
-																								<li>
-																								<a
-																									className="dropdown-item"
-																									href="javascript:void(0);"
-																									onClick={(
-																									e
-																									) => {
-																									handleUserStatusChange(
-																										user._id,
-																										`active`
-																									);
-																									}}
+																							</li>
+																							<li>
+																							<a
+																								className="dropdown-item"
+																								href="javascript:void(0);"
+																								onClick={(
+																								e
+																								) => {
+																								handleUserStatusChange(
+																									user._id,
+																									`deactivated`
+																								);
+																								}}
+																							>
+																								<div className="form-check">
+																								<input
+																									className="form-check-input"
+																									type="radio"
+																									name="flexRadioDefault"
+																									id={`admin-deactivated-${user._id}`}
+																									checked={
+																									user.status ===
+																									"deactivated"
+																									}
+																								/>
+																								<label
+																									className="form-check-label"
+																									htmlFor={`deactivated-${user._id}`}
 																								>
-																									<div className="form-check">
-																									<input
-																										className="form-check-input cursor-pointer"
-																										type="radio"
-																										name="flexRadioDefault"
-																										id={`active-${user._id}`}
-																										checked={
-																										user.status ===
-																										"active"
-																										}
-																									/>
-																									<label
-																										className="form-check-label"
-																										htmlFor={`active-${user._id}`}
-																									>
-																										Active
-																									</label>
-																									</div>
-																								</a>
-																								</li>
-																								<li>
-																								<a
-																									className="dropdown-item"
-																									href="javascript:void(0);"
-																									onClick={(
-																									e
-																									) => {
-																									handleUserStatusChange(
-																										user._id,
-																										`suspended`
-																									);
-																									}}
-																								>
-																									<div className="form-check">
-																									<input
-																										className="form-check-input"
-																										type="radio"
-																										name="flexRadioDefault"
-																										id={`suspended-${user._id}`}
-																										checked={
-																										user.status ===
-																										"suspended"
-																										}
-																									/>
-																									<label
-																										className="form-check-label"
-																										htmlFor={`suspended-${user._id}`}
-																									>
-																										Suspended
-																									</label>
-																									</div>
-																								</a>
-																								</li>
-																								<li>
-																								<a
-																									className="dropdown-item"
-																									href="javascript:void(0);"
-																									onClick={(
-																									e
-																									) => {
-																									handleUserStatusChange(
-																										user._id,
-																										`deactivated`
-																									);
-																									}}
-																								>
-																									<div className="form-check">
-																									<input
-																										className="form-check-input"
-																										type="radio"
-																										name="flexRadioDefault"
-																										id={`deactivated-${user._id}`}
-																										checked={
-																										user.status ===
-																										"deactivated"
-																										}
-																									/>
-																									<label
-																										className="form-check-label"
-																										htmlFor={`deactivated-${user._id}`}
-																									>
-																										Deactivated
-																									</label>
-																									</div>
-																								</a>
-																								</li>
-																							</ul>
+																									Deactivated
+																								</label>
+																								</div>
+																							</a>
+																							</li>
+																						</ul>
 																						</div>
 																					</ul>
-																				</div>
-																			</td>
-																		</tr>
-																	))
-																	) : (
-																		<tr>
+																					</div>
+																				</td>
+																				</tr>
+																			)
+																			)
+																		) : (
+																			<tr>
 																			<td
-																			id="pending-dispute-not-found"
-																			colSpan={6}
-																			className={`text-center d-none`}
+																				id="admin-users-not-found"
+																				colSpan={6}
+																				className={`text-center`}
 																			>
-																			<p>
+																				<p>
 																				<i className="fa fa-triangle-exclamation fa-2x text-warning"></i>
-																			</p>
-																			<p className="h5">
+																				</p>
+																				<p className="h5">
 																				No users found
-																			</p>
+																				</p>
 																			</td>
-																		</tr>
-																	)}
-																</tbody>
-															</table>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div
-									className="tab-pane fade"
-									id="pills-claimants"
-									role="tabpanel"
-									aria-labelledby="pills-claimants-tab"
-									tabIndex="0"
-								>
-									<div className="row mt-5">
-									<div className="col-lg-3">
-										<div
-										className="nav flex-column tab-item nav-pills gap-10"
-										id="v-pills-tab"
-										role="tablist"
-										aria-orientation="vertical"
-										>
-										{getAdminRoles.map((admin_role, index) => (
-											<button
-											className={`nav-link tab-v text-start ${
-												index === 0 ? `active` : ``
-											}`}
-											id="v-pills-ministry-tab"
-											data-bs-toggle="pill"
-											data-bs-target="#v-pills-ministry"
-											type="button"
-											role="tab"
-											aria-controls="v-pills-ministry"
-											aria-selected="true"
-											onClick={(e) => {
-												getAllAdminRoleUsers(admin_role._id);
-											}}
-											>
-											{admin_role.name}
-											</button>
-										))}
-										</div>
-									</div>
-
-									<div className="col-lg-9">
-										<div
-										className="tab-content"
-										id="v-pills-tabContent"
-										>
-										<div
-											className="tab-pane fade show active"
-											id="v-pills-ministry"
-											role="tabpanel"
-											aria-labelledby="v-pills-ministry-tab"
-											tabIndex="0"
-										>
-											{isAdminLoading ? (
-											<div
-												className="d-flex justify-content-center align-items-center"
-												style={{ minHeight: "80vh" }}
-											>
-												<ClipLoader
-												color="#36D7B7"
-												loading={isAdminLoading}
-												size={50}
-												/>
-											</div>
-											) : (
-											<div className="card mb-4">
-												<div className="card-body p-4">
-												<div className="row mt-2 mb-4">
-													<div className="col-lg-5">
-													<div className="input-group">
-														<span className="input-group-text bg-transparent">
-														<img
-															src="images/search.svg"
-															className="img-fluid"
-															alt="search"
-														/>
-														</span>
-														<input
-														type="search"
-														className="form-control border-start-0 form-control-height"
-														placeholder="Search here..."
-														value={searchQuery}
-														onChange={handleSearchChange}
-														/>
-													</div>
-													</div>
-
-													<div className="col-lg-7">
-													<div className="d-flex align-items-center justify-content-between gap-15">
-														<div className="d-flex">
-														<a
-															className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
-															onClick={sortAdminRole}
-														>
-															<img
-															src="images/filter.svg"
-															className="img-fluid"
-															/>{" "}
-															A-Z
-														</a>
-
-														<button className="btn btn-size btn-main-outline-primary px-3">
-															<i className="bi bi-cloud-download me-2"></i>{" "}
-															Export CSV
-														</button>
-														</div>
-
-														<p className="text-end mb-0 file-count">
-														Users:{" "}
-														{getAdminRoleUsers.length}
-														</p>
-													</div>
-													</div>
-												</div>
-
-												<div className="row">
-													<div className="col-lg-12">
-													<table className="table table-list">
-														<thead className="table-light">
-														<tr>
-															<th scope="col">
-															<div>
-																<input
-																className="form-check-input"
-																type="checkbox"
-																id="checkboxNoLabel"
-																value=""
-																aria-label="..."
-																/>
+																			</tr>
+																		)}
+																		</tbody>
+																	</table>
+																	</div>
+																</div>
+																</div>
 															</div>
-															</th>
-															<th scope="col">Name</th>
-															<th scope="col">
-															Assigned Cases
-															</th>
-															<th scope="col">Status</th>
-															<th scope="col">
-															Date added
-															</th>
-															<th scope="col">Actions</th>
-														</tr>
-														</thead>
-														<tbody>
-														{getAdminRoleUsers.length ? (
-															filteredAdminRoles.map(
-															(user) => (
-																<tr key={user._id}>
-																<td>
-																	<div>
-																	<input
-																		className="form-check-input"
-																		type="checkbox"
-																		id="checkboxNoLabel"
-																		value=""
-																		aria-label="..."
-																	/>
-																	</div>
-																</td>
-																<td>
-																	<div className="d-flex align-items-center avatar-holder">
-																	<div className="position-relative">
-																		<div className="avatar-sm flex-shrink-0">
-																		<img
-																			src={
-																			user.photo ||
-																			"images/download.png"
-																			}
-																			className="img-fluid object-position-center object-fit-cover w-100 h-100"
-																			alt="Avatar"
-																		/>
-																		</div>
-																	</div>
-																	<div className="ms-2 flex-grow-1">
-																		<div className="d-flex justify-content-between align-items-center mb-2">
-																		<div className="mb-0 d-flex align-items-center">
-																			<div className="heading-text text-truncate max-150">
-																			{
-																				user.name
-																			}
-																			</div>
-																		</div>
-																		</div>
-																	</div>
-																	</div>
-																</td>
-																<td>
-																	{
-																	user.assigned_cases
-																	}
-																</td>
-																<td>{user.status}</td>
-																<td>
-																	{user.date_added}
-																</td>
-																<td>
-																	<div className="dropdown">
-																	<button
-																		className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																		type="button"
-																		data-bs-toggle="dropdown"
-																		aria-expanded="false"
-																		data-bs-auto-close="outside"
-																	>
-																		<img
-																		src="images/dots-v.svg"
-																		className="img-fluid"
-																		alt="dots"
-																		/>
-																	</button>
-																	<ul className="dropdown-menu border-radius action-menu-2">
-																		<li>
-																		<a
-																			className="dropdown-item"
-																			href="#"
-																			data-bs-toggle="modal"
-																			data-bs-target="#disputeModal"
-																			onClick={() => {
-																			handleIndividualUserInfo(
-																				user
-																			);
-																			}}
-																		>
-																			Refer to
-																			Dispute Case
-																		</a>
-																		</li>
-																		{/* <li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li> */}
-																		<li>
-																		<a
-																			href="javascript:void(0);"
-																			className="dropdown-item d-flex align-items-center justify-content-between"
-																			data-bs-toggle="collapse"
-																			data-bs-target="#collapseStatus"
-																			aria-expanded="false"
-																			aria-controls="collapseStatus"
-																		>
-																			Change
-																			Status{" "}
-																			<i className="bi bi-chevron-down"></i>
-																		</a>
-																		</li>
-																		<div
-																		className="collapse"
-																		id="collapseStatus"
-																		>
-																		<ul className="list-unstyled">
-																			<li>
-																			<a
-																				className="dropdown-item"
-																				href="javascript:void(0);"
-																				onClick={(
-																				e
-																				) => {
-																				handleUserStatusChange(
-																					user._id,
-																					`active`
-																				);
-																				}}
-																			>
-																				<div className="form-check">
-																				<input
-																					className="form-check-input cursor-pointer"
-																					type="radio"
-																					name="flexRadioDefault"
-																					id={`admin-active-${user._id}`}
-																					checked={
-																					user.status ===
-																					"active"
-																					}
-																				/>
-																				<label
-																					className="form-check-label"
-																					htmlFor={`active-${user._id}`}
-																				>
-																					Active
-																				</label>
-																				</div>
-																			</a>
-																			</li>
-																			<li>
-																			<a
-																				className="dropdown-item"
-																				href="javascript:void(0);"
-																				onClick={(
-																				e
-																				) => {
-																				handleUserStatusChange(
-																					user._id,
-																					`suspended`
-																				);
-																				}}
-																			>
-																				<div className="form-check">
-																				<input
-																					className="form-check-input"
-																					type="radio"
-																					name="flexRadioDefault"
-																					id={`admin-suspended-${user._id}`}
-																					checked={
-																					user.status ===
-																					"suspended"
-																					}
-																				/>
-																				<label
-																					className="form-check-label"
-																					htmlFor={`suspended-${user._id}`}
-																				>
-																					Suspended
-																				</label>
-																				</div>
-																			</a>
-																			</li>
-																			<li>
-																			<a
-																				className="dropdown-item"
-																				href="javascript:void(0);"
-																				onClick={(
-																				e
-																				) => {
-																				handleUserStatusChange(
-																					user._id,
-																					`deactivated`
-																				);
-																				}}
-																			>
-																				<div className="form-check">
-																				<input
-																					className="form-check-input"
-																					type="radio"
-																					name="flexRadioDefault"
-																					id={`admin-deactivated-${user._id}`}
-																					checked={
-																					user.status ===
-																					"deactivated"
-																					}
-																				/>
-																				<label
-																					className="form-check-label"
-																					htmlFor={`deactivated-${user._id}`}
-																				>
-																					Deactivated
-																				</label>
-																				</div>
-																			</a>
-																			</li>
-																		</ul>
-																		</div>
-																	</ul>
-																	</div>
-																</td>
-																</tr>
-															)
-															)
-														) : (
-															<tr>
-															<td
-																id="admin-users-not-found"
-																colSpan={6}
-																className={`text-center`}
+															)}
+														</div>
+														</div>
+													</div>
+													</div>
+												</div>
+
+												<div
+													className="tab-pane fade"
+													id="pills-settlement"
+													role="tabpanel"
+													aria-labelledby="pills-settlement-tab"
+													tabIndex="0"
+												>
+													<div className="row mt-5">
+													<div className="col-lg-3">
+														<div
+														className="nav flex-column tab-item nav-pills gap-10"
+														id="v-pills-tab"
+														role="tablist"
+														aria-orientation="vertical"
+														>
+														{getSettlementBodies.map((sb_role, index) => (
+															<button
+															className={`nav-link tab-v text-start ${
+																index === 0 ? `active` : ``
+															}`}
+															id="v-pills-con-tab"
+															data-bs-toggle="pill"
+															data-bs-target="#v-pills-con"
+															type="button"
+															role="tab"
+															aria-controls="v-pills-con"
+															aria-selected="true"
+															onClick={(e) => {
+																getAllSettlementBodyLists(sb_role);
+															}}
 															>
-																<p>
-																<i className="fa fa-triangle-exclamation fa-2x text-warning"></i>
-																</p>
-																<p className="h5">
-																No users found
-																</p>
-															</td>
-															</tr>
-														)}
-														</tbody>
-													</table>
-													</div>
-												</div>
-												</div>
-											</div>
-											)}
-										</div>
-										</div>
-									</div>
-									</div>
-								</div>
-
-								<div
-									className="tab-pane fade"
-									id="pills-settlement"
-									role="tabpanel"
-									aria-labelledby="pills-settlement-tab"
-									tabIndex="0"
-								>
-									<div className="row mt-5">
-									<div className="col-lg-3">
-										<div
-										className="nav flex-column tab-item nav-pills gap-10"
-										id="v-pills-tab"
-										role="tablist"
-										aria-orientation="vertical"
-										>
-										{getSettlementBodies.map((sb_role, index) => (
-											<button
-											className={`nav-link tab-v text-start ${
-												index === 0 ? `active` : ``
-											}`}
-											id="v-pills-con-tab"
-											data-bs-toggle="pill"
-											data-bs-target="#v-pills-con"
-											type="button"
-											role="tab"
-											aria-controls="v-pills-con"
-											aria-selected="true"
-											onClick={(e) => {
-												getAllSettlementBodyLists(sb_role);
-											}}
-											>
-											{sb_role.name}
-											</button>
-										))}
-										</div>
-									</div>
-
-									<div className="col-lg-9">
-										<div
-										className="tab-content"
-										id="v-pills-tabContent"
-										>
-										<div
-											className="tab-pane fade show active"
-											id="v-pills-con"
-											role="tabpanel"
-											aria-labelledby="v-pills-con-tab"
-											tabIndex="0"
-										>
-											{isSettlementBodyLoading ? (
-											<div
-												className="d-flex justify-content-center align-items-center"
-												style={{ minHeight: "80vh" }}
-											>
-												<ClipLoader
-												color="#36D7B7"
-												loading={isSettlementBodyLoading}
-												size={50}
-												/>
-											</div>
-											) : (
-											<div className="card mb-4">
-												<div className="card-body p-4">
-												<div className="row mt-2 mb-4">
-													<div className="col-lg-5">
-													<div className="input-group">
-														<span className="input-group-text bg-transparent">
-														<img
-															src="images/search.svg"
-															className="img-fluid"
-															alt="search"
-														/>
-														</span>
-														<input
-														type="search"
-														className="form-control border-start-0 form-control-height"
-														placeholder="Search here..."
-														value={searchQuery}
-														onChange={handleSearchChange}
-														/>
-													</div>
-													</div>
-
-													<div className="col-lg-7">
-													<div className="d-flex align-items-center justify-content-between gap-15">
-														<div className="d-flex">
-														<a
-															className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
-															onClick={
-															sortSettlementBodyLists
-															}
-														>
-															<img
-															src="images/filter.svg"
-															className="img-fluid"
-															/>{" "}
-															A-Z
-														</a>
-
-														<button className="btn btn-size btn-main-outline-primary px-3">
-															<i className="bi bi-cloud-download me-2"></i>{" "}
-															Export CSV
-														</button>
+															{sb_role.name}
+															</button>
+														))}
 														</div>
-
-														<p className="text-end mb-0 file-count">
-														{
-															IndividualSettlmentBody.sb_name
-														}
-														:{" "}
-														{
-															getSettlementBodyLists?.length
-														}
-														</p>
 													</div>
-													</div>
-												</div>
 
-												<div className="row mb-4">
-													<div className="col-lg-5 offset-lg-7">
-													<button
-														className="btn btn-main-primary btn-size w-100"
-														data-bs-toggle="modal"
-														data-bs-target="#boardModal"
-													>
-														Create{" "}
-														{
-														IndividualSettlmentBody.sb_name
-														}{" "}
-														Profile
-													</button>
-													</div>
-												</div>
-
-												<div className="row">
-													<div className="col-lg-12">
-													<table className="table table-list">
-														<thead className="table-light">
-														<tr>
-															<th scope="col">
-															<div>
-																<input
-																className="form-check-input"
-																type="checkbox"
-																id="checkboxNoLabel"
-																value=""
-																aria-label="..."
+													<div className="col-lg-9">
+														<div
+														className="tab-content"
+														id="v-pills-tabContent"
+														>
+														<div
+															className="tab-pane fade show active"
+															id="v-pills-con"
+															role="tabpanel"
+															aria-labelledby="v-pills-con-tab"
+															tabIndex="0"
+														>
+															{isSettlementBodyLoading ? (
+															<div
+																className="d-flex justify-content-center align-items-center"
+																style={{ minHeight: "80vh" }}
+															>
+																<ClipLoader
+																color="#36D7B7"
+																loading={isSettlementBodyLoading}
+																size={50}
 																/>
 															</div>
-															</th>
-															<th scope="col">Members</th>
-															<th scope="col">Name</th>
-															<th scope="col">
-															Assigned Cases
-															</th>
-															<th scope="col">Status</th>
-															<th scope="col">
-															Date added
-															</th>
-															<th scope="col">Actions</th>
-														</tr>
-														</thead>
-														<tbody>
-														{getSettlementBodyLists?.length >
-														0 ? (
-															filteredSettlementBodies.map(
-															(
-																settlement_body,
-																index
-															) => (
-																<tr
-																key={
-																	settlement_body._id
-																}
-																>
-																<td>
-																	<div>
-																	<input
-																		className="form-check-input"
-																		type="checkbox"
-																		id="checkboxNoLabel"
-																		value=""
-																		aria-label="..."
-																	/>
+															) : (
+															<div className="card mb-4">
+																<div className="card-body p-4">
+																<div className="row mt-2 mb-4">
+																	<div className="col-lg-5">
+																	<div className="input-group">
+																		<span className="input-group-text bg-transparent">
+																		<img
+																			src="images/search.svg"
+																			className="img-fluid"
+																			alt="search"
+																		/>
+																		</span>
+																		<input
+																		type="search"
+																		className="form-control border-start-0 form-control-height"
+																		placeholder="Search here..."
+																		value={searchQuery}
+																		onChange={handleSearchChange}
+																		/>
 																	</div>
-																</td>
-																<td>
-																	{settlement_body
-																	.assigned_members
-																	?.length ? (
-																	<div className="avatars">
-																		{settlement_body.assigned_members.map(
-																		(
-																			admin,
-																			iteration
-																		) => (
-																			<div className="dropdown">
-																			<a
-																				href="#"
-																				className="avatars__item dropdown-toggle"
-																				type="button"
-																				data-bs-toggle="dropdown"
-																				aria-expanded="false"
-																			>
-																				<img
-																				className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
-																				src={
-																					admin.photo ||
-																					"images/download.png"
+																	</div>
+
+																	<div className="col-lg-7">
+																	<div className="d-flex align-items-center justify-content-between gap-15">
+																		<div className="d-flex">
+																		<a
+																			className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
+																			onClick={
+																			sortSettlementBodyLists
+																			}
+																		>
+																			<img
+																			src="images/filter.svg"
+																			className="img-fluid"
+																			/>{" "}
+																			A-Z
+																		</a>
+
+																		<button className="btn btn-size btn-main-outline-primary px-3">
+																			<i className="bi bi-cloud-download me-2"></i>{" "}
+																			Export CSV
+																		</button>
+																		</div>
+
+																		<p className="text-end mb-0 file-count">
+																		{
+																			IndividualSettlmentBody.sb_name
+																		}
+																		:{" "}
+																		{
+																			getSettlementBodyLists?.length
+																		}
+																		</p>
+																	</div>
+																	</div>
+																</div>
+
+																<div className="row mb-4">
+																	<div className="col-lg-5 offset-lg-7">
+																	<button
+																		className="btn btn-main-primary btn-size w-100"
+																		data-bs-toggle="modal"
+																		data-bs-target="#boardModal"
+																	>
+																		Create{" "}
+																		{
+																		IndividualSettlmentBody.sb_name
+																		}{" "}
+																		Profile
+																	</button>
+																	</div>
+																</div>
+
+																<div className="row">
+																	<div className="col-lg-12">
+																	<table className="table table-list">
+																		<thead className="table-light">
+																		<tr>
+																			<th scope="col">
+																			<div>
+																				<input
+																				className="form-check-input"
+																				type="checkbox"
+																				id="checkboxNoLabel"
+																				value=""
+																				aria-label="..."
+																				/>
+																			</div>
+																			</th>
+																			<th scope="col">Members</th>
+																			<th scope="col">Name</th>
+																			<th scope="col">
+																			Assigned Cases
+																			</th>
+																			<th scope="col">Status</th>
+																			<th scope="col">
+																			Date added
+																			</th>
+																			<th scope="col">Actions</th>
+																		</tr>
+																		</thead>
+																		<tbody>
+																		{getSettlementBodyLists?.length >
+																		0 ? (
+																			filteredSettlementBodies.map(
+																			(
+																				settlement_body,
+																				index
+																			) => (
+																				<tr
+																				key={
+																					settlement_body._id
 																				}
-																				alt=""
-																				/>
-																			</a>
-																			<ul className="dropdown-menu action-menu border-radius">
-																				<img
-																				src="images/pointer.svg"
-																				className="img-fluid pointer"
-																				/>
-																				<div className="d-flex avatar-holder border-bottom py-4">
-																				<div className="position-relative">
-																					<img
-																					src="images/Avatar-online-indicator.svg"
-																					className="img-fluid indicator-avatar"
-																					alt="indicator"
-																					/>
-																					<div className="avatar-sm flex-shrink-0">
-																					<img
-																						src={
-																						admin.photo ||
-																						"images/download.png"
-																						}
-																						className="img-fluid object-position-center object-fit-cover w-100 h-100"
-																						alt="Avatar"
+																				>
+																				<td>
+																					<div>
+																					<input
+																						className="form-check-input"
+																						type="checkbox"
+																						id="checkboxNoLabel"
+																						value=""
+																						aria-label="..."
 																					/>
 																					</div>
-																				</div>
-																				<div className="ms-2 flex-grow-1">
-																					<h5 className="mb-0">
-																					{admin.name ||
-																						admin.email}
-																					</h5>
-																					{/* <p className="mb-0 text-main-primary">View profile</p> */}
-																				</div>
-																				</div>
+																				</td>
+																				<td>
+																					{settlement_body
+																					.assigned_members
+																					?.length ? (
+																					<div className="avatars">
+																						{settlement_body.assigned_members.map(
+																						(
+																							admin,
+																							iteration
+																						) => (
+																							<div className="dropdown">
+																							<a
+																								href="#"
+																								className="avatars__item dropdown-toggle"
+																								type="button"
+																								data-bs-toggle="dropdown"
+																								aria-expanded="false"
+																							>
+																								<img
+																								className="avatar img-fluid object-fit-cover object-position-center w-100 h-100"
+																								src={
+																									admin.photo ||
+																									"images/download.png"
+																								}
+																								alt=""
+																								/>
+																							</a>
+																							<ul className="dropdown-menu action-menu border-radius">
+																								<img
+																								src="images/pointer.svg"
+																								className="img-fluid pointer"
+																								/>
+																								<div className="d-flex avatar-holder border-bottom py-4">
+																								<div className="position-relative">
+																									<img
+																									src="images/Avatar-online-indicator.svg"
+																									className="img-fluid indicator-avatar"
+																									alt="indicator"
+																									/>
+																									<div className="avatar-sm flex-shrink-0">
+																									<img
+																										src={
+																										admin.photo ||
+																										"images/download.png"
+																										}
+																										className="img-fluid object-position-center object-fit-cover w-100 h-100"
+																										alt="Avatar"
+																									/>
+																									</div>
+																								</div>
+																								<div className="ms-2 flex-grow-1">
+																									<h5 className="mb-0">
+																									{admin.name ||
+																										admin.email}
+																									</h5>
+																									{/* <p className="mb-0 text-main-primary">View profile</p> */}
+																								</div>
+																								</div>
 
-																				<div className="d-flex align-items-center py-2">
-																				<img
-																					src="images/mail.svg"
-																					className="img-fluid"
-																					alt="users"
-																				/>
-																				<div className="ms-2 flex-grow-1">
-																					<p className="mb-1 ft-sm">
-																					Email
+																								<div className="d-flex align-items-center py-2">
+																								<img
+																									src="images/mail.svg"
+																									className="img-fluid"
+																									alt="users"
+																								/>
+																								<div className="ms-2 flex-grow-1">
+																									<p className="mb-1 ft-sm">
+																									Email
+																									</p>
+																									<p className="mb-0">
+																									{
+																										admin.email
+																									}
+																									</p>
+																								</div>
+
+																								<img
+																									src="images/copy.svg"
+																									className="img-fluid"
+																									alt="copy"
+																								/>
+																								</div>
+
+																								<div className="d-flex align-items-center py-2">
+																								<img
+																									src="images/call.svg"
+																									className="img-fluid"
+																									alt="users"
+																								/>
+																								<div className="ms-2 flex-grow-1">
+																									<p className="mb-1 ft-sm">
+																									Phone
+																									Number
+																									</p>
+																									<p className="mb-0">
+																									{
+																										admin.phone
+																									}
+																									</p>
+																								</div>
+																								<img
+																									src="images/copy.svg"
+																									className="img-fluid"
+																									alt="copy"
+																								/>
+																								</div>
+																							</ul>
+																							</div>
+																						)
+																						)}
+																					</div>
+																					) : (
+																					<p>
+																						No member added
+																						here
 																					</p>
-																					<p className="mb-0">
+																					)}
+																				</td>
+																				<td>
 																					{
-																						admin.email
+																					settlement_body.name
 																					}
-																					</p>
-																				</div>
-
-																				<img
-																					src="images/copy.svg"
-																					className="img-fluid"
-																					alt="copy"
-																				/>
-																				</div>
-
-																				<div className="d-flex align-items-center py-2">
-																				<img
-																					src="images/call.svg"
-																					className="img-fluid"
-																					alt="users"
-																				/>
-																				<div className="ms-2 flex-grow-1">
-																					<p className="mb-1 ft-sm">
-																					Phone
-																					Number
-																					</p>
-																					<p className="mb-0">
+																				</td>
+																				<td>
 																					{
-																						admin.phone
+																					settlement_body.assigned_cases
 																					}
-																					</p>
-																				</div>
-																				<img
-																					src="images/copy.svg"
-																					className="img-fluid"
-																					alt="copy"
-																				/>
-																				</div>
-																			</ul>
-																			</div>
-																		)
-																		)}
-																	</div>
-																	) : (
-																	<p>
-																		No member added
-																		here
-																	</p>
-																	)}
-																</td>
-																<td>
-																	{
-																	settlement_body.name
-																	}
-																</td>
-																<td>
-																	{
-																	settlement_body.assigned_cases
-																	}
-																</td>
-																<td>
-																	{
-																	settlement_body.status
-																	}
-																</td>
-																<td>
-																	{
-																	settlement_body.date_added
-																	}
-																</td>
-																<td>
-																	<div className="dropdown">
-																	<button
-																		className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
-																		type="button"
-																		data-bs-toggle="dropdown"
-																		aria-expanded="false"
-																		data-bs-auto-close="outside"
-																	>
-																		<img
-																		src="images/dots-v.svg"
-																		className="img-fluid"
-																		alt="dots"
-																		/>
-																	</button>
-																	<ul className="dropdown-menu border-radius action-menu-2">
-																		{settlement_body.status !==
-																		"dissolved" && (
-																		<li>
-																			<a
-																			className="dropdown-item"
-																			href="#"
-																			data-bs-toggle="modal"
-																			data-bs-target="#disputeModal"
-																			onClick={() => {
-																				handleIndividualUserInfo(
-																				{
-																					_id: settlement_body._id,
-																					name: settlement_body.name,
-																				},
-																				`settlement_body`
-																				);
-																			}}
+																				</td>
+																				<td>
+																					{
+																					settlement_body.status
+																					}
+																				</td>
+																				<td>
+																					{
+																					settlement_body.date_added
+																					}
+																				</td>
+																				<td>
+																					<div className="dropdown">
+																					<button
+																						className="btn btn-size btn-outline-light text-medium dropdown-toggle no-caret"
+																						type="button"
+																						data-bs-toggle="dropdown"
+																						aria-expanded="false"
+																						data-bs-auto-close="outside"
+																					>
+																						<img
+																						src="images/dots-v.svg"
+																						className="img-fluid"
+																						alt="dots"
+																						/>
+																					</button>
+																					<ul className="dropdown-menu border-radius action-menu-2">
+																						{settlement_body.status !==
+																						"dissolved" && (
+																						<li>
+																							<a
+																							className="dropdown-item"
+																							href="#"
+																							data-bs-toggle="modal"
+																							data-bs-target="#disputeModal"
+																							onClick={() => {
+																								handleIndividualUserInfo(
+																								{
+																									_id: settlement_body._id,
+																									name: settlement_body.name,
+																								},
+																								`settlement_body`
+																								);
+																							}}
+																							>
+																							Refer to
+																							Dispute
+																							Case
+																							</a>
+																						</li>
+																						)}
+																						{/* <li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li> */}
+																						<li>
+																						<a
+																							href="javascript:void(0);"
+																							className="dropdown-item"
+																							data-bs-toggle="modal"
+																							data-bs-target="#boardModal2"
+																							onClick={(
+																							e
+																							) => {
+																							setIndividualSettlmentProfile(
+																								{
+																								sp_id:
+																									settlement_body._id,
+																								sp_name:
+																									settlement_body.name,
+																								sp_status:
+																									settlement_body.status,
+																								}
+																							);
+																							fetchSettlementBodyMembers(
+																								settlement_body
+																							);
+																							}}
+																						>
+																							View Members
+																						</a>
+																						</li>
+																						{settlement_body.status !==
+																						"dissolved" && (
+																						<li>
+																							<a
+																							href="javascript:void(0);"
+																							className="dropdown-item"
+																							data-bs-toggle="modal"
+																							data-bs-target="#dissolveBoardModal"
+																							onClick={(
+																								e
+																							) => {
+																								setIndividualSettlmentProfile(
+																								{
+																									sp_id:
+																									settlement_body._id,
+																									sp_name:
+																									settlement_body.name,
+																									sp_status:
+																									settlement_body.status,
+																								}
+																								);
+																							}}
+																							>
+																							Dissolve
+																							Board{" "}
+																							</a>
+																						</li>
+																						)}
+																					</ul>
+																					</div>
+																				</td>
+																				</tr>
+																			)
+																			)
+																		) : (
+																			<tr>
+																			<td
+																				id="pending-dispute-not-found"
+																				colSpan={6}
+																				className={`text-center`}
 																			>
-																			Refer to
-																			Dispute
-																			Case
-																			</a>
-																		</li>
+																				<p>
+																				<i className="fa fa-triangle-exclamation fa-2x text-warning"></i>
+																				</p>
+																				<p className="h5">
+																				No member data found
+																				</p>
+																			</td>
+																			</tr>
 																		)}
-																		{/* <li><a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#permissionModal2">Edit permission level</a></li> */}
-																		<li>
-																		<a
-																			href="javascript:void(0);"
-																			className="dropdown-item"
-																			data-bs-toggle="modal"
-																			data-bs-target="#boardModal2"
-																			onClick={(
-																			e
-																			) => {
-																			setIndividualSettlmentProfile(
-																				{
-																				sp_id:
-																					settlement_body._id,
-																				sp_name:
-																					settlement_body.name,
-																				sp_status:
-																					settlement_body.status,
-																				}
-																			);
-																			fetchSettlementBodyMembers(
-																				settlement_body
-																			);
-																			}}
-																		>
-																			View Members
-																		</a>
-																		</li>
-																		{settlement_body.status !==
-																		"dissolved" && (
-																		<li>
-																			<a
-																			href="javascript:void(0);"
-																			className="dropdown-item"
-																			data-bs-toggle="modal"
-																			data-bs-target="#dissolveBoardModal"
-																			onClick={(
-																				e
-																			) => {
-																				setIndividualSettlmentProfile(
-																				{
-																					sp_id:
-																					settlement_body._id,
-																					sp_name:
-																					settlement_body.name,
-																					sp_status:
-																					settlement_body.status,
-																				}
-																				);
-																			}}
-																			>
-																			Dissolve
-																			Board{" "}
-																			</a>
-																		</li>
-																		)}
-																	</ul>
+																		</tbody>
+																	</table>
 																	</div>
-																</td>
-																</tr>
-															)
-															)
-														) : (
-															<tr>
-															<td
-																id="pending-dispute-not-found"
-																colSpan={6}
-																className={`text-center`}
-															>
-																<p>
-																<i className="fa fa-triangle-exclamation fa-2x text-warning"></i>
-																</p>
-																<p className="h5">
-																No member data found
-																</p>
-															</td>
-															</tr>
-														)}
-														</tbody>
-													</table>
+																</div>
+																</div>
+															</div>
+															)}
+														</div>
+														</div>
+													</div>
 													</div>
 												</div>
-												</div>
+
+												{user.permissions && user.permissions.includes("invite users") && (
+													<div className="tab-pane fade" id="pills-role" role="tabpanel" aria-labelledby="pills-role-tab" tabIndex="0">
+														<div className="row mt-5">
+															<div className="col-lg-5">
+																<p>All NDRS roles and their permissions</p>
+
+																<button className="btn btn-main-primary btn-size" data-bs-toggle="modal" data-bs-target="#customModal">
+																	Create custom role
+																</button>
+															</div>
+														</div>
+
+														{isLoading ? (
+															<div className="d-flex justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
+																<ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+															</div>
+														) : (
+															<div className="row">
+																<div className="col-lg-9">
+																	<div className="accordion accordion-expand mt-4" id="accordionHelp2">
+																		{roles.map((role, roleIndex) => (
+																		<div
+																			className="accordion-item mb-3"
+																			key={role._id}
+																		>
+																			<h2 className="accordion-header">
+																			<button
+																				className="accordion-button custom-text-3"
+																				type="button"
+																				data-bs-toggle="collapse"
+																				data-bs-target={`#collapseOne${role._id}`}
+																				aria-expanded={
+																				roleIndex === 0 ? "true" : "false"
+																				}
+																				aria-controls={`collapseOne${role._id}`}
+																			>
+																				{role.name}
+																			</button>
+																			</h2>
+																			<div
+																			id={`collapseOne${role._id}`}
+																			className={`accordion-collapse collapse ${
+																				roleIndex === 0 ? "show" : ""
+																			}`}
+																			data-bs-parent="#accordionHelp2"
+																			>
+																			<div className="mb-3 py-3 px-4 bg-light">
+																				<a
+																				href="#"
+																				className="btn btn-size btn-outline-danger d-inline-flex"
+																				name="role_id"
+																				onClick={(e) =>
+																					restoreDefault(
+																					e,
+																					role._id,
+																					roles,
+																					setRoles
+																					)
+																				}
+																				>
+																				Restore default
+																				</a>
+																			</div>
+																			<div className="accordion-body">
+																				{Object.entries(
+																				role.permissions
+																				).map(
+																				(
+																					[category, permissions],
+																					categoryIndex
+																				) => (
+																					<div
+																					className="card card-box-view mb-4"
+																					key={category}
+																					>
+																						<div className="card-body p-4">
+																							<div className="row align-items-center">
+																								<div className="col-lg-7">
+																									<div className="text-start mb-lg-0 mb-3">
+																									<h4>
+																										{category.replace(
+																										/_/g,
+																										" & "
+																										)}
+																									</h4>
+																									<p className="mb-0 text-muted-3">
+																										{
+																										permissions[0]
+																											.group_description
+																										}
+																									</p>
+																									</div>
+																								</div>
+																								<div className="col-lg-5">
+																									<div className="d-flex flex-column gap-10">
+																										{permissions.map(
+																											( permission, permissionIndex) => (
+																												<div className="form-check d-flex align-items-center form-switch" key={permission._id}>
+																													<input className="form-check-input" type="checkbox" role="switch" id={`flexSwitchCheckChecked_${permission._id}`} checked={permission.has_permission===1} onChange={() => handleCheckboxChange(roleIndex, category, permissionIndex) } />
+																													<label className="form-check-label ms-4" htmlFor={`flexSwitchCheckChecked_${permission._id}`} >
+																														{permission.name}
+																													</label>
+																												</div>
+																											)
+																										)}
+																									</div>
+																								</div>
+																							</div>
+																						</div>
+																					</div>
+																				)
+																				)}
+																			</div>
+																			</div>
+																		</div>
+																		))}
+																	</div>
+																</div>
+															</div>
+														)}
+													</div>
+												)}
 											</div>
-											)}
 										</div>
-										</div>
-									</div>
 									</div>
 								</div>
-
-								{user.permissions && user.permissions.includes("invite users") && (
-									<div
-										className="tab-pane fade"
-										id="pills-role"
-										role="tabpanel"
-										aria-labelledby="pills-role-tab"
-										tabIndex="0"
-									>
-										<div className="row mt-5">
-										<div className="col-lg-5">
-											<p>All NDRS roles and their permissions</p>
-
-											<button
-											className="btn btn-main-primary btn-size"
-											data-bs-toggle="modal"
-											data-bs-target="#customModal"
-											>
-											Create custom role
-											</button>
-										</div>
-										</div>
-										{isLoading ? (
-										<div
-											className="d-flex justify-content-center align-items-center"
-											style={{ minHeight: "80vh" }}
-										>
-											<ClipLoader
-											color="#36D7B7"
-											loading={isLoading}
-											size={50}
-											/>
-										</div>
-										) : (
-										<div className="row">
-											<div className="col-lg-9">
-											<div
-												className="accordion accordion-expand mt-4"
-												id="accordionHelp2"
-											>
-												{roles.map((role, roleIndex) => (
-												<div
-													className="accordion-item mb-3"
-													key={role._id}
-												>
-													<h2 className="accordion-header">
-													<button
-														className="accordion-button custom-text-3"
-														type="button"
-														data-bs-toggle="collapse"
-														data-bs-target={`#collapseOne${role._id}`}
-														aria-expanded={
-														roleIndex === 0 ? "true" : "false"
-														}
-														aria-controls={`collapseOne${role._id}`}
-													>
-														{role.name}
-													</button>
-													</h2>
-													<div
-													id={`collapseOne${role._id}`}
-													className={`accordion-collapse collapse ${
-														roleIndex === 0 ? "show" : ""
-													}`}
-													data-bs-parent="#accordionHelp2"
-													>
-													<div className="mb-3 py-3 px-4 bg-light">
-														<a
-														href="#"
-														className="btn btn-size btn-outline-danger d-inline-flex"
-														name="role_id"
-														onClick={(e) =>
-															restoreDefault(
-															e,
-															role._id,
-															roles,
-															setRoles
-															)
-														}
-														>
-														Restore default
-														</a>
-													</div>
-													<div className="accordion-body">
-														{Object.entries(
-														role.permissions
-														).map(
-														(
-															[category, permissions],
-															categoryIndex
-														) => (
-															<div
-															className="card card-box-view mb-4"
-															key={category}
-															>
-															<div className="card-body p-4">
-																<div className="row align-items-center">
-																<div className="col-lg-7">
-																	<div className="text-start mb-lg-0 mb-3">
-																	<h4>
-																		{category.replace(
-																		/_/g,
-																		" & "
-																		)}
-																	</h4>
-																	<p className="mb-0 text-muted-3">
-																		{
-																		permissions[0]
-																			.group_description
-																		}
-																	</p>
-																	</div>
-																</div>
-																<div className="col-lg-5">
-																	<div className="d-flex flex-column gap-10">
-																	{permissions.map(
-																		(
-																		permission,
-																		permissionIndex
-																		) => (
-																		<div
-																			className="form-check d-flex align-items-center form-switch"
-																			key={
-																			permission._id
-																			}
-																		>
-																			<input
-																			className="form-check-input"
-																			type="checkbox"
-																			role="switch"
-																			id={`flexSwitchCheckChecked_${permission._id}`}
-																			checked={
-																				permission.has_permission ===
-																				1
-																			}
-																			onChange={() =>
-																				handleCheckboxChange(
-																				roleIndex,
-																				category,
-																				permissionIndex
-																				)
-																			}
-																			/>
-																			<label
-																			className="form-check-label ms-4"
-																			htmlFor={`flexSwitchCheckChecked_${permission._id}`}
-																			>
-																			{
-																				permission.name
-																			}
-																			</label>
-																		</div>
-																		)
-																	)}
-																	</div>
-																</div>
-																</div>
-															</div>
-															</div>
-														)
-														)}
-													</div>
-													</div>
-												</div>
-												))}
-											</div>
-											</div>
-										</div>
-										)}
-									</div>
-								)}
 							</div>
 						</div>
-						</div>
-					</div>
-					</div>
-				</div>
-				</main>
+					</main>
 
-				<footer>
-					<div className="container">
-						<div className="row">
-							<div className="col-lg-12"></div>
+					<footer>
+						<div className="container">
+							<div className="row">
+								<div className="col-lg-12"></div>
+							</div>
 						</div>
-					</div>
-				</footer>
-			</div>
+					</footer>
+				</div>
 			</div>
 		</div>
 
@@ -3046,1507 +3004,794 @@ const Users = () => {
 		</div>
 
 		{/* Modal */}
-		<div
-			className="modal fade"
-			id="boardModal"
-			tabIndex="-1"
-			aria-labelledby="boardModalLabel"
-			aria-hidden="true"
-		>
+		<div className="modal fade" id="boardModal" tabIndex="-1" aria-labelledby="boardModalLabel" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered modal-lg">
-			<div className="modal-content p-lg-4 border-0">
-				<div className="modal-header justify-content-between">
-				<h1 className="modal-title fs-5">
-					Create {IndividualSettlmentBody.sb_name} Profile
-				</h1>
+				<div className="modal-content p-lg-4 border-0">
+					<div className="modal-header justify-content-between">
+					<h1 className="modal-title fs-5">
+						Create {IndividualSettlmentBody.sb_name} Profile
+					</h1>
 
-				<div className="gap-10 d-flex align-items-center">
-					<button
-					className="btn btn btn-size btn-main-outline-primary px-3"
-					data-bs-dismiss="modal"
-					aria-label="Close"
-					>
-					Cancel
-					</button>
-
-					<button
-					className="btn btn-main-primary btn-size px-3"
-					data-bs-dismiss="modal"
-					aria-label="Close"
-					>
-					Finish
-					</button>
-				</div>
-				</div>
-				<div className="modal-body">
-				<div className="row mt-4">
-					<div className="col-lg-12">
-					<label className="form-label">
-						Name of {IndividualSettlmentBody.sb_name}
-					</label>
-					<input
-						type="text"
-						className="form-control form-control-height"
-						placeholder={`Enter ${IndividualSettlmentBody.sb_name}`}
-						name="name"
-						value={boardOfEnquire.name}
-						onChange={onHandleChange}
-					/>
-					</div>
-				</div>
-				<div className="row my-4">
-					<div className="col-lg-7">
-					<div className="input-group">
-						<span className="input-group-text bg-transparent">
-						<img
-							src="/images/search.svg"
-							className="img-fluid"
-							alt="search"
-						/>
-						</span>
-						<input
-						type="search"
-						className="form-control border-start-0 form-control-height"
-						placeholder="Type an email to invite"
-						/>
-					</div>
-					</div>
-
-					<div className="col-lg-2 offset-lg-3">
-					<div className="d-flex align-items-center justify-content-between gap-15">
-						<a
-						href=""
-						className="btn btn-size btn-main-primary"
-						onClick={handleSubmit}
-						disabled={!boardOfEnquire.name}
+					<div className="gap-10 d-flex align-items-center">
+						<button
+						className="btn btn btn-size btn-main-outline-primary px-3"
+						data-bs-dismiss="modal"
+						aria-label="Close"
 						>
-						Send Invite
-						</a>
+						Cancel
+						</button>
+
+						<button
+						className="btn btn-main-primary btn-size px-3"
+						data-bs-dismiss="modal"
+						aria-label="Close"
+						>
+						Finish
+						</button>
 					</div>
 					</div>
-				</div>
-
-				<div className="row">
-					<div className="col-lg-12">
-					{/* <table className="table table-list">
-						<thead className="table-light">
-						<tr>
-							<th scope="col">Name</th>
-							<th scope="col">Date added</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr>
-							<td scope="row">
-							<div className="d-flex avatar-holder">
-								<div className="position-relative">
-								<div className="avatar-sm flex-shrink-0">
-									<img
-									src="/images/avatar-2.svg"
-									className="img-fluid object-position-center object-fit-cover w-100 h-100"
-									alt="Avatar"
-									/>
-								</div>
-								</div>
-								<div className="ms-2 flex-grow-1">
-								<h5 className="mb-0">Salim Mustapha</h5>
-								<p className="mb-0 text-muted-3">
-									salimmusty@gmail.com
-								</p>
-								</div>
-							</div>
-							</td>
-							<td>Feb 4 2023</td>
-						</tr>
-
-						<tr>
-							<td scope="row">
-							<div className="d-flex avatar-holder">
-								<div className="position-relative">
-								<div className="avatar-sm flex-shrink-0">
-									<img
-									src="/images/avatar-2.svg"
-									className="img-fluid object-position-center object-fit-cover w-100 h-100"
-									alt="Avatar"
-									/>
-								</div>
-								</div>
-								<div className="ms-2 flex-grow-1">
-								<h5 className="mb-0">Salim Mustapha</h5>
-								<p className="mb-0 text-muted-3">
-									salimmusty@gmail.com
-								</p>
-								</div>
-							</div>
-							</td>
-							<td>Pending</td>
-						</tr>
-						</tbody>
-					</table> */}
-					<table className="table table-list">
-						<thead className="table-light">
-						<tr>
-							<th scope="col">Name</th>
-							<th scope="col">Date added</th>
-							<th scope="col">Role</th>
-							<th scope="col"></th>
-						</tr>
-						</thead>
-					</table>
-					<div className="card no-admin-card rounded-0">
-						<div className="card-body d-flex align-items-center justify-content-center">
-						<div className="text-center">
-							<h4 className="">No board members</h4>
-
-							<p className="text-muted-3">
-							Enter an admins email and role to send invite
-							</p>
-
-							<div className="text-center">
-							<img
-								src="/images/no-found.svg"
-								className="img-fluid"
-								alt=""
+					<div className="modal-body">
+						<div className="row mt-4">
+							<div className="col-lg-12">
+							<label className="form-label">
+								Name of {IndividualSettlmentBody.sb_name}
+							</label>
+							<input
+								type="text"
+								className="form-control form-control-height"
+								placeholder={`Enter ${IndividualSettlmentBody.sb_name}`}
+								name="name"
+								value={boardOfEnquire.name}
+								onChange={onHandleChange}
 							/>
 							</div>
 						</div>
+						<div className="row my-4">
+							<div className="col-lg-7">
+							<div className="input-group">
+								<span className="input-group-text bg-transparent">
+								<img
+									src="/images/search.svg"
+									className="img-fluid"
+									alt="search"
+								/>
+								</span>
+								<input
+								type="search"
+								className="form-control border-start-0 form-control-height"
+								placeholder="Type an email to invite"
+								/>
+							</div>
+							</div>
+
+							<div className="col-lg-2 offset-lg-3">
+							<div className="d-flex align-items-center justify-content-between gap-15">
+								<a
+								href=""
+								className="btn btn-size btn-main-primary"
+								onClick={handleSubmit}
+								disabled={!boardOfEnquire.name}
+								>
+								Send Invite
+								</a>
+							</div>
+							</div>
+						</div>
+
+						<div className="row">
+							<div className="col-lg-12">
+								<table className="table table-list">
+									<thead className="table-light">
+									<tr>
+										<th scope="col">Name</th>
+										<th scope="col">Date added</th>
+										<th scope="col">Role</th>
+										<th scope="col"></th>
+									</tr>
+									</thead>
+								</table>
+								<div className="card no-admin-card rounded-0">
+									<div className="card-body d-flex align-items-center justify-content-center">
+										<div className="text-center">
+											<h4 className="">No board members</h4>
+
+											<p className="text-muted-3">
+											Enter an admins email and role to send invite
+											</p>
+
+											<div className="text-center">
+											<img
+												src="/images/no-found.svg"
+												className="img-fluid"
+												alt=""
+											/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
-					</div>
 				</div>
-				</div>
-			</div>
 			</div>
 		</div>
 
 		{/* Modal */}
-		<div
-			className="modal fade"
-			id="boardModal2"
-			tabIndex="-1"
-			aria-labelledby="boardModalLabel2"
-			aria-hidden="true"
-		>
+		<div className="modal fade" id="boardModal2" tabIndex="-1" aria-labelledby="boardModalLabel2" aria-hidden="true">
 			<div className="modal-dialog modal-dialog-centered modal-lg">
-			<div className="modal-content p-lg-4 border-0">
-				<div className="modal-header justify-content-between">
-				<h1 className="modal-title fs-5">
-					{IndividualSettlmentBody.sb_name} Members
-				</h1>
+				<div className="modal-content p-lg-4 border-0">
+					<div className="modal-header justify-content-between">
+					<h1 className="modal-title fs-5">
+						{IndividualSettlmentBody.sb_name} Members
+					</h1>
 
-				<div className="gap-10 d-flex align-items-center">
-					<button
-					className="btn btn btn-size btn-main-outline-primary px-3"
-					data-bs-dismiss="modal"
-					aria-label="Close"
-					>
-					Cancel
-					</button>
-
-					<button className="btn btn-main-primary btn-size px-3">
-					Finish
-					</button>
-				</div>
-				</div>
-				<div className="modal-body">
-				<div className="row mt-4">
-					<div className="col-lg-12">
-					<label className="form-label">
-						Name of {IndividualSettlmentBody.sb_name}{" "}
-					</label>
-					<input
-						type="text"
-						className="form-control form-control-height"
-						value={IndividualSettlmentProfile.sp_name}
-						disabled
-					/>
-					</div>
-				</div>
-
-				{IndividualSettlmentProfile.sp_status === "active" && (
-					<div className="row my-4">
-					<div className="col-lg-7">
-						<div className="input-group">
-						<span className="input-group-text bg-transparent">
-							<img
-							src="images/search.svg"
-							className="img-fluid"
-							alt="search"
-							/>
-						</span>
-						<input
-							type="email"
-							name="email"
-							value={settlementBodyMemberInvite.email}
-							onChange={(e) => {
-							onHandleSettlementMemberChange(e);
-							}}
-							className="form-control border-start-0 form-control-height"
-							placeholder="Type an email to invite"
-						/>
-						</div>
-					</div>
-
-					<div className="col-lg-2 offset-lg-3">
-						<div className="d-flex align-items-center justify-content-between gap-15">
+					<div className="gap-10 d-flex align-items-center">
 						<button
-							type="button"
-							className="btn btn-size btn-main-primary"
-							onClick={sendSettlementBodyMemberInvite}
-							disabled={isSettlementBodyMemberDisabled}
+						className="btn btn btn-size btn-main-outline-primary px-3"
+						data-bs-dismiss="modal"
+						aria-label="Close"
 						>
-							{isSettlementBodyMemberDisabled
-							? `Sending...`
-							: `Send Invite`}
+						Cancel
 						</button>
-						</div>
-					</div>
-					</div>
-				)}
 
-				{isSettlementBodyMemberLoading ? (
-					<div className="row">
-					<div className="col-lg-12">
-						<div
-						className="d-flex justify-content-center align-items-center"
-						style={{ minHeight: "80vh" }}
-						>
-						<ClipLoader
-							color="#36D7B7"
-							loading={isSettlementBodyMemberLoading}
-							size={50}
+						<button className="btn btn-main-primary btn-size px-3">
+						Finish
+						</button>
+					</div>
+					</div>
+					<div className="modal-body">
+					<div className="row mt-4">
+						<div className="col-lg-12">
+						<label className="form-label">
+							Name of {IndividualSettlmentBody.sb_name}{" "}
+						</label>
+						<input
+							type="text"
+							className="form-control form-control-height"
+							value={IndividualSettlmentProfile.sp_name}
+							disabled
 						/>
 						</div>
 					</div>
-					</div>
-				) : (
-					<div className="row">
-					<div className="col-lg-12">
-						{getSettlementBodyMembers &&
-						getSettlementBodyMembers?.length ? (
-						<table className="table table-list">
-							<thead className="table-light">
-							<tr>
-								<th scope="col">Name</th>
-								<th scope="col">Date added</th>
-								<th scope="col">Actions</th>
-							</tr>
-							</thead>
-							<tbody>
-							{getSettlementBodyMembers.map((member_profile) => (
-								<tr>
-								<td scope="row">
-									<div className="d-flex avatar-holder">
-									<div className="position-relative">
-										<div className="avatar-sm flex-shrink-0">
+
+					{IndividualSettlmentProfile.sp_status === "active" && (
+						<div className="row my-4">
+						<div className="col-lg-7">
+							<div className="input-group">
+							<span className="input-group-text bg-transparent">
+								<img
+								src="images/search.svg"
+								className="img-fluid"
+								alt="search"
+								/>
+							</span>
+							<input
+								type="email"
+								name="email"
+								value={settlementBodyMemberInvite.email}
+								onChange={(e) => {
+								onHandleSettlementMemberChange(e);
+								}}
+								className="form-control border-start-0 form-control-height"
+								placeholder="Type an email to invite"
+							/>
+							</div>
+						</div>
+
+						<div className="col-lg-2 offset-lg-3">
+							<div className="d-flex align-items-center justify-content-between gap-15">
+							<button
+								type="button"
+								className="btn btn-size btn-main-primary"
+								onClick={sendSettlementBodyMemberInvite}
+								disabled={isSettlementBodyMemberDisabled}
+							>
+								{isSettlementBodyMemberDisabled
+								? `Sending...`
+								: `Send Invite`}
+							</button>
+							</div>
+						</div>
+						</div>
+					)}
+
+					{isSettlementBodyMemberLoading ? (
+						<div className="row">
+						<div className="col-lg-12">
+							<div
+							className="d-flex justify-content-center align-items-center"
+							style={{ minHeight: "80vh" }}
+							>
+							<ClipLoader
+								color="#36D7B7"
+								loading={isSettlementBodyMemberLoading}
+								size={50}
+							/>
+							</div>
+						</div>
+						</div>
+					) : (
+						<div className="row">
+							<div className="col-lg-12">
+								{getSettlementBodyMembers &&
+								getSettlementBodyMembers?.length ? (
+								<table className="table table-list">
+									<thead className="table-light">
+									<tr>
+										<th scope="col">Name</th>
+										<th scope="col">Date added</th>
+										<th scope="col">Actions</th>
+									</tr>
+									</thead>
+									<tbody>
+									{getSettlementBodyMembers.map((member_profile) => (
+										<tr>
+										<td scope="row">
+											<div className="d-flex avatar-holder">
+											<div className="position-relative">
+												<div className="avatar-sm flex-shrink-0">
+												<img
+													src={
+													member_profile.photo ||
+													"images/download.png"
+													}
+													className="img-fluid object-position-center object-fit-cover w-100 h-100"
+													alt="Avatar"
+												/>
+												</div>
+											</div>
+											<div className="ms-2 flex-grow-1">
+												<h5 className="mb-0">
+												{member_profile.name}
+												</h5>
+												<p className="mb-0 text-muted-3">
+												{member_profile.email}
+												</p>
+											</div>
+											</div>
+										</td>
+										<td>
+											{member_profile.status === "pending" && (
+											<span className="badge bg-warning">
+												{member_profile.status}
+											</span>
+											)}
+
+											{member_profile.status !== "pending" && (
+											<span>
+												{member_profile.date_joined}
+											</span>
+											)}
+										</td>
+										<td>
+											<a
+											href="javascript:void(0);"
+											data-bs-toggle="modal"
+											data-bs-target="#dissolveModal"
+											onClick={(e) => {
+												setIndividualSettlmentMemberProfile({
+												member_id: member_profile._id,
+												member_name:
+													member_profile.name ||
+													member_profile.email,
+												});
+											}}
+											className="text-danger"
+											>
+											Remove member
+											</a>
+										</td>
+										</tr>
+									))}
+									</tbody>
+								</table>
+								) : (
+								<div className="card no-admin-card rounded-0">
+									<div className="card-body d-flex align-items-center justify-content-center">
+									<div className="text-center">
+										<h4 className="">No board members</h4>
+
+										<p className="text-muted-3">
+										Enter an admins email and role to send invite
+										</p>
+
+										<div className="text-center">
 										<img
-											src={
-											member_profile.photo ||
-											"images/download.png"
-											}
-											className="img-fluid object-position-center object-fit-cover w-100 h-100"
-											alt="Avatar"
+											src="images/no-found.svg"
+											className="img-fluid"
 										/>
 										</div>
 									</div>
-									<div className="ms-2 flex-grow-1">
-										<h5 className="mb-0">
-										{member_profile.name}
-										</h5>
-										<p className="mb-0 text-muted-3">
-										{member_profile.email}
-										</p>
+									</div>
+								</div>
+								)}
+							</div>
+						</div>
+					)}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{/* <!-- Modal --> */}
+		<div className="modal fade" id="customModal" tabIndex="-1" aria-labelledby="customModalLabel" aria-hidden="true">
+			<div className="modal-dialog modal-dialog-centered modal-lg">
+				<div className="modal-content p-lg-4 border-0">
+					<div className="modal-header justify-content-between">
+						<h1 className="modal-title fs-5">
+							Create custom role & permissions
+						</h1>
+
+						<div className="gap-10 d-flex align-items-center">
+							<button
+							className="btn btn btn-size btn-main-outline-primary px-3"
+							data-bs-dismiss="modal"
+							aria-label="Close"
+							>
+							Cancel
+							</button>
+
+							<button
+							className="btn btn-main-primary btn-size px-3"
+							data-bs-target="#permissionModal"
+							data-bs-toggle="modal"
+
+							disabled={!customRole.name}
+							>
+							Next
+							</button>
+						</div>
+					</div>
+					<div className="modal-body">
+						<div className="row mt-4">
+							<div className="col-lg-12">
+							<input
+								type="text"
+								className="form-control form-control-height"
+								placeholder="Enter custom role"
+								name="name"
+								value={customRole.name}
+								onChange={onHandleCustomRole}
+								autoComplete="off"
+							/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{/* Modal */}
+		<div className="modal fade" id="permissionModal" tabIndex="-1" aria-labelledby="permissionModalLabel" aria-hidden="true">
+			<div className="modal-dialog modal-dialog-centered modal-lg">
+				<div className="modal-content p-lg-4 border-0">
+					<div className="modal-header justify-content-between">
+						<div>
+							<h1 className="modal-title fs-5">
+							Create custom role & permissions
+							</h1>
+							<p>{customRole.name}</p>
+						</div>
+
+						<div className="gap-10 d-flex align-items-center">
+							<button className="btn btn btn-size btn-main-outline-primary px-3" data-bs-dismiss="modal" id="close-custom-role-modal" aria-label="Close" style={{visibility:"hidden"}}>
+								Cancel
+							</button>
+
+							<button className="btn btn btn-size btn-main-outline-primary px-3" data-bs-target="#customModal" data-bs-toggle="modal">
+								Back
+							</button>
+
+							<button className="btn btn-main-primary btn-size px-3" onClick={CreateCustomRole} disabled={isFinishingCustomRoleCreate}>
+								{isFinishingCustomRoleCreate ? `Saving` : `Finish`}
+							</button>
+						</div>
+					</div>
+					<div className="modal-body">
+						<div>
+							{Object.keys(permissions).length ? Object.keys(permissions).map((permission) => (
+								<>
+									<div className="card card-box-view mb-4">
+										<div className="card-body p-4">
+											<div className="row align-items-center">
+												<div className="col-lg-7">
+													<div className="text-start mb-lg-0 mb-3">
+														<h4>
+															{permission}
+														</h4>
+														<p className="mb-0 text-muted-3">
+															{permissions[permission][0].group_desc}
+														</p>
+													</div>
+												</div>
+				
+												<div className="col-lg-5">
+													<div className="d-flex flex-column gap-10">
+														{permissions[permission].map((item) => (
+															<div className="form-check d-flex align-items-center form-switch" key={`custom-permission-${item._id}`}>
+																<input className="form-check-input" type="checkbox" role="switch" id={`custom-permission-${item._id}`} value={item._id} checked={isPermChecked[item._id] === 1} onChange={(e) => handlePermissionStateChange(e)} />
+																<label className="form-check-label ms-4" htmlFor={`custom-permission-${item._id}`} >
+																	{item.name}
+																</label>
+															</div>
+														))}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</>
+							)) : null}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{/* Modal */}
+		<div className="modal fade" id="permissionModal2" tabIndex="-1" aria-labelledby="permissionModalLabel2" aria-hidden="true">
+			<div className="modal-dialog modal-dialog-centered modal-lg">
+				<div className="modal-content p-lg-4 border-0">
+					<div className="modal-header justify-content-between">
+						<div>
+							<h1 className="modal-title fs-5">
+								Edit permission level htmlFor Ministry Admin
+							</h1>
+							<p className="mb-0">maryblessing@gmail.com</p>
+						</div>
+
+						<div className="gap-10 d-flex align-items-center">
+							<button className="btn btn btn-size btn-outline-danger px-3">
+								Restore to default
+							</button>
+
+							<button className="btn btn-main-primary btn-size px-3">
+								Save changes
+							</button>
+						</div>
+					</div>
+					<div className="modal-body">
+						<div>
+							<div className="card card-box-view mb-4">
+							<div className="card-body p-4">
+								<div className="row align-items-center">
+								<div className="col-lg-7">
+									<div className="text-start mb-lg-0 mb-3">
+									<h4>Disputes</h4>
+									<p className="mb-0 text-muted-3">
+										All permission relating to disputes
+									</p>
+									</div>
+								</div>
+
+								<div className="col-lg-5">
+									<div className="d-flex flex-column gap-10">
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_1"
+										checked={isChecked}
+										onChange={handleCheckboxChange}
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_1"
+										>
+										Create dispute
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_2"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_2"
+										>
+										Approve dispute
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_3"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_3"
+										>
+										Invite dispute participants
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_4"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_4"
+										>
+										Change dispute case status
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_5"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_5"
+										>
+										Participate in resolution
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_6"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_6"
+										>
+										View dispute notifications
+										</label>
 									</div>
 									</div>
-								</td>
-								<td>
-									{member_profile.status === "pending" && (
-									<span className="badge bg-warning">
-										{member_profile.status}
-									</span>
-									)}
+								</div>
+								</div>
+							</div>
+							</div>
 
-									{member_profile.status !== "pending" && (
-									<span>
-										{member_profile.date_joined}
-									</span>
-									)}
-								</td>
-								<td>
-									<a
-									href="javascript:void(0);"
-									data-bs-toggle="modal"
-									data-bs-target="#dissolveModal"
-									onClick={(e) => {
-										setIndividualSettlmentMemberProfile({
-										member_id: member_profile._id,
-										member_name:
-											member_profile.name ||
-											member_profile.email,
-										});
-									}}
-									className="text-danger"
-									>
-									Remove member
-									</a>
-								</td>
-								</tr>
-							))}
-							</tbody>
-						</table>
-						) : (
-						<div className="card no-admin-card rounded-0">
-							<div className="card-body d-flex align-items-center justify-content-center">
-							<div className="text-center">
-								<h4 className="">No board members</h4>
+							<div className="card card-box-view mb-4">
+							<div className="card-body p-4">
+								<div className="row align-items-center">
+								<div className="col-lg-7">
+									<div className="text-start mb-lg-0 mb-3">
+									<h4>Union & Branches</h4>
+									<p className="mb-0 text-muted-3">
+										Permissions related to creating and editing unions,
+										branches or sub branches
+									</p>
+									</div>
+								</div>
+								<div className="col-lg-5">
+									<div className="d-flex flex-column gap-10">
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_7"
+										checked={isChecked}
+										onChange={handleCheckboxChange}
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_7"
+										>
+										Create unions
+										</label>
+									</div>
 
-								<p className="text-muted-3">
-								Enter an admins email and role to send invite
-								</p>
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_8"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_8"
+										>
+										Create branches
+										</label>
+									</div>
 
-								<div className="text-center">
-								<img
-									src="images/no-found.svg"
-									className="img-fluid"
-								/>
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_9"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_9"
+										>
+										Create sub branches
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_10"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_10"
+										>
+										Edit unions
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_11"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_11"
+										>
+										Edit branches
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_12"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_12"
+										>
+										Edit sub branches
+										</label>
+									</div>
+									</div>
+								</div>
+								</div>
+							</div>
+							</div>
+
+							<div className="card card-box-view mb-4">
+							<div className="card-body p-4">
+								<div className="row align-items-center">
+								<div className="col-lg-7">
+									<div className="text-start mb-lg-0 mb-3">
+									<h4>Users & Groups</h4>
+									<p className="mb-0 text-muted-3">
+										Permissions related to users and groups
+									</p>
+									</div>
+								</div>
+
+								<div className="col-lg-5">
+									<div className="d-flex flex-column gap-10">
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_13"
+										checked={isChecked}
+										onChange={handleCheckboxChange}
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_13"
+										>
+										Invite users
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_14"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_14"
+										>
+										Edit users status
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_15"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_15"
+										>
+										Assign users cases
+										</label>
+									</div>
+
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_16"
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_16"
+										>
+										Edit roles & permissions
+										</label>
+									</div>
+									</div>
+								</div>
+								</div>
+							</div>
+							</div>
+
+							<div className="card card-box-view mb-4">
+							<div className="card-body p-4">
+								<div className="row align-items-center">
+								<div className="col-lg-7">
+									<div className="text-start mb-lg-0 mb-3">
+									<h4>Reports</h4>
+									<p className="mb-0 text-muted-3">
+										Permissions regarding the reporting feature
+									</p>
+									</div>
+								</div>
+								<div className="col-lg-5">
+									<div className="d-flex flex-column gap-10">
+									<div className="form-check d-flex align-items-center form-switch">
+										<input
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										id="flexSwitchCheckChecked_17"
+										checked={isChecked}
+										onChange={handleCheckboxChange}
+										/>
+										<label
+										className="form-check-label ms-4"
+										htmlFor="flexSwitchCheckChecked_17"
+										>
+										View & download reports
+										</label>
+									</div>
+									</div>
+								</div>
 								</div>
 							</div>
 							</div>
 						</div>
-						)}
-					</div>
-					</div>
-				)}
-				</div>
-			</div>
-			</div>
-		</div>
-
-		{/* Modal */}
-		<div
-			className="modal fade"
-			id="customModal"
-			tabIndex="-1"
-			aria-labelledby="customModalLabel"
-			aria-hidden="true"
-		>
-			<div className="modal-dialog modal-dialog-centered modal-lg">
-			<div className="modal-content p-lg-4 border-0">
-				<div className="modal-header justify-content-between">
-				<div>
-					<h1 className="modal-title fs-5">
-					Create custom role & permissions
-					</h1>
-					<p>Ministry Liason</p>
-				</div>
-
-				<div className="gap-10 d-flex align-items-center">
-					<button
-					className="btn btn btn-size btn-main-outline-primary px-3"
-					data-bs-target="#customModal"
-					data-bs-toggle="modal"
-					>
-					Back
-					</button>
-
-					<button
-					className="btn btn-main-primary btn-size px-3"
-					data-bs-dismiss="modal"
-					aria-label="Close"
-					onClick={CreateCustomRole}
-					>
-					Finish
-					</button>
-				</div>
-				</div>
-				<div className="modal-body">
-				<div>
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Disputes</h4>
-							<p className="mb-0 text-muted-3">
-								All permission relating to disputes
-							</p>
-							</div>
-						</div>
-
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_1"
-								checked={isChecked}
-								onChange={handleCheckboxChange}
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_1"
-								>
-								Create dispute
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_2"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_2"
-								>
-								Approve dispute
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_3"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_3"
-								>
-								Invite dispute participants
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_4"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_4"
-								>
-								Change dispute case status
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_5"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_5"
-								>
-								Participate in resolution
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_6"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_6"
-								>
-								View dispute notifications
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Union & Branches</h4>
-							<p className="mb-0 text-muted-3">
-								Permissions related to creating and editing unions,
-								branches or sub branches
-							</p>
-							</div>
-						</div>
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_7"
-								checked={isChecked}
-								onChange={handleCheckboxChange}
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_7"
-								>
-								Create unions
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_8"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_8"
-								>
-								Create branches
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_9"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_9"
-								>
-								Create sub branches
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_10"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_10"
-								>
-								Edit unions
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_11"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_11"
-								>
-								Edit branches
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_12"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_12"
-								>
-								Edit sub branches
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Users & Groups</h4>
-							<p className="mb-0 text-muted-3">
-								Permissions related to users and groups
-							</p>
-							</div>
-						</div>
-
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_13"
-								checked={isChecked}
-								onChange={handleCheckboxChange}
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_13"
-								>
-								Invite users
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_14"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_14"
-								>
-								Edit users status
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_15"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_15"
-								>
-								Assign users cases
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_16"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_16"
-								>
-								Edit roles & permissions
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Reports</h4>
-							<p className="mb-0 text-muted-3">
-								Permissions regarding the reporting feature
-							</p>
-							</div>
-						</div>
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_17"
-								checked={isChecked}
-								onChange={handleCheckboxChange}
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_17"
-								>
-								View & download reports
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
 					</div>
 				</div>
-				</div>
-			</div>
-			</div>
-		</div>
-
-		{/* Modal */}
-		<div
-			className="modal fade"
-			id="permissionModal"
-			tabIndex="-1"
-			aria-labelledby="permissionModalLabel"
-			aria-hidden="true"
-		>
-			<div className="modal-dialog modal-dialog-centered modal-lg">
-			<div className="modal-content p-lg-4 border-0">
-				<div className="modal-header justify-content-between">
-				<div>
-					<h1 className="modal-title fs-5">
-					Create custom role & permissions
-					</h1>
-					<p>Ministry Liason</p>
-				</div>
-
-				<div className="gap-10 d-flex align-items-center">
-					<button
-					className="btn btn btn-size btn-main-outline-primary px-3"
-					data-bs-target="#customModal"
-					data-bs-toggle="modal"
-					>
-					Back
-					</button>
-
-					<button className="btn btn-main-primary btn-size px-3">
-					Finish
-					</button>
-				</div>
-				</div>
-				<div className="modal-body">
-				<div>
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Disputes</h4>
-							<p className="mb-0 text-muted-3">
-								All permission relating to disputes
-							</p>
-							</div>
-						</div>
-
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_1"
-								checked
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_1"
-								>
-								Create dispute
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_2"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_2"
-								>
-								Approve dispute
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_3"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_3"
-								>
-								Invite dispute participants
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_4"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_4"
-								>
-								Change dispute case status
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_5"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_5"
-								>
-								Participate in resolution
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_6"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_6"
-								>
-								View dispute notifications
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Union & Branches</h4>
-							<p className="mb-0 text-muted-3">
-								Permissions related to creating and editing unions,
-								branches or sub branches
-							</p>
-							</div>
-						</div>
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_7"
-								checked
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_7"
-								>
-								Create unions
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_8"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_8"
-								>
-								Create branches
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_9"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_9"
-								>
-								Create sub branches
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_10"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_10"
-								>
-								Edit unions
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_11"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_11"
-								>
-								Edit branches
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_12"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_12"
-								>
-								Edit sub branches
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Users & Groups</h4>
-							<p className="mb-0 text-muted-3">
-								Permissions related to users and groups
-							</p>
-							</div>
-						</div>
-
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_13"
-								checked
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_13"
-								>
-								Invite users
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_14"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_14"
-								>
-								Edit users status
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_15"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_15"
-								>
-								Assign users cases
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_16"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_16"
-								>
-								Edit roles & permissions
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Reports</h4>
-							<p className="mb-0 text-muted-3">
-								Permissions regarding the reporting feature
-							</p>
-							</div>
-						</div>
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_17"
-								checked
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_17"
-								>
-								View & download reports
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-				</div>
-				</div>
-			</div>
-			</div>
-		</div>
-
-		{/* Modal */}
-		<div
-			className="modal fade"
-			id="permissionModal2"
-			tabIndex="-1"
-			aria-labelledby="permissionModalLabel2"
-			aria-hidden="true"
-		>
-			<div className="modal-dialog modal-dialog-centered modal-lg">
-			<div className="modal-content p-lg-4 border-0">
-				<div className="modal-header justify-content-between">
-				<div>
-					<h1 className="modal-title fs-5">
-					Edit permission level htmlFor Ministry Admin
-					</h1>
-					<p className="mb-0">maryblessing@gmail.com</p>
-				</div>
-
-				<div className="gap-10 d-flex align-items-center">
-					<button className="btn btn btn-size btn-outline-danger px-3">
-					Restore to default
-					</button>
-
-					<button className="btn btn-main-primary btn-size px-3">
-					Save changes
-					</button>
-				</div>
-				</div>
-				<div className="modal-body">
-				<div>
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Disputes</h4>
-							<p className="mb-0 text-muted-3">
-								All permission relating to disputes
-							</p>
-							</div>
-						</div>
-
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_1"
-								checked={isChecked}
-								onChange={handleCheckboxChange}
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_1"
-								>
-								Create dispute
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_2"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_2"
-								>
-								Approve dispute
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_3"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_3"
-								>
-								Invite dispute participants
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_4"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_4"
-								>
-								Change dispute case status
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_5"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_5"
-								>
-								Participate in resolution
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_6"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_6"
-								>
-								View dispute notifications
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Union & Branches</h4>
-							<p className="mb-0 text-muted-3">
-								Permissions related to creating and editing unions,
-								branches or sub branches
-							</p>
-							</div>
-						</div>
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_7"
-								checked={isChecked}
-								onChange={handleCheckboxChange}
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_7"
-								>
-								Create unions
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_8"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_8"
-								>
-								Create branches
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_9"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_9"
-								>
-								Create sub branches
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_10"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_10"
-								>
-								Edit unions
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_11"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_11"
-								>
-								Edit branches
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_12"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_12"
-								>
-								Edit sub branches
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Users & Groups</h4>
-							<p className="mb-0 text-muted-3">
-								Permissions related to users and groups
-							</p>
-							</div>
-						</div>
-
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_13"
-								checked={isChecked}
-								onChange={handleCheckboxChange}
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_13"
-								>
-								Invite users
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_14"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_14"
-								>
-								Edit users status
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_15"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_15"
-								>
-								Assign users cases
-								</label>
-							</div>
-
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_16"
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_16"
-								>
-								Edit roles & permissions
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-
-					<div className="card card-box-view mb-4">
-					<div className="card-body p-4">
-						<div className="row align-items-center">
-						<div className="col-lg-7">
-							<div className="text-start mb-lg-0 mb-3">
-							<h4>Reports</h4>
-							<p className="mb-0 text-muted-3">
-								Permissions regarding the reporting feature
-							</p>
-							</div>
-						</div>
-						<div className="col-lg-5">
-							<div className="d-flex flex-column gap-10">
-							<div className="form-check d-flex align-items-center form-switch">
-								<input
-								className="form-check-input"
-								type="checkbox"
-								role="switch"
-								id="flexSwitchCheckChecked_17"
-								checked={isChecked}
-								onChange={handleCheckboxChange}
-								/>
-								<label
-								className="form-check-label ms-4"
-								htmlFor="flexSwitchCheckChecked_17"
-								>
-								View & download reports
-								</label>
-							</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
-				</div>
-				</div>
-			</div>
 			</div>
 		</div>
 

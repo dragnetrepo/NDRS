@@ -32,6 +32,7 @@ const SubBranchDetails = () => {
 	const [sidebar, setsidebar] = useState(true);
 	const [selectedAdminId, setSelectedAdminId] = useState(null);
 	const [selectedAdmin, setSelectedAdmin] = useState(null);
+	const [isRemovingAdmin, setRemovingAdmin] = useState(false);
 
 	const toggleSideBar = () => {
 		setsidebar(!sidebar);
@@ -229,6 +230,7 @@ const SubBranchDetails = () => {
 
 	const handleDelete = async (e, admin_id) => {
 		e.preventDefault();
+		setRemovingAdmin(true);
 
 		try {
 			const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
@@ -252,10 +254,15 @@ const SubBranchDetails = () => {
 			}
 
 			toast.success(data.message);
-			
-			window.location.reload();
+
+			document.getElementById("remove-admin-modal-close").click();
+			fetchdata(id);
+			fetchUnionAdmin(id);
 		} catch (error) {
 			console.error("Error fetching data:", error);
+		}
+		finally {
+			setRemovingAdmin(false);
 		}
 	};
 
@@ -630,8 +637,8 @@ const SubBranchDetails = () => {
 							{selectedAdmin?.name} ({selectedAdmin?.role}){" "}
 						</p>
 
-						<button className="btn btn-size btn-main-danger w-100" onClick={(e) => handleDelete(e, selectedAdminId) }>
-							Yes, Remove Admin
+						<button className="btn btn-size btn-main-danger w-100" onClick={(e) => handleDelete(e, selectedAdminId) } disabled={isRemovingAdmin}>
+							{isRemovingAdmin ? `Removing Admin...` : `Yes, Remove Admin`}
 						</button>
 					</div>
 				</div>
