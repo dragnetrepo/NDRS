@@ -36,9 +36,9 @@ if (!function_exists("get_user_roles")) {
                         "union_id" => $role->union->id ?? 0,
                         "union_name" => $role->union->name ?? "",
                         "union_branch_id" => $role->union_branch->id ?? 0,
-                        "union_branch_name" => $role->union_branch->name ?? ($role->union ? "All Branches" : ""),
+                        "union_branch_name" => $role->union_branch->name ?? "",
                         "union_sub_branch_id" => $role->union_sub_branch->id ?? 0,
-                        "union_sub_branch_name" => $role->union_sub_branch->name ?? (($role->union || $role->union_branch) ? "All Sub Branches" : ""),
+                        "union_sub_branch_name" => $role->union_sub_branch->name ?? "",
                     ];
                 }
             }
@@ -51,9 +51,9 @@ if (!function_exists("get_user_roles")) {
                         "union_id" => $role->union->id ?? 0,
                         "union_name" => $role->union->name ?? "",
                         "union_branch_id" => $role->union_branch->id ?? 0,
-                        "union_branch_name" => $role->union_branch->name ?? ($role->union ? "All Branches" : ""),
+                        "union_branch_name" => $role->union_branch->name ?? "",
                         "union_sub_branch_id" => $role->union_sub_branch->id ?? 0,
-                        "union_sub_branch_name" => $role->union_sub_branch->name ?? (($role->union || $role->union_branch) ? "All Sub Branches" : ""),
+                        "union_sub_branch_name" => $role->union_sub_branch->name ?? "",
                     ];
                 }
             }

@@ -179,6 +179,12 @@ Route::name("api.")->middleware(['cors'])->withoutMiddleware([\Illuminate\Routin
                 Route::post("/update-permission", "update_role_permission")->name("add-role-permission");
             });
 
+            Route::prefix("requests")->name("request.")->group(function(){
+                Route::post("new-role", "new_role")->name("new-role");
+                Route::post("new-organization", "new_organization")->name("new-organization");
+                Route::post("delete-organization", "delete_organization")->name("delete-organization");
+            });
+
             Route::middleware("custom_user_permission:invite users")->group(function(){
                 Route::get("/sample-csv", "sample_csv_file")->name("sample-csv-file");
                 Route::post("/send-invite", "send_invite")->name("send-invite");

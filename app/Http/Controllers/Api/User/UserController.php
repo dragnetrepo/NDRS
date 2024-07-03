@@ -17,6 +17,8 @@ use App\Models\OutgoingMessages;
 use App\Models\SettlementBody;
 use App\Models\SettlementBodyMember;
 use App\Models\User;
+use App\Models\UserRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
@@ -417,7 +419,8 @@ class UserController extends Controller
     public function create_role(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "name" => "required|string|min:2|unique:roles,name"
+            "name" => "required|string|min:2|unique:roles,name",
+            "permissions" => "required|array"
         ]);
 
         if ($validator->fails()) {
@@ -426,12 +429,24 @@ class UserController extends Controller
             $this->response["status"] = Response::HTTP_UNAUTHORIZED;
         }
         else {
-            Role::create([
+            $role = Role::create([
                 "name" => strtolower($request->name),
                 "display_name" => ucwords($request->name),
                 "is_default" => 0,
                 "type" => "admin"
             ]);
+
+            if ($role) {
+                foreach ($request->permissions as $permission => $setting) {
+                    if ($setting) {
+                        $perm = Permission::find($permission);
+
+                        if ($perm) {
+                            $role->givePermissionTo($perm->name);
+                        }
+                    }
+                }
+            }
 
             $this->response["status"] = Response::HTTP_OK;
             $this->response["message"] = "Custom role has been created successfully!";
@@ -744,6 +759,119 @@ class UserController extends Controller
 
         $this->response["data"] = $data;
         $this->response["status"] = Response::HTTP_OK;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function new_role(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "role_id" => "required|integer"
+        ], [
+            "role_id.required" => "You must select an role to continue",
+            "role_id.integer" => "You have selected an invalid role",
+        ]);
+
+        if ($validator->fails()) {
+            $this->response["message"] = "Validation errors";
+            $this->response["error"] = $validator->errors();
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+        }
+        else {
+            $user_id = $request->user()->id;
+
+            UserRequest::updateOrCreate([
+                "user_id" => $user_id,
+                "status" => "pending",
+                "request_type" => "new-role"
+            ],[
+                "user_id" => $user_id,
+                "status" => "pending",
+                "request_type" => "new-role",
+                "request_id" => $request->role_id
+            ]);
+
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["message"] = "Your request for a new role has been submitted successfully!";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function new_organization(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "org_id" => "required|integer"
+        ], [
+            "org_id.required" => "You must select an organization to continue",
+            "org_id.integer" => "You have selected an invalid organization",
+        ]);
+
+        if ($validator->fails()) {
+            $this->response["message"] = "Validation errors";
+            $this->response["error"] = $validator->errors();
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+        }
+        else {
+            $user_id = $request->user()->id;
+
+            UserRequest::updateOrCreate([
+                "user_id" => $user_id,
+                "status" => "pending",
+                "request_type" => "new-org"
+            ],[
+                "user_id" => $user_id,
+                "status" => "pending",
+                "request_type" => "new-org",
+                "request_id" => $request->org_id
+            ]);
+
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["message"] = "Your request for a new organization has been submitted successfully!";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
+    public function delete_organization(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "reason" => "required|string|min:10"
+        ], [
+            "org_id.required" => "You must provide a reason to delete this organization",
+            "org_id.string" => "You have made an invalid invalid request",
+        ]);
+
+        if ($validator->fails()) {
+            $this->response["message"] = "Validation errors";
+            $this->response["error"] = $validator->errors();
+            $this->response["status"] = Response::HTTP_UNAUTHORIZED;
+        }
+        else {
+            $user_id = $request->user()->id;
+            $role = get_user_roles($request->user());
+
+            UserRequest::updateOrCreate([
+                "user_id" => $user_id,
+                "status" => "pending",
+                "request_type" => "delete-org"
+            ],[
+                "user_id" => $user_id,
+                "status" => "pending",
+                "request_type" => "delete-org",
+                "content" => serialize([
+                    "organization" => [
+                        "union_id" => $role["union_id"],
+                        "union_branch_id" => $role["union_branch_id"],
+                        "union_sub_branch_id" => $role["union_sub_branch_id"],
+                    ],
+                    "reason" => $request->reason,
+                ])
+            ]);
+
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["message"] = "Your request to delete this organization has been submitted successfully!";
+        }
 
         return response()->json($this->response, $this->response["status"]);
     }
