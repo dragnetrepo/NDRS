@@ -157,7 +157,9 @@ class ProfileController extends Controller
 
             $user->tokens()->delete();
             $user->email = time().'__'.$user->email;
-            $user->delete();
+            if ($user->save()) {
+                $user->delete();
+            }
 
             $this->response["status"] = Response::HTTP_OK;
             $this->response["message"] = "Account has been deleted successfully!";
