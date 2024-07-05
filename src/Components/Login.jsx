@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 import AuthNavInc from "../Bars/AuthNavInc";
 
-function Login() {
+function Login({ setloggedIn }) {
   const { passwordField, setPasswordField } = useContext(AppContext);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +39,7 @@ function Login() {
         email: "",
         password: "",
       });
+      setloggedIn(true);
 
       // Assuming the response contains a JSON object with a token
       const data = await response.json();

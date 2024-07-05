@@ -1,10 +1,10 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import CreateAccount from "./Components/CreateAccount";
 import Index from "./Components/Index";
 import Verification from "./Components/Verification";
 import Verification2 from "./Components/Verification2";
 
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import CreatePassword from "./Components/CreatePassword";
 import ProfileSetup from "./Components/ProfileSetup";
 import LoginPassword from "./Components/LoginPassword";
@@ -47,6 +47,15 @@ import ResetPassword from "./Components/ResetPassword";
 export const AppContext = createContext();
 
 const App = () => {
+  const [loggedIn, setloggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setloggedIn(true);
+    }
+  }, []);
+
   const [verifyEmail, setVerifyEmail] = useState({
     email: "",
     code: "",
@@ -120,24 +129,87 @@ const App = () => {
       >
         <Toaster />
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/CreateAccount" element={<CreateAccount />} />
-          <Route path="/CreatePassword" element={<CreatePassword />} />
-          <Route path="/Verification" element={<Verification />} />
-          <Route path="/Verification2" element={<Verification2 />} />
-          <Route path="/ProfileSetup" element={<ProfileSetup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/Recovery" element={<Recovery />} />
-          <Route path="/ProfileSetup2" element={<ProfileSetup2 />} />
-          <Route path="/PasswordSet2" element={<PasswordSet2 />} />
-          <Route path="/LoginPassword" element={<LoginPassword />} />
+          <Route
+            path="/"
+            element={loggedIn ? <Navigate to="/dashboard" /> : <Index />}
+          />
+          <Route
+            path="/CreateAccount"
+            element={
+              loggedIn ? <Navigate to="/dashboard" /> : <CreateAccount />
+            }
+          />
+          <Route
+            path="/CreatePassword"
+            element={
+              loggedIn ? <Navigate to="/dashboard" /> : <CreatePassword />
+            }
+          />
+          <Route
+            path="/Verification"
+            element={loggedIn ? <Navigate to="/dashboard" /> : <Verification />}
+          />
+          <Route
+            path="/Verification2"
+            element={
+              loggedIn ? <Navigate to="/dashboard" /> : <Verification2 />
+            }
+          />
+          <Route
+            path="/ProfileSetup"
+            element={loggedIn ? <Navigate to="/dashboard" /> : <ProfileSetup />}
+          />
+          <Route
+            path="/login"
+            element={
+              loggedIn ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <Login setloggedIn={setloggedIn} />
+              )
+            }
+          />
+          <Route
+            path="/Recovery"
+            element={loggedIn ? <Navigate to="/dashboard" /> : <Recovery />}
+          />
+          <Route
+            path="/ProfileSetup2"
+            element={
+              loggedIn ? <Navigate to="/dashboard" /> : <ProfileSetup2 />
+            }
+          />
+          <Route
+            path="/PasswordSet2"
+            element={loggedIn ? <Navigate to="/dashboard" /> : <PasswordSet2 />}
+          />
+          <Route
+            path="/LoginPassword"
+            element={
+              loggedIn ? <Navigate to="/dashboard" /> : <LoginPassword />
+            }
+          />
           <Route
             path="/VerificationSuccess"
-            element={<VerificationSuccess />}
+            element={
+              loggedIn ? <Navigate to="/dashboard" /> : <VerificationSuccess />
+            }
           />
-          <Route path="/Dashboard" element={<Dashboard />} />
+          <Route
+            path="/Dashboard"
+            element={
+              loggedIn ? (
+                <Dashboard setloggedIn={setloggedIn} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
           <Route path="/Notifications" element={<Notifications />} />
-          <Route path="/TopBarInc" element={<TopBarInc />} />
+          <Route
+            path="/TopBarInc"
+            element={loggedIn ? <Navigate to="/dashboard" /> : <TopBarInc />}
+          />
           <Route path="/Unions" element={<Unions />} />
           <Route path="/UnionDetails" element={<UnionDetails />} />
           <Route path="/UnionDetails/:id" element={<UnionDetails />} />
@@ -169,9 +241,22 @@ const App = () => {
           <Route path="/Branches/:id" element={<Branches />} />
           <Route path="/SubBranch/:id" element={<SubBranch />} />
           <Route path="/subBranchDetails/:id" element={<SubBranchDetails />} />
-          <Route path="/sendUnionInvite" element={<SendUnionInvite />} />
-          <Route path="/union-invite/:token" element={<UnionInvite />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route
+            path="/sendUnionInvite"
+            element={
+              loggedIn ? <Navigate to="/dashboard" /> : <SendUnionInvite />
+            }
+          />
+          <Route
+            path="/union-invite/:token"
+            element={loggedIn ? <Navigate to="/dashboard" /> : <UnionInvite />}
+          />
+          <Route
+            path="/reset-password/:token"
+            element={
+              loggedIn ? <Navigate to="/dashboard" /> : <ResetPassword />
+            }
+          />
 
           <Route path="/*" element={<Error404 />} />
         </Routes>
