@@ -1388,31 +1388,19 @@ const Settings = () => {
 																		<div className="d-flex flex-column gap-10">
 																		{Object.keys(item.settings).map(
 																			(setting) => (
-																			<div className="form-check d-flex align-items-center form-switch">
-																				<input
-																				className="form-check-input"
-																				type="checkbox"
-																				role="switch"
-																				id={`toggler-${item.key}-${setting}`}
-																				checked={
-																					item.settings[
-																					setting
-																					] === "1"
-																				}
-																				onChange={(e) => {
-																					toggleNotificationSettings(
-																					item.key,
-																					setting
-																					);
-																				}}
-																				/>
-																				<label
-																				className="form-check-label ms-4"
-																				htmlFor={`toggler-${item.key}-${setting}`}
-																				>
-																				{setting}
-																				</label>
-																			</div>
+																				<>
+																					{setting === "email" && (
+																						<div className="form-check d-flex align-items-center form-switch">
+																							<input
+																							className="form-check-input"
+																							type="checkbox"
+																							role="switch"
+																							id={`toggler-${item.key}-${setting}`}
+																							checked={item.settings[setting] === "1" } onChange={(e) => {toggleNotificationSettings(item.key, setting); }} />
+																							<label className="form-check-label ms-4" htmlFor={`toggler-${item.key}-${setting}`}>{setting}</label>
+																						</div>
+																					)}
+																				</>
 																			)
 																		)}
 																		</div>
