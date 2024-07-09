@@ -14,6 +14,13 @@ class CaseAccusedUnion extends Model
 
     public function union()
     {
+        if ($this->union_sub_branch) {
+            return $this->belongsTo(UnionSubBranch::class, "union_sub_branch");
+        }
+        elseif ($this->union_branch) {
+            return $this->belongsTo(UnionBranch::class, "union_branch");
+        }
+
         return $this->belongsTo(Union::class);
     }
 }

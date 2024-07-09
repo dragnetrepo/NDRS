@@ -78,9 +78,19 @@ class DiscussionController extends Controller
 
                 $user = $last_msg->user ?? null;
                 if ($discussion->case_id) {
+                    if  ($discussion->dispute->union_sub_branch) {
+                        $claimant_disk = "union_sub_branch_logos";
+                    }
+                    elseif  ($discussion->dispute->union_branch) {
+                        $claimant_disk = "union_branch_logos";
+                    }
+                    else {
+                        $claimant_disk = "union_logos";
+                    }
+
                     $sender_info = [
                         "sender" => trim($user ? ($user->first_name.' '.$user->last_name) : ""),
-                        "photo" => get_model_file_from_disk($discussion->dispute->union_data->logo, "union_logos"),
+                        "photo" => get_model_file_from_disk($discussion->dispute->union_data->logo, $claimant_disk),
                     ];
                 }
                 elseif ($last_msg) {
@@ -259,9 +269,19 @@ class DiscussionController extends Controller
             $dispute = $discussion->dispute;
 
             if ($dispute) {
+                if  ($dispute->union_sub_branch) {
+                    $claimant_disk = "union_sub_branch_logos";
+                }
+                elseif  ($dispute->union_branch) {
+                    $claimant_disk = "union_branch_logos";
+                }
+                else {
+                    $claimant_disk = "union_logos";
+                }
+
                 $discuss_info = [
                     "group_name" => trim($discussion->title),
-                    "group_photo" => get_model_file_from_disk($discussion->dispute->union_data->logo, "union_logos"),
+                    "group_photo" => get_model_file_from_disk($discussion->dispute->union_data->logo, $claimant_disk),
                 ];
 
                 $case_id = $dispute->id;

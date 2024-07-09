@@ -14,6 +14,7 @@ use App\Models\CaseUserRoles;
 use App\Models\OutgoingMessages;
 use App\Models\Union;
 use App\Models\UnionBranch;
+use App\Models\UnionSubBranch;
 use App\Models\UnionUserRole;
 use App\Models\User;
 use Carbon\Carbon;
@@ -52,6 +53,26 @@ class DisputesController extends Controller
 
         if ($disputes->isNotEmpty()) {
             foreach ($disputes as $dispute) {
+                if  ($dispute->union_sub_branch) {
+                    $claimant_disk = "union_sub_branch_logos";
+                }
+                elseif  ($dispute->union_branch) {
+                    $claimant_disk = "union_branch_logos";
+                }
+                else {
+                    $claimant_disk = "union_logos";
+                }
+
+                if  ($dispute->accused && $dispute->accused->union_sub_branch) {
+                    $accused_disk = "union_sub_branch_logos";
+                }
+                elseif  ($dispute->accused && $dispute->accused->union_branch) {
+                    $accused_disk = "union_branch_logos";
+                }
+                else {
+                    $accused_disk = "union_logos";
+                }
+
                 $data[] = [
                     "_id" => $dispute->id,
                     "case_no" => $dispute->case_no,
@@ -69,12 +90,12 @@ class DisputesController extends Controller
                         "claimant" => [
                             "name" => $dispute->union_data->name,
                             "acronym" => $dispute->union_data->acronym,
-                            "logo" => get_model_file_from_disk($dispute->union_data->logo, "union_logos"),
+                            "logo" => get_model_file_from_disk($dispute->union_data->logo, $claimant_disk),
                         ],
                         "accused" => [
                             "name" => $dispute->accused ? $dispute->accused->union->name : "",
                             "acronym" => $dispute->accused ? $dispute->accused->union->acronym : "",
-                            "logo" => get_model_file_from_disk($dispute->accused->union->logo, "union_logos"),
+                            "logo" => $dispute->accused ? get_model_file_from_disk($dispute->accused->union->logo, $accused_disk) : "",
                         ],
                     ]
                 ];
@@ -96,6 +117,26 @@ class DisputesController extends Controller
         $dispute = get_case_dispute($case_id, $user_id);
 
         if ($dispute) {
+            if  ($dispute->union_sub_branch) {
+                $claimant_disk = "union_sub_branch_logos";
+            }
+            elseif  ($dispute->union_branch) {
+                $claimant_disk = "union_branch_logos";
+            }
+            else {
+                $claimant_disk = "union_logos";
+            }
+
+            if  ($dispute->accused && $dispute->accused->union_sub_branch) {
+                $accused_disk = "union_sub_branch_logos";
+            }
+            elseif  ($dispute->accused && $dispute->accused->union_branch) {
+                $accused_disk = "union_branch_logos";
+            }
+            else {
+                $accused_disk = "union_logos";
+            }
+
             $data = [
                 "_id" => $dispute->id,
                 "case_no" => $dispute->case_no,
@@ -113,12 +154,12 @@ class DisputesController extends Controller
                     "claimant" => [
                         "name" => $dispute->union_data->name,
                         "acronym" => $dispute->union_data->acronym,
-                        "logo" => get_model_file_from_disk($dispute->union_data->logo, "union_logos"),
+                        "logo" => get_model_file_from_disk($dispute->union_data->logo, $claimant_disk),
                     ],
                     "accused" => [
                         "name" => $dispute->accused ? $dispute->accused->union->name : "",
                         "acronym" => $dispute->accused ? $dispute->accused->union->acronym : "",
-                        "logo" => get_model_file_from_disk($dispute->accused->union->logo, "union_logos"),
+                        "logo" => $dispute->accused ? get_model_file_from_disk($dispute->accused->union->logo, $accused_disk) : "",
                     ],
                 ]
             ];
@@ -140,11 +181,11 @@ class DisputesController extends Controller
         $form_error_msg = [];
 
         try {
-            $union = Union::where("id", $request->initiating_party)->first();
-            $accussed_party = Union::where("id", $request->accused_party)->first();
+            $initiating_party = (object) get_user_roles($request->user());
+            $accussed_party = UnionSubBranch::where("id", $request->accused_party)->first();
 
             if ($accussed_party) {
-                if ($union) {
+                if ($initiating_party) {
                     $case_dispute = CaseDispute::create([
                         "case_no" => "DS".$this->generateCaseID(),
                         "case_title" => $request->title,
@@ -155,14 +196,18 @@ class DisputesController extends Controller
                         "specific_claims" => $request->specific_claims,
                         "negotiation_terms" => $request->negotiation_terms,
                         "status" => "pending approval",
-                        "union" => $union->id,
+                        "union" => $initiating_party->union_id,
+                        "union_branch" => $initiating_party->union_branch_id,
+                        "union_sub_branch" => $initiating_party->union_sub_branch_id,
                         "created_by" => request()->user()->id,
                     ]);
 
                     if ($case_dispute) {
                         CaseAccusedUnion::create([
                             "case_id"  => $case_dispute->id,
-                            "union_id" => $request->accused_party
+                            "union_id" => $accussed_party->union_id,
+                            "union_branch" => $accussed_party->branch_id,
+                            "union_sub_branch" => $accussed_party->id,
                         ]);
 
                         create_dispute_folder($case_dispute);
@@ -209,13 +254,19 @@ class DisputesController extends Controller
             $case_dispute->negotiation_terms = $request->negotiation_terms;
 
             if ($case_dispute->save()) {
-                // Add new unions added to this case
-                CaseAccusedUnion::updateorCreate([
-                    "case_id"  => $case_dispute->id,
-                ],[
-                    "case_id"  => $case_dispute->id,
-                    "union_id" => $request->accused_party
-                ]);
+                $accussed_party = UnionSubBranch::where("id", $request->accused_party)->first();
+
+                if ($accussed_party) {
+                    // Add new unions added to this case
+                    CaseAccusedUnion::updateorCreate([
+                        "case_id"  => $case_dispute->id,
+                    ],[
+                        "case_id"  => $case_dispute->id,
+                        "union_id" => $accussed_party->union_id,
+                        "union_branch" => $accussed_party->branch_id,
+                        "union_sub_branch" => $accussed_party->id,
+                    ]);
+                }
 
                 $this->response["status"] = Response::HTTP_OK;
                 $this->response["message"] = "Dispute has been modified successfully!";
@@ -252,7 +303,7 @@ class DisputesController extends Controller
                         "current_status" => $current_status,
                     ]);
 
-                    $notification_message = trim(request()->user()->first_name.' '.request()->user()->last_name)." approved the case with Case Number (".$dispute->case_no.")";
+                    $notification_message = "Your Case $dispute->case_no has been approved";
                     record_notification_for_users($notification_message, $dispute->id, "case", request()->user()->id);
 
                     $this->response["status"] = Response::HTTP_OK;

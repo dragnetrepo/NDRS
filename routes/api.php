@@ -107,6 +107,7 @@ Route::name("api.")->middleware(['cors'])->withoutMiddleware([\Illuminate\Routin
             Route::get("get-unions", [UnionController::class, "index"])->name("all");
             Route::get("get-union-branches/{union}", [UnionBranchController::class, "index"])->name("branches");
             Route::get("get-union-organizations/{branch}", [UnionSubBranchController::class, "index"])->name("sub-branches");
+            Route::get("search-organizations", [UnionSubBranchController::class, "search_organizations"])->name("search-org");
         });
 
         Route::prefix("case")->name("case.")->group(function(){

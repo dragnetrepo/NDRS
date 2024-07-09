@@ -80,6 +80,35 @@ class UnionSubBranchController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function search_organizations(Request $request)
+    {
+        $search_keyword = $request->q;
+        $data = [];
+        $initiating_party = (object) get_user_roles($request->user());
+        $union_sub_branches = UnionSubBranch::where("name", "LIKE", "%$search_keyword%")->where("id", "<>", $initiating_party->union_sub_branch_id)->get();
+        $this->response["message"] = "No data found";
+
+        if ($union_sub_branches->isNotEmpty()) {
+            foreach ($union_sub_branches as $union_sub_branch) {
+                $data[] = [
+                    "_id" => $union_sub_branch->id,
+                    "union_id" => $union_sub_branch->union_id,
+                    "branch_id" => $union_sub_branch->branch_id,
+                    "name" => $union_sub_branch->name,
+                    "acronym" => $union_sub_branch->acronym,
+                ];
+            }
+
+            $this->response["message"] = "Retrieved comprehensive organizations list";
+            $this->response["sub_branch"] = $initiating_party->union_sub_branch_id;
+        }
+
+        $this->response["status"] = Response::HTTP_OK;
+        $this->response["data"] = $data;
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function union_sub_branches(Request $request)
     {
         $data = [];

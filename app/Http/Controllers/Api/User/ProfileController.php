@@ -38,6 +38,7 @@ class ProfileController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $organization = get_user_organization_name($user);
         $data = [
             "first_name" => $user->first_name,
             "last_name" => $user->last_name,
@@ -46,6 +47,7 @@ class ProfileController extends Controller
             "phone" => $user->phone,
             "display_picture" => get_model_file_from_disk($user->display_picture ?? "", "profile_photos"),
             "contact_address" => $user->contact_address,
+            "organization_name" => (count($organization) && isset($organization["name"])) ? $organization["name"] : "",
             "user_role" => get_user_roles($user),
             "permissions" => get_user_permissions($user),
         ];

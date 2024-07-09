@@ -327,11 +327,18 @@ if (!function_exists("get_dispute_folder")) {
 if (!function_exists("send_out_case_invitation")) {
     function send_out_case_invitation($case_id, $user_id, $user_email, $role_name, $send_time = "immediate") {
         $outgoing_messages = new OutgoingMessages();
+        $user = User::where("email", $user_email)->first();
 
         $subject = "New Invite to contribute to CASE $case_id";
         $message_body = "<p>Hello there,";
         $message_body .= "<p>We hope this email finds you well.</p>";
         $message_body .= "<p>You have been invited as a $role_name for CASE $case_id. Kindly login to your NDRS dashboard to accept this invite to be part of this dispute as a $role_name.</p>";
+        if ($user) {
+            $message_body .= "<p>Kindly click <a href='".env("WEBAPP_URL")."/login"."'>here</a> to log into your account and tend to $case_id.</p>";
+        }
+        else {
+            $message_body .= "<p>Kindly click <a href='".env("WEBAPP_URL")."/createAccount"."'>here</a> to create an account and tend to $case_id.</p>";
+        }
         $message_body .= "<p>If you feel this was sent to you in error, kindly ignore this email or you can contact us at ".env("CONTACT_EMAIL")." for more information.</p>";
         $message_body .= "<p>Cheers,</p>";
         $message_body .= "<p>".env("APP_NAME")." Team</p>";
@@ -833,14 +840,20 @@ if (!function_exists("get_user_organization_name")) {
         $data = [];
 
         if ($organization) {
-            if ($organization->union_name) {
-                $data["name"] = $organization->union_name;
+            if (isset($organization->union_sub_branch_name)) {
+                $data["id"] = $organization->union_sub_branch_id;
+                $data["type"] = "organization";
+                $data["name"] = $organization->union_sub_branch_name;
             }
-            elseif ($organization->union_branch_name) {
+            elseif (isset($organization->union_branch_name)) {
+                $data["id"] = $organization->union_branch_id;
+                $data["type"] = "branch";
                 $data["name"] = $organization->union_branch_name;
             }
-            elseif ($organization->union_sub_branch_name) {
-                $data["name"] = $organization->union_sub_branch_name;
+            elseif (isset($organization->union_name)) {
+                $data["id"] = $organization->union_id;
+                $data["type"] = "union";
+                $data["name"] = $organization->union_name;
             }
         }
 
