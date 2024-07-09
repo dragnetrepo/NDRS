@@ -14,6 +14,7 @@ use App\Models\CaseUserRoles;
 use App\Models\OutgoingMessages;
 use App\Models\Union;
 use App\Models\UnionBranch;
+use App\Models\UnionUserRole;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -251,6 +252,9 @@ class DisputesController extends Controller
                         "current_status" => $current_status,
                     ]);
 
+                    $notification_message = trim(request()->user()->first_name.' '.request()->user()->last_name)." approved the case with Case Number (".$dispute->case_no.")";
+                    record_notification_for_users($notification_message, $dispute->id, "case", request()->user()->id);
+
                     $this->response["status"] = Response::HTTP_OK;
                     $this->response["message"] = "Case status has been approved successfully!";
                 }
@@ -338,6 +342,9 @@ class DisputesController extends Controller
                         "message_type" => "status update",
                         "content" => serialize($message_data),
                     ]);
+
+                    $notification_message = trim(request()->user()->first_name.' '.request()->user()->last_name)." changed the status of Case Number (".$dispute->case_no.") to ".$current_status;
+                    record_notification_for_users($notification_message, $dispute->id, "case", request()->user()->id);
 
                     $this->response["status"] = Response::HTTP_OK;
                     $this->response["message"] = "Case status has been updated successfully!";
@@ -435,6 +442,14 @@ class DisputesController extends Controller
                 $case_role = Role::where('id', $request->role)->first();
 
                 if ($case_role) {
+                    $curr_user_role = UnionUserRole::where("user_id", $request->user()->id)->first();
+
+                    $role_appended = "";
+
+                    if ($curr_user_role) {
+                        $role_appended = "(".$curr_user_role->role->name.")";
+                    }
+
                     $invited_user_id = 0;
                     $invited_user_email = $request->email;
 
@@ -470,7 +485,9 @@ class DisputesController extends Controller
                             "email" => $invited_user_email,
                         ]);
 
-                        send_out_case_invitation($dispute->case_no, $invited_user_id, $invited_user_email, $case_role->name);
+                        send_out_case_invitation($dispute->case_no, $invited_user_id, $invited_user_email, $case_role->display_name);
+                        $notification_message = trim(request()->user()->first_name.' '.request()->user()->last_name)." ".$role_appended." invited you as a $case_role->display_name to NDRS";
+                        record_notification_for_users($notification_message, $invited_user_email, "single", request()->user()->id);
 
                         $this->response["message"] = "Invite has been sent to this user successfully!";
                         $this->response["status"] = Response::HTTP_OK;

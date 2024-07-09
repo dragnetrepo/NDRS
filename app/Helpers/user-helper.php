@@ -238,25 +238,13 @@ if (!function_exists("get_case_dispute")) {
     function get_case_dispute($case_id = 0, $user_id = 0, $status = "") {
         if ($user_id) {
             $user = User::find($user_id);
-            $union_set = request()->header("ndrs-union");
-            if ($union_set) {
-                $member_role = $user->member_role->where("union_id", $union_set);
-            }
-            else {
-                $member_role = $user->member_role;
-            }
+        }
+        else {
+            $user = request()->user();
+        }
 
-            $role = $member_role->first();
-
-            if ($role) {
-                $find_role = Role::find($role->role_id);
-
-                if ($find_role) {
-                    if ($find_role->hasPermissionTo("approve dispute")) {
-                        $user_id = 0;
-                    }
-                }
-            }
+        if (user_is_admin($user)) {
+            $user_id = 0;
         }
 
         $disputes = CaseDispute::where(function($query) use ($user_id) {
@@ -265,7 +253,10 @@ if (!function_exists("get_case_dispute")) {
                 ->orWhereHas('union_data.users', function ($query) use ($user_id) {
                     $query->where("user_id", $user_id);
                 })->orWhereHas('involved_parties', function ($query) use ($user_id) {
-                    $query->where("user_id", $user_id);
+                    $query->where("user_id", $user_id)
+                    ->orWhereHas('body_member', function($sub_query) use ($user_id) {
+                        $sub_query->where("user_id", $user_id);
+                    });
                 });
             });
         })
@@ -333,7 +324,7 @@ if (!function_exists("get_dispute_folder")) {
 }
 
 if (!function_exists("send_out_case_invitation")) {
-    function send_out_case_invitation($case_id, $user_id, $user_email, $role_name) {
+    function send_out_case_invitation($case_id, $user_id, $user_email, $role_name, $send_time = "immediate") {
         $outgoing_messages = new OutgoingMessages();
 
         $subject = "New Invite to contribute to CASE $case_id";
@@ -346,7 +337,7 @@ if (!function_exists("send_out_case_invitation")) {
 
         $message_sent = false;
         if ($message_body) {
-            $message_sent = $outgoing_messages->send_message($user_id, $user_email, "case-dispute-role-invite", "email", $subject, $message_body);
+            $message_sent = $outgoing_messages->send_message($user_id, $user_email, "case-dispute-role-invite", "email", $subject, $message_body, $send_time);
         }
 
         return $message_sent;
@@ -354,7 +345,7 @@ if (!function_exists("send_out_case_invitation")) {
 }
 
 if (!function_exists("send_out_board_member_invitation")) {
-    function send_out_board_member_invitation($board_name, $user_id, $user_email) {
+    function send_out_board_member_invitation($board_name, $user_id, $user_email, $send_time = "immediate") {
         $outgoing_messages = new OutgoingMessages();
         $user = User::where("email", $user_email)->first();
 
@@ -374,7 +365,7 @@ if (!function_exists("send_out_board_member_invitation")) {
 
         $message_sent = false;
         if ($message_body) {
-            $message_sent = $outgoing_messages->send_message($user_id, $user_email, "board-member-invite", "email", $subject, $message_body);
+            $message_sent = $outgoing_messages->send_message($user_id, $user_email, "board-member-invite", "email", $subject, $message_body, $send_time);
         }
 
         return $message_sent;
@@ -382,7 +373,7 @@ if (!function_exists("send_out_board_member_invitation")) {
 }
 
 if (!function_exists("send_outgoing_email_invite")) {
-    function send_outgoing_email_invite($email, $type, $union_name, $role, $url_token="", $subject="") {
+    function send_outgoing_email_invite($email, $type, $union_name, $role, $url_token="", $subject="", $send_time = "immediate") {
         $message_body = "";
         $purpose = "";
         $outgoing_messages = new OutgoingMessages();
@@ -408,7 +399,7 @@ if (!function_exists("send_outgoing_email_invite")) {
 
         $message_sent = false;
         if ($message_body) {
-            $message_sent = $outgoing_messages->send_message(0, $email, $purpose, "email", $subject, $message_body);
+            $message_sent = $outgoing_messages->send_message(0, $email, $purpose, "email", $subject, $message_body, $send_time);
         }
 
         return $message_sent;
@@ -417,15 +408,23 @@ if (!function_exists("send_outgoing_email_invite")) {
 
 if (!function_exists("user_has_permission")) {
     function user_has_permission($permission_name) {
-        $role = request()->user()->roles->first();
+        $member_role = request()->user()->member_role->first();
 
-        return $role->hasPermissionTo($permission_name);
+        if ($member_role) {
+            $role = Role::find($member_role->role_id);
+
+            if ($role) {
+                return $role->hasPermissionTo($permission_name);
+            }
+        }
+
+        return false;
     }
 }
 
 if (!function_exists("user_is_admin")) {
-    function user_is_admin() {
-        return request()->user()->roles->where("id", "1")->first();
+    function user_is_admin(User $user) {
+        return $user->member_role->where("role_id", "1")->first();
     }
 }
 
@@ -449,8 +448,8 @@ if (!function_exists("record_notification_for_users")) {
     function record_notification_for_users(string $message, string $action_id, string $action_type, int $triggered_by) {
         if ($action_type == "case") {
             // Notify all ministry admins
-            $admins = User::whereHas('roles', function($query){
-                $query->where("name", "ministry admin");
+            $admins = User::whereHas('member_role', function($query){
+                $query->where("role_id", "1");
             })->get();
 
             if ($admins->isNotEmpty()) {
@@ -467,6 +466,13 @@ if (!function_exists("record_notification_for_users")) {
             $case_dispute = get_case_dispute($action_id);
 
             if ($case_dispute) {
+                Notification::create([
+                    "user_id" => $case_dispute->created_by,
+                    "email" => "",
+                    "triggered_by" => $triggered_by,
+                    "message" => $message,
+                ]);
+
                 $users = $case_dispute->involved_parties;
 
                 if ($users->count()) {

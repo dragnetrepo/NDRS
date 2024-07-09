@@ -27,7 +27,7 @@ class VerifyUploadedDocumentsRequest extends FormRequest
     {
         $rules = [
             "documents" => "required|array",
-            "documents.*" => ["required", "file", "max:102400", "mimes:png,jpg,pdf,mov,mkv,mp4,ogg,txt,csv,xlsx,xls,jpeg", new NoSqlFile()],
+            "documents.*" => ["required", "file", "max:102400", "mimes:png,jpg,pdf,mov,mkv,mp4,ogg,txt,csv,xlsx,xls,jpeg,ppt,pptx,docx,doc", new NoSqlFile()],
             "folder_id" => "nullable|integer",
         ];
 

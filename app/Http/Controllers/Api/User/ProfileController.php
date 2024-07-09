@@ -9,6 +9,7 @@ use App\Http\Requests\User\ProfileUpdateRequest;
 use App\Http\Requests\User\SendMessageRequest;
 use App\Models\CaseUserRoles;
 use App\Models\EmailInvitations;
+use App\Models\Notification;
 use App\Models\SettlementBodyMember;
 use App\Models\SupportMessage;
 use App\Models\Union;
@@ -154,6 +155,7 @@ class ProfileController extends Controller
             EmailInvitations::where("email", $user->email)->delete();
             CaseUserRoles::where("email", $user->email)->delete();
             SettlementBodyMember::where("email", $user->email)->delete();
+            Notification::where("user_id", $user->id)->orWhere("email", $user->email)->delete();
 
             $user->tokens()->delete();
             $user->email = time().'__'.$user->email;

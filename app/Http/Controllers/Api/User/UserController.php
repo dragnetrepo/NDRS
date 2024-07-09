@@ -16,6 +16,7 @@ use Illuminate\Http\Response;
 use App\Models\OutgoingMessages;
 use App\Models\SettlementBody;
 use App\Models\SettlementBodyMember;
+use App\Models\UnionUserRole;
 use App\Models\User;
 use App\Models\UserRequest;
 use Illuminate\Support\Facades\DB;
@@ -42,9 +43,9 @@ class UserController extends Controller
 
     public function index($role="")
     {
-        $users = User::whereHas('roles', function($query) use ($role) {
+        $users = User::whereHas('member_role', function($query) use ($role) {
             $query->when($role, function($query) use ($role) {
-                $query->where("id", $role);
+                $query->where("role_id", $role);
             });
         })->get();
 
@@ -54,9 +55,10 @@ class UserController extends Controller
         if ($users->isNotEmpty()) {
             foreach ($users as $user) {
                 $role_name = "";
-                $role = $user->roles->first();
+                $role = $user->member_role->first();
 
                 if ($role) {
+                    $role = Role::find($role->role_id);
                     $role_name = $role->display_name;
                     if ($role->type == "settlement-body") {
                         $role_name .= " Member";
@@ -65,7 +67,7 @@ class UserController extends Controller
 
                 $data[] = [
                     "_id" => $user->id,
-                    "name" => trim($user->first_name.' '.$user->last_name),
+                    "name" => $user->first_name ? trim($user->first_name.' '.$user->last_name) : $user->email,
                     "status" => $user->status,
                     "role" => $role_name,
                     "date_added" => $user->created_at->format("M d Y"),
@@ -87,6 +89,14 @@ class UserController extends Controller
     {
         $form_error_msg = [];
         if (!User::where("email", $request->email)->exists()) {
+            $curr_user_role = UnionUserRole::where("user_id", $request->user()->id)->first();
+
+            $role_appended = "";
+
+            if ($curr_user_role) {
+                $role_appended = "(".$curr_user_role->role->name.")";
+            }
+
             $case_id = $request->case_id ?? 0;
             if ($request->case_id) {
                 if (!CaseDispute::where("id", $request->case_id)->exists()) {
@@ -117,6 +127,8 @@ class UserController extends Controller
                     }
 
                     send_outgoing_email_invite($request->email, "invite-with-link", "NDRS", ($role->display_name ?? $role->name), $url_token, "You have been invited by NDRS");
+                    $notification_message = trim($request->user()->first_name.' '.$request->user()->last_name)." ".$role_appended." invited you as a $role->display_name to NDRS";
+                    record_notification_for_users($notification_message, $request->email, "single", request()->user()->id);
 
                     $this->response["status"] = Response::HTTP_OK;
                     $this->response["message"] = "Invite has been sent to this user successfully!";
@@ -195,7 +207,7 @@ class UserController extends Controller
                                                     "email" => $user->email,
                                                 ]);
 
-                                                send_out_case_invitation($dispute->case_no, $user->id, $user->id, $user_role->name);
+                                                send_out_case_invitation($dispute->case_no, $user->id, $user->id, $user_role->name, "later");
                                             }
                                         }
                                     }
@@ -687,12 +699,22 @@ class UserController extends Controller
 
             if ($settlement) {
                 if (!SettlementBodyMember::where("sb_id", $settlement->id)->where("email", $request->email)->exists()) {
+                    $curr_user_role = UnionUserRole::where("user_id", request()->user()->id)->first();
+
+                    $role_appended = "";
+
+                    if ($curr_user_role) {
+                        $role_appended = "(".$curr_user_role->role->name.")";
+                    }
+
                     SettlementBodyMember::create([
                         "sb_id" => $settlement->id,
                         "email" => $request->email,
                     ]);
 
                     send_out_board_member_invitation($settlement->name, 0, $request->email);
+                    $notification_message = trim(request()->user()->first_name.' '.request()->user()->last_name)." ".$role_appended." invited you as a ".($settlement->role->display_name ?? $settlement->role->name)." to NDRS";
+                    record_notification_for_users($notification_message, $request->email, "single", request()->user()->id);
 
                     $this->response["status"] = Response::HTTP_OK;
                     $this->response["message"] = "Invite has been sent to member successfully!";

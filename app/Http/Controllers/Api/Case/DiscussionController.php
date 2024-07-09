@@ -30,7 +30,7 @@ class DiscussionController extends Controller
     {
         $data = [];
         $this->response["message"] = "No data found";
-        $admin_user = user_is_admin();
+        $admin_user = user_is_admin(request()->user());
         $user_id = request()->user()->id;
 
         $group_discussions = CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {
@@ -127,7 +127,6 @@ class DiscussionController extends Controller
     {
         $data = [];
         $this->response["message"] = "No data found";
-        $admin_user = user_is_admin();
         $user_id = request()->user()->id;
         $case_id = 0;
         $discuss_info = [];
@@ -580,7 +579,7 @@ class DiscussionController extends Controller
 
     private function get_discussion(int $discussion)
     {
-        $admin_user = user_is_admin();
+        $admin_user = user_is_admin(request()->user());
         $user_id = request()->user()->id;
 
         return CaseDiscussion::when((!$admin_user), function($query) use ($user_id) {

@@ -16,6 +16,7 @@ use App\Models\EmailInvitations;
 use App\Models\EmailValidation;
 use App\Models\OutgoingMessages;
 use App\Models\Settings;
+use App\Models\SettlementBodyMember;
 use App\Models\UnionUserRole;
 use App\Models\User;
 use Carbon\Carbon;
@@ -142,7 +143,7 @@ class AuthenticationController extends Controller
             $message_body .= "<p>Cheers,</p>";
             $message_body .= "<p>".env("APP_NAME")." Team</p>";
 
-            $message_sent = $this->outgoing_messages->send_message(0, $request->email, "account verification", "email", "Verify your Email", $message_body);
+            $message_sent = $this->outgoing_messages->send_message(0, $request->email, "account verification", "email", "Verify your Email", $message_body, "immediate");
 
             DB::commit();
 
@@ -172,7 +173,7 @@ class AuthenticationController extends Controller
                 $message_body .= "<p>Cheers,</p>";
                 $message_body .= "<p>".env("APP_NAME")." Team</p>";
 
-                $message_sent = $this->outgoing_messages->send_message(0, $request->email, "account verification", "email", "Verify your Email", $message_body);
+                $message_sent = $this->outgoing_messages->send_message(0, $request->email, "account verification", "email", "Verify your Email", $message_body, "immediate");
 
                 $this->response["status"] = Response::HTTP_OK;
                 $this->response["message"] = "An invitation has been sent to your inbox successfully! Kindly verify your email by checking your inbox for a verification link in order to continue";
@@ -239,8 +240,16 @@ class AuthenticationController extends Controller
                 // "password" => Hash::make($request->password),
             ]);
 
-            // Get Member Role ID
-            $role = Role::where("name", "staff")->first();
+            // Check if user is invited as board member
+            $settlement = SettlementBodyMember::where("email", $user->email)->first();
+
+            if ($settlement) {
+                $role = $settlement->body->role;
+            }
+            else {
+                // Get Member Role ID
+                $role = Role::where("name", "staff")->first();
+            }
 
             if ($role) {
                 if (!UnionUserRole::where("user_id", $user->id)->exists()) {
@@ -345,7 +354,7 @@ class AuthenticationController extends Controller
                 $message_body .= "<p>Cheers,</p>";
                 $message_body .= "<p>".env("APP_NAME")." Team</p>";
 
-                $message_sent = $this->outgoing_messages->send_message($user->id, $user->email, "password reset", "email", "Reset your Password", $message_body);
+                $message_sent = $this->outgoing_messages->send_message($user->id, $user->email, "password reset", "email", "Reset your Password", $message_body, "immediate");
 
                 DB::commit();
 
@@ -447,7 +456,7 @@ class AuthenticationController extends Controller
         $message_body .= "<p>Cheers,</p>";
         $message_body .= "<p>".env("APP_NAME")." Team</p>";
 
-        $message_sent = $this->outgoing_messages->send_message($user->id, $user->email, "two factor authentication", "email", "Access your NDRS dashboard", $message_body);
+        $message_sent = $this->outgoing_messages->send_message($user->id, $user->email, "two factor authentication", "email", "Access your NDRS dashboard", $message_body, "immediate");
 
         return $message_sent;
     }

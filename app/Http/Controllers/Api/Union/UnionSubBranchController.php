@@ -293,8 +293,17 @@ class UnionSubBranchController extends Controller
             $user = User::where("email", $request->email)->first();
             $role = Role::where("id", $request->role)->first();
             $union_sub_branch = UnionSubBranch::where("id", $sub_branch)->first();
+            $curr_user_id = $request->user()->id;
 
             if ($union_sub_branch) {
+                $curr_user_role = UnionUserRole::where("user_id", $curr_user_id)->where("sub_branch_id", $union_sub_branch->id)->first();
+
+                $role_appended = "";
+
+                if ($curr_user_role) {
+                    $role_appended = "(".$curr_user_role->role->name.")";
+                }
+
                 if ($role) {
                     if ($user) {
                         // Check if user is alreaady associated with Union
@@ -315,6 +324,8 @@ class UnionSubBranchController extends Controller
                             $this->response["status"] = Response::HTTP_OK;
 
                             send_outgoing_email_invite($request->email, "simple-invite", $union_sub_branch->name, ($role->display_name ?? $role->name));
+                            $notification_message = trim($request->user()->first_name.' '.$request->user()->last_name)." ".$role_appended." added you as a $role->display_name to $union_sub_branch->name ";
+                            record_notification_for_users($notification_message, $user->id, "single", request()->user()->id);
                         }
                     }
                     else {
@@ -337,6 +348,8 @@ class UnionSubBranchController extends Controller
                             $this->response["status"] = Response::HTTP_OK;
 
                             send_outgoing_email_invite($request->email, "invite-with-link", $union_sub_branch->name, ($role->display_name ?? $role->name), $url_token);
+                            $notification_message = trim($request->user()->first_name.' '.$request->user()->last_name)." ".$role_appended." added you as a $role->display_name to $union_sub_branch->name ";
+                            record_notification_for_users($notification_message, $request->email, "single", request()->user()->id);
                         }
                     }
                 }

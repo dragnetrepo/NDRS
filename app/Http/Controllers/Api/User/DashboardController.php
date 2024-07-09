@@ -71,17 +71,13 @@ class DashboardController extends Controller
             "status" => "active"
         ]);
 
-        $pending_disputes = CaseDispute::pending()->count();
+        $pending_disputes = get_case_dispute(0, 0, "pending");
+        $pending_disputes = $pending_disputes->count();
         $data["pending_disputes"]["count"] = number_format($pending_disputes);
 
         $recent_discussions = CaseDiscussionMessage::whereHas('discussion', function($query) {
             $query->whereHas('dispute', function($sub_query) {
-                $sub_query->where(function($user_filter_query){
-                    $user_filter_query->whereHas('involved_parties', function($user_query){
-                        $user_query->where("user_id", request()->user()->id);
-                    })
-                    ->orWhere("created_by", request()->user()->id);
-                });
+                return $this->dispute_eligible_user($sub_query, request()->user()->id);
             });
         })
         ->latest()
@@ -112,10 +108,7 @@ class DashboardController extends Controller
         $recent_documents = CaseDocument::where(function($query) use ($user_id) {
             $query->where("user_id", $user_id)
             ->orwhereHas('dispute', function($sub_query) use ($user_id) {
-                $sub_query->whereHas('involved_parties', function($query) use ($user_id) {
-                    $query->where("user_id", $user_id);
-                })
-                ->orWhere('created_by', $user_id);
+                return $this->dispute_eligible_user($sub_query, $user_id);
             });
         })
         ->latest()
@@ -191,6 +184,9 @@ class DashboardController extends Controller
             })
             ->when($end_date, function($query) use ($end_date) {
                 $query->where("created_at", ">=", $end_date);
+            })
+            ->where(function($query){
+                return $this->dispute_eligible_user($query, request()->user()->id);
             })
             ->orderBy("created_at", $order_by)
             ->get();
@@ -424,6 +420,9 @@ class DashboardController extends Controller
             ->when($text_filter, function($query) use ($union_search, $user_search) {
                 return $this->additional_text_filter($query, $union_search, $user_search);
             })
+            ->where(function($query){
+                return $this->dispute_eligible_user($query, request()->user()->id);
+            })
             ->groupBy("dispute_type")->get();
 
             $resolved_dispute_cases = CaseDispute::selectRaw(DB::raw("COUNT(`union`) as `occurence`, `union` as union_id"))->whereHas('union_data')->whereIn("status", CaseDispute::RESOLVED_CASE_STATUSES)
@@ -432,6 +431,9 @@ class DashboardController extends Controller
             })
             ->when($text_filter, function($query) use ($union_search, $user_search) {
                 return $this->additional_text_filter($query, $union_search, $user_search);
+            })
+            ->where(function($query){
+                return $this->dispute_eligible_user($query, request()->user()->id);
             })->groupBy("union")->get();
 
             $highest_dispute_cases = CaseDispute::selectRaw(DB::raw("COUNT(`union`) as `occurence`, `union` as union_id"))->whereHas('union_data')
@@ -440,6 +442,9 @@ class DashboardController extends Controller
             })
             ->when($text_filter, function($query) use ($union_search, $user_search) {
                 return $this->additional_text_filter($query, $union_search, $user_search);
+            })
+            ->where(function($query){
+                return $this->dispute_eligible_user($query, request()->user()->id);
             })->groupBy("union")->get();
 
             $disputes_approved = CaseDispute::whereNotIn("status", CaseDispute::PENDING_APPROVAL_CASE_STATUSES)
@@ -448,6 +453,9 @@ class DashboardController extends Controller
             })
             ->when($text_filter, function($query) use ($union_search, $user_search) {
                 return $this->additional_text_filter($query, $union_search, $user_search);
+            })
+            ->where(function($query){
+                return $this->dispute_eligible_user($query, request()->user()->id);
             })->count();
 
             $disputes_resolved = CaseDispute::whereIn("status", CaseDispute::RESOLVED_CASE_STATUSES)
@@ -456,6 +464,9 @@ class DashboardController extends Controller
             })
             ->when($text_filter, function($query) use ($union_search, $user_search) {
                 return $this->additional_text_filter($query, $union_search, $user_search);
+            })
+            ->where(function($query){
+                return $this->dispute_eligible_user($query, request()->user()->id);
             })->count();
 
             $active_disputes = CaseDispute::whereIn("status", CaseDispute::ACTIVE_CASE_STATUSES)
@@ -464,6 +475,9 @@ class DashboardController extends Controller
             })
             ->when($text_filter, function($query) use ($union_search, $user_search) {
                 return $this->additional_text_filter($query, $union_search, $user_search);
+            })
+            ->where(function($query){
+                return $this->dispute_eligible_user($query, request()->user()->id);
             })->count();
 
             // Documents Uploaded
@@ -485,6 +499,9 @@ class DashboardController extends Controller
             })
             ->when($text_filter, function($query) use ($union_search, $user_search) {
                 return $this->additional_text_filter($query, $union_search, $user_search);
+            })
+            ->where(function($query){
+                return $this->dispute_eligible_user($query, request()->user()->id);
             })->get();
 
             if ($all_resolved_disputes->isNotEmpty()) {
@@ -613,6 +630,9 @@ class DashboardController extends Controller
                             ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
                                 $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
                             })
+                            ->where(function($query){
+                                return $this->dispute_eligible_user($query, request()->user()->id);
+                            })
                             ->get();
 
         if ($resolved_disputes->isNotEmpty()) {
@@ -639,6 +659,9 @@ class DashboardController extends Controller
             $resolved_disputes = CaseDispute::whereIn("status", CaseDispute::RESOLVED_CASE_STATUSES)
                                 ->when(($difference_start_date && $difference_end_date), function($query) use ($difference_start_date, $difference_end_date) {
                                     $query->where("created_at", ">=", $difference_start_date)->where("created_at", "<=", $difference_end_date);
+                                })
+                                ->where(function($query){
+                                    return $this->dispute_eligible_user($query, request()->user()->id);
                                 })
                                 ->get();
 
@@ -699,10 +722,7 @@ class DashboardController extends Controller
             $sub_query->where("union", $union_search);
         })
         ->when($user_search, function($sub_query) use ($user_search) {
-            $sub_query->where("created_by", $user_search->id)
-                ->orWhereHas('involved_parties', function($inner_query) use ($user_search) {
-                    $inner_query->where("user_id", $user_search->id);
-            });
+            return $this->dispute_eligible_user($sub_query, $user_search->id);
         });
     }
 
@@ -772,5 +792,19 @@ class DashboardController extends Controller
             $days[] = $day->format('l');
         }
         return $days;
+    }
+
+    private function dispute_eligible_user($query, $user_id)
+    {
+        $user = User::find($user_id);
+
+        return $query->when(!user_is_admin($user), function($query) use ($user_id) {
+            $query->orWhereHas('involved_parties', function ($query) use ($user_id) {
+                $query->where("user_id", $user_id)
+                ->orWhereHas('body_member', function($sub_query) use ($user_id) {
+                    $sub_query->where("user_id", $user_id);
+                });
+            })->orWhere("created_by", $user_id);
+        });
     }
 }

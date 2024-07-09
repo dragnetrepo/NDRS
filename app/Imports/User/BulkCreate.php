@@ -3,6 +3,7 @@
 namespace App\Imports\User;
 
 use App\Models\EmailInvitations;
+use App\Models\UnionUserRole;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -23,6 +24,14 @@ class BulkCreate implements ToCollection
             "data" => [],
             "error" => [],
         ];
+
+        $curr_user_role = UnionUserRole::where("user_id", request()->user()->id)->first();
+
+        $role_appended = "";
+
+        if ($curr_user_role) {
+            $role_appended = "(".$curr_user_role->role->name.")";
+        }
 
         if ($rows->isNotEmpty()) {
             foreach ($rows as $key => $line) {
@@ -65,7 +74,9 @@ class BulkCreate implements ToCollection
                                             "invited_by" => request()->user()->id,
                                         ]);
 
-                                        send_outgoing_email_invite($user_email, "simple-invite", "NDRS", ($role->display_name ?? $role->name), $url_token, "You have been invited by NDRS");
+                                        send_outgoing_email_invite($user_email, "simple-invite", "NDRS", ($role->display_name ?? $role->name), $url_token, "You have been invited by NDRS", "later");
+                                        $notification_message = trim(request()->user()->first_name.' '.request()->user()->last_name)." ".$role_appended." invited you as a $role->display_name to NDRS";
+                                        record_notification_for_users($notification_message, $user_email, "single", request()->user()->id);
                                     }
                                     else {
                                         $message = "This role does not exist.";
