@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 
 const BranchDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
   const [industries, setIndustries] = useState([]);
@@ -350,7 +351,10 @@ const BranchDetails = () => {
                         <div className="d-flex gap-15">
                           <div>
                             <a
-                              href=""
+                              href="#"
+                              onClick={(e) => {
+                                navigate(-1);
+                              }}
                               className="text-muted-4 text-decoration-none"
                             >
                               <i className="bi bi-arrow-left"></i> Go back

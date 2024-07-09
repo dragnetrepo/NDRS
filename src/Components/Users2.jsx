@@ -62,7 +62,7 @@ const Users2 = () => {
       formData.append("file", file);
 
       try {
-        const baseUrl = "https://ndrs.ng/dev";
+        const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
         const response = await fetch(baseUrl + "/api/users/bulk/send-invite", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -162,7 +162,7 @@ const Users2 = () => {
 
   const handleDownload = async () => {
     try {
-      const response = await fetch("https://ndrs.ng/dev/api/users/sample-csv", {
+      const response = await fetch("https://phpstack-1245936-4460801.cloudwaysapps.com/dev/api/users/sample-csv", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

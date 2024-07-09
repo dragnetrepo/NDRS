@@ -163,7 +163,7 @@ const App = () => {
         <Routes>
           <Route
             path="/"
-            element={loggedIn ? <Navigate to="/dashboard" /> : <Index />}
+            element={<Index />}
           />
           <Route
             path="/CreateAccount"
@@ -174,17 +174,17 @@ const App = () => {
           <Route
             path="/CreatePassword"
             element={
-              loggedIn ? <Navigate to="/dashboard" /> : <CreatePassword />
+              <CreatePassword />
             }
           />
           <Route
             path="/Verification"
-            element={loggedIn ? <Navigate to="/dashboard" /> : <Verification />}
+            element={<Verification />}
           />
           <Route
             path="/Verification2"
             element={
-              loggedIn ? <Navigate to="/dashboard" /> : <Verification2 />
+              <Verification2 />
             }
           />
           <Route path="/ProfileSetup" element={<ProfileSetup />} />

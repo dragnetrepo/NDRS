@@ -270,7 +270,7 @@ const Unions = () => {
       formData.append("file", file);
 
       try {
-        const baseUrl = "https://ndrs.ng/dev";
+        const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
         const response = await fetch(baseUrl + "/api/union/bulk/create", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

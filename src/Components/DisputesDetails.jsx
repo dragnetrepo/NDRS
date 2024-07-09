@@ -670,7 +670,7 @@ const DisputesDetails = () => {
 
                                     {user.permissions &&
                                       user.permissions.includes(
-                                        "approve dispute"
+                                        "invite dispute participants"
                                       ) && (
                                         <div
                                           className="tab-pane fade"

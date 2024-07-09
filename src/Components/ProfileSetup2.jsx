@@ -52,7 +52,8 @@ const ProfileSetup2 = () => {
         throw new Error("Network response was not ok");
       }
 
-      toast.success("Registration has been completed!!!");
+      toast.success(data.message);
+      localStorage.removeItem("reg-type");
       navigate("/Dashboard");
     } catch (error) {
       console.error("Error fetching data:", error);

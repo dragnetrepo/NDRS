@@ -41,6 +41,7 @@ const Verification2 = () => {
       const token = data.data.token;
       localStorage.setItem("token", token);
       localStorage.removeItem("auth_email");
+      setloggedIn(true);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error logging in:", error);

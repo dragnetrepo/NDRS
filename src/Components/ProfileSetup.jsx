@@ -62,6 +62,7 @@ const ProfileSetup = () => {
       }
 
       toast.success(data.message);
+      localStorage.removeItem("reg-type");
       navigate("/Dashboard");
     } catch (error) {
       console.error("Error fetching data:", error);

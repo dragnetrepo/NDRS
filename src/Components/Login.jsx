@@ -39,7 +39,6 @@ function Login({ setloggedIn }) {
         email: "",
         password: "",
       });
-      setloggedIn(true);
 
       // Assuming the response contains a JSON object with a token
       const data = await response.json();
@@ -50,7 +49,8 @@ function Login({ setloggedIn }) {
         navigate("/verification2");
         localStorage.setItem("auth_email", auth_email);
       } else if (data.data.token) {
-        navigate("/Dashboard");
+        setloggedIn(true);
+        navigate("/dashboard");
         localStorage.setItem("token", token);
       }
     } catch (error) {
