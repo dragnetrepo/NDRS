@@ -48,13 +48,46 @@ export const AppContext = createContext();
 
 const App = () => {
   const [loggedIn, setloggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       setloggedIn(true);
     }
-  }, []);
+
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          throw new Error("User is not logged in."); // Handle case where user is not logged in
+        }
+
+        const res = await fetch(`${baseUrl}/api/user-profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch data."); // Handle failed request
+        }
+
+        const data = await res.json();
+        setUser(data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+        localStorage.removeItem("token"); // Remove invalid token
+        setloggedIn(false);
+        navigate("/login"); // Redirect to login page
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   const [verifyEmail, setVerifyEmail] = useState({
     email: "",
