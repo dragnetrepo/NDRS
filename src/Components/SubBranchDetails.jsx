@@ -680,10 +680,10 @@ const SubBranchDetails = () => {
 					<div className="row mt-4">
 					<div className="col-lg-3 mb-lg-0 mb-4">
 						<label className="form-label d-block">Logo</label>
-						<label htmlFor="profile" className="position-relative">
+						<label htmlFor="logo_profile" className="position-relative">
 						<input
 							type="file"
-							id="profile"
+							id="logo_profile"
 							style={{ display: "none" }}
 							name="logo"
 							onChange={handleAvatarChange}

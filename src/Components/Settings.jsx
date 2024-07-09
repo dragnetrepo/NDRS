@@ -200,7 +200,8 @@ const Settings = () => {
       }
 
       const data = await response.json();
-      toast.success("Your Account has been Deleted!");
+      toast.success("Your Account has been deleted successfully!");
+      document.getElementById("delete-account-modal-close").click();
       localStorage.removeItem("token");
       navigate("/");
     } catch (error) {
@@ -1012,7 +1013,7 @@ const Settings = () => {
                                       <div className="row mt-4">
                                         <div className="col-lg-3 mb-lg-0 mb-4">
                                           <label
-                                            htmlFor="profile"
+                                            htmlFor="profileOrganization"
                                             className="position-relative"
                                           >
                                             <input
@@ -1761,6 +1762,7 @@ const Settings = () => {
             <div className="text-end">
               <button
                 type="button"
+                id="delete-account-modal-close"
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"

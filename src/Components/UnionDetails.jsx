@@ -212,6 +212,8 @@ const UnionDetails = () => {
 		const image = URL.createObjectURL(file);
 		setAvatarImage(image);
 
+		console.log(image);
+
 		setunions((prevFormData) => ({ ...prevFormData, logo: file }));
 	};
 
@@ -225,25 +227,30 @@ const UnionDetails = () => {
 		Object.entries(unions).forEach(([key, value]) => {
 			// Check if the key is 'display_picture' and if the value is a file
 			if (key === "logo" && value instanceof File) {
-			formData.append(key, value);
+				formData.append(key, value);
 			} else if (key !== "logo") {
-			formData.append(key, value);
+				formData.append(key, value);
 			}
 		});
 		const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
 		const res = await fetch(baseUrl + `/api/union/edit/${id}`, {
 			method: "POST",
 			headers: {
-			Authorization: `Bearer ${localStorage.getItem("token")}`,
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
 			},
 			body: formData,
 		});
 
+		const data = await res.json();
 		if (!res.ok) {
+			if (Object.values(data.error).length) {
+			  Object.values(data.error).forEach((errorMessage, index) => {
+				toast.error(errorMessage);
+			  });
+			}
 			throw new Error("Failed to fetch data."); // Handle failed request
 		}
 		fetchdata(id);
-		const data = await res.json();
 		toast.success("Union has been updated");
 		} catch (error) {
 		console.error("Error fetching data:", error.message);
@@ -347,6 +354,8 @@ const UnionDetails = () => {
 
 	const [selectedAdminId, setSelectedAdminId] = useState(null);
 	const [selectedAdmin, setSelectedAdmin] = useState(null);
+
+	console.log(unions);
 
 	return (
 		<>
@@ -1238,10 +1247,10 @@ const UnionDetails = () => {
 					<div className="row mt-4">
 					<div className="col-lg-3 mb-lg-0 mb-4">
 						<label className="form-label d-block">Logo</label>
-						<label htmlFor="profile" className="position-relative">
+						<label htmlFor="logo_profile" className="position-relative">
 						<input
 							type="file"
-							id="profile"
+							id="logo_profile"
 							style={{ display: "none" }}
 							name="logo"
 							onChange={handleAvatarChange}
@@ -1325,14 +1334,7 @@ const UnionDetails = () => {
 							value={unions.about}
 							onChange={onHandleChange}
 							name="about"
-						>
-							Nigeria Union of Journalists (NUJ) is a network of media
-							professionals established to advance the safety and
-							welfare of Nigerian journalists. It is an independent
-							trade organization with no political leaning or
-							ideological disposition. NUJ is founded in the
-							underlying belief that speaking with one voice
-						</textarea>
+						></textarea>
 						</div>
 						<div className="mb-4">
 						<label className="form-label">Founded in</label>

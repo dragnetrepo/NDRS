@@ -43,6 +43,7 @@ const Branches = () => {
 	else {
 		useEffect(() => {
 			fetchUserBranches();
+			fetchIndustries();
 		}, []);
 	}
 

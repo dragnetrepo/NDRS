@@ -45,6 +45,7 @@ const SubBranch = () => {
 	else {
 		useEffect(() => {
 			fetchOrganizations();
+			fetchIndustries();
 		}, []);
 	}
 

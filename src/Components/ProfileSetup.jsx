@@ -13,7 +13,7 @@ const ProfileSetup = () => {
   const user_avatar = "/images/download.png";
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const { profile, setProfile } = useContext(AppContext);
-  const { isLoading, setIsLoading } = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleAvatarChange = (e) => {

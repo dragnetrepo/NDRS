@@ -54,9 +54,6 @@ const App = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      setloggedIn(true);
-    }
 
     const fetchData = async () => {
       try {
@@ -77,6 +74,7 @@ const App = () => {
         }
 
         const data = await res.json();
+        setloggedIn(true);
         setUser(data.data);
       } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -86,7 +84,9 @@ const App = () => {
       }
     };
 
-    fetchData();
+    if (token) {
+      fetchData();
+    }
   }, [navigate]);
 
   const [verifyEmail, setVerifyEmail] = useState({
@@ -190,7 +190,7 @@ const App = () => {
           />
           <Route
             path="/ProfileSetup"
-            element={loggedIn ? <Navigate to="/dashboard" /> : <ProfileSetup />}
+            element={<ProfileSetup />}
           />
           <Route
             path="/login"
@@ -208,9 +208,7 @@ const App = () => {
           />
           <Route
             path="/ProfileSetup2"
-            element={
-              loggedIn ? <Navigate to="/dashboard" /> : <ProfileSetup2 />
-            }
+            element={<ProfileSetup2 />}
           />
           <Route
             path="/PasswordSet2"
