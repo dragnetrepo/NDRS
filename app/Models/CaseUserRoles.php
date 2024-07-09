@@ -25,7 +25,7 @@ class CaseUserRoles extends Model
 
     public function body_member()
     {
-        return $this->belongsTo(SettlementBodyMember::class, "sb_id");
+        return $this->belongsTo(SettlementBodyMember::class, "sb_id", "sb_id");
     }
 
     public function role()

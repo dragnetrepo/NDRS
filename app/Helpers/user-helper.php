@@ -243,6 +243,7 @@ if (!function_exists("get_case_dispute")) {
             $user = request()->user();
         }
 
+        $user_id = $user->id;
         if (user_is_admin($user)) {
             $user_id = 0;
         }

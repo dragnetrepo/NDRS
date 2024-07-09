@@ -71,7 +71,7 @@ class DashboardController extends Controller
             "status" => "active"
         ]);
 
-        $pending_disputes = get_case_dispute(0, 0, "pending");
+        $pending_disputes = get_case_dispute(0, 0, "pending approval");
         $pending_disputes = $pending_disputes->count();
         $data["pending_disputes"]["count"] = number_format($pending_disputes);
 
@@ -484,10 +484,24 @@ class DashboardController extends Controller
             $case_documents = CaseDocument::where("doc_size", ">", 0)->selectRaw(DB::raw("id, doc_name as identifier"))
             ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
                 $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            })
+            ->when(!user_is_admin(request()->user()), function($query){
+                $query->where("user_id", request()->user()->id)
+                    ->orwhereHas('dispute', function($sub_query) {
+                    return $this->dispute_eligible_user($sub_query, request()->user()->id);
+                });
             });
+
             $chat_documents = CaseDiscussionMessage::where("message_type", "file")->selectRaw(DB::raw("id, message_type as identifier"))
             ->when(($start_date && $end_date), function($query) use ($start_date, $end_date) {
                 $query->where("created_at", ">=", $start_date)->where("created_at", "<=", $end_date);
+            })
+            ->when(!user_is_admin(request()->user()), function($query){
+                $query->whereHas('discussion', function($query) {
+                    $query->whereHas('dispute', function($sub_query) {
+                        return $this->dispute_eligible_user($sub_query, request()->user()->id);
+                    });
+                });
             });
 
             $all_documents = $chat_documents->union($case_documents)->count();
@@ -799,12 +813,13 @@ class DashboardController extends Controller
         $user = User::find($user_id);
 
         return $query->when(!user_is_admin($user), function($query) use ($user_id) {
-            $query->orWhereHas('involved_parties', function ($query) use ($user_id) {
+            $query->where("created_by", $user_id)
+            ->orWhereHas('involved_parties', function ($query) use ($user_id) {
                 $query->where("user_id", $user_id)
                 ->orWhereHas('body_member', function($sub_query) use ($user_id) {
                     $sub_query->where("user_id", $user_id);
                 });
-            })->orWhere("created_by", $user_id);
+            });
         });
     }
 }
