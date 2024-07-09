@@ -13,6 +13,7 @@ const ProfileSetup = () => {
   const user_avatar = "/images/download.png";
   const [avatarImage, setAvatarImage] = useState(user_avatar);
   const { profile, setProfile } = useContext(AppContext);
+  const { isLoading, setIsLoading } = useState(false);
   const navigate = useNavigate();
 
   const handleAvatarChange = (e) => {
@@ -32,6 +33,8 @@ const ProfileSetup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     try {
       const formData = new FormData(); // Create FormData object
 
@@ -48,15 +51,22 @@ const ProfileSetup = () => {
         body: formData,
       });
 
+      const data = await response.json();
       if (!response.ok) {
+        if (Object.values(data.error).length) {
+          Object.values(data.error).forEach((errorMessage, index) => {
+            toast.error(errorMessage);
+          });
+        }
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
-      toast.success("Registration has been completed!!!");
+      toast.success(data.message);
       navigate("/Dashboard");
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   const invitation = localStorage.getItem("reg-type");
@@ -181,10 +191,11 @@ const ProfileSetup = () => {
                         !profile.first_name ||
                         !profile.last_name ||
                         !profile.phone ||
-                        !profile.display_picture
+                        !profile.display_picture ||
+                        isLoading
                       }
                     >
-                      Next
+                      {isLoading ? `Saving...` : `Next`}
                     </button>
                   </div>
                 </form>
