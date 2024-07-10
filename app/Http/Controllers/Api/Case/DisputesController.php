@@ -303,7 +303,7 @@ class DisputesController extends Controller
                         "current_status" => $current_status,
                     ]);
 
-                    $notification_message = "Your Case $dispute->case_no has been approved";
+                    $notification_message = "Your Case $dispute->case_title has been approved";
                     record_notification_for_users($notification_message, $dispute->id, "case", request()->user()->id);
 
                     $this->response["status"] = Response::HTTP_OK;
