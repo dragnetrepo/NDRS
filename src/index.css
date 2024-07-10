@@ -8,7 +8,7 @@
 }
 
 html {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 body {
@@ -58,7 +58,7 @@ h6 {
 }
 
 .heading {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   line-height: 28.8px;
   letter-spacing: -0.02em;
@@ -93,7 +93,7 @@ h6 {
 }
 
 .form-label {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 20.3px;
 }
@@ -108,6 +108,7 @@ h6 {
 
 .btn {
   border-radius: 8px;
+  flex-shrink: 0;
 }
 
 .border-radius {
@@ -161,8 +162,12 @@ h6 {
   cursor: pointer;
 }
 
+.row.mt-2.mb-4 {
+  align-items: center;
+}
+
 .invalid-feedback {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 20.3px;
   text-align: left;
@@ -172,7 +177,7 @@ h6 {
 .form-control.is-invalid,
 .was-validated .form-control:invalid {
   border-color: #cb1a14;
-  background-image: url("/public/images/invalid-icon.svg");
+  background-image: url(../images/invalid-icon.svg);
 }
 
 .container,
@@ -187,7 +192,7 @@ h6 {
 }
 
 .bold-text {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
   line-height: 33.6px;
   letter-spacing: -0.02em;
@@ -201,7 +206,7 @@ h6 {
 }
 
 .font-sm {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   line-height: 17.4px;
 }
@@ -228,7 +233,7 @@ h6 {
 }
 
 .sub-text {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 400;
   line-height: 26.1px;
   color: #003d30;
@@ -247,7 +252,7 @@ h6 {
 }
 
 .text-detail {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 400;
   line-height: 28.8px;
   letter-spacing: -0.02em;
@@ -277,7 +282,7 @@ h6 {
 }
 
 .pop-text {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   line-height: 28.8px;
   letter-spacing: -0.02em;
@@ -298,7 +303,7 @@ h6 {
   padding-bottom: 10px;
   padding-left: 10px !important;
   padding-right: 10px !important;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 20.3px;
   color: #547d74;
   font-weight: 500;
@@ -335,7 +340,7 @@ h6 {
 }
 
 .sub-text-sidebar {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 20.3px;
   text-align: left;
@@ -351,7 +356,7 @@ h6 {
 }
 
 .avatar-icon h5 {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 20.3px;
   text-align: left;
@@ -359,7 +364,7 @@ h6 {
 }
 
 .avatar-icon p {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 20.3px;
   text-align: left;
@@ -372,7 +377,7 @@ h6 {
 }
 
 .header-box h2 {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 700;
   line-height: 38.4px;
   letter-spacing: -0.02em;
@@ -381,7 +386,7 @@ h6 {
 }
 
 .header-box p {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 23.2px;
   text-align: left;
@@ -397,12 +402,6 @@ h6 {
 
 .margin-top-negative {
   margin-top: -35px;
-}
-.navbar-nav .nav-link.active,
-.navbar-nav .nav-link.show {
-  background-color: #e8f7e6;
-  color: #547d74;
-  border-radius: 10px;
 }
 
 .custom-tab.nav-underline .nav-link.active,
@@ -427,14 +426,14 @@ h6 {
 }
 
 .heading-card h3 {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 500;
   line-height: 24px;
   letter-spacing: -0.02em;
 }
 
 .heading-card .btn-flat {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 20.3px;
   text-align: center;
@@ -472,7 +471,7 @@ h6 {
 }
 
 .message-inner {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 20.3px;
 }
@@ -492,7 +491,7 @@ h6 {
 
 .message-user {
   color: #344054;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   line-height: 17.4px;
 }
@@ -502,14 +501,14 @@ h6 {
 }
 
 .delete-card h4 {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 500;
   line-height: 26.1px;
   color: var(--dark-1);
 }
 
 .delete-card p {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 20.3px;
   color: #667185;
@@ -550,7 +549,7 @@ h6 {
 }
 
 .new-role .list-group-item {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 20.3px;
   text-align: left;
@@ -572,13 +571,13 @@ h6 {
 }
 
 .card-box-view h4 {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 500;
   line-height: 26.1px;
 }
 
 .card-box-view p {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 20.3px;
 }
@@ -611,7 +610,7 @@ h6 {
 
 .avatar-holder h5 {
   font-weight: 500;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 20.3px;
 }
 
@@ -717,14 +716,14 @@ tr {
 }
 
 .ft-sm {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   line-height: 17.4px;
   color: rgba(71, 84, 103, 1);
 }
 
 .ft-sm-only {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   line-height: 17.4px;
 }
@@ -745,14 +744,14 @@ tr {
 
 .tab-item.nav-pills .nav-link {
   color: #547d74;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 20.3px;
   text-align: center;
 }
 
 .heading-4 {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   line-height: 26.1px;
   color: #667185;
@@ -783,7 +782,7 @@ tr {
 }
 
 .chart-text {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 600;
   line-height: 28.8px;
   letter-spacing: -0.02em;
@@ -792,7 +791,7 @@ tr {
 }
 
 .modal-title {
-  font-size: 20px !important;
+  font-size: 1.25rem !important;
   font-weight: 600;
   line-height: 24px;
   letter-spacing: -0.02em;
@@ -801,7 +800,7 @@ tr {
 
 .no-admin-found {
   font-family: Inter;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   line-height: 26.1px;
 }
@@ -811,20 +810,20 @@ tr {
 }
 
 .file-count {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   line-height: 23.2px;
   color: #667185;
 }
 
 .dash-card h5 {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   line-height: 20.2px;
 }
 
 .dash-card p {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   line-height: 17.4px;
   letter-spacing: -0.005em;
@@ -832,22 +831,22 @@ tr {
 }
 
 .dash-card .action {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   line-height: 20.3px;
   color: #667185;
 }
 
 .heading-text {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 500;
   line-height: 20.3px;
   color: #001a14;
 }
 
 .badge {
   padding: 4px 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: -0.005em;
   text-align: center;
@@ -866,7 +865,7 @@ tr {
 }
 
 .card-text-sm {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   line-height: 17.4px;
   letter-spacing: -0.005em;
@@ -874,14 +873,14 @@ tr {
 }
 
 .step-text {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   line-height: 23.2px;
   color: #015b20;
 }
 
 .heading-2 {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   line-height: 23.2px;
 }
@@ -926,11 +925,10 @@ tr {
   padding: 8px;
   border-radius: 4px;
   color: #101928;
-  white-space: nowrap;
 }
 
 .report-card-count {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 600;
   line-height: 38.4px;
   letter-spacing: -0.02em;
@@ -939,7 +937,7 @@ tr {
 }
 
 .report-card-review {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 20.3px;
   color: #1d2739;
@@ -957,7 +955,7 @@ tr {
 }
 
 .badge-success {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   line-height: 17.4px;
   letter-spacing: -0.005em;
@@ -988,7 +986,7 @@ tr {
 
 .progress-height-report .progress-bar {
   text-align: left;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 20.3px;
   overflow: unset;
@@ -1032,7 +1030,7 @@ tr {
 }
 
 .help-text {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 400;
   line-height: 26.1px;
   text-align: left;
@@ -1040,7 +1038,7 @@ tr {
 }
 
 .help-text-sub {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 400;
   line-height: 26.1px;
   text-align: left;
@@ -1056,7 +1054,7 @@ tr {
 }
 
 .accordion-button::after {
-  background-image: url("/images/chevron-down.svg");
+  background-image: url(../images/chevron-down.svg);
 }
 
 .accordion-expand .accordion-button {
@@ -1090,7 +1088,7 @@ tr {
 }
 
 .custom-text {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 400;
   line-height: 28.8px;
   letter-spacing: -0.02em;
@@ -1106,7 +1104,7 @@ tr {
 }
 
 .custom-text-2 {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 400;
   line-height: 23.2px;
 }
@@ -1172,7 +1170,7 @@ tr {
 
 .hero-para {
   font-family: "Inter", sans-serif;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 400;
   line-height: 26.1px;
   text-align: left;
@@ -1200,14 +1198,14 @@ tr {
 }
 
 .para-sub {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 400;
   line-height: 26.1px;
   text-align: center;
 }
 
 .heading-5 {
-  font-size: 40px;
+  font-size: 2.5rem;
   font-weight: 400;
   line-height: 48px;
   letter-spacing: -0.04em;
@@ -1223,7 +1221,7 @@ tr {
 }
 
 .big-feedback-text {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 300;
   line-height: 33.6px;
   letter-spacing: -0.02em;
@@ -1287,7 +1285,9 @@ tr {
   grid-column: span 1;
   grid-row: span 2;
 }
-
+.progress-poll {
+  width: 450px;
+}
 .item-element {
   /* background-color: #f0f0f0; */
   height: 100%;
@@ -1297,7 +1297,7 @@ tr {
 }
 
 .box-title-1 {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 500;
   line-height: 28px;
   letter-spacing: -0.02em;
@@ -1305,7 +1305,7 @@ tr {
 }
 
 .box-num {
-  font-size: 56px;
+  font-size: 3.5rem;
   font-weight: 300;
   line-height: 56px;
   letter-spacing: -0.04em;
@@ -1329,7 +1329,7 @@ tr {
 } */
 
 .blog-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   line-height: 24px;
   letter-spacing: -0.02em;
@@ -1342,9 +1342,7 @@ tr {
   overflow: hidden;
   position: relative;
 }
-.progress-poll {
-  width: 450px;
-}
+
 @media screen and (max-width: 768px) {
   .custom-card {
     padding: 20px 16px 20px 16px;
@@ -1369,7 +1367,7 @@ tr {
   }
 
   .big-feedback-text {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 300;
     line-height: 28px;
     letter-spacing: -0.02em;
@@ -1377,7 +1375,7 @@ tr {
   }
 
   .heading-5 {
-    font-size: 30px;
+    font-size: 1.875rem;
     font-weight: 400;
     line-height: 38px;
     letter-spacing: -0.04em;
@@ -1388,7 +1386,7 @@ tr {
 @media screen and (min-width: 991px) {
   .navbar-vertical.navbar-expand-lg.show {
     border-radius: 0;
-    max-width: 250px;
+    max-width: 15rem;
   }
 
   .w-600 {

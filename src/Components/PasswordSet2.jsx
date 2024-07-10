@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../App";
 
-
 const PasswordSet2 = () => {
   const { recovery, setRecovery } = useContext(AppContext);
   const navigate = useNavigate();

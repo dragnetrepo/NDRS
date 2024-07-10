@@ -12,12 +12,11 @@ const Disputes2 = () => {
     documents: "",
     folder_id: "",
   });
-  const [sidebar, setsidebar] = useState(true)
+  const [sidebar, setsidebar] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
-
+    setsidebar(!sidebar);
+  };
 
   useEffect(() => {
     fetchdata();
@@ -112,7 +111,6 @@ const Disputes2 = () => {
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
             <main className="admin-content">
               <div className="header-box py-5">
@@ -273,7 +271,8 @@ const Disputes2 = () => {
                                         <div className="text-center me-2 flex-shrink-0">
                                           <img
                                             src="/images/file_upload_states.svg"
-                                            className="img-fluid" alt=""
+                                            className="img-fluid"
+                                            alt=""
                                             style={{ height: "40px" }}
                                           />
                                         </div>
@@ -299,7 +298,8 @@ const Disputes2 = () => {
                                         <div className="text-center me-2 flex-shrink-0">
                                           <img
                                             src="/images/pdf-icon.svg"
-                                            className="img-fluid" alt=""
+                                            className="img-fluid"
+                                            alt=""
                                           />
                                         </div>
                                         <div>
@@ -337,7 +337,8 @@ const Disputes2 = () => {
                                         <div className="text-center me-2 flex-shrink-0">
                                           <img
                                             src="/images/pdf-icon.svg"
-                                            className="img-fluid" alt=""
+                                            className="img-fluid"
+                                            alt=""
                                           />
                                         </div>
                                         <div>
@@ -375,7 +376,8 @@ const Disputes2 = () => {
                                         <div className="text-center me-2 flex-shrink-0">
                                           <img
                                             src="/images/pdf-icon.svg"
-                                            className="img-fluid" alt=""
+                                            className="img-fluid"
+                                            alt=""
                                           />
                                         </div>
                                         <div>
@@ -413,7 +415,8 @@ const Disputes2 = () => {
                                         <div className="text-center me-2 flex-shrink-0">
                                           <img
                                             src="/images/file_upload_states_1.svg"
-                                            className="img-fluid" alt=""
+                                            className="img-fluid"
+                                            alt=""
                                             style={{ height: "40px" }}
                                           />
                                         </div>
@@ -491,7 +494,8 @@ const Disputes2 = () => {
                                         >
                                           <img
                                             src="/images/filter.svg"
-                                            className="img-fluid me-2" alt=""
+                                            className="img-fluid me-2"
+                                            alt=""
                                           />{" "}
                                           Filters
                                         </a>

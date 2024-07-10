@@ -4,29 +4,24 @@ import MainNavbarInc from "../Bars/MainNavbarInc";
 import TopBarInc from "../Bars/TopBarInc";
 import { ClipLoader } from "react-spinners";
 
-
-
 const HelpSsupport2 = () => {
   const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-  const { id } = useParams()
-  const [categoryPost, setCategoryPost] = useState([])
-  const [singleCategory, setSingleCategory] = useState([])
-  const [post, setPost] = useState([])
-  const [sidebar, setsidebar] = useState(true)
+  const { id } = useParams();
+  const [categoryPost, setCategoryPost] = useState([]);
+  const [singleCategory, setSingleCategory] = useState([]);
+  const [post, setPost] = useState([]);
+  const [sidebar, setsidebar] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
-
-
+    setsidebar(!sidebar);
+  };
 
   useEffect(() => {
-    fetchCategoryPosts(id)
+    fetchCategoryPosts(id);
     // fetchPosts(id)
-    fetchSingleCategory(id)
-  }, [])
+    fetchSingleCategory(id);
+  }, []);
 
   const fetchCategoryPosts = async (id) => {
     try {
@@ -45,7 +40,7 @@ const HelpSsupport2 = () => {
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -66,10 +61,9 @@ const HelpSsupport2 = () => {
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
-
 
   // const fetchPosts = async (id) => {
   //   try {
@@ -91,9 +85,6 @@ const HelpSsupport2 = () => {
   //   }
   // };
 
-
-
-
   return (
     <>
       <div className="main-admin-container bg-light dark-mode-active">
@@ -102,7 +93,6 @@ const HelpSsupport2 = () => {
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
 
             <main className="admin-content">
@@ -112,7 +102,10 @@ const HelpSsupport2 = () => {
                 </div>
               </div>
               {isLoading ? (
-                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ minHeight: "80vh" }}
+                >
                   <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
                 </div>
               ) : (
@@ -129,7 +122,7 @@ const HelpSsupport2 = () => {
                           </Link>
 
                           <nav
-                            style={{ '--bs-breadcrumb-divider': '/' }}
+                            style={{ "--bs-breadcrumb-divider": "/" }}
                             aria-label="breadcrumb"
                           >
                             <ol className="breadcrumb mb-0">
@@ -154,7 +147,8 @@ const HelpSsupport2 = () => {
                         <div className="heading-card mt-4">
                           <img
                             src="/images/help.svg"
-                            className="img-fluid mb-3" alt=""
+                            className="img-fluid mb-3"
+                            alt=""
                           />
 
                           <h3>{singleCategory.title}</h3>
@@ -162,11 +156,13 @@ const HelpSsupport2 = () => {
                             {singleCategory.description}
                           </p>
 
-                          <p className="help-text-sub">{singleCategory.no_of_posts} articles</p>
+                          <p className="help-text-sub">
+                            {singleCategory.no_of_posts} articles
+                          </p>
                         </div>
 
                         <div className="accordion mt-4" id="accordionHelp">
-                          {categoryPost.map((item) =>
+                          {categoryPost.map((item) => (
                             <div className="accordion-item" key={item._id}>
                               <h2 className="accordion-header">
                                 <button
@@ -190,15 +186,13 @@ const HelpSsupport2 = () => {
                                 </div>
                               </div>
                             </div>
-                          )}
+                          ))}
                         </div>
-
                       </div>
                     </div>
                   </div>
                 </div>
               )}
-
             </main>
 
             <footer>

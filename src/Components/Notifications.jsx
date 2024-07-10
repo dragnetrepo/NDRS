@@ -18,13 +18,11 @@ const Notifications = () => {
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sidebar, setsidebar] = useState(true)
-
+  const [sidebar, setsidebar] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
-
+    setsidebar(!sidebar);
+  };
 
   const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
   const token = localStorage.getItem("token");
@@ -89,7 +87,6 @@ const Notifications = () => {
     }
   };
 
-
   useEffect(() => {
     if (!token) {
       setError("User is not logged in.");
@@ -121,7 +118,6 @@ const Notifications = () => {
             <MainNavbarInc sidebar={sidebar} />
 
             <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
               <TopBarInc toggleSideBar={toggleSideBar} />
               <main className="admin-content">
                 <div className="header-box py-5">
@@ -170,8 +166,15 @@ const Notifications = () => {
                             </li>
                           </ul>
                           {isLoading ? (
-                            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-                              <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+                            <div
+                              className="d-flex justify-content-center align-items-center"
+                              style={{ minHeight: "80vh" }}
+                            >
+                              <ClipLoader
+                                color="#36D7B7"
+                                loading={isLoading}
+                                size={50}
+                              />
                             </div>
                           ) : (
                             <div className="tab-content" id="pills-tabContent">
@@ -218,7 +221,9 @@ const Notifications = () => {
                                         className="form-check-input"
                                         type="radio"
                                         value="notifications"
-                                        checked={selectedApi === "notifications"}
+                                        checked={
+                                          selectedApi === "notifications"
+                                        }
                                         onChange={() =>
                                           setSelectedApi("notifications")
                                         }
@@ -279,66 +284,74 @@ const Notifications = () => {
                                 <div>
                                   {data && Object.keys(data).length > 0 ? (
                                     <>
-                                      {Object.entries(data).map(([date, items]) => (
-                                        <div key={date}>
-                                          <div className="row mt-4">
-                                            <div className="col-lg-12">
-                                              <div className="d-flex align-items-center justify-content-between w-100">
-                                                <div className="border-bottom w-100"></div>
-                                                <div className="notification-badge text-medium">
-                                                  {date}
+                                      {Object.entries(data).map(
+                                        ([date, items]) => (
+                                          <div key={date}>
+                                            <div className="row mt-4">
+                                              <div className="col-lg-12">
+                                                <div className="d-flex align-items-center justify-content-between w-100">
+                                                  <div className="border-bottom w-100"></div>
+                                                  <div className="notification-badge text-medium">
+                                                    {date}
+                                                  </div>
+                                                  <div className="border-bottom w-100"></div>
                                                 </div>
-                                                <div className="border-bottom w-100"></div>
+                                              </div>
+                                            </div>
+                                            <div className="row">
+                                              <div className="col-lg-8">
+                                                {items.map((notification) => (
+                                                  <div
+                                                    className="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4"
+                                                    key={notification._id}
+                                                  >
+                                                    <div className="position-relative">
+                                                      <div className="avatar-sm flex-shrink-0">
+                                                        <img
+                                                          src="/images/ipman-logo.svg"
+                                                          className="img-fluid object-position-center object-fit-cover w-100 h-100"
+                                                          alt="Avatar"
+                                                        />
+                                                      </div>
+                                                    </div>
+                                                    <div className="ms-2 flex-grow-1">
+                                                      <div className="mb-2 d-flex align-items-center">
+                                                        <p className="mb-0">
+                                                          <strong
+                                                            style={{
+                                                              fontWeight:
+                                                                "bold",
+                                                            }}
+                                                          >
+                                                            {
+                                                              notification.message
+                                                            }
+                                                          </strong>
+                                                        </p>
+                                                      </div>
+                                                      <div>
+                                                        <p className="mb-0">
+                                                          {notification.date}
+                                                        </p>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                ))}
                                               </div>
                                             </div>
                                           </div>
-                                          <div className="row">
-                                            <div className="col-lg-8">
-                                              {items.map((notification) => (
-                                                <div
-                                                  className="d-flex avatar-holder bg-custom-color-2 p-3 rounded my-4"
-                                                  key={notification._id}
-                                                >
-                                                  <div className="position-relative">
-                                                    <div className="avatar-sm flex-shrink-0">
-                                                      <img
-                                                        src="/images/ipman-logo.svg"
-                                                        className="img-fluid object-position-center object-fit-cover w-100 h-100"
-                                                        alt="Avatar"
-                                                      />
-                                                    </div>
-                                                  </div>
-                                                  <div className="ms-2 flex-grow-1">
-                                                    <div className="mb-2 d-flex align-items-center">
-                                                      <p className="mb-0">
-                                                        <strong style={{ fontWeight: 'bold' }}>
-                                                          {notification.message}
-                                                        </strong>
-                                                      </p>
-                                                    </div>
-                                                    <div>
-                                                      <p className="mb-0">
-                                                        {notification.date}
-                                                      </p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              ))}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      ))}</>
+                                        )
+                                      )}
+                                    </>
                                   ) : (
-                                    <div className="d-flex align-items-center justify-content-center " style={{ height: '300px' }}>
-                                      <h3>
-                                        No notifications Yet
-                                      </h3>
+                                    <div
+                                      className="d-flex align-items-center justify-content-center "
+                                      style={{ height: "300px" }}
+                                    >
+                                      <h3>No notifications Yet</h3>
                                     </div>
                                   )}
-
                                 </div>
-
-
                               </div>
                             </div>
                           )}
@@ -632,7 +645,11 @@ const Notifications = () => {
                         placeholder="Current password"
                       />
                       <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
-                        <img src="/images/eye.svg" className="img-fluid" alt="" />
+                        <img
+                          src="/images/eye.svg"
+                          className="img-fluid"
+                          alt=""
+                        />
                       </span>
                     </div>
                   </div>
@@ -645,7 +662,11 @@ const Notifications = () => {
                         placeholder="New password"
                       />
                       <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
-                        <img src="/images/eye.svg" className="img-fluid" alt="" />
+                        <img
+                          src="/images/eye.svg"
+                          className="img-fluid"
+                          alt=""
+                        />
                       </span>
                     </div>
                   </div>
@@ -658,7 +679,11 @@ const Notifications = () => {
                         placeholder="Re-enter password"
                       />
                       <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
-                        <img src="/images/eye.svg" className="img-fluid" alt="" />
+                        <img
+                          src="/images/eye.svg"
+                          className="img-fluid"
+                          alt=""
+                        />
                       </span>
                       <div className="invalid-feedback">
                         Passwords do not match

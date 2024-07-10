@@ -94,8 +94,10 @@ const DiscussionIinc = () => {
                           {item.sender.sender} {` : `} {item.last_message}
                         </p>
                       )}
-                      {(item.unread_messages > 0) && (
-                        <span className="badge rounded-pill text-bg-main">{item.unread_messages}</span>
+                      {item.unread_messages > 0 && (
+                        <span className="badge rounded-pill text-bg-main">
+                          {item.unread_messages}
+                        </span>
                       )}
                     </div>
                   </div>

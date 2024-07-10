@@ -7,27 +7,25 @@ import { ClipLoader } from "react-spinners";
 const HelpSupport = () => {
   const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
 
-  const [categories, setCategories] = useState([])
-  const [categoryPost, setCategoryPost] = useState([])
-  const [post, setPost] = useState([])
+  const [categories, setCategories] = useState([]);
+  const [categoryPost, setCategoryPost] = useState([]);
+  const [post, setPost] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [sidebar, setsidebar] = useState(true)
+  const [sidebar, setsidebar] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
-
+    setsidebar(!sidebar);
+  };
 
   useEffect(() => {
-    fetchCategories()
+    fetchCategories();
     // fetchCategoryPosts()
     // fetchPosts()
-  }, [])
+  }, []);
 
   const fetchCategories = async () => {
     try {
-
       const res = await fetch(baseUrl + "/api/posts/categories", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -43,7 +41,7 @@ const HelpSupport = () => {
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -85,7 +83,6 @@ const HelpSupport = () => {
   //   }
   // };
 
-
   return (
     <>
       <div className="main-admin-container bg-light dark-mode-active">
@@ -94,7 +91,6 @@ const HelpSupport = () => {
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
             <main className="admin-content">
               <div className="header-box py-5">
@@ -126,12 +122,19 @@ const HelpSupport = () => {
                         </div>
                       </div>
                       {isLoading ? (
-                        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-                          <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+                        <div
+                          className="d-flex justify-content-center align-items-center"
+                          style={{ minHeight: "80vh" }}
+                        >
+                          <ClipLoader
+                            color="#36D7B7"
+                            loading={isLoading}
+                            size={50}
+                          />
                         </div>
                       ) : (
                         <div className="row mt-4">
-                          {categories.map((item) =>
+                          {categories.map((item) => (
                             <div className="col-lg-6 mb-4" key={item._id}>
                               <Link
                                 to={`/helpSupport/${item._id}`}
@@ -141,7 +144,8 @@ const HelpSupport = () => {
                                   <div className="card-body">
                                     <img
                                       src="/images/help.svg"
-                                      className="img-fluid mb-3" alt=""
+                                      className="img-fluid mb-3"
+                                      alt=""
                                     />
 
                                     <h3>{item.title}</h3>
@@ -149,13 +153,14 @@ const HelpSupport = () => {
                                       {item.description}
                                     </p>
 
-                                    <p className="help-text-sub">{item.no_of_posts} articles</p>
+                                    <p className="help-text-sub">
+                                      {item.no_of_posts} articles
+                                    </p>
                                   </div>
                                 </div>
                               </Link>
                             </div>
-                          )}
-
+                          ))}
 
                           {/* <div className="col-lg-6 mb-4">
                           <Link
@@ -276,7 +281,6 @@ const HelpSupport = () => {
                         </div> */}
                         </div>
                       )}
-
                     </div>
                   </div>
                 </div>

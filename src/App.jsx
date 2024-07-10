@@ -137,7 +137,6 @@ const App = () => {
     specific_claims: "",
     negotiation_terms: "",
     accused_party: "",
-    initiating_party: "",
   });
 
   return (
@@ -188,10 +187,7 @@ const App = () => {
               loggedIn ? <Navigate to="/dashboard" /> : <Verification2 />
             }
           />
-          <Route
-            path="/ProfileSetup"
-            element={<ProfileSetup />}
-          />
+          <Route path="/ProfileSetup" element={<ProfileSetup />} />
           <Route
             path="/login"
             element={
@@ -206,10 +202,7 @@ const App = () => {
             path="/Recovery"
             element={loggedIn ? <Navigate to="/dashboard" /> : <Recovery />}
           />
-          <Route
-            path="/ProfileSetup2"
-            element={<ProfileSetup2 />}
-          />
+          <Route path="/ProfileSetup2" element={<ProfileSetup2 />} />
           <Route
             path="/PasswordSet2"
             element={loggedIn ? <Navigate to="/dashboard" /> : <PasswordSet2 />}

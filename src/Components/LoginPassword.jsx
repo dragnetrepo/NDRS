@@ -79,7 +79,8 @@ const LoginPassword = () => {
                         <span className="input-group-text bg-transparent cursor-pointer form-control-input-group-right">
                           <img
                             src="/images/check-tick.svg"
-                            className="img-fluid" alt=""
+                            className="img-fluid"
+                            alt=""
                           />
                         </span>
                       </div>

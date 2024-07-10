@@ -4,7 +4,6 @@ import TopBarInc from "../Bars/TopBarInc";
 import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 
-
 const Users2 = () => {
   const [roles, setRoles] = useState([]);
   const [getBoardOfEnquire, setGetBoardOfEnquire] = useState([]);
@@ -27,11 +26,11 @@ const Users2 = () => {
   const [customRole, setcustomRole] = useState({
     name: "",
   });
-  const [sidebar, setsidebar] = useState(true)
+  const [sidebar, setsidebar] = useState(true);
 
   const toggleSideBar = () => {
-    setsidebar(!sidebar)
-  }
+    setsidebar(!sidebar);
+  };
 
   const [isAscending, setIsAscending] = useState(true);
 
@@ -63,8 +62,7 @@ const Users2 = () => {
       formData.append("file", file);
 
       try {
-        const baseUrl =
-          "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+        const baseUrl = "https://ndrs.ng/dev";
         const response = await fetch(baseUrl + "/api/users/bulk/send-invite", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -164,16 +162,13 @@ const Users2 = () => {
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(
-        "https://phpstack-1245936-4460801.cloudwaysapps.com/dev/api/users/sample-csv",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch("https://ndrs.ng/dev/api/users/sample-csv", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -212,21 +207,19 @@ const Users2 = () => {
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
-
       }
 
       const data = await response.json();
-
 
       toast.success("User Invite has been sent!");
       setUsers({
         email: "",
         role: "",
         case_id: "",
-      })
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error('Email has already been used or invalid Email!')
+      toast.error("Email has already been used or invalid Email!");
     }
   };
 
@@ -256,13 +249,12 @@ const Users2 = () => {
         throw new Error("Network response was not ok");
       }
 
-
       const data = await response.json();
 
       toast.success("Board of Enquire has been created successfully!");
       setboardOfEnquire({
-        name: ''
-      })
+        name: "",
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -290,9 +282,8 @@ const Users2 = () => {
       setRoles(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
-    }
-    finally {
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -318,11 +309,11 @@ const Users2 = () => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      fetchdata()
+      fetchdata();
       const data = await response.json();
       setcustomRole({
-        name: ''
-      })
+        name: "",
+      });
 
       // window.location.reload();
       toast.success("custom role has been created!");
@@ -365,7 +356,6 @@ const Users2 = () => {
     category,
     permissionIndex
   ) => {
-
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
       const res = await fetch(baseUrl + "/api/users/update-permission", {
@@ -494,7 +484,6 @@ const Users2 = () => {
 
       const data = await response.json();
 
-
       // toast.success("Roles has been restored to default!");
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -505,11 +494,9 @@ const Users2 = () => {
     <>
       <div className="main-admin-container bg-light dark-mode-active">
         <div className="d-flex flex-column flex-lg-row h-lg-100">
-
           <MainNavbarInc sidebar={sidebar} />
 
           <div className="flex-lg-fill bg-white overflow-auto vstack vh-lg-100 position-relative">
-
             <TopBarInc toggleSideBar={toggleSideBar} />
 
             <main className="admin-content">
@@ -524,7 +511,11 @@ const Users2 = () => {
                   <div className="row">
                     <div className="col-lg-12">
                       <div className="margin-top-negative">
-                        <ul className="nav custom-tab nav-underline mb-3" id="pills-tab" role="tablist">
+                        <ul
+                          className="nav custom-tab nav-underline mb-3"
+                          id="pills-tab"
+                          role="tablist"
+                        >
                           <li className="nav-item" role="presentation">
                             <button
                               className="nav-link active"
@@ -692,7 +683,8 @@ const Users2 = () => {
                                           <div className="col-lg-5 offset-lg-2">
                                             <img
                                               src="/images/csv.png"
-                                              className="img-fluid" alt=""
+                                              className="img-fluid"
+                                              alt=""
                                             />
                                           </div>
                                         </div>
@@ -711,7 +703,8 @@ const Users2 = () => {
                                               <div className="text-center mb-2">
                                                 <img
                                                   src="/images/file_upload_states.svg"
-                                                  className="img-fluid" alt=""
+                                                  className="img-fluid"
+                                                  alt=""
                                                 />
                                               </div>
                                               <p className="text-muted-3 mb-1">
@@ -723,7 +716,8 @@ const Users2 = () => {
 
                                               <img
                                                 src="/images/or-line.svg"
-                                                className="img-fluid" alt=""
+                                                className="img-fluid"
+                                                alt=""
                                               />
 
                                               <div className="mt-3">
@@ -1012,7 +1006,8 @@ const Users2 = () => {
                                               <span className="input-group-text bg-transparent">
                                                 <img
                                                   src="/images/search.svg"
-                                                  className="img-fluid" alt=""
+                                                  className="img-fluid"
+                                                  alt=""
                                                 />
                                               </span>
                                               <input
@@ -1029,7 +1024,8 @@ const Users2 = () => {
                                                 <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3">
                                                   <img
                                                     src="/images/filter.svg"
-                                                    className="img-fluid" alt=""
+                                                    className="img-fluid"
+                                                    alt=""
                                                   />{" "}
                                                   A-Z
                                                 </a>
@@ -1372,8 +1368,9 @@ const Users2 = () => {
                                                   </td>
                                                 </tr> */}
                                                 <tr>
-                                                  <td className="m-3">No user has been invited</td>
-
+                                                  <td className="m-3">
+                                                    No user has been invited
+                                                  </td>
                                                 </tr>
                                               </tbody>
                                             </table>
@@ -1567,7 +1564,8 @@ const Users2 = () => {
                                               <span className="input-group-text bg-transparent">
                                                 <img
                                                   src="/images/search.svg"
-                                                  className="img-fluid" alt="search"
+                                                  className="img-fluid"
+                                                  alt="search"
                                                 />
                                               </span>
                                               <input
@@ -1581,10 +1579,14 @@ const Users2 = () => {
                                           <div className="col-lg-7">
                                             <div className="d-flex align-items-center justify-content-between gap-15">
                                               <div className="d-flex">
-                                                <a className="btn btn-size btn-outline-light text-medium px-3 me-lg-3" onClick={sortBoardOfEnquire}>
+                                                <a
+                                                  className="btn btn-size btn-outline-light text-medium px-3 me-lg-3"
+                                                  onClick={sortBoardOfEnquire}
+                                                >
                                                   <img
                                                     src="/images/filter.svg"
-                                                    className="img-fluid" alt=""
+                                                    className="img-fluid"
+                                                    alt=""
                                                   />{" "}
                                                   A-Z
                                                 </a>
@@ -4991,7 +4993,11 @@ const Users2 = () => {
                                                               </div>
                                                             </ul>
                                                           </div>
-                                                        </div> */}<p>No user has been invited</p>
+                                                        </div> */}
+                                                        <p>
+                                                          No user has been
+                                                          invited
+                                                        </p>
                                                       </td>
                                                       <td>{item.name}</td>
                                                       <td>
@@ -5000,7 +5006,8 @@ const Users2 = () => {
                                                       <td>
                                                         <img
                                                           src="/images/suspending.svg"
-                                                          className="img-fluid" alt=""
+                                                          className="img-fluid"
+                                                          alt=""
                                                         />
                                                       </td>
                                                       <td>{item.date_added}</td>
@@ -5217,8 +5224,15 @@ const Users2 = () => {
                               </div>
                             </div>
                             {isLoading ? (
-                              <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-                                <ClipLoader color="#36D7B7" loading={isLoading} size={50} />
+                              <div
+                                className="d-flex justify-content-center align-items-center"
+                                style={{ minHeight: "80vh" }}
+                              >
+                                <ClipLoader
+                                  color="#36D7B7"
+                                  loading={isLoading}
+                                  size={50}
+                                />
                               </div>
                             ) : (
                               <div className="row">
@@ -5248,8 +5262,9 @@ const Users2 = () => {
                                         </h2>
                                         <div
                                           id={`collapseOne${role._id}`}
-                                          className={`accordion-collapse collapse ${roleIndex === 0 ? "show" : ""
-                                            }`}
+                                          className={`accordion-collapse collapse ${
+                                            roleIndex === 0 ? "show" : ""
+                                          }`}
                                           data-bs-parent="#accordionHelp2"
                                         >
                                           <div className="mb-3 py-3 px-4 bg-light">
@@ -5270,7 +5285,9 @@ const Users2 = () => {
                                             </a>
                                           </div>
                                           <div className="accordion-body">
-                                            {Object.entries(role.permissions).map(
+                                            {Object.entries(
+                                              role.permissions
+                                            ).map(
                                               (
                                                 [category, permissions],
                                                 categoryIndex
@@ -5353,7 +5370,6 @@ const Users2 = () => {
                                 </div>
                               </div>
                             )}
-
                           </div>
                         </div>
                       </div>
@@ -5449,7 +5465,8 @@ const Users2 = () => {
                           >
                             <img
                               src="/images/filter.svg"
-                              className="img-fluid me-2" alt=""
+                              className="img-fluid me-2"
+                              alt=""
                             />{" "}
                             Filters
                           </a>
@@ -5457,7 +5474,8 @@ const Users2 = () => {
                           <button className="btn btn-size btn-outline-light text-medium px-4">
                             <img
                               src="/images/sort.svg"
-                              className="img-fluid me-2" alt=""
+                              className="img-fluid me-2"
+                              alt=""
                             />{" "}
                             Most Recent
                           </button>
@@ -5725,7 +5743,8 @@ const Users2 = () => {
                     <td>
                       <img
                         src="/images/ministry-admin.svg"
-                        className="img-fluid" alt=""
+                        className="img-fluid"
+                        alt=""
                       />
                     </td>
                     <td>DS133</td>
@@ -5756,10 +5775,12 @@ const Users2 = () => {
 
               <div className="d-flex align-items-center gap-10">
                 <button className="btn btn-outline-light text-medium">
-                  <img src="/images/prev.svg" className="img-fluid" alt="" /> Previous
+                  <img src="/images/prev.svg" className="img-fluid" alt="" />{" "}
+                  Previous
                 </button>
                 <button className="btn btn-outline-light text-medium">
-                  Next <img src="/images/next.svg" className="img-fluid" alt="" />
+                  Next{" "}
+                  <img src="/images/next.svg" className="img-fluid" alt="" />
                 </button>
               </div>
             </div>
@@ -5793,7 +5814,6 @@ const Users2 = () => {
 
                 <button
                   className="btn btn-main-primary btn-size px-3"
-
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 >
@@ -5835,7 +5855,12 @@ const Users2 = () => {
 
                 <div className="col-lg-2 offset-lg-3">
                   <div className="d-flex align-items-center justify-content-between gap-15">
-                    <a href="" className="btn btn-size btn-main-primary" onClick={handleSubmit} disabled={!boardOfEnquire.name}>
+                    <a
+                      href=""
+                      className="btn btn-size btn-main-primary"
+                      onClick={handleSubmit}
+                      disabled={!boardOfEnquire.name}
+                    >
                       Send Invite
                     </a>
                   </div>
@@ -5921,7 +5946,8 @@ const Users2 = () => {
                         <div className="text-center">
                           <img
                             src="/images/no-found.svg"
-                            className="img-fluid" alt=""
+                            className="img-fluid"
+                            alt=""
                           />
                         </div>
                       </div>
@@ -5962,7 +5988,6 @@ const Users2 = () => {
                   className="btn btn-main-primary btn-size px-3"
                   data-bs-target="#permissionModal"
                   data-bs-toggle="modal"
-
                   disabled={!customRole.name}
                 >
                   Next
@@ -6014,9 +6039,12 @@ const Users2 = () => {
                   Back
                 </button>
 
-                <button className="btn btn-main-primary btn-size px-3"
+                <button
+                  className="btn btn-main-primary btn-size px-3"
                   data-bs-dismiss="modal"
-                  aria-label="Close" onClick={CreateCustomRole}>
+                  aria-label="Close"
+                  onClick={CreateCustomRole}
+                >
                   Finish
                 </button>
               </div>
