@@ -1,12 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AppContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AuthNavInc from "../Bars/AuthNavInc";
+import { ClipLoader } from "react-spinners";
 
 const CreatePassword = () => {
   const { passwordField, setPasswordField } = useContext(AppContext);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onHandleChange = (e) => {
     // setFormData({...formData,  [e.target.name]:e.target.value})
@@ -18,10 +20,12 @@ const CreatePassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     // Check if passwords match
     if (passwordField.password !== passwordField.password_confirmation) {
       console.error("Passwords do not match");
+      setIsLoading(false);
       return;
     }
 
@@ -34,6 +38,8 @@ const CreatePassword = () => {
       toast.error(
         "Password must contain alphabets, numbers & special characters and at least 8 characters"
       );
+      setIsLoading(false);
+
       return;
     }
 
@@ -59,6 +65,8 @@ const CreatePassword = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Please use a strong Password");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -171,10 +179,15 @@ const CreatePassword = () => {
                         className="btn btn-size btn-main-primary w-100"
                         disabled={
                           !passwordField.password ||
-                          !passwordField.password_confirmation
+                          !passwordField.password_confirmation ||
+                          isLoading
                         }
                       >
-                        Save password
+                        {isLoading ? (
+                          <ClipLoader color="#547d74" size={20} />
+                        ) : (
+                          "Save Password"
+                        )}
                       </button>
                     </div>
                   </form>
