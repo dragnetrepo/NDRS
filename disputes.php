@@ -50,7 +50,7 @@
                                                             <div class="card-header p-4 heading-card bg-white d-flex align-items-center justify-content-between flex-wrap">
                                                                 <h3 class="mb-lg-0 mb-3">Create Dispute Case</h3>
                                                                 <div class="d-flex align-items-center gap-15">
-                                                                    <a href="disputes-2.php" class="btn btn-size btn-main-primary px-3">Next</a>
+                                                                    <button type="button" data-bs-toggle="modal" data-bs-target="#confirmModal" class="btn btn-size btn-main-primary px-3">Next</button>
                                                                 </div>
                                                             </div>
                                                             <div class="card-body p-4">
@@ -63,7 +63,7 @@
                                                                             </div>
                                                                             <div class="mb-4">
                                                                                 <label class="form-label">Filing date</label>
-                                                                                <input type="text" class="form-control form-control-height" placeholder="Feb 1, 2024" value="Chinedu" disabled>
+                                                                                <input type="text" class="form-control form-control-height" placeholder="Feb 1, 2024" value="Feb 1, 2024" disabled>
                                                                             </div>
                                                                             <div class="mb-4">
                                                                                 <label class="form-label">Case title</label>
@@ -299,6 +299,71 @@
 
         </div>
 
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-lg-4 border-0">
+                <div class="modal-header border-bottom-0">
+                    <h1 class="modal-title fs-5">Create a dispute confirmation</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Dispute ID</p>
+                        <p class="mb-0 ft-sm">DS138</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Filing date</p>
+                        <p class="mb-0 ft-sm">Feb 1, 2024</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Case title</p>
+                        <p class="mb-0 ft-sm">Measures Concerning Trading Agricultural Goods</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Dispute type</p>
+                        <p class="mb-0 ft-sm">Wages & Salaries</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Initiating party (Claimant)</p>
+                        <p class="mb-0 ft-sm">National Union of Food, Beverage and Tobacco Employees NUFBTE</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Accused party (Respondents)</p>
+                        <p class="mb-0 ft-sm">Federal Road Safety Commission FRSC</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Summary of Dispute</p>
+                        <p class="mb-0 ft-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio laudantium deserunt fugit totam rem magnam, iusto impedit vero reprehenderit incidunt molestias. Sit, illum incidunt cupiditate placeat sed beatae voluptate accusantium.</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Background information</p>
+                        <p class="mb-0 ft-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio laudantium deserunt fugit totam rem magnam, iusto impedit vero reprehenderit incidunt molestias. Sit, illum incidunt cupiditate placeat sed beatae voluptate accusantium.</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Relief sought</p>
+                        <p class="mb-0 ft-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio laudantium deserunt fugit totam rem magnam, iusto impedit vero reprehenderit incidunt molestias. Sit, illum incidunt cupiditate placeat sed beatae voluptate accusantium.</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Specific concerns</p>
+                        <p class="mb-0 ft-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio laudantium deserunt fugit totam rem magnam, iusto impedit vero reprehenderit incidunt molestias. Sit, illum incidunt cupiditate placeat sed beatae voluptate accusantium.</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="form-label mb-0">Negotiation terms</p>
+                        <p class="mb-0 ft-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio laudantium deserunt fugit totam rem magnam, iusto impedit vero reprehenderit incidunt molestias. Sit, illum incidunt cupiditate placeat sed beatae voluptate accusantium.</p>
+                    </div>
+
+                    <div class="mt-4 mb-3">
+                        <a href="disputes-2.php" class="btn btn-size btn-main-primary px-3 w-100">Proceed</a>
+                    </div>
+                    <div class="text-center">
+                        <a href="#" class="text-main-primary text-medium text-decoration-none" data-bs-dismiss="modal">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 

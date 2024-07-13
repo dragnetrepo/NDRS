@@ -72,11 +72,11 @@
                 <div class="col-lg-5">
                     <div class="d-flex align-items-center justify-content-between gap-15">
 
-                        <a class="btn btn-size btn-outline-light w-100 text-medium px-3" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter"><img src="images/filter.svg" class="img-fluid me-2" /> Filters</a>
+                        <a class="btn btn-size btn-outline-light text-medium px-3" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter"><img src="images/filter.svg" class="img-fluid me-2" /> Filters</a>
 
-                        <button class="btn btn-size btn-outline-light w-100 text-medium px-3"><img src="images/sort.svg" class="img-fluid me-2" /> Sort</button>
+                        <button class="btn btn-size btn-outline-light text-medium px-3"><img src="images/sort.svg" class="img-fluid me-2" /> Sort</button>
 
-                        <button class="btn btn-size btn-link w-100 text-main-primary text-medium text-decoration-none px-3">Clear all</button>
+                        <button class="btn btn-size btn-link text-main-primary text-medium text-decoration-none px-3">Clear all</button>
                     </div>
                 </div>
             </div>
