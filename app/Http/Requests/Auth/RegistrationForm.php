@@ -32,14 +32,15 @@ class RegistrationForm extends FormRequest
             "phone" => "required|string|unique:users,phone",
             // "password" => ["required", Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised(), "confirmed"],
             "display_picture" => "nullable|file|mimes:png,jpg|max:2048",
+            "union_member" => "required|in:yes,no",
         ];
 
         $role = get_user_roles(request()->user());
 
         if (empty($role)) {
-            $rules["union"] = "required|integer";
-            $rules["union_branch"] = "required|integer";
-            $rules["organization"] = "required|integer";
+            $rules["union"] = "required_if:union_member,yes|nullable|integer";
+            $rules["union_branch"] = "required_if:union_member,yes|nullable|integer";
+            $rules["organization"] = "required_if:union_member,yes|nullable|integer";
         }
 
         return $rules;

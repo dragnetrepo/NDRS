@@ -32,8 +32,7 @@ class DisputeRequest extends FormRequest
             "relief_sought" => "required|min:10",
             "specific_claims" => "required|min:10",
             "negotiation_terms" => "required|min:10",
-            "accused_party" => "required|integer",
-            // "initiating_party" => "required|integer|different:accused_party",
+            "accused_party" => "required",
         ];
     }
 

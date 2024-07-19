@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Exports\ReportsExport;
 use App\Http\Controllers\Controller;
+use App\Models\CaseAccusedUnion;
 use App\Models\CaseDiscussionMessage;
 use Illuminate\Http\Request;
 use App\Models\Union;
@@ -69,6 +70,10 @@ class DashboardController extends Controller
 
         UnionUserRole::where("user_id", $user_id)->where("status", "pending")->update([
             "status" => "active"
+        ]);
+
+        CaseAccusedUnion::where("email", request()->user()->email)->update([
+            "user_id" => request()->user()->id
         ]);
 
         $pending_disputes = get_case_dispute(0, 0, "pending approval");

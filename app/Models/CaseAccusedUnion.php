@@ -20,7 +20,10 @@ class CaseAccusedUnion extends Model
         elseif ($this->union_branch) {
             return $this->belongsTo(UnionBranch::class, "union_branch");
         }
+        elseif ($this->union_id) {
+            return $this->belongsTo(Union::class);
+        }
 
-        return $this->belongsTo(Union::class);
+        return $this->belongsTo(User::class, "user_id");
     }
 }

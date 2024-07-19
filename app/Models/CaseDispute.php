@@ -13,23 +13,23 @@ class CaseDispute extends Model
     protected $guarded = [];
 
     public const ARRAY_OF_CASE_STATUS = [
-        "internally resolved", "concilliation", "voting for panel", "resolved", "internal resolution", "pending approval", "arbitration", "court decision"
+        "case opened", "case in mediation", "case in conciliation", "case in arbitration", "case with board of enquiry", "case in nic", "nic judgement made", "case closed (resolved)", "case closed (not resolved)"
     ];
 
     public const ARRAY_OF_ALLOWED_CASE_STATUS_UPDATE = [
-        "internally resolved", "concilliation", "voting for panel", "resolved", "internal resolution", "arbitration", "court decision"
+        "case in mediation", "case in conciliation", "case in arbitration", "case with board of enquiry", "case in nic", "nic judgement made", "case closed (resolved)", "case closed (not resolved)"
     ];
 
     public const ACTIVE_CASE_STATUSES = [
-        "concilliation", "voting for panel", "arbitration", "court decision",
+        "case in mediation", "case in conciliation", "case in arbitration", "case with board of enquiry", "case in nic", "nic judgement made",
     ];
 
     public const RESOLVED_CASE_STATUSES = [
-        "internally resolved", "resolved", "internal resolution",
+        "case closed (resolved)", "case closed (not resolved)"
     ];
 
     public const PENDING_APPROVAL_CASE_STATUSES = [
-        "pending approval",
+        "case opened",
     ];
 
     public const ARRAY_OF_CASE_TYPES = [
@@ -39,7 +39,7 @@ class CaseDispute extends Model
 
     public function scopePending($query)
     {
-        return $query->where("status", "pending approval");
+        return $query->whereIn("status", CaseDispute::PENDING_APPROVAL_CASE_STATUSES);
     }
 
     public function involved_parties()
@@ -60,8 +60,11 @@ class CaseDispute extends Model
         elseif ($this->union_branch) {
             return $this->belongsTo(UnionBranch::class, "union_branch");
         }
+        elseif ($this->union) {
+            return $this->belongsTo(Union::class, "union");
+        }
 
-        return $this->belongsTo(Union::class, "union");
+        return $this->belongsTo(User::class, "created_by");
     }
 
     public function union_branch_data()

@@ -237,7 +237,6 @@ class AuthenticationController extends Controller
                 "phone" => $request->phone,
                 "display_picture" => $file_name,
                 "email_verified_at" => Carbon::now(),
-                // "password" => Hash::make($request->password),
             ]);
 
             // Check if user is invited as board member
@@ -247,8 +246,14 @@ class AuthenticationController extends Controller
                 $role = $settlement->body->role;
             }
             else {
-                // Get Member Role ID
-                $role = Role::where("name", "staff")->first();
+                if ($request->union_member == "no") {
+                    // Get Non Union Member Role ID
+                    $role = Role::where("name", "non union members")->first();
+                }
+                else {
+                    // Get Member Role ID
+                    $role = Role::where("name", "staff")->first();
+                }
             }
 
             if ($role) {
@@ -256,9 +261,9 @@ class AuthenticationController extends Controller
                     UnionUserRole::create([
                         "user_id" => $user->id,
                         "role_id" => $role->id,
-                        "union_id" => $request->union,
-                        "branch_id" => $request->union_branch,
-                        "sub_branch_id" => $request->organization,
+                        "union_id" => $request->union ?? 0,
+                        "branch_id" => $request->union_branch ?? 0,
+                        "sub_branch_id" => $request->organization ?? 0,
                     ]);
                 }
             }
