@@ -287,9 +287,13 @@ if (!function_exists("get_case_dispute")) {
                     $query->where("user_id", $user_id)
                     ->when(in_array($role->db_role_name, CaseDispute::ARRAY_OF_ORGANIZATION_ADMINS), function($query)  use ($role) {
                         $query->orWhere(function($sub_query) use ($role) {
-                            $sub_query->where('union_sub_branch', $role->union_sub_branch_id)
-                                ->orWhere('union_branch', $role->union_branch_id)
-                                ->orWhere('union_id', $role->union_id);
+                            $sub_query->where('union_id', $role->union_id)
+                                ->when($role->union_branch_id, function($query) use ($role) {
+                                    $query->where('union_branch', $role->union_branch_id);
+                                })
+                                ->when($role->union_sub_branch_id, function($query) use ($role) {
+                                    $query->where('union_sub_branch', $role->union_sub_branch_id);
+                                });
                         });
                     });
                 });
