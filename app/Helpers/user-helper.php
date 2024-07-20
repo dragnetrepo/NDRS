@@ -322,7 +322,7 @@ if (!function_exists("create_dispute_group")) {
         if (!CaseDiscussion::where("case_id", $dispute->id)->exists()) {
             CaseDiscussion::create([
                 "case_id" => $dispute->id,
-                "title" => $dispute->case_no." Main Chat (".($dispute->union_data->acronym ?? $dispute->union_data->name)." vs ".($dispute->accused->union->acronym ?? $dispute->accused->union->name).")",
+                "title" => $dispute->case_no." Main Chat (".($dispute->union_data->acronym ?? $dispute->union_data->name)." vs ".($dispute->accused->union->acronym ?? ($dispute->accused->union->name ?? $dispute->accused->email)).")",
                 "type" => "group"
             ]);
         }
@@ -372,6 +372,35 @@ if (!function_exists("send_out_case_invitation")) {
         }
         else {
             $message_body .= "<p>Kindly click <a href='".env("WEBAPP_URL")."/createAccount"."'>here</a> to create an account and tend to $case_id.</p>";
+        }
+        $message_body .= "<p>If you feel this was sent to you in error, kindly ignore this email or you can contact us at ".env("CONTACT_EMAIL")." for more information.</p>";
+        $message_body .= "<p>Cheers,</p>";
+        $message_body .= "<p>".env("APP_NAME")." Team</p>";
+
+        $message_sent = false;
+        if ($message_body) {
+            $message_sent = $outgoing_messages->send_message($user_id, $user_email, "case-dispute-role-invite", "email", $subject, $message_body, $send_time);
+        }
+
+        return $message_sent;
+    }
+}
+
+if (!function_exists("send_out_case_organization_invitation")) {
+    function send_out_case_organization_invitation($case_id, $user_id, $user_email, $send_time = "immediate") {
+        $outgoing_messages = new OutgoingMessages();
+        $user = User::where("email", $user_email)->first();
+
+        $subject = "Invite to NDRS to contribute to CASE $case_id";
+        $message_body = "<p>Hello there,";
+        $message_body .= "<p>We hope this email finds you well.</p>";
+        $message_body .= "<p>You are invited to NDRS to respond to a case raised by an individual with Case Number <strong>$case_id</strong> against your organization. Kindly proceed to the NDRS dashboard to accept this invite and respond to this dispute.</p>";
+        if ($user) {
+            $user_id = $user->id;
+            $message_body .= "<p>To log into your account, kindly click <a href='".env("WEBAPP_URL")."/login"."'>here</a> to continue.</p>";
+        }
+        else {
+            $message_body .= "<p>To create an account, kindly click <a href='".env("WEBAPP_URL")."/createAccount"."'>here</a> to continue.</p>";
         }
         $message_body .= "<p>If you feel this was sent to you in error, kindly ignore this email or you can contact us at ".env("CONTACT_EMAIL")." for more information.</p>";
         $message_body .= "<p>Cheers,</p>";
@@ -914,29 +943,35 @@ if (!function_exists("calculateDaysBetweenDates")) {
     }
 }
 
-function compareMonthNames($key1, $key2) {
-    // Define the order of the month names
-    $monthOrder = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
+if (!function_exists("compareMonthNames")) {
+    function compareMonthNames($key1, $key2) {
+        // Define the order of the month names
+        $monthOrder = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
 
-    $key1Index = array_search($key1, $monthOrder);
-    $key2Index = array_search($key2, $monthOrder);
-    return $key1Index - $key2Index;
+        $key1Index = array_search($key1, $monthOrder);
+        $key2Index = array_search($key2, $monthOrder);
+        return $key1Index - $key2Index;
+    }
 }
 
-function compareDayNames($key1, $key2) {
-    // Define the order of the month names
-    $dayOrder = [
-        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-    ];
+if (!function_exists("compareDayNames")) {
+    function compareDayNames($key1, $key2) {
+        // Define the order of the month names
+        $dayOrder = [
+            "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+        ];
 
-    $key1Index = array_search($key1, $dayOrder);
-    $key2Index = array_search($key2, $dayOrder);
-    return $key1Index - $key2Index;
+        $key1Index = array_search($key1, $dayOrder);
+        $key2Index = array_search($key2, $dayOrder);
+        return $key1Index - $key2Index;
+    }
 }
 
-function sortByUnreadMessages($a, $b) {
-    return $b['unread_messages'] <=> $a['unread_messages'];
+if (!function_exists("sortByUnreadMessages")) {
+    function sortByUnreadMessages($a, $b) {
+        return $b['unread_messages'] <=> $a['unread_messages'];
+    }
 }

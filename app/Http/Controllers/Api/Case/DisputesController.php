@@ -368,6 +368,10 @@ class DisputesController extends Controller
                     $notification_message = "Your Case $dispute->case_title has been approved";
                     record_notification_for_users($notification_message, $dispute->id, "case", request()->user()->id);
 
+                    if ($dispute->accused->email) {
+                        send_out_case_organization_invitation($dispute->case_no, 0, $dispute->accused->email);
+                    }
+
                     $this->response["status"] = Response::HTTP_OK;
                     $this->response["message"] = "Case status has been approved successfully!";
                 }

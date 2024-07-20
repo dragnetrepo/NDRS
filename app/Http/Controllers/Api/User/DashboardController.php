@@ -816,13 +816,23 @@ class DashboardController extends Controller
     private function dispute_eligible_user($query, $user_id)
     {
         $user = User::find($user_id);
+        $role = (object) get_user_roles($user);
 
-        return $query->when(!user_is_admin($user), function($query) use ($user_id) {
+        return $query->when(!user_is_admin($user), function($query) use ($user_id, $role) {
             $query->where("created_by", $user_id)
             ->orWhereHas('involved_parties', function ($query) use ($user_id) {
                 $query->where("user_id", $user_id)
                 ->orWhereHas('body_member', function($sub_query) use ($user_id) {
                     $sub_query->where("user_id", $user_id);
+                });
+            })->orWhereHas('accused', function ($query) use ($user_id, $role) {
+                $query->where("user_id", $user_id)
+                ->when(in_array($role->db_role_name, CaseDispute::ARRAY_OF_ORGANIZATION_ADMINS), function($query)  use ($role) {
+                    $query->orWhere(function($sub_query) use ($role) {
+                        $sub_query->where('union_sub_branch', $role->union_sub_branch_id)
+                            ->orWhere('union_branch', $role->union_branch_id)
+                            ->orWhere('union_id', $role->union_id);
+                    });
                 });
             });
         });
