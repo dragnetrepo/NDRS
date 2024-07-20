@@ -74,7 +74,7 @@ const ProfileSetup = () => {
 
   const handleNext = (e) => {
     e.preventDefault();
-    if (invitation === "invitation") {
+    if (invitation === "invitation" || profile.union_member === "no") {
       handleSubmit(e);
     } else {
       navigate("/profileSetup2");
@@ -115,6 +115,21 @@ const ProfileSetup = () => {
                 </div>
 
                 <form onSubmit={handleNext}>
+                  <div className="mb-4">
+                    <p className="form-label mb-2">
+                      Are you a Union Member?
+                    </p>
+
+                    <div class="form-check form-check-inline">
+                      <input className="form-check-input" name="union_member" type="radio" id="inlineCheckbox1" onChange={onHandleChange} value="yes" required />
+                      <label className="form-check-label" htmlFor="inlineCheckbox1">Yes</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input className="form-check-input" name="union_member" type="radio" id="inlineCheckbox2" onChange={onHandleChange} value="no" required />
+                      <label className="form-check-label" htmlFor="inlineCheckbox2">No</label>
+                    </div>
+                  </div>
+
                   <div className="mb-4">
                     <label className="form-label">First name</label>
                     <input
@@ -189,6 +204,7 @@ const ProfileSetup = () => {
                     <button
                       className="btn btn-size btn-main-primary w-100"
                       disabled={
+                        !profile.union_member ||
                         !profile.first_name ||
                         !profile.last_name ||
                         !profile.phone ||

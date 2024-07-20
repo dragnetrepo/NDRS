@@ -125,6 +125,7 @@ const DiscussionIinc = () => {
       setSelectedFile(null);
 
       fetchDiscussionsMessages(id);
+      document.getElementById("close-status-update-modal-after-save").click();
 
       const data = await res.json();
     } catch (error) {
@@ -975,57 +976,6 @@ const DiscussionIinc = () => {
                                 </div>
                               ) : item.type === "status update" ? (
                                 <>
-                                  {item.message.resolution_reached === "yes" ? (
-                                    <div
-                                      className={
-                                        item.sender.sender === "You"
-                                          ? "d-flex flex-column align-items-end mb-3"
-                                          : "d-flex flex-column align-items-start mb-3"
-                                      }
-                                    >
-                                      <div className="card shadow border-start-custom-1">
-                                        <div className="card-body">
-                                          <div className="d-flex align-items-center">
-                                            <img
-                                              src="/images/Misc_icon.svg"
-                                              className="img-fluid me-2"
-                                              alt="Misc"
-                                            />
-                                            <span className="text-medium">
-                                              {item.message.status} was
-                                              successful
-                                            </span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <div
-                                      className={`receiver d-flex flex-column ${
-                                        item.sender.sender === "You"
-                                          ? `align-items-end`
-                                          : `align-items-start`
-                                      } mb-3`}
-                                    >
-                                      <div className="message-box message-width px-0">
-                                        <div className="card shadow border-start-custom-2">
-                                          <div className="card-body">
-                                            <div className="d-flex align-items-center">
-                                              <img
-                                                src="/images/Misc_icon_2.svg"
-                                                className="img-fluid me-2"
-                                                alt="Misc"
-                                              />
-                                              <span className="text-medium">
-                                                {`${item.message.status} was unsuccessful`}
-                                              </span>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
-
                                   <div
                                     className={`receiver d-flex flex-column ${
                                       item.sender.sender === "You"
@@ -1035,11 +985,34 @@ const DiscussionIinc = () => {
                                   >
                                     <div className="message-box message-width px-0">
                                       <label className="d-block text-medium align-self-start mb-2">
-                                        {`Summary of ${item.message.status}`}
+                                        {`Summary`}
                                       </label>
                                       <div className="card">
                                         <div className="card-body">
                                           {item.message.summary}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div
+                                    className={
+                                      item.sender.sender === "You"
+                                        ? "d-flex flex-column align-items-end mb-3"
+                                        : "d-flex flex-column align-items-start mb-3"
+                                    }
+                                  >
+                                    <div className="card shadow border-start-custom-1">
+                                      <div className="card-body">
+                                        <div className="d-flex align-items-center">
+                                          <img
+                                            src="/images/Misc_icon.svg"
+                                            className="img-fluid me-2"
+                                            alt="Misc"
+                                          />
+                                          <span className="text-medium">
+                                            {item.message.status}
+                                          </span>
                                         </div>
                                       </div>
                                     </div>
@@ -1142,6 +1115,7 @@ const DiscussionIinc = () => {
                           className="form-control border-start-0 form-control-height"
                           placeholder="Type a message"
                           name="message"
+                          autoComplete={`off`}
                           value={messages.message}
                           onChange={onHandleChange}
                           onKeyDown={onkeyPress}
@@ -1542,15 +1516,16 @@ const DiscussionIinc = () => {
                       className="btn btn-size btn-main-outline-primary px-3"
                       data-bs-dismiss="modal"
                       aria-label="Close"
+                      id={`close-status-update-modal-after-save`}
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleStatus}
                       className="btn btn-main-primary btn-size px-3"
-                      disabled={!status || !summary || !resolution}
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
+                      disabled={!status || !summary}
+                      // data-bs-dismiss="modal"
+                      // aria-label="Close"
                     >
                       Save
                     </button>
@@ -1576,7 +1551,7 @@ const DiscussionIinc = () => {
                       </select>
                     </div>
 
-                    <div className="mb-3">
+                    {/* <div className="mb-3">
                       <label className="form-label d-block">
                         Was a resolution successfully reached?
                       </label>
@@ -1614,11 +1589,11 @@ const DiscussionIinc = () => {
                           No
                         </label>
                       </div>
-                    </div>
+                    </div> */}
 
                     <div className="mb-3">
                       <label className="form-label">
-                        Summary of Concilliation
+                        Summary
                       </label>
                       <textarea
                         className="form-control"
@@ -1627,7 +1602,7 @@ const DiscussionIinc = () => {
                         value={summary}
                         onChange={handleSummaryChange}
                       ></textarea>
-                      {summary.length <= 10 && (
+                      {summary && summary.length <= 10 && (
                         <p className="text-danger">
                           Input must be at least 10 characters
                         </p>

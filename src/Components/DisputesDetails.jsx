@@ -511,7 +511,7 @@ const DisputesDetails = () => {
                                                   }
                                                   disabled={
                                                     getDisputes.status !==
-                                                    "pending approval"
+                                                    "case opened"
                                                   }
                                                 >
                                                   Approve case
@@ -850,7 +850,7 @@ const DisputesDetails = () => {
                                     aria-labelledby="pills-discussion-tab"
                                     tabindex="0"
                                   >
-                                    <DiscussionInc />
+                                    <DiscussionInc dispute_id={id} />
                                   </div>
 
                                   <div

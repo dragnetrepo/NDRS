@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const DiscussionIinc = () => {
+const DiscussionIinc = ({ dispute_id }) => {
   const [discussion, setDiscussions] = useState([]);
   // const [discussionMessages, setDiscussionsMessages] = useState([]);
   // const [messages, setMessages] = useState({
@@ -23,7 +23,7 @@ const DiscussionIinc = () => {
         throw new Error("User is not logged in."); // Handle case where user is not logged in
       }
 
-      const res = await fetch(baseUrl + "/api/case/discussions", {
+      const res = await fetch(baseUrl + `/api/case/discussions/${dispute_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

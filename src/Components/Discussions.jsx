@@ -32,7 +32,7 @@ const Discussions = () => {
 							</div>
 						</div>
 
-						<DiscussionInc />
+						<DiscussionInc dispute_id={0} />
 					</main>
 
 					<footer>

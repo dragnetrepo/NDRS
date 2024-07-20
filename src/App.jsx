@@ -110,9 +110,9 @@ const App = () => {
     last_name: "",
     phone: "",
     display_picture: "",
-    union: "",
-    union_branch: "",
-    organization: "",
+    union: 0,
+    union_branch: 0,
+    organization: 0,
   });
   const [recovery, setRecovery] = useState({
     email: "",
