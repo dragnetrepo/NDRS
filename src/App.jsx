@@ -50,7 +50,7 @@ const App = () => {
   const [loggedIn, setloggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
 
   useEffect(() => {
     const token = localStorage.getItem("token");

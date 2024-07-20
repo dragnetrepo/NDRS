@@ -8,7 +8,7 @@ import { ClipLoader } from "react-spinners";
 import toast from "react-hot-toast";
 
 const DisputesDetails = () => {
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
   const [getDisputes, setGetDisputes] = useState([]);
   const [getInvolvedParties, setGetInvolvedParties] = useState([]);
   const [getCaseDocuments, setGetCaseDocuments] = useState([]);
@@ -151,7 +151,7 @@ const DisputesDetails = () => {
 
   const fetchProfile = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
 
       const res = await fetch(baseUrl + "/api/user-profile", {
         headers: {

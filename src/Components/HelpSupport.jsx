@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 
 const HelpSupport = () => {
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
 
   const [categories, setCategories] = useState([]);
   const [categoryPost, setCategoryPost] = useState([]);

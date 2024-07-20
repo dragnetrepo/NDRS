@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 const Disputes = () => {
 	const navigate = useNavigate();
-	const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+	const baseUrl = "https://ndrs.ng/dev";
 
 	const { disputes, setDisputes } = useContext(AppContext);
 	const [unionsList, setUnionsList] = useState([]);
@@ -159,7 +159,7 @@ const Disputes = () => {
 
 	const fetchProfile = async () => {
 		try {
-		const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+		const baseUrl = "https://ndrs.ng/dev";
 
 		const res = await fetch(baseUrl + "/api/user-profile", {
 			headers: {

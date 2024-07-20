@@ -62,7 +62,7 @@ const Users2 = () => {
       formData.append("file", file);
 
       try {
-        const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+        const baseUrl = "https://ndrs.ng/dev";
         const response = await fetch(baseUrl + "/api/users/bulk/send-invite", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -103,7 +103,7 @@ const Users2 = () => {
 
   const fetchBoardOfEnquires = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -136,7 +136,7 @@ const Users2 = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(
         baseUrl + `/api/users/dissolve-board-of-enquiry/${id}`,
         {
@@ -162,7 +162,7 @@ const Users2 = () => {
 
   const handleDownload = async () => {
     try {
-      const response = await fetch("https://phpstack-1245936-4460801.cloudwaysapps.com/dev/api/users/sample-csv", {
+      const response = await fetch("https://ndrs.ng/dev/api/users/sample-csv", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -194,7 +194,7 @@ const Users2 = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + "/api/users/send-invite", {
         method: "POST",
         headers: {
@@ -231,7 +231,7 @@ const Users2 = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(
         baseUrl + "/api/users/create-board-of-enquiry",
         {
@@ -266,7 +266,7 @@ const Users2 = () => {
 
   const fetchdata = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
 
       const res = await fetch(baseUrl + "/api/users/get-roles", {
         headers: {
@@ -295,7 +295,7 @@ const Users2 = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + "/api/users/create-role", {
         method: "POST",
         headers: {
@@ -324,7 +324,7 @@ const Users2 = () => {
 
   const fetchDisputes = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -357,7 +357,7 @@ const Users2 = () => {
     permissionIndex
   ) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(baseUrl + "/api/users/update-permission", {
         method: "POST",
         headers: {
@@ -429,7 +429,7 @@ const Users2 = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(
         baseUrl + "/api/users/restore-role-default",
         {
@@ -467,7 +467,7 @@ const Users2 = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + `/api/users/change-status/${id}`, {
         method: "POST",
         headers: {

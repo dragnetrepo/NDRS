@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const TopBarInc = ({ toggleSideBar }) => {
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
   const [user, setuser] = useState([]);
   const [search, setsearch] = useState([]);
   const [query, setQuery] = useState("");

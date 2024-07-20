@@ -47,7 +47,7 @@ const UnionInvite = () => {
     }
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + "/api/create-password", {
         method: "POST",
         headers: {
@@ -92,7 +92,7 @@ const UnionInvite = () => {
     fetchInviteDetails();
   }, []);
 
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
 
   const fetchInviteDetails = async () => {
     try {

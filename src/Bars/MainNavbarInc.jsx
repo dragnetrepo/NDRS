@@ -3,7 +3,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 const MainNavbarInc = ({ sidebar, profileUser, setloggedIn }) => {
   const location = useLocation();
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
 
   const { pathname } = location;
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const MainNavbarInc = ({ sidebar, profileUser, setloggedIn }) => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + "/api/logout", {
         method: "GET",
         headers: {
@@ -60,7 +60,7 @@ const MainNavbarInc = ({ sidebar, profileUser, setloggedIn }) => {
 
   const fetchProfile = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
 
       const res = await fetch(baseUrl + "/api/user-profile", {
         headers: {

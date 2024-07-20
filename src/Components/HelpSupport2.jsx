@@ -5,7 +5,7 @@ import TopBarInc from "../Bars/TopBarInc";
 import { ClipLoader } from "react-spinners";
 
 const HelpSsupport2 = () => {
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
   const { id } = useParams();
   const [categoryPost, setCategoryPost] = useState([]);
   const [singleCategory, setSingleCategory] = useState([]);

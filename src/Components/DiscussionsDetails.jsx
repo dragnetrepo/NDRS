@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 
 const DiscussionIinc = () => {
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
   const { id } = useParams();
   const [discussion, setDiscussions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -149,7 +149,7 @@ const DiscussionIinc = () => {
 
   const fetchDiscussions = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -175,7 +175,7 @@ const DiscussionIinc = () => {
 
   const fetchDiscussionsMessages = async (id) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -209,7 +209,7 @@ const DiscussionIinc = () => {
 
   const fetchProfile = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
 
       const res = await fetch(baseUrl + "/api/user-profile", {
         headers: {
@@ -292,7 +292,7 @@ const DiscussionIinc = () => {
   const handlePoll = async (e, id) => {
     e.preventDefault();
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -429,7 +429,7 @@ const DiscussionIinc = () => {
   const handleMeeting = async (e, id) => {
     e.preventDefault();
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {

@@ -16,7 +16,7 @@ const Verification = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(`${baseUrl}/api/confirm-email-code`, {
         method: "POST",
         headers: {
@@ -47,7 +47,7 @@ const Verification = () => {
   const handleResendVerificationCode = async (e) => {
     e.preventDefault();
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(`${baseUrl}/api/resend-verification-code`, {
         method: "POST",
         headers: {

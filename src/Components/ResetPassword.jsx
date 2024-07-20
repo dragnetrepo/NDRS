@@ -49,7 +49,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + "/api/confirm-reset-password", {
         method: "POST",
         headers: {
@@ -92,7 +92,7 @@ const ResetPassword = () => {
     fetchResetPasswordDetails();
   }, []);
 
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
 
   const fetchResetPasswordDetails = async () => {
     try {

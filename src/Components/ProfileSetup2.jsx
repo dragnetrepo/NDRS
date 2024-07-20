@@ -10,7 +10,7 @@ const ProfileSetup2 = () => {
   const navigate = useNavigate();
   const { profile, setProfile } = useContext(AppContext);
   const [unions, setUnions] = useState([]);
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
   const [isSubmitted, setSubmitted] = useState(false);
 
   const onHandleChange = (e) => {
@@ -69,7 +69,7 @@ const ProfileSetup2 = () => {
 
   const fetchUnions = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {

@@ -79,7 +79,7 @@ const UnionDetails = () => {
 
   const fetchIndustries = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -105,7 +105,7 @@ const UnionDetails = () => {
 
   const fetchUnionDisputes = async (id) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -131,7 +131,7 @@ const UnionDetails = () => {
 
   const fetchdata = async (id) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -159,7 +159,7 @@ const UnionDetails = () => {
 
   const fetchroles = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
 
       const res = await fetch(baseUrl + "/api/users/get-roles", {
         headers: {
@@ -180,7 +180,7 @@ const UnionDetails = () => {
 
   const fetchBranches = async (id, unions) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -232,7 +232,7 @@ const UnionDetails = () => {
           formData.append(key, value);
         }
       });
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(baseUrl + `/api/union/edit/${id}`, {
         method: "POST",
         headers: {
@@ -262,7 +262,7 @@ const UnionDetails = () => {
     setRemovingAdmin(true);
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + `/api/union/remove-admin/${id}`, {
         method: "DELETE",
         headers: {
@@ -302,7 +302,7 @@ const UnionDetails = () => {
 
   const fetchUnionAdmin = async (id) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(baseUrl + `/api/union/get-admins/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -323,7 +323,7 @@ const UnionDetails = () => {
   const handleSendInvite = async (e, id) => {
     e.preventDefault();
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(baseUrl + `/api/union/send-invite/${id}`, {
         method: "POST",
         headers: {

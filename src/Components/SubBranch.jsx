@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 
 const SubBranch = () => {
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
   const { id } = useParams();
   const user_avatar = "/images/download.png";
   const [avatarImage, setAvatarImage] = useState(user_avatar);
@@ -210,7 +210,7 @@ const SubBranch = () => {
         formData.append(key, value);
       });
 
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + "/api/union/sub-branch/create", {
         method: "POST",
         headers: {

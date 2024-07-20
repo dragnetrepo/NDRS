@@ -16,7 +16,7 @@ const Recovery = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + "/api/reset-password", {
         method: "POST",
         headers: {

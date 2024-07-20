@@ -8,7 +8,7 @@ import { ClipLoader } from "react-spinners";
 
 const Settings = () => {
   const navigate = useNavigate();
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
 
   const [isLoading, setIsLoading] = useState(true);
   const [industries, setIndustries] = useState([]);
@@ -87,7 +87,7 @@ const Settings = () => {
 
   const fetchIndustries = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -118,7 +118,7 @@ const Settings = () => {
       if (!token) {
         throw new Error("User is not logged in."); // Handle case where user is not logged in
       }
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(baseUrl + "/api/organization-profile", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -153,7 +153,7 @@ const Settings = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + "/api/change-password", {
         method: "POST",
         headers: {
@@ -321,7 +321,7 @@ const Settings = () => {
         }
       });
 
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
 
       const res = await fetch(baseUrl + "/api/profile-update", {
         method: "POST",
@@ -348,7 +348,7 @@ const Settings = () => {
 
   const fetchTwoFactorAuth = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       const res = await fetch(baseUrl + "/api/settings/2fa", {
@@ -373,7 +373,7 @@ const Settings = () => {
 
   const fetchNotificationSettings = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       const res = await fetch(baseUrl + "/api/notifications/settings", {
@@ -397,7 +397,7 @@ const Settings = () => {
 
   const toggleNotificationSettings = async (setting, option) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
 
       const res = await fetch(baseUrl + "/api/notifications/update-setting", {
         method: "POST",
@@ -427,7 +427,7 @@ const Settings = () => {
     const isChecked = event.target.checked;
     setTwoFactorAuth(isChecked);
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
 
       const res = await fetch(baseUrl + "/api/notifications/update-setting", {
         method: "POST",

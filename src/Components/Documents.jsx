@@ -91,7 +91,7 @@ const Documents = () => {
 
   const fetchFolder = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -119,7 +119,7 @@ const Documents = () => {
 
   const fetchDocuments = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -152,7 +152,7 @@ const Documents = () => {
   ) => {
     e.preventDefault();
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + `/api/case/${id}/create-folder`, {
         method: "POST",
         headers: {
@@ -179,7 +179,7 @@ const Documents = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(
         baseUrl + `/api/case/${id}/delete-document`,
         {

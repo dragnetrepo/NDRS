@@ -6,7 +6,7 @@ import { ClipLoader } from "react-spinners";
 import MyChartComponent from "../Bars/MyChartComponent";
 
 const Dashboard = ({ setloggedIn }) => {
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
 
   const [discussion, setDiscussions] = useState([]);
   const [user, setuser] = useState({
@@ -138,7 +138,7 @@ const Dashboard = ({ setloggedIn }) => {
       if (!token) {
         throw new Error("User is not logged in."); // Handle case where user is not logged in
       }
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(
         baseUrl + `/api/dispute-resolution-report?period=${period}`,
         {

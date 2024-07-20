@@ -24,7 +24,7 @@ const Disputes2 = () => {
   }, []);
   const fetchdata = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(baseUrl + "/api/case/disputes", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -44,7 +44,7 @@ const Disputes2 = () => {
 
   const fetchSingleDisputes = async (id) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(baseUrl + `/api/case/read/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -80,7 +80,7 @@ const Disputes2 = () => {
   ) => {
     e.preventDefault();
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + `/api/case/${id}/add-document`, {
         method: "POST",
         headers: {

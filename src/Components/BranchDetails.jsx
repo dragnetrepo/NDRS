@@ -80,7 +80,7 @@ const BranchDetails = () => {
 
   const fetchSubBranch = async (id) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -109,7 +109,7 @@ const BranchDetails = () => {
 
   const fetchUnionAdmin = async (id) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(baseUrl + `/api/union/branch/get-admins/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -129,7 +129,7 @@ const BranchDetails = () => {
 
   const fetchdata = async (id) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -157,7 +157,7 @@ const BranchDetails = () => {
 
   const fetchroles = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
 
       const res = await fetch(baseUrl + "/api/users/get-roles", {
         headers: {
@@ -178,7 +178,7 @@ const BranchDetails = () => {
 
   const fetchIndustries = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -228,7 +228,7 @@ const BranchDetails = () => {
           formData.append(key, value);
         }
       });
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(baseUrl + `/api/union/branch/edit/${id}`, {
         method: "POST",
         headers: {
@@ -256,7 +256,7 @@ const BranchDetails = () => {
   const handleSendInvite = async (e, id) => {
     e.preventDefault();
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const res = await fetch(baseUrl + `/api/union/branch/${id}/send-invite`, {
         method: "POST",
         headers: {
@@ -289,7 +289,7 @@ const BranchDetails = () => {
     setRemovingAdmin(true);
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(
         baseUrl + `/api/union/branch/remove-admin/${id}`,
         {

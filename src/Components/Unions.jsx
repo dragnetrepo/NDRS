@@ -63,7 +63,7 @@ const Unions = () => {
 
   const fetchRoles = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
 
       const res = await fetch(baseUrl + "/api/users/get-roles", {
         headers: {
@@ -84,7 +84,7 @@ const Unions = () => {
 
   const fetchdata = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -113,7 +113,7 @@ const Unions = () => {
 
   const fetchIndustries = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -172,7 +172,7 @@ const Unions = () => {
         formData.append(key, value);
       });
 
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + "/api/union/create", {
         method: "POST",
         headers: {
@@ -213,7 +213,7 @@ const Unions = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + `/api/union/delete/${id}`, {
         method: "DELETE",
         headers: {
@@ -239,7 +239,7 @@ const Unions = () => {
     e.preventDefault();
 
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + `/api/union/edit/${id}`, {
         method: "POST",
         headers: {
@@ -270,7 +270,7 @@ const Unions = () => {
       formData.append("file", file);
 
       try {
-        const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+        const baseUrl = "https://ndrs.ng/dev";
         const response = await fetch(baseUrl + "/api/union/bulk/create", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

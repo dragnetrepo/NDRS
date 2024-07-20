@@ -16,7 +16,7 @@ const DiscussionIinc = ({ dispute_id }) => {
 
   const fetchDiscussions = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {

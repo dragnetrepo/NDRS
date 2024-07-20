@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 
 const Branches = () => {
-  const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+  const baseUrl = "https://ndrs.ng/dev";
   const { id } = useParams();
   const user_avatar = "/images/download.png";
   const [avatarImage, setAvatarImage] = useState(user_avatar);
@@ -76,7 +76,7 @@ const Branches = () => {
 
   const fetchdata = async (id) => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -130,7 +130,7 @@ const Branches = () => {
 
   const fetchIndustries = async () => {
     try {
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -207,7 +207,7 @@ const Branches = () => {
         formData.append(key, value);
       });
 
-      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const baseUrl = "https://ndrs.ng/dev";
       const response = await fetch(baseUrl + "/api/union/branch/create", {
         method: "POST",
         headers: {
