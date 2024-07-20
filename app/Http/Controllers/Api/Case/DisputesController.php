@@ -42,7 +42,7 @@ class DisputesController extends Controller
     public function index($status = "")
     {
         if ($status == "pending") {
-            $status = "pending approval";
+            $status = "case opened";
         }
 
         $user_id = request()->user()->id;
@@ -79,6 +79,25 @@ class DisputesController extends Controller
                     $accused_disk = "union_logos";
                 }
 
+                $claimant_data = [
+                    "name" => (isset($dispute->union_data->first_name) && $dispute->union_data->first_name) ? trim($dispute->union_data->first_name.' '.$dispute->union_data->last_name) : $dispute->union_data->name,
+                    "acronym" => isset($dispute->union_data->acronym) ? $dispute->union_data->acronym : '',
+                    "logo" => get_model_file_from_disk(($dispute->union_data->logo ?? $dispute->union_data->display_picture), $claimant_disk),
+                ];
+
+                $accused_data = [
+                    "name" => '',
+                    "acronym" => '',
+                    "logo" => '',
+                ];
+
+                if ($dispute->accused && $dispute->accused->union) {
+                    $accused_data["name"] = (isset($dispute->accused->union->first_name) && $dispute->accused->union->first_name) ? trim($dispute->accused->union->first_name.' '.$dispute->accused->union->last_name) : $dispute->accused->union->name;
+                    $accused_data["name"] = trim($accused_data["name"]) ? $accused_data["name"] : $dispute->accused->email;
+                    $accused_data["acronym"] = isset($dispute->accused->union->acronym) ? $dispute->accused->union->acronym : '';
+                    $accused_data["logo"] = get_model_file_from_disk(($dispute->accused->union->logo ?? $dispute->accused->union->display_picture), $accused_disk);
+                }
+
                 $data[] = [
                     "_id" => $dispute->id,
                     "case_no" => $dispute->case_no,
@@ -94,14 +113,14 @@ class DisputesController extends Controller
                     "status_img" => asset("images/".make_slug($dispute->status).".svg"),
                     "involved_parties" => [
                         "claimant" => [
-                            "name" => (trim($dispute->union_data->first_name.' '.$dispute->union_data->last_name) ?? $dispute->union_data->name),
-                            "acronym" => $dispute->union_data->acronym,
-                            "logo" => get_model_file_from_disk(($dispute->union_data->logo ?? $dispute->union_data->display_picture), $claimant_disk),
+                            "name" => $claimant_data["name"],
+                            "acronym" => $claimant_data["acronym"],
+                            "logo" => $claimant_data["logo"],
                         ],
                         "accused" => [
-                            "name" => ($dispute->accused && $dispute->accused->union) ? (trim($dispute->accused->union->first_name.' '.$dispute->accused->union->last_name) ?? $dispute->accused->union->name) : ($dispute->accused->email ?? ""),
-                            "acronym" => ($dispute->accused && $dispute->accused->union) ? $dispute->accused->union->acronym : "",
-                            "logo" => ($dispute->accused && $dispute->accused->union) ? get_model_file_from_disk(($dispute->accused->union->logo ?? $dispute->accused->union->display_picture), $accused_disk) : "",
+                            "name" => $accused_data["name"] ? $accused_data["name"] : ($dispute->accused ? $dispute->accused->email : ''),
+                            "acronym" => $accused_data["acronym"],
+                            "logo" => $accused_data["logo"],
                         ],
                     ]
                 ];
@@ -149,6 +168,25 @@ class DisputesController extends Controller
                 $accused_disk = "union_logos";
             }
 
+            $claimant_data = [
+                "name" => isset($dispute->union_data->first_name) ? trim($dispute->union_data->first_name.' '.$dispute->union_data->last_name) : $dispute->union_data->name,
+                "acronym" => isset($dispute->union_data->acronym) ? $dispute->union_data->acronym : '',
+                "logo" => get_model_file_from_disk(($dispute->union_data->logo ?? $dispute->union_data->display_picture), $claimant_disk),
+            ];
+
+            $accused_data = [
+                "name" => '',
+                "acronym" => '',
+                "logo" => '',
+            ];
+
+            if ($dispute->accused && $dispute->accused->union) {
+                $accused_data["name"] = isset($dispute->accused->union->first_name) ? trim($dispute->accused->union->first_name.' '.$dispute->accused->union->last_name) : $dispute->accused->union->name;
+                $accused_data["name"] = $accused_data["name"] ? $accused_data["name"] : $dispute->accused->email;
+                $accused_data["acronym"] = isset($dispute->accused->union->acronym) ? $dispute->accused->union->acronym : '';
+                $accused_data["logo"] = get_model_file_from_disk(($dispute->accused->union->logo ?? $dispute->accused->union->display_picture), $accused_disk);
+            }
+
             $data = [
                 "_id" => $dispute->id,
                 "case_no" => $dispute->case_no,
@@ -164,14 +202,14 @@ class DisputesController extends Controller
                 "status_img" => asset("images/".make_slug($dispute->status).".svg"),
                 "involved_parties" => [
                     "claimant" => [
-                        "name" => (trim($dispute->union_data->first_name.' '.$dispute->union_data->last_name) ?? $dispute->union_data->name),
-                        "acronym" => $dispute->union_data->acronym,
-                        "logo" => get_model_file_from_disk(($dispute->union_data->logo ?? $dispute->union_data->display_picture), $claimant_disk),
+                        "name" => $claimant_data["name"],
+                        "acronym" => $claimant_data["acronym"],
+                        "logo" => $claimant_data["logo"],
                     ],
                     "accused" => [
-                        "name" => ($dispute->accused && $dispute->accused->union) ? (trim($dispute->accused->union->first_name.' '.$dispute->accused->union->last_name) ?? $dispute->accused->union->name) : ($dispute->accused->email ?? ""),
-                        "acronym" => ($dispute->accused && $dispute->accused->union) ? $dispute->accused->union->acronym : "",
-                        "logo" => ($dispute->accused && $dispute->accused->union) ? get_model_file_from_disk(($dispute->accused->union->logo ?? $dispute->accused->union->display_picture), $accused_disk) : "",
+                        "name" => $accused_data["name"] ? $accused_data["name"] : ($dispute->accused ? $dispute->accused->email : ''),
+                        "acronym" => $accused_data["acronym"],
+                        "logo" => $accused_data["logo"],
                     ],
                 ]
             ];
@@ -313,10 +351,10 @@ class DisputesController extends Controller
 
         if ($dispute) {
             $previous_status = $dispute->status;
-            if ($previous_status == "pending approval") {
-                $current_status = "concilliation";
+            if ($previous_status == "case opened") {
+                $current_status = "case approved";
 
-                $dispute->status = $status;
+                $dispute->status = $current_status;
                 if ($dispute->save()) {
                     create_dispute_group($dispute);
 
@@ -380,7 +418,7 @@ class DisputesController extends Controller
         if ($dispute) {
             $validator = Validator::make($request->all(), [
                 "status" => "required|in:".implode(",", CaseDispute::ARRAY_OF_CASE_STATUS),
-                "resolution_reached" => "required|in:yes,no",
+                // "resolution_reached" => "required|in:yes,no",
                 "summary" => "required|min:10",
                 "discussion_id" => "required|integer"
             ]);
@@ -394,7 +432,7 @@ class DisputesController extends Controller
                 $previous_status = $dispute->status;
                 $current_status = $status;
 
-                if ($previous_status != "pending approval") {
+                if ($previous_status != "case opened") {
                     $dispute->status = $status;
                     $dispute->save();
 
@@ -407,7 +445,7 @@ class DisputesController extends Controller
 
                     $message_data = [
                         "summary" => $request->summary,
-                        "resolution_reached" => $request->resolution_reached,
+                        // "resolution_reached" => $request->resolution_reached,
                         "status" => $status
                     ];
 

@@ -13,7 +13,7 @@ class CaseDispute extends Model
     protected $guarded = [];
 
     public const ARRAY_OF_CASE_STATUS = [
-        "case opened", "case in mediation", "case in conciliation", "case in arbitration", "case with board of enquiry", "case in nic", "nic judgement made", "case closed (resolved)", "case closed (not resolved)"
+        "case opened", "case approved", "case in mediation", "case in conciliation", "case in arbitration", "case with board of enquiry", "case in nic", "nic judgement made", "case closed (resolved)", "case closed (not resolved)"
     ];
 
     public const ARRAY_OF_ALLOWED_CASE_STATUS_UPDATE = [
@@ -21,7 +21,7 @@ class CaseDispute extends Model
     ];
 
     public const ACTIVE_CASE_STATUSES = [
-        "case in mediation", "case in conciliation", "case in arbitration", "case with board of enquiry", "case in nic", "nic judgement made",
+        "case approved", "case in mediation", "case in conciliation", "case in arbitration", "case with board of enquiry", "case in nic", "nic judgement made",
     ];
 
     public const RESOLVED_CASE_STATUSES = [
@@ -35,6 +35,10 @@ class CaseDispute extends Model
     public const ARRAY_OF_CASE_TYPES = [
         "wage and benefit disputes", "work hours and leave", "workplace health and safety", "discrimination and harassment", "unfair dismissals", "contractual disputes",
         "union representation issues", "workplace restructuring", "employee rights and entitlement", "management and employee relation"
+    ];
+
+    public const ARRAY_OF_ORGANIZATION_ADMINS = [
+        "employers", "union branch admin", "national union admin"
     ];
 
     public function scopePending($query)

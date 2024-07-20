@@ -76,7 +76,7 @@ class DashboardController extends Controller
             "user_id" => request()->user()->id
         ]);
 
-        $pending_disputes = get_case_dispute(0, 0, "pending approval");
+        $pending_disputes = get_case_dispute(0, 0, "case opened");
         $pending_disputes = $pending_disputes->count();
         $data["pending_disputes"]["count"] = number_format($pending_disputes);
 

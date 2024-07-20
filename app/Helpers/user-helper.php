@@ -30,8 +30,15 @@ if (!function_exists("get_user_roles")) {
         if ($member_role->count()) {
             if ($fetch_multiple) {
                 foreach ($member_role as $key => $role) {
+                    $non_union_name = "";
+                    $non_union_id = "";
+                    if ($role->role->name == "non union members") {
+                        $non_union_id = $user->id;
+                        $non_union_name = trim($user->first_name.' '.$user->middle_name.' '.$user->last_name);
+                    }
                     $roles_collection[$key] = [
                         "role_id" => $role->role_id,
+                        "db_role_name" => $role->role->name,
                         "role_name" => $role->role->display_name,
                         "union_id" => $role->union->id ?? 0,
                         "union_name" => $role->union->name ?? "",
@@ -39,14 +46,24 @@ if (!function_exists("get_user_roles")) {
                         "union_branch_name" => $role->union_branch->name ?? "",
                         "union_sub_branch_id" => $role->union_sub_branch->id ?? 0,
                         "union_sub_branch_name" => $role->union_sub_branch->name ?? "",
+                        "non_union_id" => $non_union_id ?? "",
+                        "non_union_name" => $non_union_name ?? "",
                     ];
                 }
             }
             else {
                 $role = $member_role->first();
                 if ($role) {
+                    $non_union_name = "";
+                    $non_union_id = "";
+                    if ($role->role->name == "non union members") {
+                        $non_union_id = $user->id;
+                        $non_union_name = trim($user->first_name.' '.$user->middle_name.' '.$user->last_name);
+                    }
+
                     $roles_collection = [
                         "role_id" => $role->role_id,
+                        "db_role_name" => $role->role->name,
                         "role_name" => $role->role->display_name,
                         "union_id" => $role->union->id ?? 0,
                         "union_name" => $role->union->name ?? "",
@@ -54,6 +71,8 @@ if (!function_exists("get_user_roles")) {
                         "union_branch_name" => $role->union_branch->name ?? "",
                         "union_sub_branch_id" => $role->union_sub_branch->id ?? 0,
                         "union_sub_branch_name" => $role->union_sub_branch->name ?? "",
+                        "non_union_id" => $non_union_id ?? "",
+                        "non_union_name" => $non_union_name ?? "",
                     ];
                 }
             }
@@ -248,15 +267,30 @@ if (!function_exists("get_case_dispute")) {
             $user_id = 0;
         }
 
-        $disputes = CaseDispute::where(function($query) use ($user_id) {
-            $query->when($user_id, function($query) use ($user_id) {
+        $role = (object) get_user_roles($user);
+
+        $disputes = CaseDispute::where(function($query) use ($user_id, $role) {
+            $query->when($user_id, function($query) use ($user_id, $role) {
                 $query->where("created_by", $user_id)
-                ->orWhereHas('union_data.users', function ($query) use ($user_id) {
-                    $query->where("user_id", $user_id);
-                })->orWhereHas('involved_parties', function ($query) use ($user_id) {
+                ->when((!$role->non_union_name), function($query) use ($user_id) {
+                    $query->orWhereHas('union_data.users', function ($query) use ($user_id) {
+                        $query->where("user_id", $user_id);
+                    });
+                })
+                ->orWhereHas('involved_parties', function ($query) use ($user_id) {
                     $query->where("user_id", $user_id)
                     ->orWhereHas('body_member', function($sub_query) use ($user_id) {
                         $sub_query->where("user_id", $user_id);
+                    });
+                })
+                ->orWhereHas('accused', function ($query) use ($user_id, $role) {
+                    $query->where("user_id", $user_id)
+                    ->when(in_array($role->db_role_name, CaseDispute::ARRAY_OF_ORGANIZATION_ADMINS), function($query)  use ($role) {
+                        $query->orWhere(function($sub_query) use ($role) {
+                            $sub_query->where('union_sub_branch', $role->union_sub_branch_id)
+                                ->orWhere('union_branch', $role->union_branch_id)
+                                ->orWhere('union_id', $role->union_id);
+                        });
                     });
                 });
             });
@@ -840,20 +874,25 @@ if (!function_exists("get_user_organization_name")) {
         $data = [];
 
         if ($organization) {
-            if (isset($organization->union_sub_branch_name)) {
+            if (isset($organization->union_sub_branch_name) && $organization->union_sub_branch_name) {
                 $data["id"] = $organization->union_sub_branch_id;
                 $data["type"] = "organization";
                 $data["name"] = $organization->union_sub_branch_name;
             }
-            elseif (isset($organization->union_branch_name)) {
+            elseif (isset($organization->union_branch_name) && $organization->union_branch_name) {
                 $data["id"] = $organization->union_branch_id;
                 $data["type"] = "branch";
                 $data["name"] = $organization->union_branch_name;
             }
-            elseif (isset($organization->union_name)) {
+            elseif (isset($organization->union_name) && $organization->union_name) {
                 $data["id"] = $organization->union_id;
                 $data["type"] = "union";
                 $data["name"] = $organization->union_name;
+            }
+            elseif (isset($organization->non_union_name) && $organization->non_union_name) {
+                $data["id"] = $organization->non_union_id;
+                $data["type"] = "non union";
+                $data["name"] = $organization->non_union_name;
             }
         }
 

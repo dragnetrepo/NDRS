@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text("relief_sought")->nullable();
             $table->text("specific_claims")->nullable();
             $table->text("negotiation_terms")->nullable();
-            $table->enum("status", ["internally resolved", "concilliation", "voting for panel", "resolved", "internal resolution", "pending approval", "arbitration", "court decision"])->nullable();
+            $table->string("status")->default("")->index();
             $table->unsignedInteger("created_by")->default("0")->index();
             $table->timestamps();
             $table->softDeletes()->index();
