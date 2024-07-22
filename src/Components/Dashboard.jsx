@@ -381,7 +381,7 @@ const Dashboard = ({ setloggedIn }) => {
                             )}
                         </div>
 
-                        {user.permissions &&
+                        {user.permissions && user.user_role?.role_name === "Ministry Admin" &&
                           (user.permissions.includes("view reports") ||
                             user.permissions.includes("download reports")) && (
                             <div className="d-flex justify-content-between align-items-center mb-2">
@@ -395,7 +395,7 @@ const Dashboard = ({ setloggedIn }) => {
                             </div>
                           )}
 
-                        {user.permissions &&
+                        {user.permissions && user.user_role?.role_name === "Ministry Admin" &&
                           (user.permissions.includes("view reports") ||
                             user.permissions.includes("download reports")) && (
                             <div className="card p-lg-4 mb-5">
