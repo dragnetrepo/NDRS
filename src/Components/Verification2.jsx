@@ -2,8 +2,9 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../App";
 import AuthNavInc from "../Bars/AuthNavInc";
+import toast from "react-hot-toast";
 
-const Verification2 = () => {
+const Verification2 = ({ setloggedIn }) => {
   // const [token, setToken] = useState('');
   const navigate = useNavigate();
 
@@ -32,12 +33,14 @@ const Verification2 = () => {
         body: JSON.stringify(twoFactorAuth),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
+        toast.error(data.message);
         throw new Error("two-factor-authentification-failed");
       }
 
       // Assuming the response contains a JSON object with a token
-      const data = await response.json();
       const token = data.data.token;
       localStorage.setItem("token", token);
       localStorage.removeItem("auth_email");
@@ -45,6 +48,33 @@ const Verification2 = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error("Error logging in:", error);
+    }
+  };
+
+  const handleResendVerificationCode = async (e) => {
+    e.preventDefault();
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const response = await fetch(`${baseUrl}/api/resend-two-factor-authentication`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(twoFactorAuth),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.message);
+        throw new Error("Network response was not ok");
+      }
+
+      toast.success(data.message);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.success(error.response.message);
     }
   };
 
@@ -105,7 +135,11 @@ const Verification2 = () => {
                       <li>Make sure you entered details correctly</li>
                       <li>Check your spam folder</li>
                       <li>
-                        <a href="" className="text-main-primary">
+                        <a
+                          href="javascript:void(0);"
+                          className="text-main-primary"
+                          onClick={handleResendVerificationCode}
+                        >
                           Resend verification code
                         </a>
                       </li>

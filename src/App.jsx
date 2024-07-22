@@ -184,7 +184,7 @@ const App = () => {
           <Route
             path="/Verification2"
             element={
-              <Verification2 />
+              <Verification2 setloggedIn={setloggedIn} />
             }
           />
           <Route path="/ProfileSetup" element={<ProfileSetup />} />
