@@ -48,6 +48,31 @@ const Verification2 = () => {
     }
   };
 
+  const handleResendVerificationCode = async (e) => {
+    e.preventDefault();
+    try {
+      const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
+      const response = await fetch(`${baseUrl}/api/resend-verification-code`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(twoFactorAuth),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      toast.success(data.message);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.success(error.response.message);
+    }
+  };
+
   return (
     <>
       <AuthNavInc />
@@ -105,7 +130,11 @@ const Verification2 = () => {
                       <li>Make sure you entered details correctly</li>
                       <li>Check your spam folder</li>
                       <li>
-                        <a href="" className="text-main-primary">
+                        <a
+                          href="javascript:void(0);"
+                          className="text-main-primary"
+                          onClick={handleResendVerificationCode}
+                        >
                           Resend verification code
                         </a>
                       </li>
