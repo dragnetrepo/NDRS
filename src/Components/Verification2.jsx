@@ -32,12 +32,14 @@ const Verification2 = () => {
         body: JSON.stringify(twoFactorAuth),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
+        toast.error(data.message);
         throw new Error("two-factor-authentification-failed");
       }
 
       // Assuming the response contains a JSON object with a token
-      const data = await response.json();
       const token = data.data.token;
       localStorage.setItem("token", token);
       localStorage.removeItem("auth_email");
@@ -61,11 +63,13 @@ const Verification2 = () => {
         body: JSON.stringify(twoFactorAuth),
       });
 
+      const data = await response.json();
+      
       if (!response.ok) {
+        toast.error(data.message);
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
       toast.success(data.message);
     } catch (error) {
       console.error("Error fetching data:", error);
