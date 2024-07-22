@@ -310,6 +310,23 @@ class AuthenticationController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function resend_two_factor_authentication(Request $request)
+    {
+        $user = User::where("email", $request->email)->first();
+
+        if ($user) {
+            if (get_user_settings_value($user, "2fa")) {
+                $this->response["status"] = Response::HTTP_OK;
+                $data["page"] = "two-factor-auth";
+                $data["email"] = $request->email;
+                $this->send_2fa_email($user);
+                $this->response["message"] = "An email containing a six digit code has been sent to your email to continue your login process.";
+            }
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function two_factor_authentication(TwoFactorAuthenticationRequest $request)
     {
         $valid_code = EmailValidation::where("email", $request->email)->where("type", "2fauth")->where("status", "pending")->orderBy("id", "desc")->first();
