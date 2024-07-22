@@ -2,8 +2,9 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../App";
 import AuthNavInc from "../Bars/AuthNavInc";
+import toast from "react-hot-toast";
 
-const Verification2 = () => {
+const Verification2 = ({ setloggedIn }) => {
   // const [token, setToken] = useState('');
   const navigate = useNavigate();
 
