@@ -54,7 +54,7 @@ const Verification2 = () => {
     e.preventDefault();
     try {
       const baseUrl = "https://phpstack-1245936-4460801.cloudwaysapps.com/dev";
-      const response = await fetch(`${baseUrl}/api/resend-verification-code`, {
+      const response = await fetch(`${baseUrl}/api/resend-two-factor-authentication`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const Verification2 = () => {
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         toast.error(data.message);
         throw new Error("Network response was not ok");
