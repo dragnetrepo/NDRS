@@ -292,7 +292,7 @@ class AuthenticationController extends Controller
             if (Hash::check($request->password, $user->password)) {
                 $this->response["status"] = Response::HTTP_OK;
 
-                if (get_user_settings_value($user, "2fa") && false) {
+                if (get_user_settings_value($user, "2fa")) {
                     $data["page"] = "two-factor-auth";
                     $data["email"] = $request->email;
                     $this->send_2fa_email($user);
