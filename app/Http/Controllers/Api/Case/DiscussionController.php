@@ -274,6 +274,11 @@ class DiscussionController extends Controller
 
                             $message_data["sender"] = $sender_info;
                         }
+                        else {
+                            $message_data["sender"] = [
+                                "sender" => 'User',
+                            ];
+                        }
                         $message_data["_id"] = $message->id;
                         $message_data["time_sent"] = $message->created_at->format("h:i");
                         $data[] = $message_data;

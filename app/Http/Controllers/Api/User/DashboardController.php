@@ -11,6 +11,7 @@ use App\Models\Union;
 use App\Models\CaseDocument;
 use App\Models\CaseDispute;
 use App\Models\CaseDisputeStatusHistory;
+use App\Models\CaseUserRoles;
 use App\Models\Notification;
 use App\Models\SettlementBodyMember;
 use App\Models\UnionBranch;
@@ -74,6 +75,12 @@ class DashboardController extends Controller
 
         CaseAccusedUnion::where("email", request()->user()->email)->update([
             "user_id" => request()->user()->id
+        ]);
+
+        CaseUserRoles::where("email", request()->user()->email)->update([
+            "user_id" => request()->user()->id,
+            "status" => "active",
+            "response_date" => Carbon::now()
         ]);
 
         $pending_disputes = get_case_dispute(0, 0, "case opened");
