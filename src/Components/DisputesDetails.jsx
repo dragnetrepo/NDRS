@@ -27,6 +27,8 @@ const DisputesDetails = () => {
     name: "",
   });
 
+  const [casePermissions, setCasePermissions] = useState([]);
+
   const [changeStatus, setChangeStatus] = useState({
     status: "concilliation",
   });
@@ -53,6 +55,7 @@ const DisputesDetails = () => {
     fetchDisputeInvolvedParties(id);
     fetchDisputeDocuments(id);
     fetchroles();
+    fetchCasePermissions();
     fetchProfile();
   }, []);
 
@@ -165,7 +168,6 @@ const DisputesDetails = () => {
 
       const data = await res.json();
       setuser(data.data);
-      console.log(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -316,13 +318,33 @@ const DisputesDetails = () => {
     }
   };
 
+  const fetchCasePermissions = async () => {
+    try {
+      const res = await fetch(baseUrl + `/api/case/permissions/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setuser(data.data);
+      setCasePermissions(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
   getCaseDocuments.map((item) => {});
 
   return (
     <>
       <div className="main-admin-container bg-light dark-mode-active">
         <div className="d-flex flex-column flex-lg-row h-lg-100">
-          {user.permissions.length && (
+          {user.permissions && (
             <MainNavbarInc sidebar={sidebar} profileUser={user} />
           )}
 
@@ -376,8 +398,8 @@ const DisputesDetails = () => {
                                 Case Details
                               </button>
                             </li>
-                            {user.permissions &&
-                              user.permissions.includes(
+                            {casePermissions &&
+                              casePermissions.includes(
                                 "participate in resolution"
                               ) && (
                                 <>
@@ -413,8 +435,8 @@ const DisputesDetails = () => {
                                 </>
                               )}
 
-                            {user.permissions &&
-                              user.permissions.includes(
+                            {casePermissions &&
+                              casePermissions.includes(
                                 "view dispute notifications"
                               ) && (
                                 <li className="nav-item" role="presentation">
@@ -462,8 +484,8 @@ const DisputesDetails = () => {
                                       Overview
                                     </button>
 
-                                    {user.permissions &&
-                                      user.permissions.includes(
+                                    {casePermissions &&
+                                      casePermissions.includes(
                                         "invite dispute participants"
                                       ) && (
                                         <button
@@ -498,8 +520,8 @@ const DisputesDetails = () => {
                                           <h3 className="mb-lg-0 mb-3">
                                             Overview
                                           </h3>
-                                          {user.permissions &&
-                                            user.permissions.includes(
+                                          {casePermissions &&
+                                            casePermissions.includes(
                                               "approve dispute"
                                             ) && (
                                               <div className="d-flex align-items-center gap-15">
@@ -668,8 +690,8 @@ const DisputesDetails = () => {
                                       </div>
                                     </div>
 
-                                    {user.permissions &&
-                                      user.permissions.includes(
+                                    {casePermissions &&
+                                      casePermissions.includes(
                                         "invite dispute participants"
                                       ) && (
                                         <div
@@ -838,8 +860,8 @@ const DisputesDetails = () => {
                               </div>
                             </div>
 
-                            {user.permissions &&
-                              user.permissions.includes(
+                            {casePermissions &&
+                              casePermissions.includes(
                                 "participate in resolution"
                               ) && (
                                 <>
@@ -1085,8 +1107,8 @@ const DisputesDetails = () => {
                                 </>
                               )}
 
-                            {user.permissions &&
-                              user.permissions.includes(
+                            {casePermissions &&
+                              casePermissions.includes(
                                 "view dispute notifications"
                               ) && (
                                 <div

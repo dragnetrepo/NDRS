@@ -12,6 +12,7 @@ const DiscussionIinc = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [discussionMessages, setDiscussionsMessages] = useState([]);
   const [discussionMessagesInfo, setDiscussionsMessagesInfo] = useState([]);
+  const [casePermissions, setCasePermissions] = useState([]);
   const [messages, setMessages] = useState({
     type: "text",
     message: "",
@@ -200,6 +201,7 @@ const DiscussionIinc = () => {
       setCaseId(case_id);
       setDiscussionsMessages(data.data);
       setDiscussionsMessagesInfo(data.discuss_info);
+      fetchCasePermissions(case_id);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
@@ -224,6 +226,26 @@ const DiscussionIinc = () => {
       const data = await res.json();
       setuser(data.data);
       console.log(data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const fetchCasePermissions = async (case_id) => {
+    try {
+      const res = await fetch(baseUrl + `/api/case/permissions/${case_id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data."); // Handle failed request
+      }
+
+      const data = await res.json();
+      setuser(data.data);
+      setCasePermissions(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -641,9 +663,9 @@ const DiscussionIinc = () => {
                               </span>
                             </div>
                             <div className="d-flex justify-content-between align-items-start">
-                              {item.sender.sender && (
+                              {item.sender?.sender && (
                                 <p className="mb-0 text-muted-3 line-clamp-2">
-                                  {item.sender.sender}: {item.last_message}
+                                  {item.sender?.sender}: {item.last_message}
                                 </p>
                               )}
                               <span className="badge rounded-pill text-bg-main">
@@ -696,7 +718,7 @@ const DiscussionIinc = () => {
                             <div
                               key={item._id}
                               className={
-                                item.sender.sender === "You"
+                                item.sender?.sender === "You"
                                   ? "d-flex flex-column align-items-end"
                                   : "d-flex flex-column align-items-start"
                               }
@@ -705,7 +727,7 @@ const DiscussionIinc = () => {
                                 <>
                                   <div
                                     className={`message-box message-width ${
-                                      item.sender.sender === "You"
+                                      item.sender?.sender === "You"
                                         ? "message-right"
                                         : "message-left"
                                     } mb-3`}
@@ -715,7 +737,7 @@ const DiscussionIinc = () => {
                                     </div>
                                   </div>
                                   <p className="message-user mt-1">
-                                    {item.sender.sender}{" "}
+                                    {item.sender?.sender}{" "}
                                     <i className="bi bi-dot"></i>{" "}
                                     {item.time_sent}
                                   </p>
@@ -723,7 +745,7 @@ const DiscussionIinc = () => {
                               ) : item.type === "meeting" ? (
                                 <div
                                   className={
-                                    item.sender.sender === "You"
+                                    item.sender?.sender === "You"
                                       ? "d-flex flex-column align-items-end"
                                       : "d-flex flex-column align-items-start"
                                   }
@@ -821,7 +843,7 @@ const DiscussionIinc = () => {
                               ) : item.type === "poll" ? (
                                 <div
                                   className={
-                                    item.sender.sender === "You"
+                                    item.sender?.sender === "You"
                                       ? "d-flex flex-column align-items-end"
                                       : "d-flex flex-column align-items-start"
                                   }
@@ -937,7 +959,7 @@ const DiscussionIinc = () => {
                               ) : item.type === "file" ? (
                                 <div
                                   className={
-                                    item.sender.sender === "You"
+                                    item.sender?.sender === "You"
                                       ? "d-flex flex-column align-items-end"
                                       : "d-flex flex-column align-items-start"
                                   }
@@ -948,7 +970,7 @@ const DiscussionIinc = () => {
                                     rel="noopener noreferrer"
                                     download={item.message.name}
                                     className={`text-decoration-none d-flex ${
-                                      item.sender.sender === "You"
+                                      item.sender?.sender === "You"
                                         ? `justify-content-end`
                                         : `justify-content-start`
                                     }`}
@@ -978,7 +1000,7 @@ const DiscussionIinc = () => {
                                 <>
                                   <div
                                     className={`receiver d-flex flex-column ${
-                                      item.sender.sender === "You"
+                                      item.sender?.sender === "You"
                                         ? `align-items-end`
                                         : `align-items-start`
                                     } mb-3`}
@@ -997,7 +1019,7 @@ const DiscussionIinc = () => {
 
                                   <div
                                     className={
-                                      item.sender.sender === "You"
+                                      item.sender?.sender === "You"
                                         ? "d-flex flex-column align-items-end mb-3"
                                         : "d-flex flex-column align-items-start mb-3"
                                     }
@@ -1040,8 +1062,8 @@ const DiscussionIinc = () => {
                           />
                         </div>
                         <ul className="dropdown-menu shadow-box p-3">
-                          {user.permissions &&
-                            user.permissions.includes(
+                          {casePermissions &&
+                            casePermissions.includes(
                               "change dispute case status"
                             ) && (
                               <li>
@@ -1498,8 +1520,8 @@ const DiscussionIinc = () => {
         </div>
       </div>
 
-      {user.permissions &&
-        user.permissions.includes("change dispute case status") && (
+      {casePermissions &&
+        casePermissions.includes("change dispute case status") && (
           <div
             className="modal fade"
             id="caseModal"
