@@ -128,11 +128,12 @@ Route::name("api.")->middleware(['cors'])->withoutMiddleware([\Illuminate\Routin
                     Route::delete("delete-invited-party/{case_id}", "delete_invite_party")->name("delete-invite")->where('case_id', '[0-9]+');
                     Route::get("get-invites", "get_invites")->name("get-invites");
                 });
+                Route::get("permissions/{case_id}", "permissions")->name("permissions");
                 Route::post("invite-response/{case_id}", "invite_response")->name("invite-response")->where('case_id', '[0-9]+');
                 Route::post("approve-case/{case_id}", "approve_case")->name("approve-case")->middleware("custom_user_permission:approve dispute")->where('case_id', '[0-9]+');
 
+                Route::get("get-statuses", "get_case_status")->name("get-statuses");
                 Route::middleware("custom_user_permission:change dispute case status")->group(function(){
-                    Route::get("get-statuses", "get_case_status")->name("get-statuses");
                     Route::post("change-status/{case_id}", "update_case_status")->name("change-status")->where('case_id', '[0-9]+');
                 });
             });

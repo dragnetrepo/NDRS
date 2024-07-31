@@ -548,6 +548,40 @@ class DisputesController extends Controller
         return response()->json($this->response, $this->response["status"]);
     }
 
+    public function permissions($case_id)
+    {
+        $user_id = request()->user()->id;
+        $data = [];
+        $dispute = $dispute = get_case_dispute($case_id, $user_id);
+
+        if ($dispute) {
+            $user_role = CaseUserRoles::where("user_id", $user_id)->where("case_id", $dispute->id)->first();
+
+            if (!$user_role) {
+                $user_role = (object) get_user_roles(request()->user());
+            }
+
+            if ($user_role) {
+                $role = Role::find(($user_role->case_role_id ?? $user_role->role_id));
+
+                if ($role) {
+                    foreach ($role->permissions as $permission) {
+                        $data[] = $permission->name;
+                    }
+                }
+            }
+
+            $this->response["message"] = "Fetched case dispute permissions for user";
+            $this->response["status"] = Response::HTTP_OK;
+            $this->response["data"] = $data;
+        }
+        else {
+            $this->response["message"] = "The case dispute requested does not exist in our records.";
+        }
+
+        return response()->json($this->response, $this->response["status"]);
+    }
+
     public function invite_party(InvitePartyRequest $request, $case_id)
     {
         try {

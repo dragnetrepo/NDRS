@@ -100,13 +100,16 @@ class DiscussionController extends Controller
                     elseif  ($discussion->dispute->union_branch) {
                         $claimant_disk = "union_branch_logos";
                     }
-                    else {
+                    elseif  ($discussion->dispute->union) {
                         $claimant_disk = "union_logos";
+                    }
+                    else {
+                        $claimant_disk = "profile_photos";
                     }
 
                     $sender_info = [
                         "sender" => trim($user ? ($user->first_name.' '.$user->last_name) : ""),
-                        "photo" => get_model_file_from_disk($discussion->dispute->union_data->logo, $claimant_disk),
+                        "photo" => $discussion->dispute->union_data ? get_model_file_from_disk(($discussion->dispute->union_data->logo ?? $discussion->dispute->union_data->display_picture), $claimant_disk) : "",
                     ];
                 }
                 elseif ($last_msg) {

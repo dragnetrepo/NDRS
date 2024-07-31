@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\CaseUserRoles;
 use App\Models\Union;
 use App\Models\UnionUserRole;
 use Closure;
@@ -52,11 +53,23 @@ class CustomUserPermission
             }
         }
         else {
-            // Get user role
-            $user_role = UnionUserRole::where("user_id", $user_id)->where("status", "active")->first();
+            $user_role = null;
+            if ($request->case_id) {
+                $user_id = request()->user()->id;
+                $dispute = $dispute = get_case_dispute($request->case_id, $user_id);
+
+                if ($dispute) {
+                    $user_role = CaseUserRoles::where("user_id", $user_id)->where("case_id", $dispute->id)->first();
+                }
+            }
+
+            if (!$user_role) {
+                // Get user role
+                $user_role = UnionUserRole::where("user_id", $user_id)->where("status", "active")->first();
+            }
 
             if ($user_role) {
-                $role = Role::find($user_role->role_id);
+                $role = Role::find(($user_role->case_role_id ?? $user_role->role_id));
 
                 if ($role) {
                     if ($role->hasPermissionTo($extraParam)) {
