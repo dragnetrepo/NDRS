@@ -66,7 +66,8 @@ class DashboardController extends Controller
         ];
 
         SettlementBodyMember::where("email", request()->user()->email)->orWhere("user_id", $user_id)->where("status", "pending")->update([
-            "status" => "active"
+            "status" => "active",
+            "user_id" => $user_id,
         ]);
 
         UnionUserRole::where("user_id", $user_id)->where("status", "pending")->update([

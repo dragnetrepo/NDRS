@@ -60,6 +60,14 @@ class CustomUserPermission
 
                 if ($dispute) {
                     $user_role = CaseUserRoles::where("user_id", $user_id)->where("case_id", $dispute->id)->first();
+
+                    if (!$user_role) {
+                        $user_role = CaseUserRoles::where("case_id", $dispute->id)->whereHas('body', function($query) use ($user_id) {
+                            $query->whereHas('members', function($sub_query) use ($user_id) {
+                                $sub_query->where("user_id", $user_id);
+                            });
+                        })->first();
+                    }
                 }
             }
 

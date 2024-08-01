@@ -515,13 +515,24 @@ class DisputesController extends Controller
             if ($dispute->involved_parties->count()) {
                 foreach ($dispute->involved_parties as $involved_party) {
                     $user = $involved_party->user;
+                    $body = $involved_party->body;
 
                     $role_name = ($involved_party->role->display_name ?? ucwords($involved_party->role->name));
+                    $party_name = "";
+                     $party_email = $involved_party->email;
+
+                    if ($user) {
+                        $party_name = trim($user->last_name.' '.$user->first_name);
+                        $party_email = $user->email;
+                    }
+                    elseif ($body) {
+                        $party_name = $body->name;
+                    }
 
                     $role_data_[$role_name][] = [
                         "_id" => $involved_party->id,
-                        "name" => $user ? trim($user->last_name.' '.$user->first_name) : '',
-                        "email" => $user ? $user->email : $involved_party->email,
+                        "name" => $party_name,
+                        "email" => $party_email,
                         "joined" => Carbon::parse(($involved_party->response_date ? $involved_party->response_date : $involved_party->created_at))->format("M d Y"),
                         "role" => $role_name,
                         "status" => $involved_party->status,
@@ -556,6 +567,14 @@ class DisputesController extends Controller
 
         if ($dispute) {
             $user_role = CaseUserRoles::where("user_id", $user_id)->where("case_id", $dispute->id)->first();
+
+            if (!$user_role) {
+                $user_role = CaseUserRoles::where("case_id", $dispute->id)->whereHas('body', function($query) use ($user_id) {
+                    $query->whereHas('members', function($sub_query) use ($user_id) {
+                        $sub_query->where("user_id", $user_id);
+                    });
+                })->first();
+            }
 
             if (!$user_role) {
                 $user_role = (object) get_user_roles(request()->user());

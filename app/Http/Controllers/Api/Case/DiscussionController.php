@@ -37,7 +37,10 @@ class DiscussionController extends Controller
 
         $group_discussions = CaseDiscussion::when((!$admin_user), function($query) use ($user_id, $role) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
-                $sub_query->where("user_id", $user_id);
+                $sub_query->where("user_id", $user_id)
+                ->orWhereHas('body_member', function($sub_query) use ($user_id) {
+                    $sub_query->where("user_id", $user_id);
+                });
             })->orWhereHas('dispute', function($sub_query) use ($user_id, $role) {
                 $sub_query->where("created_by", $user_id)
                 ->orWhereHas('accused', function ($query) use ($user_id, $role) {
@@ -629,7 +632,10 @@ class DiscussionController extends Controller
 
         return CaseDiscussion::when((!$admin_user), function($query) use ($user_id, $role) {
             $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
-                $sub_query->where("user_id", $user_id);
+                $sub_query->where("user_id", $user_id)
+                ->orWhereHas('body_member', function($sub_query) use ($user_id) {
+                    $sub_query->where("user_id", $user_id);
+                });
             })->orWhereHas('dispute', function($sub_query) use ($user_id, $role) {
                 $sub_query->where("created_by", $user_id)
                 ->orWhereHas('accused', function ($query) use ($user_id, $role) {
