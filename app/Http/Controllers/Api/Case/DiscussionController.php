@@ -36,24 +36,26 @@ class DiscussionController extends Controller
         $role = (object) get_user_roles(request()->user());
 
         $group_discussions = CaseDiscussion::when((!$admin_user), function($query) use ($user_id, $role) {
-            $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
-                $sub_query->where("user_id", $user_id)
-                ->orWhereHas('body_member', function($sub_query) use ($user_id) {
-                    $sub_query->where("user_id", $user_id);
-                });
-            })->orWhereHas('dispute', function($sub_query) use ($user_id, $role) {
-                $sub_query->where("created_by", $user_id)
-                ->orWhereHas('accused', function ($query) use ($user_id, $role) {
-                    $query->where("user_id", $user_id)
-                    ->when(in_array($role->db_role_name, CaseDispute::ARRAY_OF_ORGANIZATION_ADMINS), function($query)  use ($role) {
-                        $query->orWhere(function($sub_query) use ($role) {
-                            $sub_query->where('union_id', $role->union_id)
-                                ->when($role->union_branch_id, function($query) use ($role) {
-                                    $query->where('union_branch', $role->union_branch_id);
-                                })
-                                ->when($role->union_sub_branch_id, function($query) use ($role) {
-                                    $query->where('union_sub_branch', $role->union_sub_branch_id);
-                                });
+            $query->where(function($query) use ($user_id, $role) {
+                $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
+                    $sub_query->where("user_id", $user_id)
+                    ->orWhereHas('body_member', function($sub_query) use ($user_id) {
+                        $sub_query->where("user_id", $user_id);
+                    });
+                })->orWhereHas('dispute', function($sub_query) use ($user_id, $role) {
+                    $sub_query->where("created_by", $user_id)
+                    ->orWhereHas('accused', function ($query) use ($user_id, $role) {
+                        $query->where("user_id", $user_id)
+                        ->when(in_array($role->db_role_name, CaseDispute::ARRAY_OF_ORGANIZATION_ADMINS), function($query)  use ($role) {
+                            $query->orWhere(function($sub_query) use ($role) {
+                                $sub_query->where('union_id', $role->union_id)
+                                    ->when($role->union_branch_id, function($query) use ($role) {
+                                        $query->where('union_branch', $role->union_branch_id);
+                                    })
+                                    ->when($role->union_sub_branch_id, function($query) use ($role) {
+                                        $query->where('union_sub_branch', $role->union_sub_branch_id);
+                                    });
+                            });
                         });
                     });
                 });
@@ -631,27 +633,29 @@ class DiscussionController extends Controller
         $role = (object) get_user_roles(request()->user());
 
         return CaseDiscussion::when((!$admin_user), function($query) use ($user_id, $role) {
-            $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
-                $sub_query->where("user_id", $user_id)
-                ->orWhereHas('body_member', function($sub_query) use ($user_id) {
-                    $sub_query->where("user_id", $user_id);
-                });
-            })->orWhereHas('dispute', function($sub_query) use ($user_id, $role) {
-                $sub_query->where("created_by", $user_id)
-                ->orWhereHas('accused', function ($query) use ($user_id, $role) {
-                    $query->where("user_id", $user_id)
-                    ->when(in_array($role->db_role_name, CaseDispute::ARRAY_OF_ORGANIZATION_ADMINS), function($query)  use ($role) {
-                        $query->orWhere(function($sub_query) use ($role) {
-                            $sub_query->where('union_id', $role->union_id)
-                                ->when($role->union_branch_id, function($query) use ($role) {
-                                    $query->where('union_branch', $role->union_branch_id);
-                                })
-                                ->when($role->union_sub_branch_id, function($query) use ($role) {
-                                    $query->where('union_sub_branch', $role->union_sub_branch_id);
-                                });
-                        });
+            $query->where(function($query) use ($user_id, $role) {
+                $query->whereHas('dispute.involved_parties', function($sub_query) use ($user_id) {
+                    $sub_query->where("user_id", $user_id)
+                    ->orWhereHas('body_member', function($sub_query) use ($user_id) {
+                        $sub_query->where("user_id", $user_id);
                     });
-                });;
+                })->orWhereHas('dispute', function($sub_query) use ($user_id, $role) {
+                    $sub_query->where("created_by", $user_id)
+                    ->orWhereHas('accused', function ($query) use ($user_id, $role) {
+                        $query->where("user_id", $user_id)
+                        ->when(in_array($role->db_role_name, CaseDispute::ARRAY_OF_ORGANIZATION_ADMINS), function($query)  use ($role) {
+                            $query->orWhere(function($sub_query) use ($role) {
+                                $sub_query->where('union_id', $role->union_id)
+                                    ->when($role->union_branch_id, function($query) use ($role) {
+                                        $query->where('union_branch', $role->union_branch_id);
+                                    })
+                                    ->when($role->union_sub_branch_id, function($query) use ($role) {
+                                        $query->where('union_sub_branch', $role->union_sub_branch_id);
+                                    });
+                            });
+                        });
+                    });;
+                });
             });
         })
         ->where("id", $discussion)

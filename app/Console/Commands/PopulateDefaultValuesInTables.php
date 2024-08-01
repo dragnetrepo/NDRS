@@ -68,8 +68,12 @@ class PopulateDefaultValuesInTables extends Command
                     "display_name" => "Non Union Members",
                     "type" => "admin",
                 ],
-                "councilliators and arbitrators" => [
-                    "display_name" => "Councilliators & Arbitrators",
+                "conciliators" => [
+                    "display_name" => "Conciliators",
+                    "type" => "settlement-body",
+                ],
+                "arbitrators" => [
+                    "display_name" => "Arbitrators",
                     "type" => "settlement-body",
                 ],
                 "mediators" => [
