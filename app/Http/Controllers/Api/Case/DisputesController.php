@@ -98,6 +98,15 @@ class DisputesController extends Controller
                     $accused_data["logo"] = get_model_file_from_disk(($dispute->accused->union->logo ?? $dispute->accused->union->display_picture), $accused_disk);
                 }
 
+                $status_image = asset("images/".make_slug($dispute->status).".svg");
+
+                if ($dispute->status == "case closed (resolved)") {
+                    $status_image = asset("images/case-resolved.svg");
+                }
+                elseif ($dispute->status == "case closed (not resolved)") {
+                    $status_image = asset("images/case-unresolved.svg");
+                }
+
                 $data[] = [
                     "_id" => $dispute->id,
                     "case_no" => $dispute->case_no,
@@ -110,7 +119,7 @@ class DisputesController extends Controller
                     "specific_claims" => $dispute->specific_claims,
                     "negotiation_terms" => $dispute->negotiation_terms,
                     "status" => $dispute->status,
-                    "status_img" => asset("images/".make_slug($dispute->status).".svg"),
+                    "status_img" => $status_image,
                     "involved_parties" => [
                         "claimant" => [
                             "name" => $claimant_data["name"],
@@ -187,6 +196,15 @@ class DisputesController extends Controller
                 $accused_data["logo"] = get_model_file_from_disk(($dispute->accused->union->logo ?? $dispute->accused->union->display_picture), $accused_disk);
             }
 
+            $status_image = asset("images/".make_slug($dispute->status).".svg");
+
+            if ($dispute->status == "case closed (resolved)") {
+                $status_image = asset("images/case-resolved.svg");
+            }
+            elseif ($dispute->status == "case closed (not resolved)") {
+                $status_image = asset("images/case-unresolved.svg");
+            }
+
             $data = [
                 "_id" => $dispute->id,
                 "case_no" => $dispute->case_no,
@@ -199,7 +217,7 @@ class DisputesController extends Controller
                 "specific_claims" => $dispute->specific_claims,
                 "negotiation_terms" => $dispute->negotiation_terms,
                 "status" => $dispute->status,
-                "status_img" => asset("images/".make_slug($dispute->status).".svg"),
+                "status_img" => $status_image,
                 "involved_parties" => [
                     "claimant" => [
                         "name" => $claimant_data["name"],

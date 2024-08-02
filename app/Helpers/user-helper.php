@@ -511,11 +511,11 @@ if (!function_exists("get_model_file_from_disk")) {
                     return Storage::disk($disk)->url($file_path);
                 }
             } catch (FileNotFoundException $e) {
-                return '';
+                return asset("images/default-image.webp");
             }
         }
 
-        return '';
+        return asset("images/default-image.webp");
     }
 }
 
